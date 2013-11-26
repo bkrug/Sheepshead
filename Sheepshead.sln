@@ -1,0 +1,26 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Express 2012 for Web
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sheepshead", "Sheepshead\Sheepshead.csproj", "{4EA049AB-6BE7-4CB8-9A71-FA9666C1AE4C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sheepshead.Tests", "Sheepshead.Tests\Sheepshead.Tests.csproj", "{3F32BCA8-D6C5-47B1-A0B6-0E64ACCA8E96}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{4EA049AB-6BE7-4CB8-9A71-FA9666C1AE4C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4EA049AB-6BE7-4CB8-9A71-FA9666C1AE4C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4EA049AB-6BE7-4CB8-9A71-FA9666C1AE4C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4EA049AB-6BE7-4CB8-9A71-FA9666C1AE4C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3F32BCA8-D6C5-47B1-A0B6-0E64ACCA8E96}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3F32BCA8-D6C5-47B1-A0B6-0E64ACCA8E96}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3F32BCA8-D6C5-47B1-A0B6-0E64ACCA8E96}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3F32BCA8-D6C5-47B1-A0B6-0E64ACCA8E96}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
