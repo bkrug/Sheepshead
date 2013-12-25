@@ -11,7 +11,7 @@ namespace Sheepshead.Tests
     public class GameCreationTests
     {
         [TestMethod]
-        public void GameServiceCreatesAGame()
+        public void GameService_CreatesAGame()
         {
             var expectedName = "Game C";
             var humanPlayers = 2;
@@ -29,14 +29,14 @@ namespace Sheepshead.Tests
         }
 
         [TestMethod]
-        public void GameServiceRetreivesAGame()
+        public void GameService_RetreivesAGame()
         {
             var gameId = (long)45;
             var expectedName = "Game 45";
             var gameList = new List<IGame>() { new Game(gameId) { Name = expectedName } };
             var gameRepositoryMock = new Mock<IGameRepository>();
             gameRepositoryMock.Setup(pr => pr
-                .GetGame(It.IsAny<long>()))
+                .GetById(It.IsAny<long>()))
                 .Returns((long num) => gameList.FirstOrDefault(l => l.Id == num));
             var service = new GameService(gameRepositoryMock.Object);
             var actualGame = service.GetGame(gameId);
