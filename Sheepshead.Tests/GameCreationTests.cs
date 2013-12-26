@@ -24,8 +24,8 @@ namespace Sheepshead.Tests
             var actual = service.CreateGame(expectedName, playerCount, humanPlayers);
             Assert.IsTrue(actual is IGame, "Game recieved.");
             Assert.AreEqual(actual.Name, expectedName, "Correct Name used.");
-            Assert.AreEqual(actual.NumberOfPlayers, playerCount, "Number of players is correct.");
-            Assert.AreEqual(actual.HumanPlayers, humanPlayers, "Number of human players is correct.");
+            Assert.AreEqual(actual.MaxPlayers, playerCount, "Number of players is correct.");
+            Assert.AreEqual(actual.MaxHumanPlayers, humanPlayers, "Number of human players is correct.");
         }
 
         [TestMethod]

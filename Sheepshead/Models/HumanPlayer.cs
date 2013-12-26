@@ -9,7 +9,7 @@ namespace Sheepshead.Models
     {
     }
 
-    public interface IHumanPlayer
+    public interface IHumanPlayer : IPlayer
     {
     }
 }

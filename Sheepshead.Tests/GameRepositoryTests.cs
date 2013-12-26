@@ -35,7 +35,7 @@ namespace Sheepshead.Tests
             dict.Add(103, new Game(103) { Name = "Andy's Game" });
             Assert.AreEqual(dict[102].Name, repository.GetGame(g => g.Id == 102).Name, "GetGame() returned correct results when searching by id.");
             Assert.AreEqual(dict[103].Id, repository.GetGame(g => g.Name == "Andy's Game").Id, "GetGame() returned correct results when searching by Name.");
-            Assert.AreEqual(null, repository.GetGame(g => g.HumanPlayers == 12), "GetGame() returned null and not an error when there were no results.");
+            Assert.AreEqual(null, repository.GetGame(g => g.MaxHumanPlayers == 12), "GetGame() returned null and not an error when there were no results.");
         }
 
         [TestMethod]

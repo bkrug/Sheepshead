@@ -19,8 +19,8 @@ namespace Sheepshead.Models
         public IGame CreateGame(string name, int numPlayers, int humanPlayers)
         {
             var game = _repository.CreateGame(name);
-            game.NumberOfPlayers = numPlayers;
-            game.HumanPlayers = humanPlayers;
+            game.MaxPlayers = numPlayers;
+            game.MaxHumanPlayers = humanPlayers;
             return game;
         }
 
