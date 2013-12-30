@@ -8,7 +8,7 @@ namespace Sheepshead.Tests
     public class LongIdTests
     {
         [TestMethod]
-        public void CallerMaySetButNotChangeRecordId()
+        public void LongId_CallerMaySetButNotChangeRecordId()
         {
             var dataObj = new LongId();
             Assert.AreEqual(0, dataObj.Id, "Object starts with an ID of 0.");

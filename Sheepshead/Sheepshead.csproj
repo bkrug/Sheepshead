@@ -107,16 +107,20 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Controllers\GameController.cs" />
+    <Compile Include="Controllers\UserController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\BaseRepository.cs" />
+    <Compile Include="Models\UserRepository.cs" />
     <Compile Include="Models\GameRepository.cs" />
     <Compile Include="Models\Game.cs" />
     <Compile Include="Models\GameService.cs" />
     <Compile Include="Models\HumanPlayer.cs" />
     <Compile Include="Models\LongId.cs" />
     <Compile Include="Models\Player.cs" />
+    <Compile Include="Models\User.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -135,10 +139,15 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Controllers\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\User\Create.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\User\Edit.cshtml" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

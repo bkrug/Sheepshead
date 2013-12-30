@@ -49,5 +49,51 @@ namespace Sheepshead.Tests
             Assert.AreEqual(dict[101].Name, repository.GetById(101).Name, "GetGame() returned correct results when searching by id.");
             Assert.AreEqual(null, repository.GetById(104), "GetGame() returned null and not an error when there were no results.");
         }
+
+        [TestMethod]
+        public void GameRepository_GetOpenGames()
+        {
+            var dict = new Dictionary<long, IGame>();
+            var repository = new GameRepository(dict);
+            var game1 = new Mock<IGame>();
+            game1.Setup(m => m.Id).Returns(1);
+            game1.Setup(m => m.MaxHumanPlayers).Returns(2);
+            game1.Setup(m => m.HumanPlayerCount).Returns(1);
+            dict.Add(game1.Object.Id, game1.Object);
+            var game2 = new Mock<IGame>();
+            game2.Setup(m => m.Id).Returns(2);
+            game2.Setup(m => m.MaxHumanPlayers).Returns(2);
+            game2.Setup(m => m.HumanPlayerCount).Returns(2);
+            dict.Add(game2.Object.Id, game2.Object);
+            var openGames = repository.GetOpenGames().ToList();
+            Assert.AreEqual(1, openGames.Count, "Correct number of games returned.");
+            Assert.AreSame(game1.Object, openGames.ElementAt(0), "Correct game returned.");
+        }
+
+        [TestMethod]
+        public void GameRepository_GetOpenGames2()
+        {
+            var dict = new Dictionary<long, IGame>();
+            var repository = new GameRepository(dict);
+            var game1 = new Mock<IGame>();
+            game1.Setup(m => m.Id).Returns(1);
+            game1.Setup(m => m.MaxHumanPlayers).Returns(2);
+            game1.Setup(m => m.HumanPlayerCount).Returns(1);
+            dict.Add(game1.Object.Id, game1.Object);
+            var game2 = new Mock<IGame>();
+            game2.Setup(m => m.Id).Returns(2);
+            game2.Setup(m => m.MaxHumanPlayers).Returns(2);
+            game2.Setup(m => m.HumanPlayerCount).Returns(2);
+            dict.Add(game2.Object.Id, game2.Object);
+            var game3 = new Mock<IGame>();
+            game3.Setup(m => m.Id).Returns(3);
+            game3.Setup(m => m.MaxHumanPlayers).Returns(3);
+            game3.Setup(m => m.HumanPlayerCount).Returns(2);
+            dict.Add(game3.Object.Id, game3.Object);
+            var openGames = repository.GetOpenGames().ToList();
+            Assert.IsTrue(openGames.Contains(game1.Object), "Game 1 returned.");
+            Assert.IsTrue(openGames.Contains(game3.Object), "Game 3 returned.");
+            Assert.AreEqual(2, openGames.Count, "Correct number of games returned.");
+        }
     }
 }

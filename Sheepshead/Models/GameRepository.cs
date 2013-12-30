@@ -9,7 +9,7 @@ namespace Sheepshead.Models
     public class GameDictionary
     {
         private static GameDictionary _instance = new GameDictionary();
-        private Dictionary<long, Game> _dictionary = new Dictionary<long, Game>();
+        private Dictionary<long, IGame> _dictionary = new Dictionary<long, IGame>();
 
         private GameDictionary() { }
 
@@ -17,7 +17,7 @@ namespace Sheepshead.Models
             get { return _instance; }
         }
 
-        public Dictionary<long, Game> Dictionary { get { return _dictionary; } }
+        public Dictionary<long, IGame> Dictionary { get { return _dictionary; } }
     }
 
     public class GameRepository : BaseRepository<IGame>, IGameRepository
@@ -36,11 +36,16 @@ namespace Sheepshead.Models
         {
             return Items.Select(l => l.Value).ToList().FirstOrDefault(lambda);
         }
+
+        public IEnumerable<IGame> GetOpenGames() {
+            return Items.Where(l => l.Value.HumanPlayerCount < l.Value.MaxHumanPlayers).Select(l => l.Value);
+        }
     }
 
     public interface IGameRepository : IBaseRepository<IGame>
     {
         IGame CreateGame(string name);
         IGame GetGame(Func<IGame, bool> lambda);
+        IEnumerable<IGame> GetOpenGames();
     }
 }
