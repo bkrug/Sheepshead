@@ -7,11 +7,14 @@ namespace Sheepshead.Models
 {
     public class Player : IPlayer
     {
+        private List<Card> _hand = new List<Card>();
         public string Name { get { return String.Empty; } }
+        public List<Card> Hand { get { return _hand; } }
     }
 
     public interface IPlayer
     {
         string Name { get; }
+        List<Card> Hand { get; }
     }
 }
