@@ -13,6 +13,7 @@ namespace Sheepshead.Models
         public int MaxHumanPlayers { get; set; }
         public int HumanPlayerCount { get { return _players.Count(p => p is IHumanPlayer); } }
         protected List<IPlayer> _players = new List<IPlayer>();
+        public List<IPlayer> Players { get { return _players.ToList(); } }
 
         public Game(long id)
         {
@@ -54,5 +55,6 @@ namespace Sheepshead.Models
         int HumanPlayerCount { get; }
         int PlayerCount { get; }
         void AddPlayer(IPlayer player);
+        List<IPlayer> Players { get; }
     }
 }

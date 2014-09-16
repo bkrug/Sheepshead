@@ -9,12 +9,12 @@ namespace Sheepshead.Models
     {
         private List<Card> _hand = new List<Card>();
         public string Name { get { return String.Empty; } }
-        public List<Card> Hand { get { return _hand; } }
+        public List<Card> Cards { get { return _hand; } }
     }
 
     public interface IPlayer
     {
         string Name { get; }
-        List<Card> Hand { get; }
+        List<Card> Cards { get; }
     }
 }

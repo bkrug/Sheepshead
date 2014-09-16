@@ -8,15 +8,22 @@ namespace Sheepshead.Models
     public class Trick
     {
         private Dictionary<IPlayer, Card> _cards = new Dictionary<IPlayer, Card>();
+        private IHand _hand;
+
+        public Trick(IHand hand)
+        {
+            _hand = hand;
+        }
 
         public void Add(IPlayer player, Card card)
         {
             _cards.Add(player, card);
+            player.Cards.Remove(card);
         }
 
         public bool IsLegalAddition(Card card, IPlayer player)
         {
-            var hand = player.Hand;
+            var hand = player.Cards;
             if (!_cards.Any())
                 return true;
             var firstCard = _cards.First().Value;
@@ -24,7 +31,7 @@ namespace Sheepshead.Models
                 && (CardRepository.GetSuite(card) == CardRepository.GetSuite(firstCard) || !hand.Any(c => CardRepository.GetSuite(c) == CardRepository.GetSuite(firstCard)));
         }
 
-        public IPlayer Winner()
+        public TrickWinner Winner()
         {
             if (!_cards.Any())
                 return null;
@@ -35,7 +42,16 @@ namespace Sheepshead.Models
                 if (suite == firstSuite || suite == Suite.TRUMP)
                     validCards.Add(keyValuePair);
             }
-            return validCards.OrderBy(kvp => kvp.Value.Rank).First().Key;
+            return new TrickWinner()
+            {
+                Player = validCards.OrderBy(kvp => kvp.Value.Rank).First().Key,
+                Points = _cards.Sum(c => c.Value.Points)
+            };
         }
+    }
+
+    public class TrickWinner {
+        public IPlayer Player;
+        public int Points;
     }
 }
