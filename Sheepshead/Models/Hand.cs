@@ -11,6 +11,7 @@ namespace Sheepshead.Models
         public IPlayer Picker { get; private set; }
         public IPlayer Partner { set; get; }
         public ICard PartnerCard { get; private set; }
+        private List<ITrick> _tricks = new List<ITrick>();
 
         public Hand(IDeck deck, IPlayer picker, ICard partnerCard)
         {
@@ -21,11 +22,42 @@ namespace Sheepshead.Models
 
         public void AddTrick(ITrick trick)
         {
+            _tricks.Add(trick);
         }
 
         public Dictionary<IPlayer, int> Scores()
         {
-            throw new NotImplementedException();
+            var pickerPoints = 0;
+            var defensePoints = 0;
+            foreach (var trick in _tricks)
+            {
+                var winnerData = trick.Winner();
+                if (winnerData.Player == Picker || winnerData.Player == Partner)
+                    pickerPoints += winnerData.Points;
+                else
+                    defensePoints += winnerData.Points;
+            }
+            int defensiveHandPoints;
+            if (defensePoints == 0)
+                defensiveHandPoints = -3;
+            else if (defensePoints <= 29)
+                defensiveHandPoints = -2;
+            else if (defensePoints <= 59)
+                defensiveHandPoints = -1;
+            else
+                defensiveHandPoints = 2;
+
+            var dict = new Dictionary<IPlayer, int>();
+            foreach (var player in Deck.Game.Players)
+            {
+                if (player == Picker)
+                    dict.Add(player, defensiveHandPoints * -2);
+                else if (player == Partner)
+                    dict.Add(player, defensiveHandPoints * -1);
+                else
+                    dict.Add(player, defensiveHandPoints);
+            }
+            return dict;
         }
     }
 
