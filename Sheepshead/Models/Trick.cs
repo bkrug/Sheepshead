@@ -7,7 +7,7 @@ namespace Sheepshead.Models
 {
     public class Trick
     {
-        private Dictionary<IPlayer, Card> _cards = new Dictionary<IPlayer, Card>();
+        private Dictionary<IPlayer, ICard> _cards = new Dictionary<IPlayer, ICard>();
         private IHand _hand;
 
         public Trick(IHand hand)
@@ -15,13 +15,15 @@ namespace Sheepshead.Models
             _hand = hand;
         }
 
-        public void Add(IPlayer player, Card card)
+        public void Add(IPlayer player, ICard card)
         {
             _cards.Add(player, card);
             player.Cards.Remove(card);
+            if (_hand.PartnerCard.StandardSuite == card.StandardSuite && _hand.PartnerCard.CardType == card.CardType)
+                _hand.Partner = player;
         }
 
-        public bool IsLegalAddition(Card card, IPlayer player)
+        public bool IsLegalAddition(ICard card, IPlayer player)
         {
             var hand = player.Cards;
             if (!_cards.Any())
@@ -36,7 +38,7 @@ namespace Sheepshead.Models
             if (!_cards.Any())
                 return null;
             var firstSuite = CardRepository.GetSuite(_cards.First().Value);
-            var validCards = new List<KeyValuePair<IPlayer, Card>>();
+            var validCards = new List<KeyValuePair<IPlayer, ICard>>();
             foreach(var keyValuePair in _cards) {
                 var suite = CardRepository.GetSuite(keyValuePair.Value);
                 if (suite == firstSuite || suite == Suite.TRUMP)

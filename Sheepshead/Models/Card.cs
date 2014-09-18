@@ -82,7 +82,7 @@ namespace Sheepshead.Models
             get { return _cards[(int)ss, (int)ct]; }
         }
 
-        public static Suite GetSuite(Card card)
+        public static Suite GetSuite(ICard card)
         {
             if (card.CardType == CardType.QUEEN || card.CardType == CardType.JACK)
                 return Suite.TRUMP;
@@ -96,7 +96,7 @@ namespace Sheepshead.Models
         }
     }
 
-    public struct Card
+    public struct Card : ICard
     {
         private StandardSuite _StandardSuite;
         private CardType _CardType;
@@ -118,5 +118,13 @@ namespace Sheepshead.Models
         {
             return _StandardSuite.ToString() + " " + _CardType;
         }
+    }
+
+    public interface ICard
+    {
+        StandardSuite StandardSuite { get; }
+        CardType CardType { get; }
+        Int32 Points { get; }
+        Int32 Rank { get; }
     }
 }

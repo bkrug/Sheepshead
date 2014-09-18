@@ -8,15 +8,23 @@ namespace Sheepshead.Models
     public class Hand : IHand
     {
         public IDeck Deck { get; private set; }
+        public IPlayer Picker { get; private set; }
+        public IPlayer Partner { set; get; }
+        public ICard PartnerCard { get; private set; }
 
-        public Hand(IDeck deck)
+        public Hand(IDeck deck, IPlayer picker, ICard partnerCard)
         {
             Deck = deck;
+            Picker = picker;
+            PartnerCard = partnerCard;
         }
     }
 
     public interface IHand
     {
         IDeck Deck { get; }
+        IPlayer Picker { get; }
+        IPlayer Partner { set; get; }
+        ICard PartnerCard { get; }
     }
 }
