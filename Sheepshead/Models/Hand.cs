@@ -18,6 +18,15 @@ namespace Sheepshead.Models
             Picker = picker;
             PartnerCard = partnerCard;
         }
+
+        public void AddTrick(ITrick trick)
+        {
+        }
+
+        public Dictionary<IPlayer, int> Scores()
+        {
+            throw new NotImplementedException();
+        }
     }
 
     public interface IHand
@@ -26,5 +35,7 @@ namespace Sheepshead.Models
         IPlayer Picker { get; }
         IPlayer Partner { set; get; }
         ICard PartnerCard { get; }
+        void AddTrick(ITrick trick);
+        Dictionary<IPlayer, int> Scores();
     }
 }

@@ -134,5 +134,18 @@ namespace Sheepshead.Tests
             trick.Add(player.Object, CardRepository.Instance[StandardSuite.DIAMONDS, CardType.QUEEN]);
             Assert.AreEqual(player.Object, hand.Partner, "When someone adds the partner card to the trick, the hand's partner get's specified.");
         }
+
+        [TestMethod]
+        public void Trick_AddToHand()
+        {
+            var mockHand = new Mock<IHand>();
+            ITrick passedTrick = null;
+            mockHand.Setup(m => m.AddTrick(It.IsAny<ITrick>())).Callback((ITrick givenTrick) =>
+            {
+                passedTrick = givenTrick;
+            });
+            var trick = new Trick(mockHand.Object);
+            Assert.AreSame(trick, passedTrick, "When a trick is instantiated, it should be added to a given hand.");
+        }
     }
 }

@@ -101,6 +101,7 @@
   <ItemGroup>
     <Compile Include="GameRepositoryTests.cs" />
     <Compile Include="GameTests.cs" />
+    <Compile Include="HandTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="GameCreationTests.cs" />
     <Compile Include="LongIdTests.cs" />

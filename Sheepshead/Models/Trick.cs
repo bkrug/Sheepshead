@@ -5,7 +5,7 @@ using System.Web;
 
 namespace Sheepshead.Models
 {
-    public class Trick
+    public class Trick : ITrick
     {
         private Dictionary<IPlayer, ICard> _cards = new Dictionary<IPlayer, ICard>();
         private IHand _hand;
@@ -13,6 +13,7 @@ namespace Sheepshead.Models
         public Trick(IHand hand)
         {
             _hand = hand;
+            _hand.AddTrick(this);
         }
 
         public void Add(IPlayer player, ICard card)
@@ -55,5 +56,12 @@ namespace Sheepshead.Models
     public class TrickWinner {
         public IPlayer Player;
         public int Points;
+    }
+
+    public interface ITrick
+    {
+        TrickWinner Winner();
+        void Add(IPlayer player, ICard card);
+        bool IsLegalAddition(ICard card, IPlayer player);
     }
 }
