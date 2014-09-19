@@ -89,6 +89,15 @@ namespace Sheepshead.Models
             return (Suite)card.StandardSuite;
         }
 
+        public List<ICard> UnshuffledList()
+        {
+            var list = new List<ICard>();
+            for (var ss = (int)StandardSuite.CLUBS; ss <= (int)StandardSuite.HEARTS; ++ss)
+                for (var ct = (int)CardType.ACE; ct <= (int)CardType.N7; ++ct)
+                    list.Add(Instance[(StandardSuite)ss, (CardType)ct]);
+            return list;
+        }
+
         private struct TempCard
         {
             public Int32 Points;
