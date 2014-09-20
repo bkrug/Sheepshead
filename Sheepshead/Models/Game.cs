@@ -27,7 +27,7 @@ namespace Sheepshead.Models
             if (PlayerCount >= MaxPlayers)
                 throw new TooManyPlayersException("This game allows a maximum of " + MaxPlayers + " players.");
             if (HumanPlayerCount >= MaxHumanPlayers)
-                throw new TooManyHumanPlayersException("This game allows a maximum of " + MaxHumanPlayers + " players.");
+                throw new TooManyHumanPlayersException("This game allows a maximum of " + MaxHumanPlayers + " human players.");
             _players.Add(player);
         }
     }

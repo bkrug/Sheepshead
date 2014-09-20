@@ -92,8 +92,8 @@ namespace Sheepshead.Models
         public List<ICard> UnshuffledList()
         {
             var list = new List<ICard>();
-            for (var ss = (int)StandardSuite.CLUBS; ss <= (int)StandardSuite.HEARTS; ++ss)
-                for (var ct = (int)CardType.ACE; ct <= (int)CardType.N7; ++ct)
+            foreach(var ss in Enum.GetValues(typeof(StandardSuite)))
+                foreach (var ct in Enum.GetValues(typeof(CardType)))
                     list.Add(Instance[(StandardSuite)ss, (CardType)ct]);
             return list;
         }
@@ -125,7 +125,7 @@ namespace Sheepshead.Models
         public Int32 Rank { get { return _Rank; } }
         public override string ToString()
         {
-            return _StandardSuite.ToString() + " " + _CardType;
+            return _CardType + " " + _StandardSuite.ToString();
         }
     }
 

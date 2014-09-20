@@ -26,7 +26,7 @@ namespace Sheepshead.Models
         {
             List<ICard> cards = CardRepository.Instance.UnshuffledList();
             var rnd = new Random();
-            for (var i = CARDS_IN_DECK; i > 1; --i)
+            for (var i = CARDS_IN_DECK - 1; i > 0; --i)
             {
                 var j = rnd.Next(i);
                 var swap = cards[i];
@@ -40,7 +40,10 @@ namespace Sheepshead.Models
 
         private void DealCards(Queue<ICard> cards) 
         {
-            var totalRounds = (CARDS_IN_DECK - BLIND_COUNT) / PLAYER_COUNT;
+            foreach (var player in Game.Players)
+                player.Cards.RemoveAll(c => true);
+            var totalRounds = (CARDS_IN_DECK - BLIND_COUNT) / PLAYER_COUNT / 2;
+            Blinds = new List<ICard>();
             for (var round = 0; round < totalRounds; ++round)
             {
                 if (round > 0)

@@ -159,5 +159,18 @@ namespace Sheepshead.Tests
                 }
             }
         }
+
+        [TestMethod]
+        public void Deck_MakeDeck()
+        {
+            var game = new Game(4982) { MaxPlayers = 5, MaxHumanPlayers = 5 };
+            for (var i = 0; i < 5; ++i)
+                game.AddPlayer(new Player());
+            var deck = new Deck(game);
+            Assert.AreEqual(2, deck.Blinds.Count(), "There should be two blinds after dealing");
+            Assert.AreEqual(5, game.Players.Count(), "There should be five doctores");
+            foreach (var player in deck.Game.Players)
+                Assert.AreEqual(6, player.Cards.Count(), "There are 6 cards in each players hand.");
+        }
     }
 }
