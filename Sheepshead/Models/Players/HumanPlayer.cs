@@ -14,7 +14,7 @@ namespace Sheepshead.Models
             _user = user;
         }
 
-        public string Name
+        public override string Name
         {
             get { return _user.Name; }
         }

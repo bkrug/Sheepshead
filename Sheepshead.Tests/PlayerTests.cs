@@ -50,6 +50,7 @@ namespace Sheepshead.Tests
             var deckMock = new Mock<IDeck>();
             var handMock = new Mock<IHand>();
             var trickMock = new Mock<ITrick>();
+            gameMock.Setup(m => m.PlayerCount).Returns(5);
             gameMock.Setup(m => m.Players).Returns(playerList);
             deckMock.Setup(m => m.Game).Returns(gameMock.Object);
             handMock.Setup(m => m.Deck).Returns(deckMock.Object);

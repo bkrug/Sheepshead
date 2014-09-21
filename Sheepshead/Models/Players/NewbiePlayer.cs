@@ -14,10 +14,7 @@ namespace Sheepshead.Models
 
         public override bool WillPick(ITrick trick)
         {
-            var indexOfMe = trick.Hand.Deck.Game.Players.IndexOf(this);
-            var indexOfStartingPlayer = trick.Hand.Deck.Game.Players.IndexOf(trick.StartingPlayer);
-            return (indexOfStartingPlayer == 0 && trick.Hand.Deck.Game.Players.Last() == this)
-                || (indexOfMe + 1 == indexOfStartingPlayer);
+            return QueueRankInTrick(trick) == trick.Hand.Deck.Game.PlayerCount;
         }
     }
 }

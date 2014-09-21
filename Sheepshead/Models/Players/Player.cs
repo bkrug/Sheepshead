@@ -8,7 +8,7 @@ namespace Sheepshead.Models
     public class Player : IPlayer
     {
         private List<ICard> _hand = new List<ICard>();
-        public string Name { get { return String.Empty; } }
+        public virtual string Name { get { return String.Empty; } }
         public List<ICard> Cards { get { return _hand; } }
     }
 

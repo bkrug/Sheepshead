@@ -12,6 +12,7 @@ namespace Sheepshead.Models
 
         public IHand Hand { get { return _hand; } }
         public IPlayer StartingPlayer { get; private set; }
+        public Dictionary<IPlayer, ICard> CardsPlayed { get { return new Dictionary<IPlayer, ICard>(_cards); } }
 
         public Trick(IHand hand, IPlayer startingPlayer)
         {
@@ -69,5 +70,6 @@ namespace Sheepshead.Models
         void Add(IPlayer player, ICard card);
         bool IsLegalAddition(ICard card, IPlayer player);
         IPlayer StartingPlayer { get; }
+        Dictionary<IPlayer, ICard> CardsPlayed { get; }
     }
 }
