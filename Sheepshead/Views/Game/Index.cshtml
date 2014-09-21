@@ -1,0 +1,13 @@
+﻿@using System.Collections.Generic
+@Model List<Sheepshead.Models.IGame>
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Index</h2>
+
+@foreach (var game in Model) {
+    <p>@game.Name</p>
+}
+
+@Html.ActionLink("Create a new Game", "Create")
