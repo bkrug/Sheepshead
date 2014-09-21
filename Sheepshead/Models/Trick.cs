@@ -10,10 +10,14 @@ namespace Sheepshead.Models
         private Dictionary<IPlayer, ICard> _cards = new Dictionary<IPlayer, ICard>();
         private IHand _hand;
 
-        public Trick(IHand hand)
+        public IHand Hand { get { return _hand; } }
+        public IPlayer StartingPlayer { get; private set; }
+
+        public Trick(IHand hand, IPlayer startingPlayer)
         {
             _hand = hand;
             _hand.AddTrick(this);
+            StartingPlayer = startingPlayer;
         }
 
         public void Add(IPlayer player, ICard card)
@@ -60,8 +64,10 @@ namespace Sheepshead.Models
 
     public interface ITrick
     {
+        IHand Hand { get; }
         TrickWinner Winner();
         void Add(IPlayer player, ICard card);
         bool IsLegalAddition(ICard card, IPlayer player);
+        IPlayer StartingPlayer { get; }
     }
 }

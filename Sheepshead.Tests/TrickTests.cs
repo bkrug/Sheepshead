@@ -35,7 +35,7 @@ namespace Sheepshead.Tests
                     CardRepository.Instance[StandardSuite.DIAMONDS, CardType.QUEEN], CardRepository.Instance[StandardSuite.CLUBS, CardType.N8]
                 };
                 var player = GetPlayer(hand);
-                var trick = new Trick(GetHand());
+                var trick = new Trick(GetHand(), firstPlayer);
                 trick.Add(firstPlayer, CardRepository.Instance[StandardSuite.HEARTS, CardType.N9]);
                 Assert.IsTrue(trick.IsLegalAddition(CardRepository.Instance[StandardSuite.HEARTS, CardType.N7], player), "A hearts is part of the same suite.");
                 Assert.IsFalse(trick.IsLegalAddition(CardRepository.Instance[StandardSuite.CLUBS, CardType.N8], player), "A clubs is not part of the same suite.");
@@ -49,14 +49,14 @@ namespace Sheepshead.Tests
                     CardRepository.Instance[StandardSuite.CLUBS, CardType.QUEEN], CardRepository.Instance[StandardSuite.CLUBS, CardType.N8]
                 };
                 var player = GetPlayer(hand);
-                var trick = new Trick(GetHand());
+                var trick = new Trick(GetHand(), firstPlayer);
                 trick.Add(firstPlayer, CardRepository.Instance[StandardSuite.SPADES, CardType.N9]);
                 Assert.IsTrue(trick.IsLegalAddition(CardRepository.Instance[StandardSuite.HEARTS, CardType.N7], player), "There is no spades in the hand. Hearts is fine.");
                 Assert.IsTrue(trick.IsLegalAddition(CardRepository.Instance[StandardSuite.CLUBS, CardType.N8], player), "There is no spades in the hand. Clubs is fine.");
                 Assert.IsTrue(trick.IsLegalAddition(CardRepository.Instance[StandardSuite.CLUBS, CardType.QUEEN], player), "There is no spades in the hand. Trump is fine.");
             }
             {
-                var trick = new Trick(GetHand());
+                var trick = new Trick(GetHand(), firstPlayer);
                 var hand = new List<ICard>() {
                     CardRepository.Instance[StandardSuite.HEARTS, CardType.KING], CardRepository.Instance[StandardSuite.HEARTS, CardType.N7], 
                     CardRepository.Instance[StandardSuite.CLUBS, CardType.QUEEN], CardRepository.Instance[StandardSuite.CLUBS, CardType.N8]
@@ -75,7 +75,7 @@ namespace Sheepshead.Tests
             var player4 = new MockPlayer();
             var player5 = new MockPlayer();
             {
-                var trick = new Trick(GetHand());
+                var trick = new Trick(GetHand(), player1);
                 trick.Add(player1, CardRepository.Instance[StandardSuite.HEARTS, CardType.N8]);
                 trick.Add(player2, CardRepository.Instance[StandardSuite.SPADES, CardType.ACE]);
                 trick.Add(player3, CardRepository.Instance[StandardSuite.HEARTS, CardType.N10]);
@@ -86,7 +86,7 @@ namespace Sheepshead.Tests
                 Assert.AreEqual(36, winner.Points, "Expected points for 2 Aces, 1 King, 1 Ten.");
             }
             {
-                var trick = new Trick(GetHand());
+                var trick = new Trick(GetHand(), player1);
                 trick.Add(player1, CardRepository.Instance[StandardSuite.HEARTS, CardType.N8]);
                 trick.Add(player2, CardRepository.Instance[StandardSuite.DIAMONDS, CardType.N8]);
                 trick.Add(player3, CardRepository.Instance[StandardSuite.HEARTS, CardType.N10]);
@@ -97,7 +97,7 @@ namespace Sheepshead.Tests
                 Assert.AreEqual(25, winner.Points, "Expected points for 1 Aces, 1 Ten, 1 King.");
             }
             {
-                var trick = new Trick(GetHand());
+                var trick = new Trick(GetHand(), player1);
                 trick.Add(player1, CardRepository.Instance[StandardSuite.DIAMONDS, CardType.N8]);
                 trick.Add(player2, CardRepository.Instance[StandardSuite.SPADES, CardType.ACE]);
                 trick.Add(player3, CardRepository.Instance[StandardSuite.HEARTS, CardType.N10]);
@@ -123,10 +123,11 @@ namespace Sheepshead.Tests
         [TestMethod]
         public void Trick_SetPartner()
         {
+            var firstPlayer = new Mock<IPlayer>().Object;
             var mockHand = new Mock<IHand>();
             mockHand.Setup(m => m.PartnerCard).Returns(CardRepository.Instance[StandardSuite.DIAMONDS, CardType.QUEEN]);
             var hand = mockHand.Object;
-            var trick = new Trick(hand);
+            var trick = new Trick(hand, firstPlayer);
             var player = new Mock<IPlayer>();
             player.Setup(c => c.Name).Returns("DesiredPlayer");
             player.Setup(c => c.Cards).Returns(new List<ICard>() { CardRepository.Instance[StandardSuite.DIAMONDS, CardType.QUEEN]});
@@ -138,13 +139,14 @@ namespace Sheepshead.Tests
         [TestMethod]
         public void Trick_AddToHand()
         {
+            var firstPlayer = new Mock<IPlayer>().Object;
             var mockHand = new Mock<IHand>();
             ITrick passedTrick = null;
             mockHand.Setup(m => m.AddTrick(It.IsAny<ITrick>())).Callback((ITrick givenTrick) =>
             {
                 passedTrick = givenTrick;
             });
-            var trick = new Trick(mockHand.Object);
+            var trick = new Trick(mockHand.Object, firstPlayer);
             Assert.AreSame(trick, passedTrick, "When a trick is instantiated, it should be added to a given hand.");
         }
     }

@@ -114,16 +114,19 @@
     </Compile>
     <Compile Include="Models\BaseRepository.cs" />
     <Compile Include="Models\Card.cs" />
+    <Compile Include="Models\Players\BasicPlayer.cs" />
+    <Compile Include="Models\Players\ComputerPlayer.cs" />
     <Compile Include="Models\Deck.cs" />
     <Compile Include="Models\Hand.cs" />
+    <Compile Include="Models\Players\NewbiePlayer.cs" />
     <Compile Include="Models\Trick.cs" />
     <Compile Include="Models\UserRepository.cs" />
     <Compile Include="Models\GameRepository.cs" />
     <Compile Include="Models\Game.cs" />
     <Compile Include="Models\GameService.cs" />
-    <Compile Include="Models\HumanPlayer.cs" />
+    <Compile Include="Models\Players\HumanPlayer.cs" />
     <Compile Include="Models\LongId.cs" />
-    <Compile Include="Models\Player.cs" />
+    <Compile Include="Models\Players\Player.cs" />
     <Compile Include="Models\User.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
