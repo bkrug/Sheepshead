@@ -149,5 +149,28 @@ namespace Sheepshead.Tests
             var trick = new Trick(mockHand.Object, firstPlayer);
             Assert.AreSame(trick, passedTrick, "When a trick is instantiated, it should be added to a given hand.");
         }
+
+        [TestMethod]
+        public void Trick_IsComplete()
+        {
+            var firstPlayer = new Mock<IPlayer>().Object;
+            var mockHand = new Mock<IHand>();
+            var mockDeck = new Mock<IDeck>();
+            var mockGame = new Mock<IGame>();
+            mockHand.Setup(m => m.PartnerCard).Returns(CardRepository.Instance[StandardSuite.DIAMONDS, CardType.N10]);
+            mockHand.Setup(m => m.Deck).Returns(mockDeck.Object);
+            mockDeck.Setup(m => m.Game).Returns(mockGame.Object);
+            foreach(var playerCount in new [] { 3, 5})
+            {
+                mockGame.Setup(m => m.PlayerCount).Returns(playerCount);
+                var trick = new Trick(mockHand.Object, firstPlayer);
+                for (var cardsInTrick = 0; cardsInTrick < playerCount; ++cardsInTrick)
+                {
+                    Assert.IsFalse(trick.IsComplete(), "Trick should not be complete when there are " + cardsInTrick + " cards in the trick and " + playerCount + " players in the game.");
+                    trick.Add(new Player(), new Card());
+                }
+                Assert.IsTrue(trick.IsComplete(), "Trick should be complete when there are " + playerCount + " cards in the trick and " + playerCount + " players in the game.");
+            }
+        }
     }
 }

@@ -172,5 +172,41 @@ namespace Sheepshead.Tests
             foreach (var player in deck.Game.Players)
                 Assert.AreEqual(6, player.Cards.Count(), "There are 6 cards in each players hand.");
         }
+
+        [TestMethod]
+        public void Game_PlayNonHuman()
+        {
+            var player1 = new Mock<BasicPlayer>();
+            var player2 = new HumanPlayer(new User());
+            var player3 = new Mock<NewbiePlayer>();
+            var player4 = new Mock<BasicPlayer>();
+            var player5 = new HumanPlayer(new User());
+            var playerList = new List<IPlayer>() { player3.Object, player4.Object, player5, player1.Object, player2 };
+            var deckMock = new Mock<IDeck>();
+            var handMock = new Mock<IHand>();
+            var trickMock = new Mock<ITrick>();
+            trickMock.Setup(m => m.Hand).Returns(handMock.Object);
+            handMock.Setup(m => m.Deck).Returns(deckMock.Object);
+            var game = new Game(42340) { MaxPlayers = 5, MaxHumanPlayers = 2 };
+            deckMock.Setup(m => m.Game).Returns(game);
+            foreach (var player in playerList)
+                game.AddPlayer(player);
+            trickMock.Setup(m => m.StartingPlayer).Returns(player1.Object);
+            bool player1Moved = false;
+            bool player3Moved = false;
+            bool player4Moved = false;
+            player1.Setup(m => m.GetMove(It.IsAny<ITrick>())).Callback(() => player1Moved = true);
+            player3.Setup(m => m.GetMove(It.IsAny<ITrick>())).Callback(() => player3Moved = true);
+            player4.Setup(m => m.GetMove(It.IsAny<ITrick>())).Callback(() => player4Moved = true);
+            trickMock.Setup(m => m.CardsPlayed).Returns(new Dictionary<IPlayer, ICard>());
+            game.PlayNonHumans(trickMock.Object);
+            Assert.IsTrue(player1Moved);
+            Assert.IsFalse(player3Moved);
+            Assert.IsFalse(player4Moved);
+            trickMock.Setup(m => m.CardsPlayed).Returns(new Dictionary<IPlayer, ICard>() { { player1.Object, new Card() }, { player2, new Card() } });
+            game.PlayNonHumans(trickMock.Object);
+            Assert.IsTrue(player3Moved);
+            Assert.IsTrue(player4Moved);
+        }
     }
 }

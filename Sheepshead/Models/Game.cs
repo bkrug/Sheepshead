@@ -14,6 +14,8 @@ namespace Sheepshead.Models
         public int HumanPlayerCount { get { return _players.Count(p => p is IHumanPlayer); } }
         protected List<IPlayer> _players = new List<IPlayer>();
         public List<IPlayer> Players { get { return _players.ToList(); } }
+        private List<IDeck> _decks = new List<IDeck>();
+        public List<IDeck> Decks { get { return _decks; } }
 
         public Game(long id)
         {
@@ -29,6 +31,23 @@ namespace Sheepshead.Models
             if (HumanPlayerCount >= MaxHumanPlayers)
                 throw new TooManyHumanPlayersException("This game allows a maximum of " + MaxHumanPlayers + " human players.");
             _players.Add(player);
+        }
+
+        public void PlayNonHumans(ITrick trick)
+        {
+            var startPlayerIndex = Players.IndexOf(trick.StartingPlayer);
+            var playerIndex = startPlayerIndex;
+            while (trick.CardsPlayed.Keys.Contains(Players[playerIndex]))
+                IncrementPlayerIndex(ref playerIndex );
+            for (; playerIndex != trick.Hand.Deck.Game.PlayerCount && !(Players[playerIndex] is HumanPlayer); IncrementPlayerIndex(ref playerIndex))
+                trick.Add(Players[playerIndex], ((ComputerPlayer)Players[playerIndex]).GetMove(trick));
+        }
+
+        private void IncrementPlayerIndex(ref int playerIndex)
+        {
+            ++playerIndex;
+            if (playerIndex >= PlayerCount)
+                playerIndex = 0;
         }
     }
 
@@ -56,5 +75,7 @@ namespace Sheepshead.Models
         int PlayerCount { get; }
         void AddPlayer(IPlayer player);
         List<IPlayer> Players { get; }
+        void PlayNonHumans(ITrick trick);
+        List<IDeck> Decks { get; }
     }
 }

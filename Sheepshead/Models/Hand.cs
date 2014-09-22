@@ -13,11 +13,28 @@ namespace Sheepshead.Models
         public ICard PartnerCard { get; private set; }
         private List<ITrick> _tricks = new List<ITrick>();
 
-        public Hand(IDeck deck, IPlayer picker, ICard partnerCard)
+        public Hand(IDeck deck, IPlayer picker)
         {
             Deck = deck;
+            Deck.Hand = this;
             Picker = picker;
-            PartnerCard = partnerCard;
+            PartnerCard = ChoosePartnerCard(picker);
+        }
+
+        private ICard ChoosePartnerCard(IPlayer picker)
+        {
+            var cri = CardRepository.Instance;
+            var potentialPartnerCards = new[] { 
+                cri[StandardSuite.DIAMONDS, CardType.JACK],
+                cri[StandardSuite.HEARTS, CardType.JACK],
+                cri[StandardSuite.SPADES, CardType.JACK],
+                cri[StandardSuite.CLUBS, CardType.JACK],
+                cri[StandardSuite.DIAMONDS, CardType.QUEEN] 
+            };
+            if (Deck.Hand != null)
+                throw new DeckHasHandException("Must add a hand to a deck without one.");
+            var partnerCard = potentialPartnerCards.First(c => !picker.Cards.Contains(c));
+            return partnerCard;
         }
 
         public void AddTrick(ITrick trick)
@@ -59,6 +76,11 @@ namespace Sheepshead.Models
             }
             return dict;
         }
+
+        public bool IsComplete()
+        {
+            return Deck.Game.Players.Sum(p => p.Cards.Count) == 0;
+        }
     }
 
     public interface IHand
@@ -69,5 +91,14 @@ namespace Sheepshead.Models
         ICard PartnerCard { get; }
         void AddTrick(ITrick trick);
         Dictionary<IPlayer, int> Scores();
+        bool IsComplete();
+    }
+
+    public class DeckHasHandException : ApplicationException
+    {
+        public DeckHasHandException(string message)
+            : base(message)
+        {
+        }
     }
 }

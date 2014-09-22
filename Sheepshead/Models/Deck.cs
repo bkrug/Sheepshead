@@ -14,12 +14,17 @@ namespace Sheepshead.Models
         public IGame Game { get; private set; }
         public List<ICard> Blinds { get; private set; }
         public List<ICard> Discards { get; set; }
+        public IHand Hand { get; set; }
 
         public Deck(IGame game)
         {
+            var lastDeck = game.Decks.LastOrDefault();
+            if (lastDeck != null && (lastDeck.Hand == null || !lastDeck.Hand.IsComplete()))
+                throw new PreviousDeckIncompleteException("Cannot add a deck until the prvious one is incomplete.");
             Game = game;
             var cards = ShuffleCards();
             DealCards(cards);
+            game.Decks.Add(this);
         }
 
         private Queue<ICard> ShuffleCards()
@@ -62,5 +67,11 @@ namespace Sheepshead.Models
         List<ICard> Blinds { get; }
         List<ICard> Discards { get; set; }
         IGame Game { get; }
+        IHand Hand { get; set; }
+    }
+
+    public class PreviousDeckIncompleteException : ApplicationException
+    {
+        public PreviousDeckIncompleteException(string message) : base(message) { }
     }
 }

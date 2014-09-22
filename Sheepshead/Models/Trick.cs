@@ -56,6 +56,11 @@ namespace Sheepshead.Models
                 Points = _cards.Sum(c => c.Value.Points)
             };
         }
+
+        public bool IsComplete()
+        {
+            return CardsPlayed.Count() == Hand.Deck.Game.PlayerCount;
+        }
     }
 
     public class TrickWinner {
@@ -71,5 +76,6 @@ namespace Sheepshead.Models
         bool IsLegalAddition(ICard card, IPlayer player);
         IPlayer StartingPlayer { get; }
         Dictionary<IPlayer, ICard> CardsPlayed { get; }
+        bool IsComplete();
     }
 }

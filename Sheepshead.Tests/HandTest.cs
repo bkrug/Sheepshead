@@ -14,7 +14,11 @@ namespace Sheepshead.Tests
         {
             var list = new List<IPlayer>();
             for (var a = 0; a < 5; ++a)
-                list.Add(new Mock<IPlayer>().Object);
+            {
+                var mockPlayer = new Mock<IPlayer>();
+                list.Add(mockPlayer.Object);
+                mockPlayer.Setup(m => m.Cards).Returns(new List<ICard>() { CardRepository.Instance[StandardSuite.SPADES, CardType.N7] });
+            }
             return list;
         }
 
@@ -42,7 +46,7 @@ namespace Sheepshead.Tests
             gameMock.Setup(m => m.Players).Returns(players);
             var deckMock = new Mock<IDeck>();
             deckMock.Setup(m => m.Game).Returns(gameMock.Object);
-            var hand = new Hand(deckMock.Object, picker, CardRepository.Instance[StandardSuite.HEARTS, CardType.N8]);
+            var hand = new Hand(deckMock.Object, picker);
             foreach (var mockTrick in trickMocks)
             {
                 hand.AddTrick(mockTrick.Object);
@@ -81,6 +85,52 @@ namespace Sheepshead.Tests
                     var player = players[b];
                     Assert.AreEqual(playerScores[a][b], actualScores[player], "Matching player scores.  Running Test " + a + ", player " + (b+1));
                 }
+            }
+        }
+
+        [TestMethod]
+        public void Hand_IsComplete()
+        {
+            var mockDeck = new Mock<IDeck>();
+            var mockGame = new Mock<IGame>();
+            var mockPlayerList = new List<Mock<IPlayer>>();
+            for (var i = 0; i < 5; ++i)
+            {
+                var mockPlayer = new Mock<IPlayer>();
+                mockPlayerList.Add(mockPlayer);
+                mockPlayer.Setup(m => m.Cards).Returns(new List<ICard>() { new Card(), new Card(), new Card(), new Card(), new Card() });
+            }
+            mockDeck.Setup(m => m.Game).Returns(mockGame.Object);
+            mockGame.Setup(m => m.Players).Returns(mockPlayerList.Select(m => m.Object).ToList());
+            var hand = new Hand(mockDeck.Object, mockPlayerList.First().Object);
+            Assert.IsFalse(hand.IsComplete(), "Hand is not complete if players have cards in their hands");
+            for (var i = 0; i < 5; ++i)
+                mockPlayerList.ElementAt(i).Setup(m => m.Cards).Returns(new List<ICard>() { new Card() });
+            Assert.IsFalse(hand.IsComplete(), "Hand is not complete if players have cards in their hands");
+            mockPlayerList.ElementAt(0).Setup(m => m.Cards).Returns(new List<ICard>());
+            mockPlayerList.ElementAt(1).Setup(m => m.Cards).Returns(new List<ICard>());
+            Assert.IsFalse(hand.IsComplete(), "Hand is not complete if players have cards in their hands");
+            for (var i = 0; i < 5; ++i)
+                mockPlayerList.ElementAt(i).Setup(m => m.Cards).Returns(new List<ICard>());
+            Assert.IsTrue(hand.IsComplete(), "Hand is complete when no players have cards in their hands.");
+        }
+
+        [TestMethod]
+        public void Hand_Constructor()
+        {
+            {
+                var mockDeck = new Mock<IDeck>();
+                var mockPlayer = new Mock<IPlayer>();
+                mockPlayer.Setup(m => m.Cards).Returns(new List<ICard>() { CardRepository.Instance[StandardSuite.SPADES, CardType.N7] });
+                var hand = new Hand(mockDeck.Object, mockPlayer.Object);
+                Assert.AreEqual(hand.PartnerCard, CardRepository.Instance[StandardSuite.DIAMONDS, CardType.JACK], "Jack of diamonds should be partner card right now");
+            }
+            {
+                var mockDeck = new Mock<IDeck>();
+                var mockPlayer = new Mock<IPlayer>();
+                mockPlayer.Setup(m => m.Cards).Returns(new List<ICard>() { CardRepository.Instance[StandardSuite.DIAMONDS, CardType.JACK] });
+                var hand = new Hand(mockDeck.Object, mockPlayer.Object);
+                Assert.AreEqual(hand.PartnerCard, CardRepository.Instance[StandardSuite.HEARTS, CardType.JACK], "Jack of diamonds should be partner card right now");
             }
         }
     }
