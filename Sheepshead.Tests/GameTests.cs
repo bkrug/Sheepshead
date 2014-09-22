@@ -200,13 +200,15 @@ namespace Sheepshead.Tests
             player4.Setup(m => m.GetMove(It.IsAny<ITrick>())).Callback(() => player4Moved = true);
             trickMock.Setup(m => m.CardsPlayed).Returns(new Dictionary<IPlayer, ICard>());
             game.PlayNonHumans(trickMock.Object);
-            Assert.IsTrue(player1Moved);
-            Assert.IsFalse(player3Moved);
-            Assert.IsFalse(player4Moved);
+            Assert.IsTrue(player1Moved, "All players from the starting player to the first human should have been played.");
+            Assert.IsFalse(player3Moved, "Plyaer 3 should not have been played yet.");
+            Assert.IsFalse(player4Moved, "Player 4 should not have been played yet.");
             trickMock.Setup(m => m.CardsPlayed).Returns(new Dictionary<IPlayer, ICard>() { { player1.Object, new Card() }, { player2, new Card() } });
             game.PlayNonHumans(trickMock.Object);
-            Assert.IsTrue(player3Moved);
-            Assert.IsTrue(player4Moved);
+            player1Moved = false;
+            Assert.IsFalse(player1Moved, "PLayer 1 should not have been played a second time.");
+            Assert.IsTrue(player3Moved, "Player 3 should have been played when a second call was made to PlayNonHumans()");
+            Assert.IsTrue(player4Moved, "Player 4 should have been played when a second call was made to PlayNonHumans()");
         }
     }
 }
