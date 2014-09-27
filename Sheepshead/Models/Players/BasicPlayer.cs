@@ -53,5 +53,15 @@ namespace Sheepshead.Models
                 || QueueRankInTrick(trick) == middleQueueRankInTrick && trumpCount >= 3
                 || trumpCount >= 4;
         }
+
+        public override List<ICard> DropCardsForPick(IHand hand, IPlayer player)
+        {
+            //get a list of cards for which there are no other cards in their suite.  Exclude Trump cards.
+            var soloCardsOfSuite = player.Cards
+                .GroupBy(g => CardRepository.GetSuite(g))
+                .Where(g => g.Count() == 1 && CardRepository.GetSuite(g.First()) != Suite.TRUMP)
+                .Select(g => g.First()).ToList();
+            return player.Cards.OrderBy(c => soloCardsOfSuite.Contains(c) ? 1 : 2).ThenByDescending(c => c.Rank).Take(2).ToList();
+        }
     }
 }

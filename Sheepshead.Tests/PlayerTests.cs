@@ -92,5 +92,25 @@ namespace Sheepshead.Tests
                 Assert.IsFalse(mainPlayer.WillPick(trickMock.Object), "Newbie Player should not pick if he is not last.");
             }
         }
+
+        [TestMethod]
+        public void NewbiePlayer_DropCards()
+        {
+            var picker = new BasicPlayer();
+            picker.Cards.AddRange(new List<ICard>()
+            {
+                CardRepository.Instance[StandardSuite.DIAMONDS, CardType.N7],
+                CardRepository.Instance[StandardSuite.DIAMONDS, CardType.QUEEN],
+                CardRepository.Instance[StandardSuite.CLUBS, CardType.JACK],
+                CardRepository.Instance[StandardSuite.CLUBS, CardType.N7],
+                CardRepository.Instance[StandardSuite.HEARTS, CardType.N7],
+                CardRepository.Instance[StandardSuite.HEARTS, CardType.N8],
+                CardRepository.Instance[StandardSuite.SPADES, CardType.N8],
+                CardRepository.Instance[StandardSuite.HEARTS, CardType.QUEEN],
+            });
+            var cardsToDrop = picker.DropCardsForPick(new Mock<IHand>().Object, picker);
+            Assert.IsTrue(cardsToDrop.Contains(CardRepository.Instance[StandardSuite.CLUBS, CardType.N7]), "Drop 7 of Clubs since it is only club.");
+            Assert.IsTrue(cardsToDrop.Contains(CardRepository.Instance[StandardSuite.SPADES, CardType.N8]), "Drop 8 of Spades since it is only club.");
+        }
     }
 }

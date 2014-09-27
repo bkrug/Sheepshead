@@ -13,11 +13,13 @@ namespace Sheepshead.Models
         public ICard PartnerCard { get; private set; }
         private List<ITrick> _tricks = new List<ITrick>();
 
-        public Hand(IDeck deck, IPlayer picker)
+        public Hand(IDeck deck, IPlayer picker, List<ICard> droppedCards)
         {
             Deck = deck;
             Deck.Hand = this;
             Picker = picker;
+            picker.Cards.AddRange(deck.Blinds.Where(c => !picker.Cards.Contains(c)));
+            picker.Cards.Where(c => droppedCards.Contains(c)).ToList().ForEach(c => picker.Cards.Remove(c));
             PartnerCard = ChoosePartnerCard(picker);
         }
 

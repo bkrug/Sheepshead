@@ -16,5 +16,10 @@ namespace Sheepshead.Models
         {
             return QueueRankInTrick(trick) == trick.Hand.Deck.Game.PlayerCount;
         }
+
+        public override List<ICard> DropCardsForPick(IHand hand, IPlayer player)
+        {
+            return player.Cards.OrderByDescending(c => c.Rank).Take(2).ToList();
+        }
     }
 }

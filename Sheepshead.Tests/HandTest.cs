@@ -46,7 +46,9 @@ namespace Sheepshead.Tests
             gameMock.Setup(m => m.Players).Returns(players);
             var deckMock = new Mock<IDeck>();
             deckMock.Setup(m => m.Game).Returns(gameMock.Object);
-            var hand = new Hand(deckMock.Object, picker);
+            var blinds = new List<ICard>() { CardRepository.Instance[StandardSuite.DIAMONDS, CardType.KING], CardRepository.Instance[StandardSuite.CLUBS, CardType.ACE] };
+            deckMock.Setup(m => m.Blinds).Returns(blinds);
+            var hand = new Hand(deckMock.Object, picker, new List<ICard>());
             foreach (var mockTrick in trickMocks)
             {
                 hand.AddTrick(mockTrick.Object);
@@ -92,6 +94,8 @@ namespace Sheepshead.Tests
         public void Hand_IsComplete()
         {
             var mockDeck = new Mock<IDeck>();
+            var blinds = new List<ICard>() { CardRepository.Instance[StandardSuite.DIAMONDS, CardType.KING], CardRepository.Instance[StandardSuite.CLUBS, CardType.ACE] };
+            mockDeck.Setup(m => m.Blinds).Returns(blinds);
             var mockGame = new Mock<IGame>();
             var mockPlayerList = new List<Mock<IPlayer>>();
             for (var i = 0; i < 5; ++i)
@@ -102,7 +106,7 @@ namespace Sheepshead.Tests
             }
             mockDeck.Setup(m => m.Game).Returns(mockGame.Object);
             mockGame.Setup(m => m.Players).Returns(mockPlayerList.Select(m => m.Object).ToList());
-            var hand = new Hand(mockDeck.Object, mockPlayerList.First().Object);
+            var hand = new Hand(mockDeck.Object, mockPlayerList.First().Object, new List<ICard>());
             Assert.IsFalse(hand.IsComplete(), "Hand is not complete if players have cards in their hands");
             for (var i = 0; i < 5; ++i)
                 mockPlayerList.ElementAt(i).Setup(m => m.Cards).Returns(new List<ICard>() { new Card() });
@@ -118,20 +122,41 @@ namespace Sheepshead.Tests
         [TestMethod]
         public void Hand_Constructor()
         {
+            var blinds = new List<ICard>() { CardRepository.Instance[StandardSuite.DIAMONDS, CardType.KING], CardRepository.Instance[StandardSuite.CLUBS, CardType.ACE] };
             {
                 var mockDeck = new Mock<IDeck>();
-                var mockPlayer = new Mock<IPlayer>();
-                mockPlayer.Setup(m => m.Cards).Returns(new List<ICard>() { CardRepository.Instance[StandardSuite.SPADES, CardType.N7] });
-                var hand = new Hand(mockDeck.Object, mockPlayer.Object);
+                mockDeck.Setup(m => m.Blinds).Returns(blinds);
+                var mockPicker = new Mock<IPlayer>();
+                var originalPickerCards = new List<ICard>() { CardRepository.Instance[StandardSuite.SPADES, CardType.N7], CardRepository.Instance[StandardSuite.SPADES, CardType.N8], CardRepository.Instance[StandardSuite.SPADES, CardType.N9], CardRepository.Instance[StandardSuite.SPADES, CardType.N10] };
+                mockPicker.Setup(f => f.Cards).Returns(originalPickerCards);
+                var droppedCards = new List<ICard>() { CardRepository.Instance[StandardSuite.SPADES, CardType.N7], CardRepository.Instance[StandardSuite.SPADES, CardType.N8]};
+                var hand = new Hand(mockDeck.Object, mockPicker.Object, droppedCards);
                 Assert.AreEqual(hand.PartnerCard, CardRepository.Instance[StandardSuite.DIAMONDS, CardType.JACK], "Jack of diamonds should be partner card right now");
+                var expectedPickerCards = new List<ICard>() { CardRepository.Instance[StandardSuite.DIAMONDS, CardType.KING], CardRepository.Instance[StandardSuite.CLUBS, CardType.ACE], CardRepository.Instance[StandardSuite.SPADES, CardType.N9], CardRepository.Instance[StandardSuite.SPADES, CardType.N10] };
+                Assert.IsTrue(SameContents(expectedPickerCards, mockPicker.Object.Cards), "Picker dropped some cards to pick the blinds.");
             }
             {
                 var mockDeck = new Mock<IDeck>();
-                var mockPlayer = new Mock<IPlayer>();
-                mockPlayer.Setup(m => m.Cards).Returns(new List<ICard>() { CardRepository.Instance[StandardSuite.DIAMONDS, CardType.JACK] });
-                var hand = new Hand(mockDeck.Object, mockPlayer.Object);
+                mockDeck.Setup(m => m.Blinds).Returns(blinds);
+                var mockPicker = new Mock<IPlayer>();
+                mockPicker.Setup(m => m.Cards).Returns(new List<ICard>() { CardRepository.Instance[StandardSuite.DIAMONDS, CardType.JACK] });
+                var hand = new Hand(mockDeck.Object, mockPicker.Object, new List<ICard>());
                 Assert.AreEqual(hand.PartnerCard, CardRepository.Instance[StandardSuite.HEARTS, CardType.JACK], "Jack of diamonds should be partner card right now");
             }
+        }
+
+        private bool SameContents(List<ICard> list1, List<ICard> list2)
+        {
+            var tempList = list1.ToList();
+            var match = true;
+            foreach (var item in list1)
+            {
+                if (tempList.Contains(item))
+                    tempList.Remove(item);
+                else
+                    match = false;
+            }
+            return !tempList.Any() && match;
         }
     }
 }

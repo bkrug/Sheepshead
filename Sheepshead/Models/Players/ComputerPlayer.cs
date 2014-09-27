@@ -11,6 +11,8 @@ namespace Sheepshead.Models
 
         public abstract bool WillPick(ITrick trick);
 
+        public abstract List<ICard> DropCardsForPick(IHand hand, IPlayer player);
+
         protected int QueueRankInTrick(ITrick trick)
         {
             var indexOfMe = trick.Hand.Deck.Game.Players.IndexOf(this);
