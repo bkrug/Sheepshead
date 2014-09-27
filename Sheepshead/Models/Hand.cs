@@ -81,7 +81,9 @@ namespace Sheepshead.Models
 
         public bool IsComplete()
         {
-            return Deck.Game.Players.Sum(p => p.Cards.Count) == 0;
+            const int CARDS_IN_PLAY = 30;
+            var trickCount = CARDS_IN_PLAY / Deck.Game.PlayerCount;
+            return _tricks.Count() == trickCount && _tricks.Last().IsComplete();
         }
     }
 

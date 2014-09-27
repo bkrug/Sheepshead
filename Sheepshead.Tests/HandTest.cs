@@ -93,30 +93,36 @@ namespace Sheepshead.Tests
         [TestMethod]
         public void Hand_IsComplete()
         {
-            var mockDeck = new Mock<IDeck>();
             var blinds = new List<ICard>() { CardRepository.Instance[StandardSuite.DIAMONDS, CardType.KING], CardRepository.Instance[StandardSuite.CLUBS, CardType.ACE] };
-            mockDeck.Setup(m => m.Blinds).Returns(blinds);
             var mockGame = new Mock<IGame>();
-            var mockPlayerList = new List<Mock<IPlayer>>();
-            for (var i = 0; i < 5; ++i)
-            {
-                var mockPlayer = new Mock<IPlayer>();
-                mockPlayerList.Add(mockPlayer);
-                mockPlayer.Setup(m => m.Cards).Returns(new List<ICard>() { new Card(), new Card(), new Card(), new Card(), new Card() });
-            }
+            var mockDeck = new Mock<IDeck>();
+            mockDeck.Setup(m => m.Blinds).Returns(blinds);
             mockDeck.Setup(m => m.Game).Returns(mockGame.Object);
-            mockGame.Setup(m => m.Players).Returns(mockPlayerList.Select(m => m.Object).ToList());
-            var hand = new Hand(mockDeck.Object, mockPlayerList.First().Object, new List<ICard>());
-            Assert.IsFalse(hand.IsComplete(), "Hand is not complete if players have cards in their hands");
-            for (var i = 0; i < 5; ++i)
-                mockPlayerList.ElementAt(i).Setup(m => m.Cards).Returns(new List<ICard>() { new Card() });
-            Assert.IsFalse(hand.IsComplete(), "Hand is not complete if players have cards in their hands");
-            mockPlayerList.ElementAt(0).Setup(m => m.Cards).Returns(new List<ICard>());
-            mockPlayerList.ElementAt(1).Setup(m => m.Cards).Returns(new List<ICard>());
-            Assert.IsFalse(hand.IsComplete(), "Hand is not complete if players have cards in their hands");
-            for (var i = 0; i < 5; ++i)
-                mockPlayerList.ElementAt(i).Setup(m => m.Cards).Returns(new List<ICard>());
-            Assert.IsTrue(hand.IsComplete(), "Hand is complete when no players have cards in their hands.");
+            mockGame.Setup(m => m.PlayerCount).Returns(5);
+            var hand = new Hand(mockDeck.Object, new NewbiePlayer(), new List<ICard>());
+
+            var mockCompleteTrick = new Mock<ITrick>();
+            var mockIncompleteTrick = new Mock<ITrick>();
+            mockCompleteTrick.Setup(m => m.IsComplete()).Returns(true);
+            mockIncompleteTrick.Setup(m => m.IsComplete()).Returns(false);
+            hand.AddTrick(mockCompleteTrick.Object);
+            hand.AddTrick(mockCompleteTrick.Object);
+            hand.AddTrick(mockCompleteTrick.Object);
+            Assert.IsFalse(hand.IsComplete(), "Hand is not complete if there are too few tricks.");
+
+            hand.AddTrick(mockCompleteTrick.Object);
+            hand.AddTrick(mockCompleteTrick.Object);
+            hand.AddTrick(mockIncompleteTrick.Object);
+            Assert.IsFalse(hand.IsComplete(), "Hand is not complete if the last trick is not complete.");
+
+            hand = new Hand(mockDeck.Object, new NewbiePlayer(), new List<ICard>());
+            hand.AddTrick(mockCompleteTrick.Object);
+            hand.AddTrick(mockCompleteTrick.Object);
+            hand.AddTrick(mockCompleteTrick.Object);
+            hand.AddTrick(mockCompleteTrick.Object);
+            hand.AddTrick(mockCompleteTrick.Object);
+            hand.AddTrick(mockCompleteTrick.Object);
+            Assert.IsTrue(hand.IsComplete(), "Hand is complete if there are enough tricks and the last is complete.");
         }
 
         [TestMethod]
