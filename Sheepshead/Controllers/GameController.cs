@@ -12,28 +12,36 @@ namespace Sheepshead.Controllers
         public ActionResult Index()
         {
             var repository = new GameRepository(GameDictionary.Instance.Dictionary);
-            return View(repository.GetOpenGames().ToList());
+            return View();
         }
 
         public ActionResult Create()
         {
-            return View(String.Empty);
+            return View(new GameModel());
         }
 
         [HttpPost]
-        public ActionResult Create(string name)
+        public ActionResult Create(GameModel model)
         {
             var repository = new GameRepository(GameDictionary.Instance.Dictionary);
-            var newGame = repository.CreateGame(name);
-            var rnd = new Random();
-            var playerQueueRank = rnd.Next(5);
-            for (var i = 0; i < 5; ++i)
-                if (i == playerQueueRank)
-                    newGame.AddPlayer(new HumanPlayer(new User()));
-                else
-                    newGame.AddPlayer(new NewbiePlayer());
+            var playerList = new List<IPlayer>();
+            playerList.Add(new HumanPlayer(new User()));
+            for (var i = 0; i < model.NewbiewCount; ++i)
+                playerList.Add(new NewbiePlayer());
+            for (var i = 0; i < model.BasicCount; ++i)
+                playerList.Add(new BasicPlayer());
+            var newGame = repository.CreateGame(model.Name, playerList);
             Session["gameId"] = newGame.Id;
-            return RedirectToAction("Deal");
+            newGame.RearrangePlayers();
+            var deck = new Deck(newGame);
+            return RedirectToAction("Pick");
+        }
+
+        public class GameModel
+        {
+            public string Name { get; set; }
+            public int NewbiewCount { get; set; }
+            public int BasicCount { get; set; }
         }
     }
 }

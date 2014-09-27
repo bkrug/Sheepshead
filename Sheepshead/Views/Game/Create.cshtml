@@ -1,4 +1,6 @@
-﻿<!DOCTYPE html>
+﻿@using Sheepshead.Controllers
+@model GameController.GameModel
+<!DOCTYPE html>
 
 <html>
 <head>
@@ -6,9 +8,22 @@
     <title>Create</title>
 </head>
 <body>
-    <div>
-        Game Name: 
-        @Html.TextBox("name")        
-    </div>
+    @using (@Html.BeginForm())
+    {
+        <div>
+            Game Name: 
+            @Html.TextBoxFor(model => model.Name)
+        </div>      
+        <div>
+            Number of Newbie Players:
+            @Html.TextBoxFor(model => model.NewbiewCount)
+        </div>
+        <div>
+            Number of Basic Players:
+            @Html.TextBoxFor(model => model.BasicCount)
+        </div>
+        
+        <input type="submit" value="Create Game" />
+    }
 </body>
 </html>

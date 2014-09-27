@@ -10,39 +10,39 @@ namespace Sheepshead.Tests
     [TestClass]
     public class GameCreationTests
     {
-        [TestMethod]
-        public void GameService_CreatesAGame()
-        {
-            var expectedName = "Game C";
-            var humanPlayers = 2;
-            var playerCount = 5;
-            var gameRepositoryMock = new Mock<IGameRepository>();
-            gameRepositoryMock
-                .Setup(pr => pr.CreateGame(It.IsAny<string>()))
-                .Returns((string s) => new Game(13) { Name = s });
-            var service = new GameService(gameRepositoryMock.Object);
-            var actual = service.CreateGame(expectedName, playerCount, humanPlayers);
-            Assert.IsTrue(actual is IGame, "Game recieved.");
-            Assert.AreEqual(actual.Name, expectedName, "Correct Name used.");
-            Assert.AreEqual(actual.MaxPlayers, playerCount, "Number of players is correct.");
-            Assert.AreEqual(actual.MaxHumanPlayers, humanPlayers, "Number of human players is correct.");
-        }
+        //[TestMethod]
+        //public void GameService_CreatesAGame()
+        //{
+        //    var expectedName = "Game C";
+        //    var humanPlayers = 2;
+        //    var playerCount = 5;
+        //    var gameRepositoryMock = new Mock<IGameRepository>();
+        //    gameRepositoryMock
+        //        .Setup(pr => pr.CreateGame(It.IsAny<string>()))
+        //        .Returns((string s) => new Game(13) { Name = s });
+        //    var service = new GameService(gameRepositoryMock.Object);
+        //    var actual = service.CreateGame(expectedName, playerCount, humanPlayers);
+        //    Assert.IsTrue(actual is IGame, "Game recieved.");
+        //    Assert.AreEqual(actual.Name, expectedName, "Correct Name used.");
+        //    Assert.AreEqual(actual.MaxPlayers, playerCount, "Number of players is correct.");
+        //    Assert.AreEqual(actual.MaxHumanPlayers, humanPlayers, "Number of human players is correct.");
+        //}
 
-        [TestMethod]
-        public void GameService_RetreivesAGame()
-        {
-            var gameId = (long)45;
-            var expectedName = "Game 45";
-            var gameList = new List<IGame>() { new Game(gameId) { Name = expectedName } };
-            var gameRepositoryMock = new Mock<IGameRepository>();
-            gameRepositoryMock.Setup(pr => pr
-                .GetById(It.IsAny<long>()))
-                .Returns((long num) => gameList.FirstOrDefault(l => l.Id == num));
-            var service = new GameService(gameRepositoryMock.Object);
-            var actualGame = service.GetGame(gameId);
-            Assert.AreEqual(actualGame.Id, gameId, "Ids match");
-            Assert.AreEqual(actualGame.Name, expectedName, "Names match");
-        }
+        //[TestMethod]
+        //public void GameService_RetreivesAGame()
+        //{
+        //    var gameId = (long)45;
+        //    var expectedName = "Game 45";
+        //    var gameList = new List<IGame>() { new Game(gameId) { Name = expectedName } };
+        //    var gameRepositoryMock = new Mock<IGameRepository>();
+        //    gameRepositoryMock.Setup(pr => pr
+        //        .GetById(It.IsAny<long>()))
+        //        .Returns((long num) => gameList.FirstOrDefault(l => l.Id == num));
+        //    var service = new GameService(gameRepositoryMock.Object);
+        //    var actualGame = service.GetGame(gameId);
+        //    Assert.AreEqual(actualGame.Id, gameId, "Ids match");
+        //    Assert.AreEqual(actualGame.Name, expectedName, "Names match");
+        //}
 
         //[TestMethod]
         //public void AfterJoiningGame_RepositorySavesGame()

@@ -26,9 +26,9 @@ namespace Sheepshead.Models
         {
         }
 
-        public IGame CreateGame(string name)
+        public IGame CreateGame(string name, List<IPlayer> players)
         {
-            var game = new Game(0);
+            var game = new Game(0, players);
             return game;
         }
 
@@ -37,15 +37,15 @@ namespace Sheepshead.Models
             return Items.Select(l => l.Value).ToList().FirstOrDefault(lambda);
         }
 
-        public IEnumerable<IGame> GetOpenGames() {
-            return Items.Where(l => l.Value.HumanPlayerCount < l.Value.MaxHumanPlayers).Select(l => l.Value);
-        }
+        //public IEnumerable<IGame> GetOpenGames() {
+        //    return Items.Where(l => l.Value.HumanPlayerCount < l.Value.MaxHumanPlayers).Select(l => l.Value);
+        //}
     }
 
     public interface IGameRepository : IBaseRepository<IGame>
     {
-        IGame CreateGame(string name);
+        IGame CreateGame(string name, List<IPlayer> players);
         IGame GetGame(Func<IGame, bool> lambda);
-        IEnumerable<IGame> GetOpenGames();
+        //IEnumerable<IGame> GetOpenGames();
     }
 }

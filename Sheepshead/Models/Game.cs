@@ -8,29 +8,17 @@ namespace Sheepshead.Models
     public class Game : LongId, IGame
     {
         public string Name { get; set; }
-        public int MaxPlayers { get; set; }
         public int PlayerCount { get { return _players.Count(); } }
-        public int MaxHumanPlayers { get; set; }
         public int HumanPlayerCount { get { return _players.Count(p => p is IHumanPlayer); } }
-        protected List<IPlayer> _players = new List<IPlayer>();
+        protected List<IPlayer> _players;
         public List<IPlayer> Players { get { return _players.ToList(); } }
         private List<IDeck> _decks = new List<IDeck>();
         public List<IDeck> Decks { get { return _decks; } }
 
-        public Game(long id)
+        public Game(long id, List<IPlayer> players)
         {
+            _players = players;
             _id = id;
-        }
-
-        public void AddPlayer(IPlayer player)
-        {
-            if (_players.Contains(player))
-                throw new ObjectInListException("Player is already in list.");
-            if (PlayerCount >= MaxPlayers)
-                throw new TooManyPlayersException("This game allows a maximum of " + MaxPlayers + " players.");
-            if (HumanPlayerCount >= MaxHumanPlayers)
-                throw new TooManyHumanPlayersException("This game allows a maximum of " + MaxHumanPlayers + " human players.");
-            _players.Add(player);
         }
 
         public void PlayNonHumans(ITrick trick)
@@ -48,6 +36,18 @@ namespace Sheepshead.Models
             ++playerIndex;
             if (playerIndex >= PlayerCount)
                 playerIndex = 0;
+        }
+
+        public void RearrangePlayers()
+        {
+            var rnd = new Random();
+            for (var i = PlayerCount - 1; i > 0; --i)
+            {
+                var j = rnd.Next(i);
+                var swap = Players[i];
+                Players[i] = Players[j];
+                Players[j] = swap;
+            }
         }
     }
 
@@ -69,13 +69,11 @@ namespace Sheepshead.Models
     public interface IGame : ILongId
     {
         string Name { get; set; }
-        int MaxPlayers { get; set; }
-        int MaxHumanPlayers { get; set; }
         int HumanPlayerCount { get; }
         int PlayerCount { get; }
-        void AddPlayer(IPlayer player);
         List<IPlayer> Players { get; }
         void PlayNonHumans(ITrick trick);
         List<IDeck> Decks { get; }
+        void RearrangePlayers();
     }
 }

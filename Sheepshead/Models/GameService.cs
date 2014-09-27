@@ -16,11 +16,9 @@ namespace Sheepshead.Models
             _repository = repository;
         }
 
-        public IGame CreateGame(string name, int numPlayers, int humanPlayers)
+        public IGame CreateGame(string name, List<IPlayer> players)
         {
-            var game = _repository.CreateGame(name);
-            game.MaxPlayers = numPlayers;
-            game.MaxHumanPlayers = humanPlayers;
+            var game = _repository.CreateGame(name, players);
             return game;
         }
 
@@ -32,7 +30,7 @@ namespace Sheepshead.Models
 
     public interface IGameService
     {
-        IGame CreateGame(string name, int numPlayers, int humanPlayers);
+        IGame CreateGame(string name, List<IPlayer> players);
         IGame GetGame(long id);
     }
 }
