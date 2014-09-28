@@ -23,11 +23,12 @@ namespace Sheepshead.Models
         {
             var lastDeck = game.Decks.LastOrDefault();
             if (lastDeck != null && (lastDeck.Hand == null || !lastDeck.Hand.IsComplete()))
-                throw new PreviousDeckIncompleteException("Cannot add a deck until the prvious one is incomplete.");
+                throw new PreviousDeckIncompleteException("Cannot add a deck until the prvious one is complete.");
             Game = game;
             var cards = ShuffleCards();
             DealCards(cards);
             game.Decks.Add(this);
+            SetStartingPlayer();
         }
 
         private Queue<ICard> ShuffleCards()
@@ -64,10 +65,21 @@ namespace Sheepshead.Models
             }
         }
 
+        private void SetStartingPlayer()
+        {
+            var index = Game.Decks.IndexOf(this);
+            var indexOfPlayer = (index == 0)
+                ? (new Random()).Next(Game.PlayerCount) 
+                : Game.Players.IndexOf(Game.Decks[index - 1].StartingPlayer) + 1;
+            if (indexOfPlayer == Game.PlayerCount) indexOfPlayer = 0;
+            StartingPlayer = Game.Players[indexOfPlayer];
+        }
+
         public void PlayerWontPick(IPlayer player)
         {
             _playersRefusingPick.Add(player);
         }
+
     }
 
     public interface IDeck

@@ -12,6 +12,7 @@ namespace Sheepshead.Models
         public IPlayer Partner { set; get; }
         public ICard PartnerCard { get; private set; }
         private List<ITrick> _tricks = new List<ITrick>();
+        public List<ITrick> Tricks { get { return _tricks.ToList(); } }
 
         public Hand(IDeck deck, IPlayer picker, List<ICard> droppedCards)
         {
@@ -93,6 +94,7 @@ namespace Sheepshead.Models
         IPlayer Picker { get; }
         IPlayer Partner { set; get; }
         ICard PartnerCard { get; }
+        List<ITrick> Tricks { get; }
         void AddTrick(ITrick trick);
         Dictionary<IPlayer, int> Scores();
         bool IsComplete();

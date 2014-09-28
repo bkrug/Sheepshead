@@ -14,11 +14,19 @@ namespace Sheepshead.Models
         public IPlayer StartingPlayer { get; private set; }
         public Dictionary<IPlayer, ICard> CardsPlayed { get { return new Dictionary<IPlayer, ICard>(_cards); } }
 
-        public Trick(IHand hand, IPlayer startingPlayer)
+        public Trick(IHand hand)
         {
             _hand = hand;
             _hand.AddTrick(this);
-            StartingPlayer = startingPlayer;
+            SetStartingPlayer();
+        }
+
+        private void SetStartingPlayer()
+        {
+            var index = Hand.Tricks.IndexOf(this);
+            StartingPlayer = (index == 0)
+                ? Hand.Deck.StartingPlayer
+                : Hand.Tricks[index - 1].Winner().Player;
         }
 
         public void Add(IPlayer player, ICard card)
