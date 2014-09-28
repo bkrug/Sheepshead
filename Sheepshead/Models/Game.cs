@@ -23,12 +23,39 @@ namespace Sheepshead.Models
 
         public void PlayNonHumans(ITrick trick)
         {
-            var startPlayerIndex = Players.IndexOf(trick.StartingPlayer);
-            var playerIndex = startPlayerIndex;
+            var playersMissed = PlayerCount;
+            var playerIndex = Players.IndexOf(trick.StartingPlayer);
             while (trick.CardsPlayed.Keys.Contains(Players[playerIndex]))
-                IncrementPlayerIndex(ref playerIndex );
-            for (; playerIndex != trick.Hand.Deck.Game.PlayerCount && !(Players[playerIndex] is HumanPlayer); IncrementPlayerIndex(ref playerIndex))
+            {
+                IncrementPlayerIndex(ref playerIndex);
+                --playersMissed;
+            }
+            for (; !(Players[playerIndex] is HumanPlayer) && playersMissed > 0; IncrementPlayerIndex(ref playerIndex))
+            {
+                --playersMissed;
                 trick.Add(Players[playerIndex], ((ComputerPlayer)Players[playerIndex]).GetMove(trick));
+            }
+        }
+
+        public IPlayer PlayNonHumans(IDeck deck)
+        {
+            var playersMissed = PlayerCount;
+            var playerIndex = Players.IndexOf(deck.StartingPlayer);
+            while (deck.PlayersRefusingPick.Contains(Players[playerIndex]))
+            {
+                IncrementPlayerIndex(ref playerIndex);
+                --playersMissed;
+            }
+            IPlayer picker = null;
+            for (; picker == null && !(Players[playerIndex] is HumanPlayer) && playersMissed > 0; IncrementPlayerIndex(ref playerIndex))
+            {
+                --playersMissed;
+                if (((ComputerPlayer)Players[playerIndex]).WillPick(deck))
+                    picker = Players[playerIndex];
+                else
+                    deck.PlayersRefusingPick.Add(Players[playerIndex]);
+            }
+            return picker;
         }
 
         private void IncrementPlayerIndex(ref int playerIndex)
@@ -72,8 +99,9 @@ namespace Sheepshead.Models
         int HumanPlayerCount { get; }
         int PlayerCount { get; }
         List<IPlayer> Players { get; }
-        void PlayNonHumans(ITrick trick);
         List<IDeck> Decks { get; }
+        void PlayNonHumans(ITrick trick);
+        IPlayer PlayNonHumans(IDeck deck);
         void RearrangePlayers();
     }
 }

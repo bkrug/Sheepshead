@@ -10,11 +10,14 @@ namespace Sheepshead.Models
         const int PLAYER_COUNT = 5;
         const int CARDS_IN_DECK = 32;
         const int BLIND_COUNT = 2;
+        private List<IPlayer> _playersRefusingPick;
 
         public IGame Game { get; private set; }
         public List<ICard> Blinds { get; private set; }
         public List<ICard> Discards { get; set; }
         public IHand Hand { get; set; }
+        public List<IPlayer> PlayersRefusingPick { get { return _playersRefusingPick; } }
+        public IPlayer StartingPlayer { get; private set; }
 
         public Deck(IGame game)
         {
@@ -60,6 +63,11 @@ namespace Sheepshead.Models
                 }
             }
         }
+
+        public void PlayerWontPick(IPlayer player)
+        {
+            _playersRefusingPick.Add(player);
+        }
     }
 
     public interface IDeck
@@ -68,6 +76,9 @@ namespace Sheepshead.Models
         List<ICard> Discards { get; set; }
         IGame Game { get; }
         IHand Hand { get; set; }
+        List<IPlayer> PlayersRefusingPick { get; }
+        void PlayerWontPick(IPlayer player);
+        IPlayer StartingPlayer { get; }
     }
 
     public class PreviousDeckIncompleteException : ApplicationException

@@ -12,9 +12,9 @@ namespace Sheepshead.Models
             return this.Cards.First(c => trick.IsLegalAddition(c, this));
         }
 
-        public override bool WillPick(ITrick trick)
+        public override bool WillPick(IDeck deck)
         {
-            return QueueRankInTrick(trick) == trick.Hand.Deck.Game.PlayerCount;
+            return QueueRankInDeck(deck) == deck.Game.PlayerCount;
         }
 
         public override List<ICard> DropCardsForPick(IHand hand, IPlayer player)

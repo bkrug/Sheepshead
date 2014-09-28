@@ -44,13 +44,13 @@ namespace Sheepshead.Models
             return legalCards.OrderBy(c => winningCards.Contains(c) ? 1 : 2).ThenByDescending(c => c.Rank).First();
         }
 
-        public override bool WillPick(ITrick trick)
+        public override bool WillPick(IDeck deck)
         {
-            var middleQueueRankInTrick = (trick.Hand.Deck.Game.PlayerCount + 1) / 2;
+            var middleQueueRankInTrick = (deck.Game.PlayerCount + 1) / 2;
             var trumpCount = this.Cards.Count(c => CardRepository.GetSuite(c) == Suite.TRUMP);
-            return QueueRankInTrick(trick) == trick.Hand.Deck.Game.PlayerCount
-                || QueueRankInTrick(trick) > middleQueueRankInTrick && trumpCount >= 2
-                || QueueRankInTrick(trick) == middleQueueRankInTrick && trumpCount >= 3
+            return QueueRankInDeck(deck) == deck.Game.PlayerCount
+                || QueueRankInDeck(deck) > middleQueueRankInTrick && trumpCount >= 2
+                || QueueRankInDeck(deck) == middleQueueRankInTrick && trumpCount >= 3
                 || trumpCount >= 4;
         }
 
