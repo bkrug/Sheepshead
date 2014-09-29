@@ -114,6 +114,7 @@ namespace Sheepshead.Tests
             player4.Setup(m => m.WillPick(It.IsAny<IDeck>())).Callback(() => player4Moved = true);
             var refusingPick = new List<IPlayer>();
             deckMock.Setup(m => m.PlayersRefusingPick).Returns(refusingPick);
+            deckMock.Setup(m => m.PlayerWontPick(It.IsAny<IPlayer>())).Callback((IPlayer givenPlyaer) => { refusingPick.Add(givenPlyaer); });
             var picker = game.PlayNonHumans(deckMock.Object);
             Assert.IsTrue(player1Moved, "All players from the starting player to the first human should have been played.");
             Assert.IsFalse(player3Moved, "Player 3 should not have been played yet.");
