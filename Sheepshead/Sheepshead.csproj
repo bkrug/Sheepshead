@@ -138,6 +138,7 @@
     <Compile Include="Models\Players\Player.cs" />
     <Compile Include="Models\User.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Content Include="Content\playTrick.css" />
     <Content Include="Libraries\jquery-2.1.1.min.js" />
     <Content Include="Scripts\generic.js" />
     <Content Include="Scripts\pick.js" />
@@ -253,6 +254,18 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\_ViewStart.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Game\ReportPick.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Game\PlayTrick.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Game\ReportTrick.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Game\ReportHand.cshtml" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

@@ -53,7 +53,7 @@ namespace Sheepshead.Models
                 if (((ComputerPlayer)Players[playerIndex]).WillPick(deck))
                     picker = Players[playerIndex];
                 else
-                    deck.PlayersRefusingPick.Add(Players[playerIndex]);
+                    deck.PlayerWontPick(Players[playerIndex]);
             }
             return picker;
         }

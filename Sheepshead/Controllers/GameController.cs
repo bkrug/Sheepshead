@@ -72,20 +72,20 @@ namespace Sheepshead.Controllers
         [HttpPost]
         public ActionResult Pick(int id, bool willPick, string droppedCardIndicies)
         {
-            var droppedCardsIndex = droppedCardIndicies.Split(';').Select(c => Int16.Parse(c)).ToArray();
             var repository = new GameRepository(GameDictionary.Instance.Dictionary);
             var game = repository.GetById(id);
             var deck = game.Decks.Last();
-            IPlayer picker;
+            IPlayer human = game.Players.First(p => p is HumanPlayer);
             if (willPick)
             {
-                picker = game.Players.First(p => p is HumanPlayer);
-                var droppedCards = droppedCardsIndex.Select(i => picker.Cards[i]).ToList();
-                new Hand(deck, picker, droppedCards);
+                var droppedCardsIndex = droppedCardIndicies.Split(';').Select(c => Int16.Parse(c)).ToArray();
+                var droppedCards = droppedCardsIndex.Select(i => human.Cards[i]).ToList();
+                new Hand(deck, human, droppedCards);
             }
             else
             {
-                picker = game.PlayNonHumans(game.Decks.Last());
+                deck.PlayerWontPick(human);
+                var picker = game.PlayNonHumans(game.Decks.Last());
                 if (picker == null)
                     throw new ApplicationException("No one picked");
                 ProcessPick(deck, picker as ComputerPlayer);
@@ -114,10 +114,11 @@ namespace Sheepshead.Controllers
             var hand = game.Decks.Last().Hand;
             if (hand.IsComplete())
                 throw new ApplicationException("Hand is already complete.");
-            ITrick trick = hand.Tricks.Last();
-            if (trick.IsComplete())
+            ITrick trick = hand.Tricks.LastOrDefault();
+            if (trick == null || trick.IsComplete())
                 trick = new Trick(hand);
             game.PlayNonHumans(trick);
+            ViewBag.HumanPlayer = game.Players.First(p => p is HumanPlayer);
             return View(trick);
         }
 

@@ -1,0 +1,56 @@
+﻿@model Sheepshead.Models.Hand
+@using Sheepshead.Models
+
+@{
+    ViewBag.Title = "Picker Found";
+}
+
+<h2>Hand Results!</h2>
+
+<fieldset>
+    <div class="display-label">
+        Starting Player
+    </div>  
+    <div class="display-field">
+        Player @(Model.Deck.Game.Players.IndexOf(Model.Deck.StartingPlayer) + 1)
+    </div>
+
+    <div class="display-label">
+        Human Player
+    </div>
+    <div class="display-field">
+        Player @(Model.Deck.Game.Players.IndexOf(Model.Deck.Game.Players.First(p => p is IHumanPlayer)) + 1)
+    </div>
+
+    <div class="display-label">
+        Picker
+    </div>
+    <div class="display-field">
+        Player @(Model.Deck.Game.Players.IndexOf(Model.Picker) + 1)
+    </div>
+
+    <div class="display-label">
+        Partner
+    </div>
+    <div class="display-field">
+        Player @(Model.Deck.Game.Players.IndexOf(Model.Partner) + 1)
+    </div>
+
+    <div class="display-label">
+        Partner Card
+    </div>
+    <div class="display-field">
+        Player @(Model.PartnerCard.ToString())
+    </div>
+
+    <div class="display-label">
+        Points
+    </div>
+     @foreach (var playerScore in Model.Scores())
+    {
+        <div>Player @(Model.Deck.Game.Players.IndexOf(playerScore.Key) + 1)</div>
+        <div>@(playerScore.Value) points</div>
+    }
+</fieldset>
+
+@Html.ActionLink("Continue Playing", "PlayTrick", new { id = Model.Deck.Game.Id })

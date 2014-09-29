@@ -1,0 +1,51 @@
+﻿@model Sheepshead.Models.Trick
+@using Sheepshead.Models
+@{
+    ViewBag.Title = "Trick Done";
+}
+<h2>Trick Done</h2>
+
+<div class="display-label">
+        Starting Player
+</div>  
+<div class="display-field">
+    Player @(Model.Hand.Deck.Game.Players.IndexOf(Model.StartingPlayer) + 1)
+</div>
+
+<div class="display-label">
+        Human Player
+</div>
+<div class="display-field">
+    Player @(Model.Hand.Deck.Game.Players.IndexOf(Model.Hand.Deck.Game.Players.First(p => p is IHumanPlayer)) + 1)
+</div>
+
+<div class="display-label">
+        Winner
+</div>
+<div class="display-field">
+    Player @(Model.Hand.Deck.Game.Players.IndexOf(Model.Winner().Player) + 1)
+</div>
+
+<div class="display-label">
+        Winner Points
+</div>
+<div class="display-field">
+    Player @(Model.Winner().Points)
+</div>
+
+<p>Cards played</p>
+@foreach (var cardPlayed in Model.CardsPlayed)
+{
+    var playerIndex = Model.Hand.Deck.Game.Players.IndexOf(cardPlayed.Key);
+    <div>Player @(playerIndex + 1)</div>
+    <img src="@("\\Images\\" + @CardRepository.GetPictureFilename(cardPlayed.Value) + ".png")" />
+}
+
+@if (Model.Hand.IsComplete())
+{
+    @Html.ActionLink("See Data about Hand", "ReportHand", new { id = Model.Hand.Deck.Game.Id })
+}
+else 
+{
+    @Html.ActionLink("Continue Playing", "PlayTrick", new { id = Model.Hand.Deck.Game.Id })
+}
