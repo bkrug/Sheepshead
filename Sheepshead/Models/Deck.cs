@@ -10,13 +10,13 @@ namespace Sheepshead.Models
         const int PLAYER_COUNT = 5;
         const int CARDS_IN_DECK = 32;
         const int BLIND_COUNT = 2;
-        private List<IPlayer> _playersRefusingPick;
+        private List<IPlayer> _playersRefusingPick = new List<IPlayer>();
 
         public IGame Game { get; private set; }
         public List<ICard> Blinds { get; private set; }
         public List<ICard> Discards { get; set; }
         public IHand Hand { get; set; }
-        public List<IPlayer> PlayersRefusingPick { get { return _playersRefusingPick; } }
+        public List<IPlayer> PlayersRefusingPick { get { return _playersRefusingPick.ToList(); } }
         public IPlayer StartingPlayer { get; private set; }
 
         public Deck(IGame game)

@@ -33,3 +33,5 @@ E:\Users\bjkrug\Documents\Visual Studio 2012\Projects\Sheepshead\Sheepshead.Test
 E:\Users\bjkrug\Documents\Visual Studio 2012\Projects\Sheepshead\Sheepshead.Tests\bin\Debug\Moq.xml
 E:\Users\bjkrug\Documents\Visual Studio 2012\Projects\Sheepshead\Sheepshead.Tests\bin\Debug\Ninject.pdb
 E:\Users\bjkrug\Documents\Visual Studio 2012\Projects\Sheepshead\Sheepshead.Tests\bin\Debug\Ninject.xml
+E:\Users\bjkrug\Documents\Visual Studio 2012\Projects\Sheepshead\Sheepshead.Tests\bin\Debug\System.Web.Optimization.dll
+E:\Users\bjkrug\Documents\Visual Studio 2012\Projects\Sheepshead\Sheepshead.Tests\bin\Debug\System.Web.Optimization.xml

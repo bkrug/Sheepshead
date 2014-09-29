@@ -1,0 +1,56 @@
+﻿@model Sheepshead.Models.Game
+@using Sheepshead.Models
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>ReportGame</title>
+</head>
+<body>
+    <fieldset>
+        <legend>Game</legend>
+    
+        <div class="display-label">
+             @Html.DisplayNameFor(model => model.Name)
+        </div>
+        <div class="display-field">
+            @Html.DisplayFor(model => model.Name)
+        </div>
+    
+        <div class="display-label">
+             @Html.DisplayNameFor(model => model.PlayerCount)
+        </div>
+        <div class="display-field">
+            @Html.DisplayFor(model => model.PlayerCount)
+        </div>
+    
+        <div class="display-label">
+             @Html.DisplayNameFor(model => model.HumanPlayerCount)
+        </div>
+        <div class="display-field">
+            @Html.DisplayFor(model => model.HumanPlayerCount)
+        </div>
+
+        <div class="display-label">
+             Starting Player
+        </div>
+        <div class="display-field">
+            Player @(Model.Players.IndexOf(Model.Decks.Last().StartingPlayer) + 1)
+        </div>
+
+        <div class="display-label">
+             Human Player
+        </div>
+        <div class="display-field">
+            Player @(Model.Players.IndexOf(Model.Players.First(p => p is IHumanPlayer)) + 1)
+        </div>
+
+        @Html.ActionLink("Pick", "Pick", new { id = Model.Id })
+    </fieldset>
+</body>
+</html>

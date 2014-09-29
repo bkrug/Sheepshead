@@ -17,6 +17,8 @@ namespace Sheepshead.Models
         public Hand(IDeck deck, IPlayer picker, List<ICard> droppedCards)
         {
             Deck = deck;
+            if (Deck.Hand != null)
+                throw new DeckHasHandException("Must add a hand to a deck without one.");
             Deck.Hand = this;
             Picker = picker;
             picker.Cards.AddRange(deck.Blinds.Where(c => !picker.Cards.Contains(c)));
@@ -34,8 +36,6 @@ namespace Sheepshead.Models
                 cri[StandardSuite.CLUBS, CardType.JACK],
                 cri[StandardSuite.DIAMONDS, CardType.QUEEN] 
             };
-            if (Deck.Hand != null)
-                throw new DeckHasHandException("Must add a hand to a deck without one.");
             var partnerCard = potentialPartnerCards.First(c => !picker.Cards.Contains(c));
             return partnerCard;
         }

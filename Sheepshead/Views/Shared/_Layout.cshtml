@@ -1,0 +1,19 @@
+﻿@using System.Web.Optimization
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width" />
+        <title>@ViewBag.Title</title>
+        @Scripts.Render(@"~/bundles/jquery")
+        @Scripts.Render(@"~/Scripts/generic.js")
+    </head>
+    <body>
+        @RenderBody()
+
+        @Scripts.Render("~/bundles/jquery")
+        @RenderSection("scripts", required: false)
+    </body>
+</html>
+
+

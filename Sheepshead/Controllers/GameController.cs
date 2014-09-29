@@ -38,18 +38,28 @@ namespace Sheepshead.Controllers
             for (var i = 0; i < model.BasicCount; ++i)
                 playerList.Add(new BasicPlayer());
             var newGame = repository.CreateGame(model.Name, playerList);
+            repository.Save(newGame);
             Session["gameId"] = newGame.Id;
             newGame.RearrangePlayers();
             var deck = new Deck(newGame);
-            return RedirectToAction("Pick", new { id = newGame.Id });
+            return RedirectToAction("ReportGame", new { id = newGame.Id });
+        }
+
+        public ActionResult ReportGame(int id)
+        {
+            var repository = new GameRepository(GameDictionary.Instance.Dictionary);
+            var game = repository.GetById(id);
+            var deck = game.Decks.Last();
+            return View(game);
         }
 
         public ActionResult Pick(int id)
         {
             var repository = new GameRepository(GameDictionary.Instance.Dictionary);
             var game = repository.GetById(id);
-            var deck = new Deck(game);
+            var deck = game.Decks.Last();
             var picker = game.PlayNonHumans(deck);
+            ViewBag.HumanPlayer = game.Players.First(p => p is HumanPlayer);
             if (picker == null)
                 return View(deck);
             else
@@ -60,8 +70,9 @@ namespace Sheepshead.Controllers
         }
 
         [HttpPost]
-        public ActionResult Pick(int id, bool willPick, int[] droppedCardsIndex)
+        public ActionResult Pick(int id, bool willPick, string droppedCardIndicies)
         {
+            var droppedCardsIndex = droppedCardIndicies.Split(';').Select(c => Int16.Parse(c)).ToArray();
             var repository = new GameRepository(GameDictionary.Instance.Dictionary);
             var game = repository.GetById(id);
             var deck = game.Decks.Last();
@@ -70,7 +81,7 @@ namespace Sheepshead.Controllers
             {
                 picker = game.Players.First(p => p is HumanPlayer);
                 var droppedCards = droppedCardsIndex.Select(i => picker.Cards[i]).ToList();
-                ProcessPick(deck, picker, droppedCards);
+                new Hand(deck, picker, droppedCards);
             }
             else
             {
@@ -85,12 +96,6 @@ namespace Sheepshead.Controllers
         private IHand ProcessPick(IDeck deck, ComputerPlayer picker)
         {
             var droppedCards = picker.DropCardsForPick(deck.Hand, picker);
-            return ProcessPick(deck, picker, droppedCards);
-        }
-
-        private IHand ProcessPick(IDeck deck, IPlayer picker, List<ICard> droppedCards)
-        {
-            var repository = new GameRepository(GameDictionary.Instance.Dictionary);
             return new Hand(deck, picker, droppedCards);
         }
 
