@@ -21,8 +21,7 @@ namespace Sheepshead.Models
 
         public Deck(IGame game)
         {
-            var lastDeck = game.Decks.LastOrDefault();
-            if (lastDeck != null && (lastDeck.Hand == null || !lastDeck.Hand.IsComplete()))
+            if (!game.LastDeckIsComplete())
                 throw new PreviousDeckIncompleteException("Cannot add a deck until the prvious one is complete.");
             Game = game;
             var cards = ShuffleCards();

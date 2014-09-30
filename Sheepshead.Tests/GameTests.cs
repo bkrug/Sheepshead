@@ -69,6 +69,9 @@ namespace Sheepshead.Tests
             Assert.IsFalse(player1Moved, "PLayer 1 should not have been played a second time.");
             Assert.IsTrue(player3Moved, "Player 3 should have been played when a second call was made to PlayNonHumans()");
             Assert.IsTrue(player4Moved, "Player 4 should have been played when a second call was made to PlayNonHumans()");
+            trickMock.Setup(m => m.CardsPlayed).Returns(new Dictionary<IPlayer, ICard>() { { player1.Object, new Card() }, { player2, new Card() }, { player3.Object, new Card() }, { player4.Object, new Card() }, { player5, new Card() } } );
+            game.PlayNonHumans(trickMock.Object);
+            Assert.IsTrue(true, "Did not end up in infinite loop, when last player was human.");
         }
 
         [TestMethod]
@@ -129,6 +132,11 @@ namespace Sheepshead.Tests
             Assert.IsTrue(player3Moved, "Player 3 should have been played when a second call was made to PlayNonHumans()");
             Assert.IsTrue(player4Moved, "Player 4 should have been played when a second call was made to PlayNonHumans()");
             Assert.IsTrue(PlayerListsMatch(refusingPick, new List<IPlayer>() { player1.Object, player2, player3.Object, player4.Object }), "Player1, 3, and 4 is on the refused list.");
+            refusingPick.Add(player3.Object);
+            refusingPick.Add(player4.Object);
+            refusingPick.Add(player5);
+            game.PlayNonHumans(deckMock.Object);
+            Assert.IsTrue(true, "Did not enter an infinite loop.");
         }
 
         [TestMethod]
@@ -218,6 +226,7 @@ namespace Sheepshead.Tests
             IDeck deck2;
             var deckList = new List<IDeck>() { mockDeck.Object };
             mockGame.Setup(m => m.Decks).Returns(deckList);
+            mockGame.Setup(m => m.LastDeckIsComplete()).Returns(true);
 
             mockDeck.Setup(m => m.StartingPlayer).Returns(player1.Object);
             deck2 = new Deck(mockGame.Object);
@@ -229,7 +238,6 @@ namespace Sheepshead.Tests
             deck2 = new Deck(mockGame.Object);
             //We won't test the Starting Player for the first deck in the game.  It should be random.
             Assert.AreEqual(player3.Object, deck2.StartingPlayer, "Again, the starting player for one deck should be the player to the left of the previous starting player.");
-
         }
     }
 }

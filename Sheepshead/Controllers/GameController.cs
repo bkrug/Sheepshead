@@ -41,16 +41,15 @@ namespace Sheepshead.Controllers
             repository.Save(newGame);
             Session["gameId"] = newGame.Id;
             newGame.RearrangePlayers();
-            var deck = new Deck(newGame);
-            return RedirectToAction("ReportGame", new { id = newGame.Id });
+            return RedirectToAction("BeginDeck", new { id = newGame.Id });
         }
 
-        public ActionResult ReportGame(int id)
+        public ActionResult BeginDeck(int id)
         {
             var repository = new GameRepository(GameDictionary.Instance.Dictionary);
             var game = repository.GetById(id);
-            var deck = game.Decks.Last();
-            return View(game);
+            var deck = game.LastDeckIsComplete() ? new Deck(game) : game.Decks.Last();
+            return View(deck);
         }
 
         public ActionResult Pick(int id)

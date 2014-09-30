@@ -25,7 +25,7 @@ namespace Sheepshead.Models
         {
             var playersMissed = PlayerCount;
             var playerIndex = Players.IndexOf(trick.StartingPlayer);
-            while (trick.CardsPlayed.Keys.Contains(Players[playerIndex]))
+            while (trick.CardsPlayed.Keys.Contains(Players[playerIndex]) && playersMissed > 0)
             {
                 IncrementPlayerIndex(ref playerIndex);
                 --playersMissed;
@@ -76,6 +76,12 @@ namespace Sheepshead.Models
                 Players[j] = swap;
             }
         }
+
+        public bool LastDeckIsComplete()
+        {
+            var lastDeck = Decks.LastOrDefault();
+            return lastDeck == null || lastDeck.Hand != null && lastDeck.Hand.IsComplete();
+        }
     }
 
     public class TooManyPlayersException : ApplicationException
@@ -103,5 +109,6 @@ namespace Sheepshead.Models
         void PlayNonHumans(ITrick trick);
         IPlayer PlayNonHumans(IDeck deck);
         void RearrangePlayers();
+        bool LastDeckIsComplete();
     }
 }
