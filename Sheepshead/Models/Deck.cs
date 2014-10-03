@@ -28,6 +28,7 @@ namespace Sheepshead.Models
             DealCards(cards);
             game.Decks.Add(this);
             SetStartingPlayer();
+            Discards = new List<ICard>();
         }
 
         private Queue<ICard> ShuffleCards()

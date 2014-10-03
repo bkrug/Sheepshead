@@ -5,7 +5,7 @@ using System.Web;
 
 namespace Sheepshead.Models
 {
-    public abstract class ComputerPlayer : Player
+    public abstract class ComputerPlayer : Player, IComputerPlayer
     {
         public abstract ICard GetMove(ITrick trick);
 

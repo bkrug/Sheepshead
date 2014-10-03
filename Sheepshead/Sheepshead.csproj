@@ -140,6 +140,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Content Include="Content\playTrick.css" />
     <Content Include="Libraries\jquery-2.1.1.min.js" />
+    <Content Include="Scripts\bury.js" />
     <Content Include="Scripts\generic.js" />
     <Content Include="Scripts\pick.js" />
   </ItemGroup>
@@ -266,6 +267,11 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\Game\ReportHand.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Game\Bury.cshtml">
+      <Generator>RazorGenerator</Generator>
+    </Content>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

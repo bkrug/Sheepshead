@@ -13,19 +13,8 @@ var PickPage = function () {
     };
 
     this.OnYesClick = function (e) {
-        var dropCards = [];
-        $('.js-card-cb').each(function () {
-            if ($(this).is(':checked'))
-                dropCards.push($(this).data('index'));
-        });
-        if (dropCards.length == 2) {
-            $('#id').val(1);
-            $('#willPick').val(true);
-            $('#droppedCardIndicies').val(dropCards.join(';'));
-            $('form').submit();
-        }
-        else {
-            alert("Must drop exactly two cards.");
-        }
+        $('#id').val(1);
+        $('#willPick').val(true);
+        $('form').submit();
     };
 };

@@ -1,7 +1,7 @@
 ﻿@model Sheepshead.Models.IDeck
 @using Sheepshead.Models
 @Scripts.Render("~/Libraries/jquery-2.1.1.min.js")
-@Scripts.Render("~/Scripts/pick.js")
+@Scripts.Render("~/Scripts/bury.js")
 @{
     Layout = null;
 }
@@ -20,15 +20,15 @@
     Player @(Model.Game.Players.IndexOf(Model.Game.Players.First(p => p is IHumanPlayer)) + 1)
 </div>
 
-<p>Previous players did not pick</p>
+<p>Pick cards to Bury</p>
 @foreach (var card in ((HumanPlayer)ViewBag.HumanPlayer).Cards)
 {
+    var index = ((HumanPlayer)ViewBag.HumanPlayer).Cards.IndexOf(card);
+    <input type="checkbox" class="js-card-cb" data-index="@index.ToString()" />
     <img src="@("\\Images\\" + CardRepository.GetPictureFilename(card) + ".png")" />
 }
-<p>Will you pick?</p>
 <form method="post">
     <input type="hidden" id="id" name="id" />
-    <input type="hidden" id="willPick" name="willPick" />
-    <input id="yes-btn" type="button" value="Yes" />
-    <input id="no-btn" type="button" value="No" />
+    <input type="hidden" id="droppedCardIndicies" name="droppedCardIndicies" />
+    <input id="bury-btn" type="button" value="Bury" />
 </form>

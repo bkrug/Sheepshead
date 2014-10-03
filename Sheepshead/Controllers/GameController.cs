@@ -60,7 +60,9 @@ namespace Sheepshead.Controllers
             var picker = game.PlayNonHumans(deck);
             ViewBag.HumanPlayer = game.Players.First(p => p is HumanPlayer);
             if (picker == null)
+            {
                 return View(deck);
+            }
             else
             {
                 ProcessPick(deck, picker as ComputerPlayer);
@@ -77,9 +79,8 @@ namespace Sheepshead.Controllers
             IPlayer human = game.Players.First(p => p is HumanPlayer);
             if (willPick)
             {
-                var droppedCardsIndex = droppedCardIndicies.Split(';').Select(c => Int16.Parse(c)).ToArray();
-                var droppedCards = droppedCardsIndex.Select(i => human.Cards[i]).ToList();
-                new Hand(deck, human, droppedCards);
+                human.Cards.AddRange(deck.Blinds);
+                return RedirectToAction("Bury", new { id = game.Id });
             }
             else
             {
@@ -88,14 +89,36 @@ namespace Sheepshead.Controllers
                 if (picker == null)
                     throw new ApplicationException("No one picked");
                 ProcessPick(deck, picker as ComputerPlayer);
+                return RedirectToAction("ReportPick", new { id = game.Id });
             }
-            return RedirectToAction("ReportPick", new { id = game.Id } );
         }
 
         private IHand ProcessPick(IDeck deck, ComputerPlayer picker)
         {
             var droppedCards = picker.DropCardsForPick(deck);
             return new Hand(deck, picker, droppedCards);
+        }
+
+        public ActionResult Bury(int id)
+        {
+            var repository = new GameRepository(GameDictionary.Instance.Dictionary);
+            var game = repository.GetById(id);
+            var deck = game.Decks.Last();
+            ViewBag.HumanPlayer = game.Players.First(p => p is HumanPlayer);
+            return View(deck);
+        }
+
+        [HttpPost]
+        public ActionResult Bury(int id, string droppedCardIndicies)
+        {
+            var repository = new GameRepository(GameDictionary.Instance.Dictionary);
+            var game = repository.GetById(id);
+            var deck = game.Decks.Last();
+            IPlayer human = game.Players.First(p => p is HumanPlayer);
+            var droppedCardsIndex = droppedCardIndicies.Split(';').Select(c => Int16.Parse(c)).ToArray();
+            var droppedCards = droppedCardsIndex.Select(i => human.Cards[i]).ToList();
+            new Hand(deck, human, droppedCards);
+            return RedirectToAction("ReportPick", new { id = game.Id });
         }
 
         public ActionResult ReportPick(int id)
