@@ -11,7 +11,14 @@ namespace Sheepshead.Models
 
         public abstract bool WillPick(IDeck deck);
 
-        public abstract List<ICard> DropCardsForPick(IHand hand, IPlayer player);
+        public List<ICard> DropCardsForPick(IDeck deck)
+        {
+            foreach (var card in deck.Blinds.Where(c => !Cards.Contains(c)))
+                Cards.Add(card);
+            return DropCardsForPickInternal(deck);
+        }
+
+        protected abstract List<ICard> DropCardsForPickInternal(IDeck deck);
 
         protected int QueueRankInTrick(ITrick trick)
         {
@@ -30,5 +37,12 @@ namespace Sheepshead.Models
             if (rank < 0) rank += deck.Game.PlayerCount;
             return rank + 1;
         }
+    }
+
+    public interface IComputerPlayer : IPlayer
+    {
+        ICard GetMove(ITrick trick);
+        bool WillPick(IDeck deck);
+        List<ICard> DropCardsForPick(IDeck deck);
     }
 }

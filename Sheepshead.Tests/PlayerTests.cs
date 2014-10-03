@@ -110,11 +110,14 @@ namespace Sheepshead.Tests
                 CardRepository.Instance[StandardSuite.CLUBS, CardType.JACK],
                 CardRepository.Instance[StandardSuite.CLUBS, CardType.N7],
                 CardRepository.Instance[StandardSuite.HEARTS, CardType.N7],
-                CardRepository.Instance[StandardSuite.HEARTS, CardType.N8],
-                CardRepository.Instance[StandardSuite.SPADES, CardType.N8],
-                CardRepository.Instance[StandardSuite.HEARTS, CardType.QUEEN],
+                CardRepository.Instance[StandardSuite.HEARTS, CardType.N8]
             });
-            var cardsToDrop = picker.DropCardsForPick(new Mock<IHand>().Object, picker);
+            var deckMock = new Mock<IDeck>();
+            deckMock.Setup(m => m.Blinds).Returns(new List<ICard>() { 
+                CardRepository.Instance[StandardSuite.SPADES, CardType.N8],
+                CardRepository.Instance[StandardSuite.HEARTS, CardType.QUEEN]
+            });
+            var cardsToDrop = picker.DropCardsForPick(deckMock.Object);
             Assert.IsTrue(cardsToDrop.Contains(CardRepository.Instance[StandardSuite.CLUBS, CardType.N7]), "Drop 7 of Clubs since it is only club.");
             Assert.IsTrue(cardsToDrop.Contains(CardRepository.Instance[StandardSuite.SPADES, CardType.N8]), "Drop 8 of Spades since it is only club.");
         }

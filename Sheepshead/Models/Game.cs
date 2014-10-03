@@ -46,14 +46,18 @@ namespace Sheepshead.Models
                 IncrementPlayerIndex(ref playerIndex);
                 --playersMissed;
             }
-            IPlayer picker = null;
+            IComputerPlayer picker = null;
             for (; picker == null && !(Players[playerIndex] is HumanPlayer) && playersMissed > 0; IncrementPlayerIndex(ref playerIndex))
             {
                 --playersMissed;
-                if (((ComputerPlayer)Players[playerIndex]).WillPick(deck))
-                    picker = Players[playerIndex];
+                var curPlayer = (IComputerPlayer)Players[playerIndex];
+                if (curPlayer.WillPick(deck))
+                {
+                    picker = curPlayer;
+                    picker.DropCardsForPick(deck);
+                }
                 else
-                    deck.PlayerWontPick(Players[playerIndex]);
+                    deck.PlayerWontPick(curPlayer);
             }
             return picker;
         }

@@ -94,7 +94,7 @@ namespace Sheepshead.Controllers
 
         private IHand ProcessPick(IDeck deck, ComputerPlayer picker)
         {
-            var droppedCards = picker.DropCardsForPick(deck.Hand, picker);
+            var droppedCards = picker.DropCardsForPick(deck);
             return new Hand(deck, picker, droppedCards);
         }
 

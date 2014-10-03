@@ -17,9 +17,9 @@ namespace Sheepshead.Models
             return QueueRankInDeck(deck) == deck.Game.PlayerCount;
         }
 
-        public override List<ICard> DropCardsForPick(IHand hand, IPlayer player)
+        protected override List<ICard> DropCardsForPickInternal(IDeck deck)
         {
-            return player.Cards.OrderByDescending(c => c.Rank).Take(2).ToList();
+            return Cards.OrderByDescending(c => c.Rank).Take(2).ToList();
         }
     }
 }

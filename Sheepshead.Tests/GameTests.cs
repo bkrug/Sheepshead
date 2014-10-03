@@ -99,10 +99,10 @@ namespace Sheepshead.Tests
         [TestMethod]
         public void Game_PlayNonHuman_FindPicker()
         {
-            var player1 = new Mock<BasicPlayer>();
+            var player1 = new Mock<IComputerPlayer>();
             var player2 = new HumanPlayer(new User());
-            var player3 = new Mock<NewbiePlayer>();
-            var player4 = new Mock<BasicPlayer>();
+            var player3 = new Mock<IComputerPlayer>();
+            var player4 = new Mock<IComputerPlayer>();
             var player5 = new HumanPlayer(new User());
             var playerList = new List<IPlayer>() { player3.Object, player4.Object, player5, player1.Object, player2 };
             var deckMock = new Mock<IDeck>();
@@ -142,11 +142,11 @@ namespace Sheepshead.Tests
         [TestMethod]
         public void Game_PlayNonHuman_FindPicker_OnePlayerPicked()
         {
-            var player1 = new Mock<BasicPlayer>();
-            var player2 = new Mock<NewbiePlayer>();
-            var player3 = new Mock<NewbiePlayer>();
-            var player4 = new Mock<BasicPlayer>();
-            var player5 = new Mock<BasicPlayer>();
+            var player1 = new Mock<IComputerPlayer>();
+            var player2 = new Mock<IComputerPlayer>();
+            var player3 = new Mock<IComputerPlayer>();
+            var player4 = new Mock<IComputerPlayer>();
+            var player5 = new Mock<IComputerPlayer>();
             var playerList = new List<IPlayer>() { player3.Object, player4.Object, player5.Object, player1.Object, player2.Object };
             player3.Setup(m => m.WillPick(It.IsAny<IDeck>())).Returns(true);
             var game = new Game(42340, playerList);
@@ -162,11 +162,11 @@ namespace Sheepshead.Tests
         [TestMethod]
         public void Game_PlayNonHuman_FindPicker_LastPlayerIsntHuman()
         {
-            var player1 = new Mock<BasicPlayer>();
-            var player2 = new Mock<NewbiePlayer>();
-            var player3 = new Mock<NewbiePlayer>();
-            var player4 = new Mock<BasicPlayer>();
-            var player5 = new Mock<BasicPlayer>();
+            var player1 = new Mock<IComputerPlayer>();
+            var player2 = new Mock<IComputerPlayer>();
+            var player3 = new Mock<IComputerPlayer>();
+            var player4 = new Mock<IComputerPlayer>();
+            var player5 = new Mock<IComputerPlayer>();
             var playerList = new List<IPlayer>() { player3.Object, player4.Object, player5.Object, player1.Object, player2.Object };
             var game = new Game(42340, playerList);
             var deckMock = new Mock<IDeck>();
@@ -178,6 +178,27 @@ namespace Sheepshead.Tests
             Assert.IsTrue(true, "Didn't end up in an infinite loop.");
         }
 
+        [TestMethod]
+        public void Game_PlayNonHuman_FindPicker_AlsoBurriedCards()
+        {
+            var player1 = new Mock<IComputerPlayer>();
+            var player2 = new Mock<IComputerPlayer>();
+            var player3 = new Mock<IComputerPlayer>();
+            var player4 = new Mock<IComputerPlayer>();
+            var player5 = new Mock<IComputerPlayer>();
+            var playerList = new List<IPlayer>() { player3.Object, player4.Object, player5.Object, player1.Object, player2.Object };
+            var playerBuriedCards = false;
+            player2.Setup(m => m.WillPick(It.IsAny<IDeck>())).Returns(true);
+            player2.Setup(m => m.DropCardsForPick(It.IsAny<IDeck>())).Callback((IDeck givenDeck) => { playerBuriedCards = true; });
+            var game = new Game(42340, playerList);
+            var deckMock = new Mock<IDeck>();
+            var refusingPick = new List<IPlayer>();
+            deckMock.Setup(m => m.PlayersRefusingPick).Returns(refusingPick);
+            deckMock.Setup(m => m.Game).Returns(game);
+            deckMock.Setup(m => m.StartingPlayer).Returns(player1.Object);
+            game.PlayNonHumans(deckMock.Object);
+            Assert.IsTrue(playerBuriedCards, "Player 2 buried cards after picking.");
+        }
         private bool PlayerListsMatch(List<IPlayer> list1, List<IPlayer> list2)
         {
             var match = true;
