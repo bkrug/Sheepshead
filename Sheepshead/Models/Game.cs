@@ -54,7 +54,7 @@ namespace Sheepshead.Models
                 if (curPlayer.WillPick(deck))
                 {
                     picker = curPlayer;
-                    picker.DropCardsForPick(deck);
+                    deck.Discards.AddRange(picker.DropCardsForPick(deck));
                 }
                 else
                     deck.PlayerWontPick(curPlayer);

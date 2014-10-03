@@ -149,14 +149,18 @@ namespace Sheepshead.Tests
             var player5 = new Mock<IComputerPlayer>();
             var playerList = new List<IPlayer>() { player3.Object, player4.Object, player5.Object, player1.Object, player2.Object };
             player3.Setup(m => m.WillPick(It.IsAny<IDeck>())).Returns(true);
+            player3.Setup(m => m.DropCardsForPick(It.IsAny<IDeck>())).Returns(new List<ICard>() { new Mock<ICard>().Object, new Mock<ICard>().Object });
             var game = new Game(42340, playerList);
             var deckMock = new Mock<IDeck>();
             var refusingPick = new List<IPlayer>();
+            var discards = new List<ICard>();
             deckMock.Setup(m => m.PlayersRefusingPick).Returns(refusingPick);
             deckMock.Setup(m => m.Game).Returns(game);
             deckMock.Setup(m => m.StartingPlayer).Returns(player1.Object);
+            deckMock.Setup(m => m.Discards).Returns(discards);
             var picker = game.PlayNonHumans(deckMock.Object);
             Assert.AreEqual(player3.Object, picker, "Player 3 is picker");
+            Assert.AreEqual(2, discards.Count(), "There are two discards");
         }
 
         [TestMethod]
@@ -189,15 +193,20 @@ namespace Sheepshead.Tests
             var playerList = new List<IPlayer>() { player3.Object, player4.Object, player5.Object, player1.Object, player2.Object };
             var playerBuriedCards = false;
             player2.Setup(m => m.WillPick(It.IsAny<IDeck>())).Returns(true);
-            player2.Setup(m => m.DropCardsForPick(It.IsAny<IDeck>())).Callback((IDeck givenDeck) => { playerBuriedCards = true; });
+            player2.Setup(m => m.DropCardsForPick(It.IsAny<IDeck>()))
+                .Callback((IDeck givenDeck) => { playerBuriedCards = true; })
+                .Returns(new List<ICard>() { new Mock<ICard>().Object, new Mock<ICard>().Object });
             var game = new Game(42340, playerList);
             var deckMock = new Mock<IDeck>();
             var refusingPick = new List<IPlayer>();
+            var discards = new List<ICard>();
             deckMock.Setup(m => m.PlayersRefusingPick).Returns(refusingPick);
             deckMock.Setup(m => m.Game).Returns(game);
             deckMock.Setup(m => m.StartingPlayer).Returns(player1.Object);
+            deckMock.Setup(m => m.Discards).Returns(discards);
             game.PlayNonHumans(deckMock.Object);
             Assert.IsTrue(playerBuriedCards, "Player 2 buried cards after picking.");
+            Assert.AreEqual(2, discards.Count(), "There are two buried cards.");
         }
         private bool PlayerListsMatch(List<IPlayer> list1, List<IPlayer> list2)
         {
