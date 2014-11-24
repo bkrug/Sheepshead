@@ -14,7 +14,7 @@ namespace Sheepshead.Models
 
         public IGame Game { get; private set; }
         public List<ICard> Blinds { get; private set; }
-        public List<ICard> Discards { get; set; }
+        public List<ICard> Buried { get; set; }
         public IHand Hand { get; set; }
         public List<IPlayer> PlayersRefusingPick { get { return _playersRefusingPick.ToList(); } }
         public IPlayer StartingPlayer { get; private set; }
@@ -28,7 +28,7 @@ namespace Sheepshead.Models
             DealCards(cards);
             game.Decks.Add(this);
             SetStartingPlayer();
-            Discards = new List<ICard>();
+            Buried = new List<ICard>();
         }
 
         private Queue<ICard> ShuffleCards()
@@ -85,7 +85,7 @@ namespace Sheepshead.Models
     public interface IDeck
     {
         List<ICard> Blinds { get; }
-        List<ICard> Discards { get; set; }
+        List<ICard> Buried { get; set; }
         IGame Game { get; }
         IHand Hand { get; set; }
         List<IPlayer> PlayersRefusingPick { get; }

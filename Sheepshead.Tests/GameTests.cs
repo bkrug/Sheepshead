@@ -157,7 +157,7 @@ namespace Sheepshead.Tests
             deckMock.Setup(m => m.PlayersRefusingPick).Returns(refusingPick);
             deckMock.Setup(m => m.Game).Returns(game);
             deckMock.Setup(m => m.StartingPlayer).Returns(player1.Object);
-            deckMock.Setup(m => m.Discards).Returns(discards);
+            deckMock.Setup(m => m.Buried).Returns(discards);
             var picker = game.PlayNonHumans(deckMock.Object);
             Assert.AreEqual(player3.Object, picker, "Player 3 is picker");
             Assert.AreEqual(2, discards.Count(), "There are two discards");
@@ -203,7 +203,7 @@ namespace Sheepshead.Tests
             deckMock.Setup(m => m.PlayersRefusingPick).Returns(refusingPick);
             deckMock.Setup(m => m.Game).Returns(game);
             deckMock.Setup(m => m.StartingPlayer).Returns(player1.Object);
-            deckMock.Setup(m => m.Discards).Returns(discards);
+            deckMock.Setup(m => m.Buried).Returns(discards);
             game.PlayNonHumans(deckMock.Object);
             Assert.IsTrue(playerBuriedCards, "Player 2 buried cards after picking.");
             Assert.AreEqual(2, discards.Count(), "There are two buried cards.");

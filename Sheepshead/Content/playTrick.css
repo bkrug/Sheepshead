@@ -1,3 +1,8 @@
 ﻿.ui-illegal {
     border-color: red;
 }
+
+.display-label {
+    font-weight: bold;
+    margin-top: 5px;
+}

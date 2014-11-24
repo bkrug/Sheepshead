@@ -5,8 +5,6 @@
     ViewBag.Title = "Picker Found";
 }
 
-<h2>We have a Picker!</h2>
-
 <fieldset>
     <div class="display-label">
         Starting Player
@@ -28,6 +26,14 @@
     <div class="display-field">
         Player @(Model.Deck.Game.Players.IndexOf(Model.Picker) + 1)
     </div>
-</fieldset>
 
-@Html.ActionLink("Continue Playing", "PlayTrick", new { id = Model.Deck.Game.Id })
+    @if (Model.Partner != null)
+    {
+        <div class="display-label">
+            Partner
+        </div>
+        <div class="display-field">
+            Player @(Model.Deck.Game.Players.IndexOf(Model.Partner) + 1)
+        </div>
+    }
+</fieldset>

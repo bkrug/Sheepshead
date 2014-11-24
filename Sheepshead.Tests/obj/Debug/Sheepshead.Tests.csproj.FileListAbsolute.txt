@@ -5,10 +5,7 @@ e:\users\bjkrug\documents\visual studio 2012\Projects\Sheepshead\Sheepshead.Test
 e:\users\bjkrug\documents\visual studio 2012\Projects\Sheepshead\Sheepshead.Tests\bin\Debug\Microsoft.Web.Infrastructure.dll
 e:\users\bjkrug\documents\visual studio 2012\Projects\Sheepshead\Sheepshead.Tests\bin\Debug\Newtonsoft.Json.dll
 e:\users\bjkrug\documents\visual studio 2012\Projects\Sheepshead\Sheepshead.Tests\bin\Debug\Sheepshead.dll
-e:\users\bjkrug\documents\visual studio 2012\Projects\Sheepshead\Sheepshead.Tests\bin\Debug\System.Net.Http.Formatting.dll
 e:\users\bjkrug\documents\visual studio 2012\Projects\Sheepshead\Sheepshead.Tests\bin\Debug\System.Web.Helpers.dll
-e:\users\bjkrug\documents\visual studio 2012\Projects\Sheepshead\Sheepshead.Tests\bin\Debug\System.Web.Http.dll
-e:\users\bjkrug\documents\visual studio 2012\Projects\Sheepshead\Sheepshead.Tests\bin\Debug\System.Web.Http.WebHost.dll
 e:\users\bjkrug\documents\visual studio 2012\Projects\Sheepshead\Sheepshead.Tests\bin\Debug\System.Web.Mvc.dll
 e:\users\bjkrug\documents\visual studio 2012\Projects\Sheepshead\Sheepshead.Tests\bin\Debug\System.Web.Razor.dll
 e:\users\bjkrug\documents\visual studio 2012\Projects\Sheepshead\Sheepshead.Tests\bin\Debug\System.Web.WebPages.Deployment.dll
@@ -16,10 +13,7 @@ e:\users\bjkrug\documents\visual studio 2012\Projects\Sheepshead\Sheepshead.Test
 e:\users\bjkrug\documents\visual studio 2012\Projects\Sheepshead\Sheepshead.Tests\bin\Debug\System.Web.WebPages.Razor.dll
 e:\users\bjkrug\documents\visual studio 2012\Projects\Sheepshead\Sheepshead.Tests\bin\Debug\Sheepshead.pdb
 e:\users\bjkrug\documents\visual studio 2012\Projects\Sheepshead\Sheepshead.Tests\bin\Debug\Newtonsoft.Json.xml
-e:\users\bjkrug\documents\visual studio 2012\Projects\Sheepshead\Sheepshead.Tests\bin\Debug\System.Net.Http.Formatting.xml
 e:\users\bjkrug\documents\visual studio 2012\Projects\Sheepshead\Sheepshead.Tests\bin\Debug\System.Web.Helpers.xml
-e:\users\bjkrug\documents\visual studio 2012\Projects\Sheepshead\Sheepshead.Tests\bin\Debug\System.Web.Http.xml
-e:\users\bjkrug\documents\visual studio 2012\Projects\Sheepshead\Sheepshead.Tests\bin\Debug\System.Web.Http.WebHost.xml
 e:\users\bjkrug\documents\visual studio 2012\Projects\Sheepshead\Sheepshead.Tests\bin\Debug\System.Web.Mvc.xml
 e:\users\bjkrug\documents\visual studio 2012\Projects\Sheepshead\Sheepshead.Tests\bin\Debug\System.Web.Razor.xml
 e:\users\bjkrug\documents\visual studio 2012\Projects\Sheepshead\Sheepshead.Tests\bin\Debug\System.Web.WebPages.xml

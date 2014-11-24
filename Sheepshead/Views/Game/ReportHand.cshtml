@@ -5,9 +5,10 @@
     ViewBag.Title = "Picker Found";
 }
 
-<h2>Hand Results!</h2>
-
 <fieldset>
+    <legend>
+        Last Hand
+    </legend>
     <div class="display-label">
         Starting Player
     </div>  
@@ -40,17 +41,24 @@
         Partner Card
     </div>
     <div class="display-field">
-        Player @(Model.PartnerCard.ToString())
+        @(Model.PartnerCard.ToString())
     </div>
 
     <div class="display-label">
         Points
     </div>
-     @foreach (var playerScore in Model.Scores())
-    {
-        <div>Player @(Model.Deck.Game.Players.IndexOf(playerScore.Key) + 1)</div>
-        <div>@(playerScore.Value) points</div>
-    }
+    <table>
+        <tr>
+            @foreach (var playerScore in Model.Scores())
+            {
+                <th>Player @(Model.Deck.Game.Players.IndexOf(playerScore.Key) + 1)</th>
+            }
+        </tr>
+        <tr>
+            @foreach (var playerScore in Model.Scores())
+            {
+                <td>@(playerScore.Value)</td>
+            }
+        </tr>
+    </table>
 </fieldset>
-
-@Html.ActionLink("Play another hand", "BeginDeck", new { id = Model.Deck.Game.Id })

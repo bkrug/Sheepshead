@@ -41,7 +41,18 @@ namespace Sheepshead.Controllers
             repository.Save(newGame);
             Session["gameId"] = newGame.Id;
             newGame.RearrangePlayers();
-            return RedirectToAction("BeginDeck", new { id = newGame.Id });
+            return RedirectToAction("Play", new { id = newGame.Id });
+        }
+
+        public ActionResult Play(int id)
+        {
+            var repository = new GameRepository(GameDictionary.Instance.Dictionary);
+            var game = repository.GetById(id);
+            if (!game.Decks.Any() || game.LastDeckIsComplete())
+                return RedirectToAction("BeginDeck", new { id = game.Id });
+            if (game.Decks.Last().Hand == null || game.Decks.Last().Hand.Picker == null)
+                return RedirectToAction("Pick", new { id = game.Id });
+            return RedirectToAction("PlayTrick", new { id = game.Id });
         }
 
         public ActionResult BeginDeck(int id)
@@ -66,7 +77,7 @@ namespace Sheepshead.Controllers
             else
             {
                 ProcessPick(deck, picker as ComputerPlayer);
-                return RedirectToAction("ReportPick", new { id = game.Id });
+                return RedirectToAction("Play", new { id = game.Id });
             }
         }
 
@@ -89,7 +100,7 @@ namespace Sheepshead.Controllers
                 if (picker == null)
                     throw new ApplicationException("No one picked");
                 ProcessPick(deck, picker as ComputerPlayer);
-                return RedirectToAction("ReportPick", new { id = game.Id });
+                return RedirectToAction("Play", new { id = game.Id });
             }
         }
 
@@ -118,15 +129,7 @@ namespace Sheepshead.Controllers
             var droppedCardsIndex = droppedCardIndicies.Split(';').Select(c => Int16.Parse(c)).ToArray();
             var droppedCards = droppedCardsIndex.Select(i => human.Cards[i]).ToList();
             new Hand(deck, human, droppedCards);
-            return RedirectToAction("ReportPick", new { id = game.Id });
-        }
-
-        public ActionResult ReportPick(int id)
-        {
-            var repository = new GameRepository(GameDictionary.Instance.Dictionary);
-            var game = repository.GetById(id);
-            var hand = game.Decks.Last().Hand;
-            return View(hand);
+            return RedirectToAction("Play", new { id = game.Id });
         }
 
         public ActionResult PlayTrick(int id)
@@ -155,24 +158,7 @@ namespace Sheepshead.Controllers
             var card = player.Cards[indexOfCard];
             trick.Add(player, card);
             game.PlayNonHumans(trick);
-            return RedirectToAction("ReportTrick", new { id = id });
-        }
-
-        public ActionResult ReportTrick(int id)
-        {
-            var repository = new GameRepository(GameDictionary.Instance.Dictionary);
-            var game = repository.GetById(id);
-            var hand = game.Decks.Last().Hand;
-            ITrick trick = hand.Tricks.Last();
-            return View(trick);
-        }
-
-        public ActionResult ReportHand(int id)
-        {
-            var repository = new GameRepository(GameDictionary.Instance.Dictionary);
-            var game = repository.GetById(id);
-            var hand = game.Decks.Last().Hand;
-            return View(hand);
+            return RedirectToAction("Play", new { id = id });
         }
     }
 }

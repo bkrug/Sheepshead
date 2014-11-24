@@ -3,33 +3,31 @@
 @{
     ViewBag.Title = "Playing Trick";
 }
-<head>
-    @Styles.Render("~/Scripts/playTrick.css")
-</head>
 
 <h2>Playing Trick</h2>
 
-<div class="display-label">
-        Starting Player
-</div>  
-<div class="display-field">
-    Player @(Model.Hand.Deck.Game.Players.IndexOf(Model.StartingPlayer) + 1)
-</div>
-
-<div class="display-label">
-        Human Player
-</div>
-<div class="display-field">
-    Player @(Model.Hand.Deck.Game.Players.IndexOf(Model.Hand.Deck.Game.Players.First(p => p is IHumanPlayer)) + 1)
-</div>
-
-<p>Cards played</p>
-@foreach (var cardPlayed in Model.CardsPlayed)
-{
-    var playerIndex = Model.Hand.Deck.Game.Players.IndexOf(cardPlayed.Key);
-    <div>Player @(playerIndex + 1)</div>
-    <img src="@("\\Images\\" + @CardRepository.GetPictureFilename(cardPlayed.Value) + ".png")" />
+@{ Html.RenderPartial("ReportPick", Model.Hand); }
+@if (Model.Hand.Tricks.Count() > 1)
+{ 
+    <fieldset>
+        <legend>Previous Trick</legend>
+        @{ Html.RenderPartial("ReportTrick", Model.Hand.Tricks.ElementAt(Model.Hand.Tricks.Count() - 2)); }
+    </fieldset>
 }
+
+<p>Cards played this trick</p>
+<table>
+    <tr>
+    @foreach (var cardPlayed in Model.CardsPlayed)
+    {
+        var playerIndex = Model.Hand.Deck.Game.Players.IndexOf(cardPlayed.Key);
+        <td>
+            <div>Player @(playerIndex + 1)</div>
+            <img src="@("\\Images\\" + @CardRepository.GetPictureFilename(cardPlayed.Value) + ".png")" />
+        </td>
+    }
+    </tr>
+</table>
 <form method="post">
     <p>What card will you play?</p>
     @foreach (var card in ((HumanPlayer)ViewBag.HumanPlayer).Cards)

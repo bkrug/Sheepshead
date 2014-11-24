@@ -1,57 +1,56 @@
 ﻿@model Sheepshead.Models.Deck
 @using Sheepshead.Models
 @{
-    Layout = null;
+    ViewBag.Title = "Begin Deck";
 }
 
-<!DOCTYPE html>
-
-<html>
-<head>
-    <meta name="viewport" content="width=device-width" />
-    <title>ReportGame</title>
-</head>
-<body>
+@if (Model.Game.Decks.Count() > 1)
+{
     <fieldset>
-        <legend>Game</legend>
-    
-        <div class="display-label">
-             @Html.DisplayNameFor(model => model.Game.Name)
-        </div>
-        <div class="display-field">
-            @Html.DisplayFor(model => model.Game.Name)
-        </div>
-    
-        <div class="display-label">
-             @Html.DisplayNameFor(model => model.Game.PlayerCount)
-        </div>
-        <div class="display-field">
-            @Html.DisplayFor(model => model.Game.PlayerCount)
-        </div>
-    
-        <div class="display-label">
-             @Html.DisplayNameFor(model => model.Game.HumanPlayerCount)
-        </div>
-        <div class="display-field">
-            @Html.DisplayFor(model => model.Game.HumanPlayerCount)
-        </div>
-
-        <div class="display-label">
-             Starting Player
-        </div>
-        <div class="display-field">
-            Player @(Model.Game.Players.IndexOf(Model.StartingPlayer) + 1)
-        </div>
-
-        <div class="display-label">
-             Human Player
-        </div>
-        <div class="display-field">
-            Player @(Model.Game.Players.IndexOf(Model.Game.Players.First(p => p is IHumanPlayer)) + 1)
-        </div>
-
-        @Html.ActionLink("Pick", "Pick", new { id = Model.Game.Id })
+        <legend>Last Trick</legend>
+        @{ Html.RenderPartial("ReportTrick", Model.Game.Decks.ElementAt(Model.Game.Decks.Count() - 2).Hand.Tricks.Last()); }
     </fieldset>
-    <in
-</body>
-</html>
+    Html.RenderPartial("ReportHand", Model.Game.Decks.ElementAt(Model.Game.Decks.Count() - 2).Hand);
+}
+
+<fieldset>
+    <legend>Game</legend>
+    
+    <div class="display-label">
+            @Html.DisplayNameFor(model => model.Game.Name)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Game.Name)
+    </div>
+    
+    <div class="display-label">
+            @Html.DisplayNameFor(model => model.Game.PlayerCount)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Game.PlayerCount)
+    </div>
+    
+    <div class="display-label">
+            @Html.DisplayNameFor(model => model.Game.HumanPlayerCount)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Game.HumanPlayerCount)
+    </div>
+
+    <div class="display-label">
+            Starting Player
+    </div>
+    <div class="display-field">
+        Player @(Model.Game.Players.IndexOf(Model.StartingPlayer) + 1)
+    </div>
+
+    <div class="display-label">
+            Human Player
+    </div>
+    <div class="display-field">
+        Player @(Model.Game.Players.IndexOf(Model.Game.Players.First(p => p is IHumanPlayer)) + 1)
+    </div>
+
+    @Html.ActionLink("Pick", "Play", new { id = Model.Game.Id })
+</fieldset>
+
