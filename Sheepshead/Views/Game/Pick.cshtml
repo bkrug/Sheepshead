@@ -1,4 +1,4 @@
-﻿@model Sheepshead.Models.IDeck
+﻿@model Sheepshead.Models.TurnState
 @using Sheepshead.Models
 @Scripts.Render("~/Libraries/jquery-2.1.1.min.js")
 @Scripts.Render("~/Scripts/pick.js")
@@ -6,29 +6,32 @@
     Layout = null;
 }
 
-<div class="display-label">
-        Starting Player
-</div>  
-<div class="display-field">
-    Player @(Model.Game.Players.IndexOf(Model.StartingPlayer) + 1)
-</div>
+@{ Html.RenderPartial("ReportPick", Model.Deck); }
 
-<div class="display-label">
-        Human Player
-</div>
-<div class="display-field">
-    Player @(Model.Game.Players.IndexOf(Model.Game.Players.First(p => p is IHumanPlayer)) + 1)
-</div>
+@if (Model.Deck.Hand == null || Model.Deck.Hand.Picker == null) 
+{
+    <p>Previous players did not pick</p>
+}
 
-<p>Previous players did not pick</p>
-@foreach (var card in ((HumanPlayer)ViewBag.HumanPlayer).Cards)
+<p>These are your cards</p>
+@foreach (var card in (Model.HumanPlayer).Cards)
 {
     <img src="@("\\Images\\" + CardRepository.GetPictureFilename(card) + ".png")" />
 }
-<p>Will you pick?</p>
-<form method="post">
-    <input type="hidden" id="id" name="id" />
-    <input type="hidden" id="willPick" name="willPick" />
-    <input id="yes-btn" type="button" value="Yes" />
-    <input id="no-btn" type="button" value="No" />
-</form>
+
+@if (Model.Deck.Hand == null || Model.Deck.Hand.Picker == null) 
+{
+    <p>Will you pick?</p>
+    <form method="post">
+        <input type="hidden" id="id" name="id" value="1" />
+        <input type="hidden" id="willPick" name="willPick" />
+        <input id="yes-btn" type="button" value="Yes" />
+        <input id="no-btn" type="button" value="No" />
+    </form>
+} 
+else 
+{
+    <form method="post">
+        <input type="button" value="Continue" />
+    </form>
+}

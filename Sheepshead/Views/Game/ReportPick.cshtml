@@ -1,4 +1,4 @@
-﻿@model Sheepshead.Models.Hand
+﻿@model Sheepshead.Models.Deck
 @using Sheepshead.Models
 
 @{
@@ -10,30 +10,33 @@
         Starting Player
     </div>  
     <div class="display-field">
-        Player @(Model.Deck.Game.Players.IndexOf(Model.Deck.StartingPlayer) + 1)
+        Player @(Model.Game.Players.IndexOf(Model.StartingPlayer) + 1)
     </div>
 
     <div class="display-label">
         Human Player
     </div>
     <div class="display-field">
-        Player @(Model.Deck.Game.Players.IndexOf(Model.Deck.Game.Players.First(p => p is IHumanPlayer)) + 1)
+        Player @(Model.Game.Players.IndexOf(Model.Game.Players.First(p => p is IHumanPlayer)) + 1)
     </div>
 
-    <div class="display-label">
-        Picker
-    </div>
-    <div class="display-field">
-        Player @(Model.Deck.Game.Players.IndexOf(Model.Picker) + 1)
-    </div>
+    @if (Model.Hand != null && Model.Hand.Picker != null)
+    {
+        <div class="display-label">
+            Picker
+        </div>
+        <div class="display-field">
+            Player @(Model.Game.Players.IndexOf(Model.Hand.Picker) + 1)
+        </div>
+    }
 
-    @if (Model.Partner != null)
+    @if (Model.Hand != null && Model.Hand.Partner != null)
     {
         <div class="display-label">
             Partner
         </div>
         <div class="display-field">
-            Player @(Model.Deck.Game.Players.IndexOf(Model.Partner) + 1)
+            Player @(Model.Game.Players.IndexOf(Model.Hand.Partner) + 1)
         </div>
     }
 </fieldset>

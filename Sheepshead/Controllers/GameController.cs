@@ -44,98 +44,59 @@ namespace Sheepshead.Controllers
             return RedirectToAction("Play", new { id = newGame.Id });
         }
 
+        [HttpGet]
         public ActionResult Play(int id)
         {
             var repository = new GameRepository(GameDictionary.Instance.Dictionary);
             var game = repository.GetById(id);
+            var turnState = new TurnState();
+            turnState.HumanPlayer = (IHumanPlayer)game.Players.First(p => p is IHumanPlayer);
             if (!game.Decks.Any() || game.LastDeckIsComplete())
-                return RedirectToAction("BeginDeck", new { id = game.Id });
-            if (game.Decks.Last().Hand == null || game.Decks.Last().Hand.Picker == null)
-                return RedirectToAction("Pick", new { id = game.Id });
-            return RedirectToAction("PlayTrick", new { id = game.Id });
+            {
+                turnState.TurnType = TurnType.BeginDeck;
+                turnState.Deck = BeginDeck(game);
+            }
+            else if (game.Decks.Last().Hand == null || game.Decks.Last().Hand.Picker == null)
+            {
+                turnState.TurnType = TurnType.Pick;
+                turnState.Deck = Pick(game);
+            }
+            else if (!game.Decks.Last().Buried.Any())
+            {
+                turnState.TurnType = TurnType.Bury;
+                turnState.Deck = Bury(game);
+            }
+            else
+            {
+                turnState.TurnType = TurnType.PlayTrick;
+                turnState.Deck = PlayTrick(game);
+            }
+            return View(turnState);
         }
 
-        public ActionResult BeginDeck(int id)
+        private IDeck BeginDeck(IGame game)
         {
-            var repository = new GameRepository(GameDictionary.Instance.Dictionary);
-            var game = repository.GetById(id);
-            var deck = game.LastDeckIsComplete() ? new Deck(game) : game.Decks.Last();
-            return View(deck);
+            return game.LastDeckIsComplete() ? new Deck(game) : game.Decks.Last();
         }
 
-        public ActionResult Pick(int id)
+        private IDeck Pick(IGame game)
         {
-            var repository = new GameRepository(GameDictionary.Instance.Dictionary);
-            var game = repository.GetById(id);
             var deck = game.Decks.Last();
             var picker = game.PlayNonHumans(deck);
-            ViewBag.HumanPlayer = game.Players.First(p => p is HumanPlayer);
-            if (picker == null)
-            {
-                return View(deck);
-            }
-            else
-            {
-                ProcessPick(deck, picker as ComputerPlayer);
-                return RedirectToAction("Play", new { id = game.Id });
-            }
+            if (picker != null)
+                ProcessPick(deck, (IComputerPlayer)picker);
+            return deck;
         }
 
-        [HttpPost]
-        public ActionResult Pick(int id, bool willPick, string droppedCardIndicies)
+        public IDeck Bury(IGame game)
         {
-            var repository = new GameRepository(GameDictionary.Instance.Dictionary);
-            var game = repository.GetById(id);
-            var deck = game.Decks.Last();
-            IPlayer human = game.Players.First(p => p is HumanPlayer);
-            if (willPick)
-            {
-                human.Cards.AddRange(deck.Blinds);
-                return RedirectToAction("Bury", new { id = game.Id });
-            }
-            else
-            {
-                deck.PlayerWontPick(human);
-                var picker = game.PlayNonHumans(game.Decks.Last());
-                if (picker == null)
-                    throw new ApplicationException("No one picked");
-                ProcessPick(deck, picker as ComputerPlayer);
-                return RedirectToAction("Play", new { id = game.Id });
-            }
-        }
-
-        private IHand ProcessPick(IDeck deck, ComputerPlayer picker)
-        {
-            var droppedCards = picker.DropCardsForPick(deck);
-            return new Hand(deck, picker, droppedCards);
-        }
-
-        public ActionResult Bury(int id)
-        {
-            var repository = new GameRepository(GameDictionary.Instance.Dictionary);
-            var game = repository.GetById(id);
             var deck = game.Decks.Last();
             ViewBag.HumanPlayer = game.Players.First(p => p is HumanPlayer);
-            return View(deck);
+            return deck;
         }
 
-        [HttpPost]
-        public ActionResult Bury(int id, string droppedCardIndicies)
+        private IDeck PlayTrick(IGame game)
         {
-            var repository = new GameRepository(GameDictionary.Instance.Dictionary);
-            var game = repository.GetById(id);
-            var deck = game.Decks.Last();
-            IPlayer human = game.Players.First(p => p is HumanPlayer);
-            var droppedCardsIndex = droppedCardIndicies.Split(';').Select(c => Int16.Parse(c)).ToArray();
-            var droppedCards = droppedCardsIndex.Select(i => human.Cards[i]).ToList();
-            new Hand(deck, human, droppedCards);
-            return RedirectToAction("Play", new { id = game.Id });
-        }
-
-        public ActionResult PlayTrick(int id)
-        {
-            var repository = new GameRepository(GameDictionary.Instance.Dictionary);
-            var game = repository.GetById(id);
             var hand = game.Decks.Last().Hand;
             if (hand.IsComplete())
                 throw new ApplicationException("Hand is already complete.");
@@ -143,22 +104,78 @@ namespace Sheepshead.Controllers
             if (trick == null || trick.IsComplete())
                 trick = new Trick(hand);
             game.PlayNonHumans(trick);
-            ViewBag.HumanPlayer = game.Players.First(p => p is HumanPlayer);
-            return View(trick);
+            return hand.Deck;
         }
 
         [HttpPost]
-        public ActionResult PlayTrick(int id, int indexOfCard)
+        public ActionResult Play(int id, int? indexOfCard, bool? willPick, string buriedCardIndicies)
         {
             var repository = new GameRepository(GameDictionary.Instance.Dictionary);
             var game = repository.GetById(id);
+            if (!game.Decks.Any() || game.LastDeckIsComplete())
+            {
+                return RedirectToAction("Play", new { id = game.Id });
+            }
+            else if (game.Decks.Last().Hand == null || game.Decks.Last().Hand.Picker == null)
+            {
+                return Pick(game, willPick.Value, buriedCardIndicies);
+            }
+            else if (!game.Decks.Last().Buried.Any())
+            {
+                return Bury(game, buriedCardIndicies);
+            }
+            else
+            {
+                return PlayTrick(game, indexOfCard.Value);
+            }
+        }
+
+        private ActionResult Pick(IGame game, bool willPick, string buriedCardIndicies)
+        {
+            var deck = game.Decks.Last();
+            IPlayer human = game.Players.First(p => p is HumanPlayer);
+            if (willPick)
+            {
+                human.Cards.AddRange(deck.Blinds);
+                new Hand(deck, human, new List<ICard>());
+            }
+            else
+            {
+                deck.PlayerWontPick(human);
+                var picker = game.PlayNonHumans(game.Decks.Last());
+                if (picker == null)
+                    throw new ApplicationException("No one picked");
+                ProcessPick(deck, (IComputerPlayer)picker);
+            }
+            return RedirectToAction("Play", new { id = game.Id });
+        }
+
+        private ActionResult Bury(IGame game, string buriedCardsIndicies)
+        {
+            var deck = game.Decks.Last();
+            IPlayer human = game.Players.First(p => p is HumanPlayer);
+            var buriedCardsIndex = buriedCardsIndicies.Split(';').Select(c => Int16.Parse(c)).ToArray();
+            var buriedCards = buriedCardsIndex.Select(i => human.Cards[i]).ToList();
+            buriedCards.ForEach(c => human.Cards.Remove(c));
+            buriedCards.ForEach(c => deck.Buried.Add(c));
+            return RedirectToAction("Play", new { id = game.Id });
+        }
+
+        private ActionResult PlayTrick(IGame game, int indexOfCard)
+        {
             var hand = game.Decks.Last().Hand;
             ITrick trick = hand.Tricks.Last();
             var player = game.Players.First(p => p is HumanPlayer);
             var card = player.Cards[indexOfCard];
             trick.Add(player, card);
             game.PlayNonHumans(trick);
-            return RedirectToAction("Play", new { id = id });
+            return RedirectToAction("Play", new { id = game.Id });
+        }
+
+        private IHand ProcessPick(IDeck deck, IComputerPlayer picker)
+        {
+            var buriedCards = picker.DropCardsForPick(deck);
+            return new Hand(deck, picker, buriedCards);
         }
     }
 }

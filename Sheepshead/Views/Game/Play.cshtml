@@ -1,0 +1,18 @@
+﻿@model Sheepshead.Models.TurnState
+@using Sheepshead.Models
+@switch (Model.TurnType) {
+    case TurnType.BeginDeck:
+        Html.RenderPartial("BeginDeck", Model.Deck);
+        break;
+    case TurnType.Pick:
+        Html.RenderPartial("Pick", Model);
+        break;
+    case TurnType.Bury:
+        Html.RenderPartial("Bury", Model);
+        break;
+    case TurnType.PlayTrick:
+        Html.RenderPartial("PlayTrick", Model);
+        break;
+    default:
+        throw new ApplicationException("If you got this far something is wrong.");
+}

@@ -129,6 +129,7 @@
     <Compile Include="Models\Hand.cs" />
     <Compile Include="Models\Players\NewbiePlayer.cs" />
     <Compile Include="Models\Trick.cs" />
+    <Compile Include="Models\TurnState.cs" />
     <Compile Include="Models\UserRepository.cs" />
     <Compile Include="Models\GameRepository.cs" />
     <Compile Include="Models\Game.cs" />
@@ -272,6 +273,9 @@
     <Content Include="Views\Game\Bury.cshtml">
       <Generator>RazorGenerator</Generator>
     </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Game\Play.cshtml" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

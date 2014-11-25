@@ -1,4 +1,4 @@
-﻿@model Sheepshead.Models.Trick
+﻿@model Sheepshead.Models.TurnState
 @using Sheepshead.Models
 @{
     ViewBag.Title = "Playing Trick";
@@ -6,21 +6,21 @@
 
 <h2>Playing Trick</h2>
 
-@{ Html.RenderPartial("ReportPick", Model.Hand); }
-@if (Model.Hand.Tricks.Count() > 1)
+@{ Html.RenderPartial("ReportPick", Model.Deck); }
+@if (Model.Deck.Hand.Tricks.Count() > 1)
 { 
     <fieldset>
         <legend>Previous Trick</legend>
-        @{ Html.RenderPartial("ReportTrick", Model.Hand.Tricks.ElementAt(Model.Hand.Tricks.Count() - 2)); }
+        @{ Html.RenderPartial("ReportTrick", Model.Deck.Hand.Tricks.ElementAt(Model.Deck.Hand.Tricks.Count() - 2)); }
     </fieldset>
 }
 
 <p>Cards played this trick</p>
 <table>
     <tr>
-    @foreach (var cardPlayed in Model.CardsPlayed)
+    @foreach (var cardPlayed in Model.Deck.Hand.Tricks.Last().CardsPlayed)
     {
-        var playerIndex = Model.Hand.Deck.Game.Players.IndexOf(cardPlayed.Key);
+        var playerIndex = Model.Deck.Game.Players.IndexOf(cardPlayed.Key);
         <td>
             <div>Player @(playerIndex + 1)</div>
             <img src="@("\\Images\\" + @CardRepository.GetPictureFilename(cardPlayed.Value) + ".png")" />
@@ -30,13 +30,13 @@
 </table>
 <form method="post">
     <p>What card will you play?</p>
-    @foreach (var card in ((HumanPlayer)ViewBag.HumanPlayer).Cards)
+    @foreach (var card in Model.HumanPlayer.Cards)
     {
-        var cardIndex = ((HumanPlayer)ViewBag.HumanPlayer).Cards.IndexOf(card);
-        var isLegal = Model.IsLegalAddition(card, (HumanPlayer)ViewBag.HumanPlayer);
+        var cardIndex = Model.HumanPlayer.Cards.IndexOf(card);
+        var isLegal = Model.Deck.Hand.Tricks.Last().IsLegalAddition(card, Model.HumanPlayer);
         <input type="radio" name="indexOfCard" class="js-card-cb" value="@cardIndex.ToString()" data-index="@cardIndex.ToString()" style="@(isLegal ? "" : "display: none;")" />
         <img src="@("\\Images\\" + CardRepository.GetPictureFilename(card) + ".png")" class="@(isLegal ? "" : "ui-illegal")" />
     }
-    <input type="hidden" value="@(Model.Hand.Deck.Game.Id)" id="id" name="id"/>
+    <input type="hidden" value="@(Model.Deck.Game.Id)" id="id" name="id"/>
     <input type="submit" value="Play This Card" />
 </form>

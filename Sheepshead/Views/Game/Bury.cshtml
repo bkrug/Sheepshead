@@ -1,4 +1,4 @@
-﻿@model Sheepshead.Models.IDeck
+﻿@model Sheepshead.Models.TurnState
 @using Sheepshead.Models
 @Scripts.Render("~/Libraries/jquery-2.1.1.min.js")
 @Scripts.Render("~/Scripts/bury.js")
@@ -6,29 +6,17 @@
     Layout = null;
 }
 
-<div class="display-label">
-        Starting Player
-</div>  
-<div class="display-field">
-    Player @(Model.Game.Players.IndexOf(Model.StartingPlayer) + 1)
-</div>
-
-<div class="display-label">
-        Human Player
-</div>
-<div class="display-field">
-    Player @(Model.Game.Players.IndexOf(Model.Game.Players.First(p => p is IHumanPlayer)) + 1)
-</div>
+@{ Html.RenderPartial("ReportPick", Model.Deck); }
 
 <p>Pick cards to Bury</p>
-@foreach (var card in ((HumanPlayer)ViewBag.HumanPlayer).Cards)
+@foreach (var card in Model.HumanPlayer.Cards)
 {
-    var index = ((HumanPlayer)ViewBag.HumanPlayer).Cards.IndexOf(card);
+    var index = Model.HumanPlayer.Cards.IndexOf(card);
     <input type="checkbox" class="js-card-cb" data-index="@index.ToString()" />
     <img src="@("\\Images\\" + CardRepository.GetPictureFilename(card) + ".png")" />
 }
 <form method="post">
     <input type="hidden" id="id" name="id" />
-    <input type="hidden" id="droppedCardIndicies" name="droppedCardIndicies" />
+    <input type="hidden" id="droppedCardIndicies" name="buriedCardIndicies" />
     <input id="bury-btn" type="button" value="Bury" />
 </form>

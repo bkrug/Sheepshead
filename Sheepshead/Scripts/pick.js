@@ -7,13 +7,11 @@
 
 var PickPage = function () {
     this.OnNoClick = function (e) {
-        $('#id').val(1);
         $('#willPick').val(false);
         $('form').submit();
     };
 
     this.OnYesClick = function (e) {
-        $('#id').val(1);
         $('#willPick').val(true);
         $('form').submit();
     };
