@@ -51,51 +51,38 @@ namespace Sheepshead.Controllers
             var game = repository.GetById(id);
             var turnState = new TurnState();
             turnState.HumanPlayer = (IHumanPlayer)game.Players.First(p => p is IHumanPlayer);
+            turnState.Deck = game.Decks.LastOrDefault();
             if (!game.Decks.Any() || game.LastDeckIsComplete())
             {
                 turnState.TurnType = TurnType.BeginDeck;
-                turnState.Deck = BeginDeck(game);
+                turnState.Deck = new Deck(game);
             }
             else if (game.Decks.Last().Hand == null || game.Decks.Last().Hand.Picker == null)
             {
                 turnState.TurnType = TurnType.Pick;
-                turnState.Deck = Pick(game);
+                Pick(game);
             }
             else if (!game.Decks.Last().Buried.Any())
             {
                 turnState.TurnType = TurnType.Bury;
-                turnState.Deck = Bury(game);
             }
             else
             {
                 turnState.TurnType = TurnType.PlayTrick;
-                turnState.Deck = PlayTrick(game);
+                PlayTrick(game);
             }
             return View(turnState);
         }
 
-        private IDeck BeginDeck(IGame game)
-        {
-            return game.LastDeckIsComplete() ? new Deck(game) : game.Decks.Last();
-        }
-
-        private IDeck Pick(IGame game)
+        private void Pick(IGame game)
         {
             var deck = game.Decks.Last();
             var picker = game.PlayNonHumans(deck);
             if (picker != null)
                 ProcessPick(deck, (IComputerPlayer)picker);
-            return deck;
         }
 
-        public IDeck Bury(IGame game)
-        {
-            var deck = game.Decks.Last();
-            ViewBag.HumanPlayer = game.Players.First(p => p is HumanPlayer);
-            return deck;
-        }
-
-        private IDeck PlayTrick(IGame game)
+        private void PlayTrick(IGame game)
         {
             var hand = game.Decks.Last().Hand;
             if (hand.IsComplete())
@@ -104,7 +91,6 @@ namespace Sheepshead.Controllers
             if (trick == null || trick.IsComplete())
                 trick = new Trick(hand);
             game.PlayNonHumans(trick);
-            return hand.Deck;
         }
 
         [HttpPost]
@@ -118,19 +104,20 @@ namespace Sheepshead.Controllers
             }
             else if (game.Decks.Last().Hand == null || game.Decks.Last().Hand.Picker == null)
             {
-                return Pick(game, willPick.Value, buriedCardIndicies);
+                Pick(game, willPick.Value, buriedCardIndicies);
             }
             else if (!game.Decks.Last().Buried.Any())
             {
-                return Bury(game, buriedCardIndicies);
+                Bury(game, buriedCardIndicies);
             }
-            else
+            else if (indexOfCard.HasValue)
             {
-                return PlayTrick(game, indexOfCard.Value);
+                PlayTrick(game, indexOfCard.Value);
             }
+            return RedirectToAction("Play", new { id = game.Id });
         }
 
-        private ActionResult Pick(IGame game, bool willPick, string buriedCardIndicies)
+        private void Pick(IGame game, bool willPick, string buriedCardIndicies)
         {
             var deck = game.Decks.Last();
             IPlayer human = game.Players.First(p => p is HumanPlayer);
@@ -147,10 +134,9 @@ namespace Sheepshead.Controllers
                     throw new ApplicationException("No one picked");
                 ProcessPick(deck, (IComputerPlayer)picker);
             }
-            return RedirectToAction("Play", new { id = game.Id });
         }
 
-        private ActionResult Bury(IGame game, string buriedCardsIndicies)
+        private void Bury(IGame game, string buriedCardsIndicies)
         {
             var deck = game.Decks.Last();
             IPlayer human = game.Players.First(p => p is HumanPlayer);
@@ -158,10 +144,9 @@ namespace Sheepshead.Controllers
             var buriedCards = buriedCardsIndex.Select(i => human.Cards[i]).ToList();
             buriedCards.ForEach(c => human.Cards.Remove(c));
             buriedCards.ForEach(c => deck.Buried.Add(c));
-            return RedirectToAction("Play", new { id = game.Id });
         }
 
-        private ActionResult PlayTrick(IGame game, int indexOfCard)
+        private void PlayTrick(IGame game, int indexOfCard)
         {
             var hand = game.Decks.Last().Hand;
             ITrick trick = hand.Tricks.Last();
@@ -169,7 +154,6 @@ namespace Sheepshead.Controllers
             var card = player.Cards[indexOfCard];
             trick.Add(player, card);
             game.PlayNonHumans(trick);
-            return RedirectToAction("Play", new { id = game.Id });
         }
 
         private IHand ProcessPick(IDeck deck, IComputerPlayer picker)

@@ -39,4 +39,14 @@
             Player @(Model.Game.Players.IndexOf(Model.Hand.Partner) + 1)
         </div>
     }
+
+    @if (Model.Hand != null && Model.Hand.PartnerCard != null)
+    {
+        <div class="display-label">
+            Partner Card
+        </div>
+        <div class="display-field">
+            @(Model.Hand.PartnerCard.ToString())
+        </div>
+    }
 </fieldset>

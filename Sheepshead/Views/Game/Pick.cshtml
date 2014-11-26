@@ -10,7 +10,10 @@
 
 @if (Model.Deck.Hand == null || Model.Deck.Hand.Picker == null) 
 {
-    <p>Previous players did not pick</p>
+    <p>Previous players did not pick.</p>
+}
+else {
+    <p>Another player has picked.</p>
 }
 
 <p>These are your cards</p>
@@ -32,6 +35,6 @@
 else 
 {
     <form method="post">
-        <input type="button" value="Continue" />
+        <input type="submit" value="Continue" />
     </form>
 }
