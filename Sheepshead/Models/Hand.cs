@@ -47,14 +47,11 @@ namespace Sheepshead.Models
 
         public Dictionary<IPlayer, int> Scores()
         {
-            var pickerPoints = 0;
             var defensePoints = 0;
             foreach (var trick in _tricks)
             {
                 var winnerData = trick.Winner();
-                if (winnerData.Player == Picker || winnerData.Player == Partner)
-                    pickerPoints += winnerData.Points;
-                else
+                if (winnerData.Player != Picker && winnerData.Player != Partner)
                     defensePoints += winnerData.Points;
             }
             int defensiveHandPoints;

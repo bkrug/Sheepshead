@@ -86,7 +86,7 @@ namespace Sheepshead.Tests
                 trick.Add(player4, CardRepository.Instance[StandardSuite.HEARTS, CardType.KING]);
                 trick.Add(player5, CardRepository.Instance[StandardSuite.CLUBS, CardType.ACE]);
                 var winner = trick.Winner();
-                Assert.AreEqual(player3, winner.Player, "Ten of hearts has the hights rank of correct suite.");
+                Assert.AreEqual(player3, winner.Player, "Ten of hearts has the hightest rank of the correct suite.");
                 Assert.AreEqual(36, winner.Points, "Expected points for 2 Aces, 1 King, 1 Ten.");
             }
             {

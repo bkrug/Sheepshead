@@ -57,6 +57,8 @@ namespace Sheepshead.Tests
             return hand;
         }
 
+        //Notice that we don't account for the blinds here.  We don't need to.
+        //The scores method is able to opperate by only counting up the defensive players' points.
         [TestMethod]
         public void Hand_Scores()
         {
