@@ -43,7 +43,7 @@ namespace Sheepshead.Models
         private ICard GetLeadCard(ITrick trick, IEnumerable<ICard> legalCards)
         {
             IEnumerable<ICard> cardsOfPreferedSuite;
-            if (trick.StartingPlayer == this || this.Cards.Any(c => c.StandardSuite == trick.Hand.PartnerCard.StandardSuite || c.CardType == trick.Hand.PartnerCard.CardType))
+            if (trick.Hand.Picker == this || this.Cards.Any(c => c.StandardSuite == trick.Hand.PartnerCard.StandardSuite && c.CardType == trick.Hand.PartnerCard.CardType))
                 cardsOfPreferedSuite = legalCards.Where(c => CardRepository.GetSuite(c) == Suite.TRUMP).ToList();
             else
                 cardsOfPreferedSuite = legalCards.Where(c => CardRepository.GetSuite(c) != Suite.TRUMP).ToList();
@@ -71,8 +71,7 @@ namespace Sheepshead.Models
         {
             var middleQueueRankInTrick = (deck.Game.PlayerCount + 1) / 2;
             var trumpCount = this.Cards.Count(c => CardRepository.GetSuite(c) == Suite.TRUMP);
-            return QueueRankInDeck(deck) == deck.Game.PlayerCount
-                || QueueRankInDeck(deck) > middleQueueRankInTrick && trumpCount >= 2
+            return QueueRankInDeck(deck) > middleQueueRankInTrick && trumpCount >= 2
                 || QueueRankInDeck(deck) == middleQueueRankInTrick && trumpCount >= 3
                 || trumpCount >= 4;
         }
