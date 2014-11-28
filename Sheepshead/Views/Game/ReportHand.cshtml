@@ -23,29 +23,40 @@
         Player @(Model.Deck.Game.Players.IndexOf(Model.Deck.Game.Players.First(p => p is IHumanPlayer)) + 1)
     </div>
 
-    <div class="display-label">
-        Picker
-    </div>
-    <div class="display-field">
-        Player @(Model.Deck.Game.Players.IndexOf(Model.Picker) + 1)
-    </div>
+    @if (Model.Deck.Hand != null && Model.Deck.Hand.Leasters)
+    {
+        <div class="display-label" />
+        <div class="display-field">
+            Leasters Hand
+        </div>
+    }
+    
+    @if (!Model.Deck.Hand.Leasters) 
+    {
+        <div class="display-label">
+            Picker
+        </div>
+        <div class="display-field">
+            Player @(Model.Deck.Game.Players.IndexOf(Model.Picker) + 1)
+        </div>
+
+        <div class="display-label">
+            Partner
+        </div>
+        <div class="display-field">
+            Player @(Model.Deck.Game.Players.IndexOf(Model.Partner) + 1)
+        </div>
+        
+        <div class="display-label">
+            Partner Card
+        </div>
+        <div class="display-field">
+            @(Model.PartnerCard.ToString())
+        </div>
+    }
 
     <div class="display-label">
-        Partner
-    </div>
-    <div class="display-field">
-        Player @(Model.Deck.Game.Players.IndexOf(Model.Partner) + 1)
-    </div>
-
-    <div class="display-label">
-        Partner Card
-    </div>
-    <div class="display-field">
-        @(Model.PartnerCard.ToString())
-    </div>
-
-    <div class="display-label">
-        Points
+        Coins
     </div>
     <table>
         <tr>

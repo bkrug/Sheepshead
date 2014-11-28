@@ -20,6 +20,14 @@
         Player @(Model.Game.Players.IndexOf(Model.Game.Players.First(p => p is IHumanPlayer)) + 1)
     </div>
 
+    @if (Model.Hand != null && Model.Hand.Leasters)
+    {
+        <div class="display-label" />
+        <div class="display-field">
+            Leasters Hand
+        </div>
+    }
+
     @if (Model.Hand != null && Model.Hand.Picker != null)
     {
         <div class="display-label">

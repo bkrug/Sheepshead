@@ -44,6 +44,7 @@ namespace Sheepshead.Tests
         {
             var gameMock = new Mock<IGame>();
             gameMock.Setup(m => m.Players).Returns(players);
+            gameMock.Setup(m => m.PlayerCount).Returns(players.Count);
             var deckMock = new Mock<IDeck>();
             deckMock.Setup(m => m.Game).Returns(gameMock.Object);
             var blinds = new List<ICard>() { CardRepository.Instance[StandardSuite.DIAMONDS, CardType.KING], CardRepository.Instance[StandardSuite.CLUBS, CardType.ACE] };
@@ -88,6 +89,41 @@ namespace Sheepshead.Tests
                 {
                     var player = players[b];
                     Assert.AreEqual(playerScores[a][b], actualScores[player], "Matching player scores.  Running Test " + a + ", player " + (b+1));
+                }
+            }
+        }
+
+        [TestMethod]
+        public void Hand_Scores_Leasters()
+        {
+            var scoreTests = new List<int[,]>()
+            {
+                new int[,] { { 1, 14 }, { 2, 30 }, { 1, 17 }, { 4, 40 }, { 5, 19 } },
+                new int[,] { { 1, 11 }, { 2, 30 }, { 2, 30 }, { 4, 40 }, { 5, 9  } },
+                new int[,] { { 2, 14 }, { 2, 30 }, { 2, 17 }, { 4, 40 }, { 4, 19 } },
+                new int[,] { { 1, 20 }, { 2, 20 }, { 3, 30 }, { 4, 0  }, { 5, 50 } },
+                new int[,] { { 2, 14 }, { 2, 30 }, { 2, 17 }, { 2, 40 }, { 2, 19 } }
+            };
+            var playerScores = new List<int[]>() 
+            {
+                new int[] { -1, -1, -1, -1, 4 },
+                new int[] { -1, -1, -1, -1, 4 },
+                new int[] { -1, -1, -1, 4, -1 },
+                new int[] { -1, -1, -1, 4, -1 },
+                new int[] { -1, 4, -1, -1, -1 }
+            };
+            for (var a = 0; a < scoreTests.Count; ++a)
+            {
+                var trickMocks = GetTrickMocks();
+                var players = GetPlayers();
+                PopulateTricks(ref trickMocks, players, scoreTests[a]);
+                var hand = GetHand(trickMocks, players, null, null);
+                var actualScores = hand.Scores();
+                //Assert.AreEqual(0, actualScores.Sum(kvp => kvp.Value), "Player's scores add to zero.  (This is really a test of the test, not the code.) Running Test " + a);
+                for (var b = 0; b < 5; ++b)
+                {
+                    var player = players[b];
+                    Assert.AreEqual(playerScores[a][b], actualScores[player], "Matching player scores.  Running Test " + a + ", player " + (b + 1));
                 }
             }
         }
@@ -165,6 +201,20 @@ namespace Sheepshead.Tests
                     match = false;
             }
             return !tempList.Any() && match;
+        }
+
+        [TestMethod]
+        public void Hand_Leasters()
+        {
+            var deckMock = new Mock<IDeck>();
+            var hand = new Hand(deckMock.Object, null, null);
+            Assert.IsTrue(hand.Leasters, "When there is no picker, play leasters.");
+
+            var pickerMock = new Mock<IPlayer>();
+            pickerMock.Setup(m => m.Cards).Returns(new List<ICard>());
+            deckMock.Setup(m => m.Blinds).Returns(new List<ICard>());
+            var hand2 = new Hand(deckMock.Object, pickerMock.Object, new List<ICard>());
+            Assert.IsFalse(hand2.Leasters, "When there is a picker, don't play leasters.");
         }
     }
 }

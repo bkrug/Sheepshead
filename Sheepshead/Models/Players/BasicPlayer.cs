@@ -9,12 +9,35 @@ namespace Sheepshead.Models
     {
         public override ICard GetMove(ITrick trick)
         {
+            if (!trick.Hand.Leasters)
+            {
+                return TryToWinTrick(trick);
+            }
+            else
+            {
+                var previousWinners = trick.Hand.Tricks.Where(t => t != trick).Select(t => t.Winner());
+                var lowestTrick = previousWinners.Any() ? previousWinners.Min(w => w.Points) : -1;
+                if (previousWinners.Any(t => t.Player == this) || trick.CardsPlayed.Sum(c => c.Value.Points) > lowestTrick)
+                    return TryToLooseTrick(trick);
+                else
+                    return TryToWinTrick(trick);
+            }
+        }
+
+        private ICard TryToWinTrick(ITrick trick)
+        {
             if (trick.StartingPlayer == this)
                 return GetLeadCard(trick, this.Cards);
             var legalCards = Cards.Where(c => trick.IsLegalAddition(c, this));
             if (QueueRankInTrick(trick) < trick.Hand.Deck.Game.PlayerCount)
                 return GetMiddleCard(trick, legalCards);
             return GetFinishingCard(trick, legalCards);
+        }
+
+        private ICard TryToLooseTrick(ITrick trick)
+        {
+            var legalCards = Cards.Where(c => trick.IsLegalAddition(c, this));
+            return legalCards.OrderByDescending(l => l.Rank).First();
         }
 
         private ICard GetLeadCard(ITrick trick, IEnumerable<ICard> legalCards)

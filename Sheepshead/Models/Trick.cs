@@ -33,7 +33,7 @@ namespace Sheepshead.Models
         {
             _cards.Add(player, card);
             player.Cards.Remove(card);
-            if (_hand.PartnerCard.StandardSuite == card.StandardSuite && _hand.PartnerCard.CardType == card.CardType)
+            if (_hand.PartnerCard != null && _hand.PartnerCard.StandardSuite == card.StandardSuite && _hand.PartnerCard.CardType == card.CardType)
                 _hand.Partner = player;
         }
 

@@ -57,12 +57,12 @@ namespace Sheepshead.Controllers
                 turnState.TurnType = TurnType.BeginDeck;
                 turnState.Deck = new Deck(game);
             }
-            else if (game.Decks.Last().Hand == null || game.Decks.Last().Hand.Picker == null)
+            else if (game.Decks.Last().Hand == null)
             {
                 turnState.TurnType = TurnType.Pick;
                 Pick(game);
             }
-            else if (!game.Decks.Last().Buried.Any())
+            else if (!turnState.Deck.Buried.Any() && !turnState.Deck.Hand.Leasters)
             {
                 turnState.TurnType = TurnType.Bury;
             }
@@ -102,11 +102,11 @@ namespace Sheepshead.Controllers
             {
                 return RedirectToAction("Play", new { id = game.Id });
             }
-            else if (game.Decks.Last().Hand == null || game.Decks.Last().Hand.Picker == null)
+            else if (game.Decks.Last().Hand == null)
             {
                 Pick(game, willPick.Value, buriedCardIndicies);
             }
-            else if (!game.Decks.Last().Buried.Any())
+            else if (!game.Decks.Last().Buried.Any() && !game.Decks.Last().Hand.Leasters)
             {
                 Bury(game, buriedCardIndicies);
             }
@@ -130,8 +130,6 @@ namespace Sheepshead.Controllers
             {
                 deck.PlayerWontPick(human);
                 var picker = game.PlayNonHumans(game.Decks.Last());
-                if (picker == null)
-                    throw new ApplicationException("No one picked");
                 ProcessPick(deck, (IComputerPlayer)picker);
             }
         }
@@ -158,7 +156,7 @@ namespace Sheepshead.Controllers
 
         private IHand ProcessPick(IDeck deck, IComputerPlayer picker)
         {
-            var buriedCards = picker.DropCardsForPick(deck);
+            var buriedCards = picker != null ? picker.DropCardsForPick(deck) : new List<ICard>();
             return new Hand(deck, picker, buriedCards);
         }
     }

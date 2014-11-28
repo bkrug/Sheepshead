@@ -14,6 +14,8 @@ namespace Sheepshead.Models
         private List<ITrick> _tricks = new List<ITrick>();
         public List<ITrick> Tricks { get { return _tricks.ToList(); } }
 
+        public bool Leasters { get { return Picker == null; } }
+
         public Hand(IDeck deck, IPlayer picker, List<ICard> droppedCards)
         {
             Deck = deck;
@@ -21,9 +23,12 @@ namespace Sheepshead.Models
                 throw new DeckHasHandException("Must add a hand to a deck without one.");
             Deck.Hand = this;
             Picker = picker;
-            picker.Cards.AddRange(deck.Blinds.Where(c => !picker.Cards.Contains(c)));
-            picker.Cards.Where(c => droppedCards.Contains(c)).ToList().ForEach(c => picker.Cards.Remove(c));
-            PartnerCard = ChoosePartnerCard(picker);
+            if (picker != null)
+            {
+                picker.Cards.AddRange(deck.Blinds.Where(c => !picker.Cards.Contains(c)));
+                picker.Cards.Where(c => droppedCards.Contains(c)).ToList().ForEach(c => picker.Cards.Remove(c));
+                PartnerCard = ChoosePartnerCard(picker);
+            }
         }
 
         private ICard ChoosePartnerCard(IPlayer picker)
@@ -46,6 +51,14 @@ namespace Sheepshead.Models
         }
 
         public Dictionary<IPlayer, int> Scores()
+        {
+            if (!Leasters)
+                return NonLeasterPoints();
+            else
+                return LeasterPoints();
+        }
+
+        private Dictionary<IPlayer, int> NonLeasterPoints()
         {
             var defensePoints = 0;
             foreach (var trick in _tricks)
@@ -77,6 +90,17 @@ namespace Sheepshead.Models
             return dict;
         }
 
+        private Dictionary<IPlayer, int> LeasterPoints()
+        {
+            var trickWinners = Tricks.Select(t => t.Winner());
+            var leastPoints = trickWinners.GroupBy(t => t.Player).OrderBy(g => g.Sum(t => t.Points)).First();
+            var leastPointsPlayer = leastPoints.Select(g => g.Player).First();
+            var points = new Dictionary<IPlayer, int>();
+            foreach (var player in this.Deck.Game.Players)
+                points.Add(player, player == leastPointsPlayer ? Deck.Game.PlayerCount - 1 : -1 );
+            return points;
+        }
+
         public bool IsComplete()
         {
             const int CARDS_IN_PLAY = 30;
@@ -95,6 +119,7 @@ namespace Sheepshead.Models
         void AddTrick(ITrick trick);
         Dictionary<IPlayer, int> Scores();
         bool IsComplete();
+        bool Leasters { get; }
     }
 
     public class DeckHasHandException : ApplicationException
