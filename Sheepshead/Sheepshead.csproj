@@ -127,7 +127,10 @@
     <Compile Include="Models\Players\ComputerPlayer.cs" />
     <Compile Include="Models\Deck.cs" />
     <Compile Include="Models\Hand.cs" />
+    <Compile Include="Models\Players\LearningPlayer.cs" />
     <Compile Include="Models\Players\NewbiePlayer.cs" />
+    <Compile Include="Models\Players\Stats\MoveStat.cs" />
+    <Compile Include="Models\Players\Stats\MoveStatRepository.cs" />
     <Compile Include="Models\Trick.cs" />
     <Compile Include="Models\TurnState.cs" />
     <Compile Include="Models\UserRepository.cs" />

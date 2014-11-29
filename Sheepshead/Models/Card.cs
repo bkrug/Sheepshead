@@ -159,6 +159,7 @@ namespace Sheepshead.Models
             _Points = points;
             _Rank = rank;
         }
+        public int Id { get { return (int)StandardSuite * 4 + (int)CardType + 1; } }
         public StandardSuite StandardSuite { get { return _StandardSuite; }}
         public CardType CardType { get { return _CardType; } }
         public Int32 Points { get { return _Points; } }
@@ -171,6 +172,7 @@ namespace Sheepshead.Models
 
     public interface ICard
     {
+        int Id { get; }
         StandardSuite StandardSuite { get; }
         CardType CardType { get; }
         Int32 Points { get; }
