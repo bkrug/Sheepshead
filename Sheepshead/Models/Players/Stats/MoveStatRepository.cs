@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Reflection;
+using Sheepshead.Models.Wrappers;
+using System.Web.Script.Serialization;
+using System.Timers;
 
 namespace Sheepshead.Models.Players.Stats
 {
@@ -13,14 +16,37 @@ namespace Sheepshead.Models.Players.Stats
         MoveStat GetRecordedResults(MoveStatUniqueKey key);
     }
 
-    public class MoveStatRepository
+    public class MoveStatRepository : IMoveStatRepository
     {
         private static MoveStatRepository _instance = new MoveStatRepository();
 
         private Dictionary<MoveStatUniqueKey, MoveStat> _dict = new Dictionary<MoveStatUniqueKey, MoveStat>();
 
+        public static string SaveLocation { get; set; }
+
+        public static MoveStatRepository FromFile(IStreamReaderWrapper streamReader)
+        {
+            if (_instance != null && _instance._dict.Any())
+                throw new InvalidOperationException("Cannot reinitialize Repository");
+            var serializer = new JavaScriptSerializer();
+            string line;
+            while ((line = streamReader.ReadLine()) != null)
+            {
+                var key = serializer.Deserialize<MoveStatUniqueKey>(line);
+                var value = serializer.Deserialize<MoveStat>(streamReader.ReadLine());
+                Instance._dict.Add(key, value);
+            }
+            return Instance;
+        }
+
         private MoveStatRepository()
         {
+            if (!String.IsNullOrWhiteSpace(SaveLocation))
+            {
+                var aTimer = new System.Timers.Timer(2 * 1000);
+                aTimer.Elapsed += SaveToFile;
+                aTimer.Enabled = true;
+            }
         }
 
         public static MoveStatRepository Instance { get { return _instance; } }
@@ -45,161 +71,36 @@ namespace Sheepshead.Models.Players.Stats
 
         public MoveStat GetRecordedResults(MoveStatUniqueKey key)
         {
-            return _dict[key];
-        }
-    }
-
-    public class ResultPredictor 
-    {
-        IMoveStatRepository _repository;
-
-        public ResultPredictor(IMoveStatRepository repository)
-        {
-            _repository = repository;
+            if (_dict.ContainsKey(key))
+                return _dict[key];
+            return new MoveStat();
         }
 
-        public MoveStat GetWeightedStat(MoveStatUniqueKey key)
+        /// <summary>
+        /// To be called periodically from a timer that the constructor instantiated.
+        /// </summary>
+        protected void SaveToFile(Object source, ElapsedEventArgs e)
         {
-            var mainStat = _repository.GetRecordedResults(key);
-            if (mainStat.HandsTried >= 10000)
-                return mainStat;
-            var similarKeys = GetListOfSimilarKeys(key);
-            var similarStat = GetAverageStat(similarKeys);
-            var pow = Math.Log(mainStat.HandsTried) / Math.Log(10);
-            var weightOfSimilar =  1 - pow / 4;
-            var denominator = 1 + weightOfSimilar;
-            var percentMainHandsWon = mainStat.GamePortionWon;
-            var percentMainTricksWon = mainStat.TrickPortionWon;
-            var percentSimHandsWon = similarStat.GamePortionWon;
-            var percentSimTricksWon = similarStat.TrickPortionWon;
-            var percentWeightedTricks = (percentMainTricksWon + percentSimTricksWon * weightOfSimilar) / denominator;
-            var percentWeightedHands = (percentMainHandsWon + percentSimHandsWon * weightOfSimilar) / denominator;
-            return new MoveStat()
-            {
-                TricksWon = (int)(percentWeightedTricks * mainStat.TricksTried),
-                TricksTried = mainStat.TricksTried,
-                HandsWon = (int)(percentWeightedHands * mainStat.HandsTried),
-                HandsTried = mainStat.HandsTried
-            };
+            using (var writer = new StreamWriterWrapper(SaveLocation))
+                SaveToFile(writer);
         }
 
-        private List<MoveStatUniqueKey> GetListOfSimilarKeys(MoveStatUniqueKey key)
+        public void SaveToFile(IStreamWriterWrapper writer)
         {
-            var properties = typeof(MoveStatUniqueKey).GetFields();
-            var newKeys = new List<MoveStatUniqueKey>();
-            var intTypes = new[] { typeof(int), typeof(Int16), typeof(Int32), typeof(Int64) };
-            var nullableIntTypes = new[] { typeof(int?), typeof(Int16?), typeof(Int32?), typeof(Int64?) };
-            foreach (var property in properties)
+            var serializer = new JavaScriptSerializer();
+            foreach (var entry in _dict)
             {
-                if (intTypes.Contains(property.FieldType))
-                {
-                    var propValue = (int)property.GetValue(key);
-                    AddRangeOfValues(key, property, propValue, newKeys);
-                }
-                else if (nullableIntTypes.Contains(property.FieldType))
-                {
-                    var propValue = (int?)property.GetValue(key);
-                    if (propValue != null)
-                    {
-                        object newKey = key;
-                        property.SetValue(newKey, null);
-                        if (newKey.Equals(key))
-                            throw new ApplicationException();
-                        newKeys.Add((MoveStatUniqueKey)newKey);
-                    }
-                    AddRangeOfValues(key, property, propValue, newKeys);
-                }
-                else if (property.FieldType == typeof(bool))
-                {
-                    object newKey1 = key;
-                    property.SetValue(newKey1, !(bool)property.GetValue(key));
-                    if (newKey1.Equals(key))
-                        throw new ApplicationException();
-                    newKeys.Add((MoveStatUniqueKey)newKey1);
-                }
-            }
-            return newKeys;
-        }
-
-        private void AddRangeOfValues(MoveStatUniqueKey key, FieldInfo property, int? propValue, List<MoveStatUniqueKey> newKeys)
-        {
-            var range = Changes[property.Name];
-            int min;
-            int max;
-            if (propValue == null || !range.MaxOffset.HasValue)
-            {
-                min = range.Min;
-                max = range.Max;
-            }
-            else
-            {
-                min = (int)Math.Max((decimal)range.Min, (decimal)(propValue - range.MaxOffset.Value));
-                max = (int)Math.Min((decimal)range.Max, (decimal)(propValue + range.MaxOffset.Value));
-            }
-            for (var i = min; i <= max; ++i)
-            {
-                if (i == (int?)property.GetValue(key))
-                    continue;
-                object newKey = key;
-                property.SetValue(newKey, i);
-                if (newKey.Equals(key))
-                    throw new ApplicationException();
-                newKeys.Add((MoveStatUniqueKey)newKey);
+                writer.WriteLine(serializer.Serialize(entry.Key));
+                writer.WriteLine(serializer.Serialize(entry.Value));
             }
         }
 
-        private struct RangeDetail {
-            public int Min;
-            public int Max;
-            public int? MaxOffset;
-        }
-
-        private Dictionary<string, RangeDetail> Changes = new Dictionary<string, RangeDetail>()
+        public void UnitTestRefresh()
         {
-            { "Picker", new RangeDetail() { Min = 1, Max = 5 } },
-            { "Partner", new RangeDetail() { Min = 1, Max = 5 } },
-            { "Trick", new RangeDetail() { Min = 1, Max = 6 } },
-            { "MoveWithinTrick", new RangeDetail() { Min = 1, Max = 5 } },
-            { "PointsAlreadyInTrick", new RangeDetail() { Min = 0, Max = 120, MaxOffset = 20 } },
-            { "TotalPointsInPreviousTricks", new RangeDetail() { Min = 0, Max = 120, MaxOffset = 5 } },
-            { "CardPointsPlayed", new RangeDetail() { Min = 0, Max = 11, MaxOffset = 3 } },
-            { "CardPowerPlayed", new RangeDetail() { Min = 0, Max = 32, MaxOffset = 5 } },
-            { "HigherRankingCardsPlayedPreviousTricks", new RangeDetail() { Min = 0, Max = 32, MaxOffset = 4 } },
-            { "HigherRankingCardsPlayedThisTrick", new RangeDetail() { Min = 0, Max = 32, MaxOffset = 1 } }
-        };
-
-        private MoveStat GetAverageStat(IEnumerable<MoveStatUniqueKey> keys)
-        {
-            var tricksWon = new List<double>();
-            var handsWon = new List<double>();
-            foreach (var key in keys)
-            {
-                var stat = _repository.GetRecordedResults(key);
-                if (stat != null && stat.TricksTried > 0)
-                    tricksWon.Add(stat.TrickPortionWon.Value);
-                if (stat != null && stat.HandsTried > 0)
-                    handsWon.Add(stat.GamePortionWon.Value);
-            }
-            return new MoveStat()
-            {
-                TricksWon = tricksWon.Any() ? (int)(tricksWon.Average() * 1000) : 0,
-                TricksTried = tricksWon.Any() ? 1000 : 0,
-                HandsWon = handsWon.Any() ? (int)(handsWon.Average() * 1000) : 0,
-                HandsTried = handsWon.Any()  ? 1000 : 0
-            };
-        }
-
-        public double GetWeightedScore(MoveStatUniqueKey key)
-        {
-            throw new NotImplementedException();
+            if (!Assembly.GetCallingAssembly().FullName.Contains("Sheepshead.Tests"))
+                throw new InvalidOperationException("Method must only be called from Unit Testing assembly.");
+            _dict = new Dictionary<MoveStatUniqueKey, MoveStat>();
         }
     }
 }
-
-
-//1 => 1
-//10 => .75
-//100 => .5
-//1000 => .25
-//10000 => 0
 

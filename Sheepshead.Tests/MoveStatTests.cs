@@ -4,6 +4,7 @@ using Sheepshead.Models;
 using System.Collections.Generic;
 using Moq;
 using Sheepshead.Models.Players.Stats;
+using Sheepshead.Models.Wrappers;
 
 namespace Sheepshead.Tests
 {
@@ -14,6 +15,7 @@ namespace Sheepshead.Tests
         public void MoveStat_AddStat()
         {
             var repository = MoveStatRepository.Instance;
+            repository.UnitTestRefresh();
             var key = new MoveStatUniqueKey()
             {
                 Picker = 2,
@@ -56,6 +58,55 @@ namespace Sheepshead.Tests
             Assert.AreEqual(0, result2.GamePortionWon);
         }
 
+        [TestMethod]
+        public void MoveStat_GetResultWithNoEntry()
+        {
+            var repository = MoveStatRepository.Instance;
+            repository.UnitTestRefresh();
+            var key = new MoveStatUniqueKey()
+            {
+                Picker = 2,
+                Partner = null,
+                Trick = 1,
+                MoveWithinTrick = 4,
+                PointsAlreadyInTrick = 13,
+                TotalPointsInPreviousTricks = 0,
+
+                CardPointsPlayed = 15,
+                CardPowerPlayed = 8,
+                PartnerCard = false,
+                HigherRankingCardsPlayedThisTrick = 0,
+                HigherRankingCardsPlayedPreviousTricks = 12
+            };
+            var differentKey = new MoveStatUniqueKey()
+            {
+                Picker = 3,
+                Partner = null,
+                Trick = 1,
+                MoveWithinTrick = 4,
+                PointsAlreadyInTrick = 13,
+                TotalPointsInPreviousTricks = 0,
+
+                CardPointsPlayed = 15,
+                CardPowerPlayed = 8,
+                PartnerCard = false,
+                HigherRankingCardsPlayedThisTrick = 0,
+                HigherRankingCardsPlayedPreviousTricks = 12
+            };
+            repository.IncrementTrickResult(key, true);
+            repository.IncrementGameResult(key, false);
+            var result = repository.GetRecordedResults(key);
+            var result2 = repository.GetRecordedResults(differentKey);
+
+            Assert.AreEqual(1, result.TrickPortionWon);
+            Assert.AreEqual(0, result.GamePortionWon);
+            Assert.IsNotNull(result2, "Using a different key should let us know that there were no results.");
+            Assert.AreEqual(0, result2.TricksTried);
+            Assert.AreEqual(0, result2.HandsTried);
+            Assert.AreEqual(null, result2.TrickPortionWon);
+            Assert.AreEqual(null, result2.GamePortionWon);
+        }
+
         const double testKeyTricks = .6;
         const double testKeyHands = .4;
         const double key1Tricks = .3;
@@ -68,7 +119,7 @@ namespace Sheepshead.Tests
         const double differetnKeyHands = .32;
 
         [TestMethod]
-        public void GetWeightedResult()
+        public void MoveStat_GetWeightedResult()
         {
             var testKey = new MoveStatUniqueKey() {
                 Picker = 2,
@@ -218,6 +269,77 @@ namespace Sheepshead.Tests
                 return genericStat;
             });
             return mockRepository;
+        }
+
+        [TestMethod]
+        public void MoveState_Save()
+        {
+            var savedText = new Queue<string>();
+
+            var writerWrapperMock = new Mock<IStreamWriterWrapper>();
+            writerWrapperMock.Setup(m => m.WriteLine(It.IsAny<string>())).Callback((string text) =>
+            {
+                savedText.Enqueue(text);
+            });
+
+            var readerWrapperMock = new Mock<IStreamReaderWrapper>();
+            string nextLine;
+            readerWrapperMock.Setup(m => m.ReadLine()).Returns(() => {
+                return savedText.Count > 0 ? savedText.Dequeue() : null;
+            });
+
+            //Save some stats to a file
+            var repository = MoveStatRepository.Instance;
+            repository.UnitTestRefresh();
+            var key1 = new MoveStatUniqueKey { 
+                Picker = 3,
+                Partner = null,
+                Trick = 4,
+                MoveWithinTrick = 2,
+                PointsAlreadyInTrick = 0,
+                TotalPointsInPreviousTricks = 42,
+                CardPointsPlayed = 4,
+                CardPowerPlayed = 5,
+                PartnerCard = false,
+                HigherRankingCardsPlayedPreviousTricks = 23,
+                HigherRankingCardsPlayedThisTrick = 10
+            };
+            var key2 = new MoveStatUniqueKey
+            {
+                Picker = 3,
+                Partner = 3,
+                Trick = 2,
+                MoveWithinTrick = 2,
+                PointsAlreadyInTrick = 0,
+                TotalPointsInPreviousTricks = 42,
+                CardPointsPlayed = 4,
+                CardPowerPlayed = 5,
+                PartnerCard = true,
+                HigherRankingCardsPlayedPreviousTricks = 23,
+                HigherRankingCardsPlayedThisTrick = 10
+            };
+            repository.IncrementTrickResult(key1, false);
+            repository.IncrementGameResult(key1, true);
+            repository.IncrementTrickResult(key2, true);
+            repository.IncrementGameResult(key2, false);
+            repository.SaveToFile(writerWrapperMock.Object);
+
+            Assert.AreEqual(4, savedText.Count, "Last operation should have put something in the file");
+
+            //Pretend to restart program
+            repository.UnitTestRefresh();
+            Assert.AreEqual(0, repository.GetRecordedResults(key1).HandsTried, "There should no longer be any recorded results.");
+
+            //Recover Saved Results
+            repository = MoveStatRepository.FromFile(readerWrapperMock.Object);
+            Assert.AreEqual(0, repository.GetRecordedResults(key1).TricksWon);
+            Assert.AreEqual(1, repository.GetRecordedResults(key1).TricksTried);
+            Assert.AreEqual(1, repository.GetRecordedResults(key1).HandsWon);
+            Assert.AreEqual(1, repository.GetRecordedResults(key1).HandsTried);
+            Assert.AreEqual(1, repository.GetRecordedResults(key2).TricksWon);
+            Assert.AreEqual(1, repository.GetRecordedResults(key2).TricksTried);
+            Assert.AreEqual(0, repository.GetRecordedResults(key2).HandsWon);
+            Assert.AreEqual(1, repository.GetRecordedResults(key2).HandsTried);
         }
     }
 }

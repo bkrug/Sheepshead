@@ -116,6 +116,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_Start\BundleConfig.cs" />
+    <Compile Include="App_Start\LoadMoveStatRepository.cs" />
     <Compile Include="Controllers\GameController.cs" />
     <Compile Include="Controllers\UserController.cs" />
     <Compile Include="Global.asax.cs">
@@ -131,6 +132,7 @@
     <Compile Include="Models\Players\NewbiePlayer.cs" />
     <Compile Include="Models\Players\Stats\MoveStat.cs" />
     <Compile Include="Models\Players\Stats\MoveStatRepository.cs" />
+    <Compile Include="Models\Players\Stats\ResultPredictor.cs" />
     <Compile Include="Models\Trick.cs" />
     <Compile Include="Models\TurnState.cs" />
     <Compile Include="Models\UserRepository.cs" />
@@ -141,6 +143,8 @@
     <Compile Include="Models\LongId.cs" />
     <Compile Include="Models\Players\Player.cs" />
     <Compile Include="Models\User.cs" />
+    <Compile Include="Models\Wrappers\StreamReaderWrapper.cs" />
+    <Compile Include="Models\Wrappers\StreamWriterWrapper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Content Include="Content\playTrick.css" />
     <Content Include="Libraries\jquery-2.1.1.min.js" />
