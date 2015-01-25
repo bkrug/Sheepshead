@@ -24,8 +24,8 @@ namespace Sheepshead.Models.Players.Stats
         public int PointsAlreadyInTrick;
         public int TotalPointsInPreviousTricks;
 
-        public int CardPointsPlayed;
-        public int CardPowerPlayed;
+        public int PointsInThisCard;
+        public int RankOfThisCard;
         public bool PartnerCard;
         public int HigherRankingCardsPlayedPreviousTricks;
         public int HigherRankingCardsPlayedThisTrick;

@@ -34,9 +34,9 @@ namespace Sheepshead.Models.Players.Stats
             var percentWeightedHands = (percentMainHandsWon + percentSimHandsWon * weightOfSimilar) / denominator;
             return new MoveStat()
             {
-                TricksWon = (int)(percentWeightedTricks * mainStat.TricksTried),
+                TricksWon = percentWeightedTricks == null ? 0 : (int)(percentWeightedTricks * mainStat.TricksTried),
                 TricksTried = mainStat.TricksTried,
-                HandsWon = (int)(percentWeightedHands * mainStat.HandsTried),
+                HandsWon = percentWeightedHands == null ? 0 : (int)(percentWeightedHands * mainStat.HandsTried),
                 HandsTried = mainStat.HandsTried
             };
         }
@@ -105,7 +105,7 @@ namespace Sheepshead.Models.Players.Stats
                 newKeys.Add((MoveStatUniqueKey)newKey);
             }
         }
-
+        
         private struct RangeDetail
         {
             public int Min;
@@ -121,8 +121,8 @@ namespace Sheepshead.Models.Players.Stats
             { "MoveWithinTrick", new RangeDetail() { Min = 1, Max = 5 } },
             { "PointsAlreadyInTrick", new RangeDetail() { Min = 0, Max = 120, MaxOffset = 20 } },
             { "TotalPointsInPreviousTricks", new RangeDetail() { Min = 0, Max = 120, MaxOffset = 5 } },
-            { "CardPointsPlayed", new RangeDetail() { Min = 0, Max = 11, MaxOffset = 3 } },
-            { "CardPowerPlayed", new RangeDetail() { Min = 0, Max = 32, MaxOffset = 5 } },
+            { "PointsInThisCard", new RangeDetail() { Min = 0, Max = 11, MaxOffset = 3 } },
+            { "RankOfThisCard", new RangeDetail() { Min = 0, Max = 32, MaxOffset = 5 } },
             { "HigherRankingCardsPlayedPreviousTricks", new RangeDetail() { Min = 0, Max = 32, MaxOffset = 4 } },
             { "HigherRankingCardsPlayedThisTrick", new RangeDetail() { Min = 0, Max = 32, MaxOffset = 1 } }
         };

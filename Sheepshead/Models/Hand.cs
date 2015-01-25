@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using Sheepshead.Models.Players;
 
 namespace Sheepshead.Models
 {
@@ -101,6 +102,12 @@ namespace Sheepshead.Models
             return points;
         }
 
+        public void EndHand()
+        {
+            foreach (LearningPlayer player in Deck.Game.Players.OfType<LearningPlayer>())
+                player.OnHandEnd(this);
+        }
+
         public bool IsComplete()
         {
             const int CARDS_IN_PLAY = 30;
@@ -120,6 +127,7 @@ namespace Sheepshead.Models
         Dictionary<IPlayer, int> Scores();
         bool IsComplete();
         bool Leasters { get; }
+        void EndHand();
     }
 
     public class DeckHasHandException : ApplicationException

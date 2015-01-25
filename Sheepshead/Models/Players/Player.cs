@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 
-namespace Sheepshead.Models
+namespace Sheepshead.Models.Players
 {
     public class Player : IPlayer
     {

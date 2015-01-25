@@ -1,9 +1,10 @@
 ﻿using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Sheepshead.Models;
-using System.Collections.Generic;
 using System.Linq;
+using System.Collections.Generic;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
+using Sheepshead.Models;
+using Sheepshead.Models.Players;
 
 namespace Sheepshead.Tests
 {
@@ -16,7 +17,7 @@ namespace Sheepshead.Tests
 
             }
 
-            public List<IPlayer> Players
+            public new List<IPlayer> Players
             {
                 get { return _players; }
                 set { _players = value; }

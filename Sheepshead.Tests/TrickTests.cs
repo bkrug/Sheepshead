@@ -1,8 +1,9 @@
 ﻿using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Sheepshead.Models;
 using System.Collections.Generic;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
+using Sheepshead.Models;
+using Sheepshead.Models.Players;
 
 namespace Sheepshead.Tests
 {
@@ -11,10 +12,15 @@ namespace Sheepshead.Tests
     {
         private IHand GetHand()
         {
+            var gameMock = new Mock<IGame>();
+            gameMock.Setup(m => m.PlayerCount).Returns(5);
+            gameMock.Setup(m => m.Players).Returns(new List<IPlayer>());
+            var deckMock = new Mock<IDeck>();
+            deckMock.Setup(m => m.Game).Returns(gameMock.Object);
             var handMock = new Mock<IHand>();
             var trickList = new List<ITrick>();
             handMock.Setup(m => m.Tricks).Returns(trickList);
-            handMock.Setup(m => m.Deck).Returns(new Mock<IDeck>().Object);
+            handMock.Setup(m => m.Deck).Returns(deckMock.Object);
             handMock.Setup(m => m.PartnerCard).Returns(CardRepository.Instance[StandardSuite.CLUBS, CardType.KING]);
             handMock.Setup(m => m.AddTrick(It.IsAny<ITrick>())).Callback((ITrick newTrick) => { trickList.Add(newTrick); });
             return handMock.Object;
@@ -128,11 +134,15 @@ namespace Sheepshead.Tests
         public void Trick_SetPartner()
         {
             var firstPlayer = new Mock<IPlayer>().Object;
+            var mockGame = new Mock<IGame>();
+            mockGame.Setup(m => m.PlayerCount).Returns(5);
+            var mockDeck = new Mock<IDeck>();
+            mockDeck.Setup(m => m.Game).Returns(mockGame.Object);
             var mockHand = new Mock<IHand>();
             mockHand.Setup(m => m.PartnerCard).Returns(CardRepository.Instance[StandardSuite.DIAMONDS, CardType.QUEEN]);
+            mockHand.Setup(m => m.Deck).Returns(mockDeck.Object);
             var trickList = new List<ITrick>();
             mockHand.Setup(m => m.Tricks).Returns(trickList);
-            mockHand.Setup(m => m.Deck).Returns(new Mock<IDeck>().Object);
             mockHand.Setup(m => m.AddTrick(It.IsAny<ITrick>())).Callback((ITrick newTrick) => { trickList.Add(newTrick); });
             var hand = mockHand.Object;
             var trick = new Trick(hand);
@@ -169,6 +179,7 @@ namespace Sheepshead.Tests
             var mockHand = new Mock<IHand>();
             var mockDeck = new Mock<IDeck>();
             var mockGame = new Mock<IGame>();
+            mockGame.Setup(m => m.Players).Returns(new List<IPlayer>());
             mockHand.Setup(m => m.PartnerCard).Returns(CardRepository.Instance[StandardSuite.DIAMONDS, CardType.N10]);
             mockHand.Setup(m => m.Deck).Returns(mockDeck.Object);
             mockDeck.Setup(m => m.Game).Returns(mockGame.Object);

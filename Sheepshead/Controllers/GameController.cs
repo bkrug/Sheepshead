@@ -4,6 +4,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using Sheepshead.Models;
+using Sheepshead.Models.Players;
 
 namespace Sheepshead.Controllers
 {
@@ -20,6 +21,7 @@ namespace Sheepshead.Controllers
             public string Name { get; set; }
             public int NewbiewCount { get; set; }
             public int BasicCount { get; set; }
+            public int LearningCount { get; set; }
         }
 
         public ActionResult Create()
@@ -37,6 +39,8 @@ namespace Sheepshead.Controllers
                 playerList.Add(new NewbiePlayer());
             for (var i = 0; i < model.BasicCount; ++i)
                 playerList.Add(new BasicPlayer());
+            for (var i = 0; i < model.LearningCount; ++i)
+                playerList.Add(new LearningPlayer());
             var newGame = repository.CreateGame(model.Name, playerList);
             repository.Save(newGame);
             Session["gameId"] = newGame.Id;

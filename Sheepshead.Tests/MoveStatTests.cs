@@ -25,8 +25,8 @@ namespace Sheepshead.Tests
                 PointsAlreadyInTrick = 13,
                 TotalPointsInPreviousTricks = 0,
 
-                CardPointsPlayed = 15,
-                CardPowerPlayed = 8,
+                PointsInThisCard = 15,
+                RankOfThisCard = 8,
                 PartnerCard = false,
                 HigherRankingCardsPlayedThisTrick = 0,
                 HigherRankingCardsPlayedPreviousTricks = 12
@@ -40,14 +40,14 @@ namespace Sheepshead.Tests
                 PointsAlreadyInTrick = 13,
                 TotalPointsInPreviousTricks = 0,
 
-                CardPointsPlayed = 15,
-                CardPowerPlayed = 8,
+                PointsInThisCard = 15,
+                RankOfThisCard = 8,
                 PartnerCard = false,
                 HigherRankingCardsPlayedThisTrick = 0,
                 HigherRankingCardsPlayedPreviousTricks = 12
             };
             repository.IncrementTrickResult(key, true);
-            repository.IncrementGameResult(key, false);
+            repository.IncrementHandResult(key, false);
             var result = repository.GetRecordedResults(key);
             var result2 = repository.GetRecordedResults(identicalKey);
 
@@ -72,8 +72,8 @@ namespace Sheepshead.Tests
                 PointsAlreadyInTrick = 13,
                 TotalPointsInPreviousTricks = 0,
 
-                CardPointsPlayed = 15,
-                CardPowerPlayed = 8,
+                PointsInThisCard = 15,
+                RankOfThisCard = 8,
                 PartnerCard = false,
                 HigherRankingCardsPlayedThisTrick = 0,
                 HigherRankingCardsPlayedPreviousTricks = 12
@@ -87,14 +87,14 @@ namespace Sheepshead.Tests
                 PointsAlreadyInTrick = 13,
                 TotalPointsInPreviousTricks = 0,
 
-                CardPointsPlayed = 15,
-                CardPowerPlayed = 8,
+                PointsInThisCard = 15,
+                RankOfThisCard = 8,
                 PartnerCard = false,
                 HigherRankingCardsPlayedThisTrick = 0,
                 HigherRankingCardsPlayedPreviousTricks = 12
             };
             repository.IncrementTrickResult(key, true);
-            repository.IncrementGameResult(key, false);
+            repository.IncrementHandResult(key, false);
             var result = repository.GetRecordedResults(key);
             var result2 = repository.GetRecordedResults(differentKey);
 
@@ -128,8 +128,8 @@ namespace Sheepshead.Tests
                 MoveWithinTrick = 4,
                 PointsAlreadyInTrick = 5,
                 TotalPointsInPreviousTricks = 34,
-                CardPointsPlayed = 10,
-                CardPowerPlayed = 8,
+                PointsInThisCard = 10,
+                RankOfThisCard = 8,
                 PartnerCard = false,
                 HigherRankingCardsPlayedPreviousTricks = 5,
                 HigherRankingCardsPlayedThisTrick = 0
@@ -137,7 +137,7 @@ namespace Sheepshead.Tests
             var key1 = testKey;
             key1.Picker = 1;
             var key2 = testKey;
-            key2.CardPointsPlayed = 9;
+            key2.PointsInThisCard = 9;
             var key3 = testKey;
             key3.HigherRankingCardsPlayedPreviousTricks = 7;
             var veryDifferentKey = new MoveStatUniqueKey() {
@@ -147,8 +147,8 @@ namespace Sheepshead.Tests
                 MoveWithinTrick = 4,
                 PointsAlreadyInTrick = 0,
                 TotalPointsInPreviousTricks = 60,
-                CardPointsPlayed = 10,
-                CardPowerPlayed = 8,
+                PointsInThisCard = 10,
+                RankOfThisCard = 8,
                 PartnerCard = false,
                 HigherRankingCardsPlayedPreviousTricks = 15,
                 HigherRankingCardsPlayedThisTrick = 3
@@ -283,7 +283,6 @@ namespace Sheepshead.Tests
             });
 
             var readerWrapperMock = new Mock<IStreamReaderWrapper>();
-            string nextLine;
             readerWrapperMock.Setup(m => m.ReadLine()).Returns(() => {
                 return savedText.Count > 0 ? savedText.Dequeue() : null;
             });
@@ -298,8 +297,8 @@ namespace Sheepshead.Tests
                 MoveWithinTrick = 2,
                 PointsAlreadyInTrick = 0,
                 TotalPointsInPreviousTricks = 42,
-                CardPointsPlayed = 4,
-                CardPowerPlayed = 5,
+                PointsInThisCard = 4,
+                RankOfThisCard = 5,
                 PartnerCard = false,
                 HigherRankingCardsPlayedPreviousTricks = 23,
                 HigherRankingCardsPlayedThisTrick = 10
@@ -312,16 +311,16 @@ namespace Sheepshead.Tests
                 MoveWithinTrick = 2,
                 PointsAlreadyInTrick = 0,
                 TotalPointsInPreviousTricks = 42,
-                CardPointsPlayed = 4,
-                CardPowerPlayed = 5,
+                PointsInThisCard = 4,
+                RankOfThisCard = 5,
                 PartnerCard = true,
                 HigherRankingCardsPlayedPreviousTricks = 23,
                 HigherRankingCardsPlayedThisTrick = 10
             };
             repository.IncrementTrickResult(key1, false);
-            repository.IncrementGameResult(key1, true);
+            repository.IncrementHandResult(key1, true);
             repository.IncrementTrickResult(key2, true);
-            repository.IncrementGameResult(key2, false);
+            repository.IncrementHandResult(key2, false);
             repository.SaveToFile(writerWrapperMock.Object);
 
             Assert.AreEqual(4, savedText.Count, "Last operation should have put something in the file");

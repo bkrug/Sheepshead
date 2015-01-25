@@ -12,7 +12,7 @@ namespace Sheepshead.Models.Players.Stats
     public interface IMoveStatRepository
     {
         void IncrementTrickResult(MoveStatUniqueKey key, bool wonTrick);
-        void IncrementGameResult(MoveStatUniqueKey key, bool wonGame);
+        void IncrementHandResult(MoveStatUniqueKey key, bool wonGame);
         MoveStat GetRecordedResults(MoveStatUniqueKey key);
     }
 
@@ -36,17 +36,15 @@ namespace Sheepshead.Models.Players.Stats
                 var value = serializer.Deserialize<MoveStat>(streamReader.ReadLine());
                 Instance._dict.Add(key, value);
             }
+            Instance.SetupTimer();
             return Instance;
         }
 
-        private MoveStatRepository()
+        private void SetupTimer() 
         {
-            if (!String.IsNullOrWhiteSpace(SaveLocation))
-            {
-                var aTimer = new System.Timers.Timer(2 * 1000);
-                aTimer.Elapsed += SaveToFile;
-                aTimer.Enabled = true;
-            }
+            var aTimer = new System.Timers.Timer(60 * 1000);
+            aTimer.Elapsed += SaveToFile;
+            aTimer.Enabled = true;
         }
 
         public static MoveStatRepository Instance { get { return _instance; } }
@@ -60,7 +58,7 @@ namespace Sheepshead.Models.Players.Stats
             ++_dict[key].TricksTried;
         }
 
-        public void IncrementGameResult(MoveStatUniqueKey key, bool wonGame)
+        public void IncrementHandResult(MoveStatUniqueKey key, bool wonGame)
         {
             if (!_dict.ContainsKey(key))
                 _dict[key] = new MoveStat();
@@ -82,7 +80,9 @@ namespace Sheepshead.Models.Players.Stats
         protected void SaveToFile(Object source, ElapsedEventArgs e)
         {
             using (var writer = new StreamWriterWrapper(SaveLocation))
+            {
                 SaveToFile(writer);
+            }
         }
 
         public void SaveToFile(IStreamWriterWrapper writer)

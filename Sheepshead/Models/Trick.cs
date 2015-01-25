@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using Sheepshead.Models.Players;
 
 namespace Sheepshead.Models
 {
@@ -35,6 +36,16 @@ namespace Sheepshead.Models
             player.Cards.Remove(card);
             if (_hand.PartnerCard != null && _hand.PartnerCard.StandardSuite == card.StandardSuite && _hand.PartnerCard.CardType == card.CardType)
                 _hand.Partner = player;
+            if (IsComplete())
+                EndTrick();
+        }
+
+        private void EndTrick()
+        {
+            foreach (LearningPlayer player in Hand.Deck.Game.Players.OfType<LearningPlayer>())
+                player.OnTrickEnd(this);
+            if (Hand.IsComplete())
+                Hand.EndHand();
         }
 
         public bool IsLegalAddition(ICard card, IPlayer player)
