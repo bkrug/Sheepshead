@@ -110,5 +110,47 @@ namespace Sheepshead.Tests
             handMock.Setup(m => m.Tricks).Returns(tricks);
             return handMock.Object;
         }
+
+        [TestMethod]
+        public void LearningHelper_TrickAndHandCalls() {
+            var endTrickCalls = 0;
+            var onHandEndCalls = 0;
+            var learningMock = new Mock<ILearningHelper>();
+            learningMock.Setup(m => m.EndTrick(It.IsAny<ITrick>())).Callback((ITrick trick) => { 
+                if (++endTrickCalls < 6)
+                    Assert.IsTrue(!trick.Hand.IsComplete() && trick.IsComplete(), "Call EndTrick() as soon as trick is over, don't wait till end of hand.");
+                if (trick.Hand.IsComplete())
+                    trick.Hand.EndHand();
+            });
+            learningMock.Setup(m => m.OnHandEnd(It.IsAny<ITrick>())).Callback((ITrick trick) => {
+                ++onHandEndCalls;
+                Assert.IsTrue(trick.Hand.IsComplete());
+            });
+
+            var playerCount = 5;
+            var deckMock = new Mock<IDeck>();
+            deckMock.Setup(m => m.PlayerCount).Returns(playerCount);
+            deckMock.Setup(m => m.Blinds).Returns(new List<ICard>());
+            var pickerMock = new Mock<IPlayer>();
+            var cards = new List<ICard>();
+            pickerMock.Setup(m => m.Cards).Returns(cards);
+            var droppedCards = new List<ICard>();
+
+            var hand = new Hand(deckMock.Object, pickerMock.Object, droppedCards);
+            for (var i = 0; i < 6; ++i)
+            {
+                var trick = new Trick(hand, learningMock.Object);
+                for (var j = 0; j < playerCount; ++j)
+                {
+                    var player = new Mock<IPlayer>();
+                    var card = new Mock<ICard>();
+                    player.Setup(m => m.Cards).Returns(new List<ICard>() { card.Object });
+                    trick.Add(player.Object, card.Object);
+                }
+            }
+
+            Assert.AreEqual(6, endTrickCalls);
+            Assert.AreEqual(6, onHandEndCalls);
+        }
     }
 }

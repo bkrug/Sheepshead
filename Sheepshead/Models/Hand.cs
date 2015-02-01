@@ -118,12 +118,12 @@ namespace Sheepshead.Models
 
         public int PlayerCount
         {
-            get { return Deck.Game.PlayerCount; }
+            get { return Deck.PlayerCount; }
         }
 
         public List<IPlayer> Players
         {
-            get { return Deck.Game.Players; }
+            get { return Deck.Players; }
         }
     }
 
