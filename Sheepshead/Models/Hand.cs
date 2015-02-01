@@ -114,6 +114,16 @@ namespace Sheepshead.Models
             var trickCount = CARDS_IN_PLAY / Deck.Game.PlayerCount;
             return _tricks.Count() == trickCount && _tricks.Last().IsComplete();
         }
+
+        public int PlayerCount
+        {
+            get { return Deck.Game.PlayerCount; }
+        }
+
+        public List<IPlayer> Players
+        {
+            get { return Deck.Game.Players; }
+        }
     }
 
     public interface IHand
@@ -128,6 +138,8 @@ namespace Sheepshead.Models
         bool IsComplete();
         bool Leasters { get; }
         void EndHand();
+        int PlayerCount { get; }
+        List<IPlayer> Players { get; }
     }
 
     public class DeckHasHandException : ApplicationException

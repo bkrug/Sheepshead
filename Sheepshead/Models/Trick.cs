@@ -13,14 +13,21 @@ namespace Sheepshead.Models
         private IHand _hand;
         private IMoveStatRepository _moveStatRepository;
         private Dictionary<IPlayer, MoveStatUniqueKey> _learningKeys = new Dictionary<IPlayer,MoveStatUniqueKey>();
+        private ILearningHelper _learningHelper;
 
         public IHand Hand { get { return _hand; } }
         public IPlayer StartingPlayer { get; private set; }
         public Dictionary<IPlayer, ICard> CardsPlayed { get { return new Dictionary<IPlayer, ICard>(_cards); } }
+        public Dictionary<IPlayer, MoveStatUniqueKey> LearningKeys { get { return _learningKeys; } }
 
-        public Trick(IHand hand, IMoveStatRepository moveStatRepository)
+        private Trick()
+        {
+        }
+
+        public Trick(IHand hand, IMoveStatRepository moveStatRepository, ILearningHelper learningHelper)
         {
             _moveStatRepository = moveStatRepository;
+            _learningHelper = learningHelper;
             _hand = hand;
             _hand.AddTrick(this);
             SetStartingPlayer();
@@ -36,13 +43,13 @@ namespace Sheepshead.Models
 
         public void Add(IPlayer player, ICard card)
         {
-            _learningKeys.Add(player, GenerateKey(player, card));
+            _learningKeys.Add(player, _learningHelper.GenerateKey(this, player, card));
             _cards.Add(player, card);
             player.Cards.Remove(card);
             if (_hand.PartnerCard != null && _hand.PartnerCard.StandardSuite == card.StandardSuite && _hand.PartnerCard.CardType == card.CardType)
                 _hand.Partner = player;
             if (IsComplete())
-                EndTrick();
+                _learningHelper.EndTrick(this);
         }
 
         public bool IsLegalAddition(ICard card, IPlayer player)
@@ -75,68 +82,17 @@ namespace Sheepshead.Models
 
         public bool IsComplete()
         {
-            return CardsPlayed.Count() == Hand.Deck.Game.PlayerCount;
+            return CardsPlayed.Count() == Hand.PlayerCount;
         }
 
-        public MoveStatUniqueKey GenerateKey(IPlayer player,ICard legalCard)
+        public MoveStatUniqueKey GenerateKey(IPlayer player, ICard legalCard)
         {
-            List<IPlayer> playerList = this.Hand.Deck.Game.Players;
-            return new MoveStatUniqueKey()
-            {
-                Picker = playerList.IndexOf(this.Hand.Picker),
-                Partner = this.Hand.Partner != null ? (int?)playerList.IndexOf(this.Hand.Partner) : null,
-                Trick = this.Hand.Tricks.Count(),
-                MoveWithinTrick = QueueRankInTrick(player),
-                PointsAlreadyInTrick = this.CardsPlayed.Sum(c => c.Value.Points),
-                TotalPointsInPreviousTricks = this.Hand.Tricks.Where(t => t != this).Sum(t => t.CardsPlayed.Sum(c => c.Value.Points)),
-                PointsInThisCard = legalCard.Points,
-                RankOfThisCard = legalCard.Rank,
-                PartnerCard = this.Hand.PartnerCard == legalCard,
-                HigherRankingCardsPlayedPreviousTricks = this.Hand.Tricks.Where(t => t != this).SelectMany(t => t.CardsPlayed.Select(kvp => kvp.Value)).Count(c => c.Rank > legalCard.Rank),
-                HigherRankingCardsPlayedThisTrick = this.CardsPlayed.Select(kvp => kvp.Value).Count(c => c.Rank > legalCard.Rank)
-            };
-        }
-
-        //TODO: Duplicate logic
-        protected int QueueRankInTrick(IPlayer player)
-        {
-            var indexOfMe = this.Hand.Deck.Game.Players.IndexOf(player);
-            var indexOfStartingPlayer = this.Hand.Deck.Game.Players.IndexOf(this.StartingPlayer);
-            var rank = indexOfMe - indexOfStartingPlayer;
-            if (rank < 0) rank += this.Hand.Deck.Game.PlayerCount;
-            return rank + 1;
-        }
-
-        //TODO: Duplicate logic
-        protected int QueueRankInDeck(IPlayer player)
-        {
-            var indexOfMe = this.Hand.Deck.Game.Players.IndexOf(player);
-            var indexOfStartingPlayer = this.Hand.Deck.Game.Players.IndexOf(player);
-            var rank = indexOfMe - indexOfStartingPlayer;
-            if (rank < 0) rank += this.Hand.Deck.Game.PlayerCount;
-            return rank + 1;
-        }
-
-        private void EndTrick()
-        {
-            foreach (var player in this.Hand.Deck.Game.Players)
-            {
-                var statKey = _learningKeys[player];
-                var repository = MoveStatRepository.Instance;
-                repository.IncrementTrickResult(statKey, Winner().Player == this);
-            }
-            if (Hand.IsComplete())
-                Hand.EndHand();
+            return _learningHelper.GenerateKey(this, player, legalCard);
         }
 
         public void OnHandEnd()
         {
-            foreach (var player in this.Hand.Deck.Game.Players)
-            {
-                var statKey = _learningKeys[player];
-                var repository = MoveStatRepository.Instance;
-                repository.IncrementHandResult(statKey, Hand.Scores()[player] > 0);
-            }
+            _learningHelper.OnHandEnd(this);
         }
     }
 
@@ -147,6 +103,7 @@ namespace Sheepshead.Models
 
     public interface ITrick
     {
+        Dictionary<IPlayer, MoveStatUniqueKey> LearningKeys { get; }
         IHand Hand { get; }
         TrickWinner Winner();
         void Add(IPlayer player, ICard card);
@@ -156,5 +113,61 @@ namespace Sheepshead.Models
         bool IsComplete();
         MoveStatUniqueKey GenerateKey(IPlayer player, ICard legalCard);
         void OnHandEnd();
+    }
+
+    public interface ILearningHelper {
+        MoveStatUniqueKey GenerateKey(ITrick _trick, IPlayer player, ICard legalCard);
+        void EndTrick(ITrick _trick);
+        void OnHandEnd(ITrick _trick);
+    }
+
+    public class LearningHelper : ILearningHelper {
+        public MoveStatUniqueKey GenerateKey(ITrick _trick, IPlayer player,ICard legalCard)
+        {
+            List<IPlayer> playerList = _trick.Hand.Players;
+            return new MoveStatUniqueKey()
+            {
+                Picker = playerList.IndexOf(_trick.Hand.Picker),
+                Partner = _trick.Hand.Partner != null ? (int?)playerList.IndexOf(_trick.Hand.Partner) : null,
+                Trick = _trick.Hand.Tricks.Count(),
+                MoveWithinTrick = player.QueueRankInTrick(_trick),
+                PointsAlreadyInTrick = _trick.CardsPlayed.Sum(c => c.Value.Points),
+                TotalPointsInPreviousTricks = _trick.Hand.Tricks.Where(t => t != _trick).Sum(t => t.CardsPlayed.Sum(c => c.Value.Points)),
+                PointsInThisCard = legalCard.Points,
+                RankOfThisCard = legalCard.Rank,
+                PartnerCard = _trick.Hand.PartnerCard == legalCard,
+                HigherRankingCardsPlayedPreviousTricks = 
+                    _trick.Hand.Tricks
+                    .Where(t => t != this)
+                    .SelectMany(t => t.CardsPlayed.Select(kvp => kvp.Value))
+                    .Count(c => c.Rank > legalCard.Rank),
+                HigherRankingCardsPlayedThisTrick = 
+                    _trick.CardsPlayed
+                    .Select(kvp => kvp.Value)
+                    .Count(c => c.Rank > legalCard.Rank)
+            };
+        }
+
+        public void EndTrick(ITrick _trick)
+        {
+            foreach (var player in _trick.Hand.Players)
+            {
+                var statKey = _trick.LearningKeys[player];
+                var repository = MoveStatRepository.Instance;
+                repository.IncrementTrickResult(statKey, _trick.Winner().Player == this);
+            }
+            if (_trick.Hand.IsComplete())
+                _trick.Hand.EndHand();
+        }
+
+        public void OnHandEnd(ITrick _trick)
+        {
+            foreach (var player in _trick.Hand.Deck.Game.Players)
+            {
+                var statKey = _trick.LearningKeys[player];
+                var repository = MoveStatRepository.Instance;
+                repository.IncrementHandResult(statKey, _trick.Hand.Scores()[player] > 0);
+            }
+        }
     }
 }

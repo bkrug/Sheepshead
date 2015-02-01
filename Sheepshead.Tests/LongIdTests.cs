@@ -19,11 +19,11 @@ namespace Sheepshead.Tests
                 dataObj.Id = 6;
                 Assert.Fail("An exception should be thrown when an object's unique ID is changed.");
             }
-            catch (IdAlreadySetException ex)
+            catch (IdAlreadySetException)
             {
                 Assert.IsTrue(true, "Threw an exception when object's unique ID was changed.");
             }
-            catch (ApplicationException ex)
+            catch (ApplicationException)
             {
                 Assert.Fail("Wrong exception occurred while changing the object's unique ID.");
             }
