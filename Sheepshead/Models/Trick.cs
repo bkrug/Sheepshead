@@ -11,7 +11,6 @@ namespace Sheepshead.Models
     {
         private Dictionary<IPlayer, ICard> _cards = new Dictionary<IPlayer, ICard>();
         private IHand _hand;
-        private IMoveStatRepository _moveStatRepository;
         private Dictionary<IPlayer, MoveStatUniqueKey> _learningKeys = new Dictionary<IPlayer,MoveStatUniqueKey>();
         private ILearningHelper _learningHelper;
 
@@ -25,9 +24,8 @@ namespace Sheepshead.Models
         {
         }
 
-        public Trick(IHand hand, IMoveStatRepository moveStatRepository, ILearningHelper learningHelper)
+        public Trick(IHand hand, ILearningHelper learningHelper)
         {
-            _moveStatRepository = moveStatRepository;
             _learningHelper = learningHelper;
             _hand = hand;
             _hand.AddTrick(this);
@@ -105,6 +103,23 @@ namespace Sheepshead.Models
         {
             get { return Hand.Deck.Game.Players; }
         }
+
+        public int QueueRankOfPicker
+        {
+            get { return Hand.Picker.QueueRankInTrick(this); }
+        }
+
+        public int? QueueRankOfPartner
+        {
+            get { return Hand.Partner == null ? (int?)null : Hand.Partner.QueueRankInTrick(this); } 
+        }
+
+        public int IndexInHand
+        {
+            get { return Hand.Tricks.IndexOf(this); }
+        }
+
+        public ICard PartnerCard { get { return Hand.PartnerCard; } }
     }
 
     public class TrickWinner {
@@ -127,61 +142,9 @@ namespace Sheepshead.Models
         void OnHandEnd();
         int PlayerCount { get; }
         List<IPlayer> Players { get; }
-    }
-
-    public interface ILearningHelper {
-        MoveStatUniqueKey GenerateKey(ITrick _trick, IPlayer player, ICard legalCard);
-        void EndTrick(ITrick _trick);
-        void OnHandEnd(ITrick _trick);
-    }
-
-    public class LearningHelper : ILearningHelper {
-        public MoveStatUniqueKey GenerateKey(ITrick _trick, IPlayer player,ICard legalCard)
-        {
-            List<IPlayer> playerList = _trick.Hand.Players;
-            return new MoveStatUniqueKey()
-            {
-                Picker = playerList.IndexOf(_trick.Hand.Picker),
-                Partner = _trick.Hand.Partner != null ? (int?)playerList.IndexOf(_trick.Hand.Partner) : null,
-                Trick = _trick.Hand.Tricks.Count(),
-                MoveWithinTrick = player.QueueRankInTrick(_trick),
-                PointsAlreadyInTrick = _trick.CardsPlayed.Sum(c => c.Value.Points),
-                TotalPointsInPreviousTricks = _trick.Hand.Tricks.Where(t => t != _trick).Sum(t => t.CardsPlayed.Sum(c => c.Value.Points)),
-                PointsInThisCard = legalCard.Points,
-                RankOfThisCard = legalCard.Rank,
-                PartnerCard = _trick.Hand.PartnerCard == legalCard,
-                HigherRankingCardsPlayedPreviousTricks = 
-                    _trick.Hand.Tricks
-                    .Where(t => t != this)
-                    .SelectMany(t => t.CardsPlayed.Select(kvp => kvp.Value))
-                    .Count(c => c.Rank > legalCard.Rank),
-                HigherRankingCardsPlayedThisTrick = 
-                    _trick.CardsPlayed
-                    .Select(kvp => kvp.Value)
-                    .Count(c => c.Rank > legalCard.Rank)
-            };
-        }
-
-        public void EndTrick(ITrick _trick)
-        {
-            foreach (var player in _trick.Hand.Players)
-            {
-                var statKey = _trick.LearningKeys[player];
-                var repository = MoveStatRepository.Instance;
-                repository.IncrementTrickResult(statKey, _trick.Winner().Player == this);
-            }
-            if (_trick.Hand.IsComplete())
-                _trick.Hand.EndHand();
-        }
-
-        public void OnHandEnd(ITrick _trick)
-        {
-            foreach (var player in _trick.Hand.Deck.Game.Players)
-            {
-                var statKey = _trick.LearningKeys[player];
-                var repository = MoveStatRepository.Instance;
-                repository.IncrementHandResult(statKey, _trick.Hand.Scores()[player] > 0);
-            }
-        }
+        int QueueRankOfPicker { get; }
+        int? QueueRankOfPartner { get; }
+        int IndexInHand { get; }
+        ICard PartnerCard { get; }
     }
 }
