@@ -43,11 +43,9 @@ namespace Sheepshead.Tests
 
         private IHand GetHand(List<Mock<ITrick>> trickMocks, List<IPlayer> players, IPlayer picker, IPlayer partner)
         {
-            var gameMock = new Mock<IGame>();
-            gameMock.Setup(m => m.Players).Returns(players);
-            gameMock.Setup(m => m.PlayerCount).Returns(players.Count);
             var deckMock = new Mock<IDeck>();
-            deckMock.Setup(m => m.Game).Returns(gameMock.Object);
+            deckMock.Setup(m => m.Players).Returns(players);
+            deckMock.Setup(m => m.PlayerCount).Returns(players.Count);
             var blinds = new List<ICard>() { CardRepository.Instance[StandardSuite.DIAMONDS, CardType.KING], CardRepository.Instance[StandardSuite.CLUBS, CardType.ACE] };
             deckMock.Setup(m => m.Blinds).Returns(blinds);
             var hand = new Hand(deckMock.Object, picker, new List<ICard>());
@@ -133,11 +131,9 @@ namespace Sheepshead.Tests
         public void Hand_IsComplete()
         {
             var blinds = new List<ICard>() { CardRepository.Instance[StandardSuite.DIAMONDS, CardType.KING], CardRepository.Instance[StandardSuite.CLUBS, CardType.ACE] };
-            var mockGame = new Mock<IGame>();
             var mockDeck = new Mock<IDeck>();
             mockDeck.Setup(m => m.Blinds).Returns(blinds);
-            mockDeck.Setup(m => m.Game).Returns(mockGame.Object);
-            mockGame.Setup(m => m.PlayerCount).Returns(5);
+            mockDeck.Setup(m => m.PlayerCount).Returns(5);
             var hand = new Hand(mockDeck.Object, new NewbiePlayer(), new List<ICard>());
 
             var mockCompleteTrick = new Mock<ITrick>();

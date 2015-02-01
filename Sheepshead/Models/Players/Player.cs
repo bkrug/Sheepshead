@@ -25,10 +25,10 @@ namespace Sheepshead.Models.Players
 
         public int QueueRankInDeck(IDeck deck)
         {
-            var indexOfMe = deck.Game.Players.IndexOf(this);
-            var indexOfStartingPlayer = deck.Game.Players.IndexOf(deck.StartingPlayer);
+            var indexOfMe = deck.Players.IndexOf(this);
+            var indexOfStartingPlayer = deck.Players.IndexOf(deck.StartingPlayer);
             var rank = indexOfMe - indexOfStartingPlayer;
-            if (rank < 0) rank += deck.Game.PlayerCount;
+            if (rank < 0) rank += deck.PlayerCount;
             return rank + 1;
         }
     }

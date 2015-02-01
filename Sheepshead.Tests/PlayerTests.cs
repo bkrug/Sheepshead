@@ -47,21 +47,17 @@ namespace Sheepshead.Tests
 
         private Mock<ITrick> GenerateTrickMock(List<IPlayer> playerList)
         {
-            var handMock = new Mock<IHand>();
             var trickMock = new Mock<ITrick>();
-            var deckMock = GenerateDeckMock(playerList);
-            handMock.Setup(m => m.Deck).Returns(deckMock.Object);
-            trickMock.Setup(m => m.Hand).Returns(handMock.Object);
+            trickMock.Setup(m => m.PlayerCount).Returns(5);
+            trickMock.Setup(m => m.Players).Returns(playerList);
             return trickMock;
         }
 
         private Mock<IDeck> GenerateDeckMock(List<IPlayer> playerList)
         {
-            var gameMock = new Mock<IGame>();
             var deckMock = new Mock<IDeck>();
-            gameMock.Setup(m => m.PlayerCount).Returns(5);
-            gameMock.Setup(m => m.Players).Returns(playerList);
-            deckMock.Setup(m => m.Game).Returns(gameMock.Object);
+            deckMock.Setup(m => m.PlayerCount).Returns(5);
+            deckMock.Setup(m => m.Players).Returns(playerList);
             return deckMock;
         }
 
@@ -76,27 +72,27 @@ namespace Sheepshead.Tests
             var mainPlayer = new NewbiePlayer();
             {
                 var playerList = new List<IPlayer>() { player1, player2, mainPlayer, player3, player4 };
-                var trickMock = GenerateDeckMock(playerList);
-                trickMock.Setup(m => m.StartingPlayer).Returns(player2);
-                Assert.IsFalse(mainPlayer.WillPick(trickMock.Object), "Newbie Player should not pick if he is not last.");
+                var deckMock = GenerateDeckMock(playerList);
+                deckMock.Setup(m => m.StartingPlayer).Returns(player2);
+                Assert.IsFalse(mainPlayer.WillPick(deckMock.Object), "Newbie Player should not pick if he is not last.");
             }
             {
                 var playerList = new List<IPlayer>() { player1, player2, mainPlayer, player3, player4 };
-                var trickMock = GenerateDeckMock(playerList);
-                trickMock.Setup(m => m.StartingPlayer).Returns(player3);
-                Assert.IsTrue(mainPlayer.WillPick(trickMock.Object), "Newbie Player should pick if he is last.");
+                var deckMock = GenerateDeckMock(playerList);
+                deckMock.Setup(m => m.StartingPlayer).Returns(player3);
+                Assert.IsTrue(mainPlayer.WillPick(deckMock.Object), "Newbie Player should pick if he is last.");
             }
             {
                 var playerList = new List<IPlayer>() { player1, player2, player3, player4, mainPlayer };
-                var trickMock = GenerateDeckMock(playerList);
-                trickMock.Setup(m => m.StartingPlayer).Returns(player1);
-                Assert.IsTrue(mainPlayer.WillPick(trickMock.Object), "Newbie Player should pick if he is last.");
+                var deckMock = GenerateDeckMock(playerList);
+                deckMock.Setup(m => m.StartingPlayer).Returns(player1);
+                Assert.IsTrue(mainPlayer.WillPick(deckMock.Object), "Newbie Player should pick if he is last.");
             }
             {
                 var playerList = new List<IPlayer>() { player1, player2, player3, player4, mainPlayer };
-                var trickMock = GenerateDeckMock(playerList);
-                trickMock.Setup(m => m.StartingPlayer).Returns(player3);
-                Assert.IsFalse(mainPlayer.WillPick(trickMock.Object), "Newbie Player should not pick if he is not last.");
+                var deckMock = GenerateDeckMock(playerList);
+                deckMock.Setup(m => m.StartingPlayer).Returns(player3);
+                Assert.IsFalse(mainPlayer.WillPick(deckMock.Object), "Newbie Player should not pick if he is not last.");
             }
         }
 

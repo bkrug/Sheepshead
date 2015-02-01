@@ -14,7 +14,7 @@ namespace Sheepshead.Models.Players
 
         public override bool WillPick(IDeck deck)
         {
-            return QueueRankInDeck(deck) == deck.Game.PlayerCount;
+            return QueueRankInDeck(deck) == deck.PlayerCount;
         }
 
         protected override List<ICard> DropCardsForPickInternal(IDeck deck)

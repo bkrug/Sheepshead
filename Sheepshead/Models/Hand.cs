@@ -14,6 +14,7 @@ namespace Sheepshead.Models
         public ICard PartnerCard { get; private set; }
         private List<ITrick> _tricks = new List<ITrick>();
         public List<ITrick> Tricks { get { return _tricks.ToList(); } }
+        public IPlayer StartingPlayer { get { return Deck.StartingPlayer; } }
 
         public bool Leasters { get { return Picker == null; } }
 
@@ -79,7 +80,7 @@ namespace Sheepshead.Models
                 defensiveHandPoints = 2;
 
             var dict = new Dictionary<IPlayer, int>();
-            foreach (var player in Deck.Game.Players)
+            foreach (var player in Deck.Players)
             {
                 if (player == Picker)
                     dict.Add(player, defensiveHandPoints * -2);
@@ -97,8 +98,8 @@ namespace Sheepshead.Models
             var leastPoints = trickWinners.GroupBy(t => t.Player).OrderBy(g => g.Sum(t => t.Points)).First();
             var leastPointsPlayer = leastPoints.Select(g => g.Player).First();
             var points = new Dictionary<IPlayer, int>();
-            foreach (var player in this.Deck.Game.Players)
-                points.Add(player, player == leastPointsPlayer ? Deck.Game.PlayerCount - 1 : -1 );
+            foreach (var player in this.Deck.Players)
+                points.Add(player, player == leastPointsPlayer ? Deck.PlayerCount - 1 : -1 );
             return points;
         }
 
@@ -111,7 +112,7 @@ namespace Sheepshead.Models
         public bool IsComplete()
         {
             const int CARDS_IN_PLAY = 30;
-            var trickCount = CARDS_IN_PLAY / Deck.Game.PlayerCount;
+            var trickCount = CARDS_IN_PLAY / Deck.PlayerCount;
             return _tricks.Count() == trickCount && _tricks.Last().IsComplete();
         }
 
@@ -140,6 +141,7 @@ namespace Sheepshead.Models
         void EndHand();
         int PlayerCount { get; }
         List<IPlayer> Players { get; }
+        IPlayer StartingPlayer { get; }
     }
 
     public class DeckHasHandException : ApplicationException

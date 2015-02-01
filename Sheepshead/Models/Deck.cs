@@ -81,6 +81,15 @@ namespace Sheepshead.Models
             _playersRefusingPick.Add(player);
         }
 
+        public int PlayerCount
+        {
+            get { return Game.PlayerCount; }
+        }
+
+        public List<IPlayer> Players
+        {
+            get { return Game.Players; }
+        }
     }
 
     public interface IDeck
@@ -92,6 +101,9 @@ namespace Sheepshead.Models
         List<IPlayer> PlayersRefusingPick { get; }
         void PlayerWontPick(IPlayer player);
         IPlayer StartingPlayer { get; }
+        int PlayerCount { get; }
+        List<IPlayer> Players { get; }
+
     }
 
     public class PreviousDeckIncompleteException : ApplicationException

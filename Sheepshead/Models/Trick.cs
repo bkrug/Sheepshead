@@ -16,6 +16,7 @@ namespace Sheepshead.Models
         private ILearningHelper _learningHelper;
 
         public IHand Hand { get { return _hand; } }
+        public IGame Game { get { return _hand.Deck.Game; } }
         public IPlayer StartingPlayer { get; private set; }
         public Dictionary<IPlayer, ICard> CardsPlayed { get { return new Dictionary<IPlayer, ICard>(_cards); } }
         public Dictionary<IPlayer, MoveStatUniqueKey> LearningKeys { get { return _learningKeys; } }
@@ -37,7 +38,7 @@ namespace Sheepshead.Models
         {
             var index = Hand.Tricks.IndexOf(this);
             StartingPlayer = (index == 0)
-                ? Hand.Deck.StartingPlayer
+                ? Hand.StartingPlayer
                 : Hand.Tricks[index - 1].Winner().Player;
         }
 
@@ -94,6 +95,16 @@ namespace Sheepshead.Models
         {
             _learningHelper.OnHandEnd(this);
         }
+
+        public int PlayerCount
+        {
+            get { return Hand.Deck.Game.PlayerCount; }
+        }
+
+        public List<IPlayer> Players
+        {
+            get { return Hand.Deck.Game.Players; }
+        }
     }
 
     public class TrickWinner {
@@ -105,6 +116,7 @@ namespace Sheepshead.Models
     {
         Dictionary<IPlayer, MoveStatUniqueKey> LearningKeys { get; }
         IHand Hand { get; }
+        IGame Game { get; }
         TrickWinner Winner();
         void Add(IPlayer player, ICard card);
         bool IsLegalAddition(ICard card, IPlayer player);
@@ -113,6 +125,8 @@ namespace Sheepshead.Models
         bool IsComplete();
         MoveStatUniqueKey GenerateKey(IPlayer player, ICard legalCard);
         void OnHandEnd();
+        int PlayerCount { get; }
+        List<IPlayer> Players { get; }
     }
 
     public interface ILearningHelper {

@@ -12,11 +12,9 @@ namespace Sheepshead.Tests
     {
         private IHand GetHand()
         {
-            var deckMock = new Mock<IDeck>();
             var handMock = new Mock<IHand>();
             var trickList = new List<ITrick>();
             handMock.Setup(m => m.Tricks).Returns(trickList);
-            handMock.Setup(m => m.Deck).Returns(deckMock.Object);
             handMock.Setup(m => m.PartnerCard).Returns(CardRepository.Instance[StandardSuite.CLUBS, CardType.KING]);
             handMock.Setup(m => m.AddTrick(It.IsAny<ITrick>())).Callback((ITrick newTrick) => { trickList.Add(newTrick); });
             return handMock.Object;
@@ -143,13 +141,11 @@ namespace Sheepshead.Tests
         {
             var firstPlayer = new Mock<IPlayer>().Object;
             var learningHelperMock = new Mock<ILearningHelper>();
-            var mockDeck = new Mock<IDeck>();
+            var trickList = new List<ITrick>();
             var mockHand = new Mock<IHand>();
             mockHand.Setup(m => m.PartnerCard).Returns(CardRepository.Instance[StandardSuite.DIAMONDS, CardType.QUEEN]);
-            mockHand.Setup(m => m.Deck).Returns(mockDeck.Object);
             mockHand.Setup(m => m.PlayerCount).Returns(5);
             mockHand.Setup(m => m.Players).Returns(new List<IPlayer>());
-            var trickList = new List<ITrick>();
             mockHand.Setup(m => m.Tricks).Returns(trickList);
             mockHand.Setup(m => m.AddTrick(It.IsAny<ITrick>())).Callback((ITrick newTrick) => { trickList.Add(newTrick); });
             var hand = mockHand.Object;
@@ -187,11 +183,8 @@ namespace Sheepshead.Tests
             var learningHelperMock = new Mock<ILearningHelper>();
             var firstPlayer = new Mock<IPlayer>().Object;
             var mockHand = new Mock<IHand>();
-            var mockDeck = new Mock<IDeck>();
             mockHand.Setup(m => m.Players).Returns(new List<IPlayer>());
             mockHand.Setup(m => m.PartnerCard).Returns(CardRepository.Instance[StandardSuite.DIAMONDS, CardType.N10]);
-            mockHand.Setup(m => m.Deck).Returns(mockDeck.Object);
-            //mockDeck.Setup(m => m.Game).Returns(mockGame.Object);
             var trickList = new List<ITrick>();
             mockHand.Setup(m => m.Tricks).Returns(trickList);
             mockHand.Setup(m => m.AddTrick(It.IsAny<ITrick>())).Callback((ITrick newTrick) => { trickList.Add(newTrick); });
@@ -218,14 +211,8 @@ namespace Sheepshead.Tests
             var player5 = new Mock<BasicPlayer>();
             var playerList = new List<IPlayer>() { player3.Object, player4.Object, player5.Object, player1.Object, player2.Object };
             var learningHelperMock = new Mock<ILearningHelper>();
-            var mockGame = new Mock<IGame>();
-            mockGame.Setup(m => m.Players).Returns(playerList);
-            mockGame.Setup(m => m.PlayerCount).Returns(5);
-            var mockDeck = new Mock<IDeck>();
-            mockDeck.Setup(m => m.Game).Returns(mockGame.Object);
-            mockDeck.Setup(m => m.StartingPlayer).Returns(player1.Object);
             var mockHand = new Mock<IHand>();
-            mockHand.Setup(m => m.Deck).Returns(mockDeck.Object);
+            mockHand.Setup(m => m.StartingPlayer).Returns(player1.Object);
             var trickList = new List<ITrick>();
             mockHand.Setup(m => m.Tricks).Returns(trickList);
             mockHand.Setup(m => m.AddTrick(It.IsAny<ITrick>())).Callback((ITrick newTrick) => { trickList.Add(newTrick); });
