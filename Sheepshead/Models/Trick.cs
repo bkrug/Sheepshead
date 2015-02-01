@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using Sheepshead.Models.Players;
+using Sheepshead.Models.Players.Stats;
 
 namespace Sheepshead.Models
 {
@@ -10,13 +11,16 @@ namespace Sheepshead.Models
     {
         private Dictionary<IPlayer, ICard> _cards = new Dictionary<IPlayer, ICard>();
         private IHand _hand;
+        private IMoveStatRepository _moveStatRepository;
+        private Dictionary<IPlayer, MoveStatUniqueKey> _learningKeys = new Dictionary<IPlayer,MoveStatUniqueKey>();
 
         public IHand Hand { get { return _hand; } }
         public IPlayer StartingPlayer { get; private set; }
         public Dictionary<IPlayer, ICard> CardsPlayed { get { return new Dictionary<IPlayer, ICard>(_cards); } }
 
-        public Trick(IHand hand)
+        public Trick(IHand hand, IMoveStatRepository moveStatRepository)
         {
+            _moveStatRepository = moveStatRepository;
             _hand = hand;
             _hand.AddTrick(this);
             SetStartingPlayer();
@@ -32,20 +36,13 @@ namespace Sheepshead.Models
 
         public void Add(IPlayer player, ICard card)
         {
+            _learningKeys.Add(player, GenerateKey(player, card));
             _cards.Add(player, card);
             player.Cards.Remove(card);
             if (_hand.PartnerCard != null && _hand.PartnerCard.StandardSuite == card.StandardSuite && _hand.PartnerCard.CardType == card.CardType)
                 _hand.Partner = player;
             if (IsComplete())
                 EndTrick();
-        }
-
-        private void EndTrick()
-        {
-            foreach (LearningPlayer player in Hand.Deck.Game.Players.OfType<LearningPlayer>())
-                player.OnTrickEnd(this);
-            if (Hand.IsComplete())
-                Hand.EndHand();
         }
 
         public bool IsLegalAddition(ICard card, IPlayer player)
@@ -80,6 +77,67 @@ namespace Sheepshead.Models
         {
             return CardsPlayed.Count() == Hand.Deck.Game.PlayerCount;
         }
+
+        public MoveStatUniqueKey GenerateKey(IPlayer player,ICard legalCard)
+        {
+            List<IPlayer> playerList = this.Hand.Deck.Game.Players;
+            return new MoveStatUniqueKey()
+            {
+                Picker = playerList.IndexOf(this.Hand.Picker),
+                Partner = this.Hand.Partner != null ? (int?)playerList.IndexOf(this.Hand.Partner) : null,
+                Trick = this.Hand.Tricks.Count(),
+                MoveWithinTrick = QueueRankInTrick(player),
+                PointsAlreadyInTrick = this.CardsPlayed.Sum(c => c.Value.Points),
+                TotalPointsInPreviousTricks = this.Hand.Tricks.Where(t => t != this).Sum(t => t.CardsPlayed.Sum(c => c.Value.Points)),
+                PointsInThisCard = legalCard.Points,
+                RankOfThisCard = legalCard.Rank,
+                PartnerCard = this.Hand.PartnerCard == legalCard,
+                HigherRankingCardsPlayedPreviousTricks = this.Hand.Tricks.Where(t => t != this).SelectMany(t => t.CardsPlayed.Select(kvp => kvp.Value)).Count(c => c.Rank > legalCard.Rank),
+                HigherRankingCardsPlayedThisTrick = this.CardsPlayed.Select(kvp => kvp.Value).Count(c => c.Rank > legalCard.Rank)
+            };
+        }
+
+        //TODO: Duplicate logic
+        protected int QueueRankInTrick(IPlayer player)
+        {
+            var indexOfMe = this.Hand.Deck.Game.Players.IndexOf(player);
+            var indexOfStartingPlayer = this.Hand.Deck.Game.Players.IndexOf(this.StartingPlayer);
+            var rank = indexOfMe - indexOfStartingPlayer;
+            if (rank < 0) rank += this.Hand.Deck.Game.PlayerCount;
+            return rank + 1;
+        }
+
+        //TODO: Duplicate logic
+        protected int QueueRankInDeck(IPlayer player)
+        {
+            var indexOfMe = this.Hand.Deck.Game.Players.IndexOf(player);
+            var indexOfStartingPlayer = this.Hand.Deck.Game.Players.IndexOf(player);
+            var rank = indexOfMe - indexOfStartingPlayer;
+            if (rank < 0) rank += this.Hand.Deck.Game.PlayerCount;
+            return rank + 1;
+        }
+
+        private void EndTrick()
+        {
+            foreach (var player in this.Hand.Deck.Game.Players)
+            {
+                var statKey = _learningKeys[player];
+                var repository = MoveStatRepository.Instance;
+                repository.IncrementTrickResult(statKey, Winner().Player == this);
+            }
+            if (Hand.IsComplete())
+                Hand.EndHand();
+        }
+
+        public void OnHandEnd()
+        {
+            foreach (var player in this.Hand.Deck.Game.Players)
+            {
+                var statKey = _learningKeys[player];
+                var repository = MoveStatRepository.Instance;
+                repository.IncrementHandResult(statKey, Hand.Scores()[player] > 0);
+            }
+        }
     }
 
     public class TrickWinner {
@@ -96,5 +154,7 @@ namespace Sheepshead.Models
         IPlayer StartingPlayer { get; }
         Dictionary<IPlayer, ICard> CardsPlayed { get; }
         bool IsComplete();
+        MoveStatUniqueKey GenerateKey(IPlayer player, ICard legalCard);
+        void OnHandEnd();
     }
 }

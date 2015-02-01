@@ -23,7 +23,7 @@ Heuristic For Whether to play the card =
             var playerList = trick.Hand.Deck.Game.Players;
             foreach(var legalCard in legalCards) 
             {
-                var key = GenerateKey(trick, playerList, legalCard);
+                var key = trick.GenerateKey(this, legalCard);
                 var predictor = new ResultPredictor(repository);
                 var result = predictor.GetWeightedStat(key);
                 results.Add(legalCard, result);
@@ -32,43 +32,7 @@ Heuristic For Whether to play the card =
                 .OrderByDescending(r => r.Value.GamePortionWon)
                 .ThenByDescending(r => r.Value.TrickPortionWon);
             var selectedCard = orderedResults.First().Key;
-            _keys.Add(trick, GenerateKey(trick, playerList, selectedCard));
             return selectedCard;
-        }
-
-        private MoveStatUniqueKey GenerateKey(ITrick trick, List<IPlayer> playerList, ICard legalCard)
-        {
-            return new MoveStatUniqueKey()
-            {
-                Picker = playerList.IndexOf(trick.Hand.Picker),
-                Partner = trick.Hand.Partner != null ? (int?)playerList.IndexOf(trick.Hand.Partner) : null,
-                Trick = trick.Hand.Tricks.Count(),
-                MoveWithinTrick = QueueRankInTrick(trick),
-                PointsAlreadyInTrick = trick.CardsPlayed.Sum(c => c.Value.Points),
-                TotalPointsInPreviousTricks = trick.Hand.Tricks.Where(t => t != trick).Sum(t => t.CardsPlayed.Sum(c => c.Value.Points)),
-                PointsInThisCard = legalCard.Points,
-                RankOfThisCard = legalCard.Rank,
-                PartnerCard = trick.Hand.PartnerCard == legalCard,
-                HigherRankingCardsPlayedPreviousTricks = trick.Hand.Tricks.Where(t => t != trick).SelectMany(t => t.CardsPlayed.Select(kvp => kvp.Value)).Count(c => c.Rank > legalCard.Rank),
-                HigherRankingCardsPlayedThisTrick = trick.CardsPlayed.Select(kvp => kvp.Value).Count(c => c.Rank > legalCard.Rank)
-            };
-        }
-
-        public void OnTrickEnd(ITrick trick)
-        {
-            var statKey = _keys[trick];
-            var repository = MoveStatRepository.Instance;
-            repository.IncrementTrickResult(statKey, trick.Winner().Player == this);
-        }
-
-        public void OnHandEnd(IHand hand)
-        {
-            foreach (var trick in hand.Tricks)
-            {
-                var statKey = _keys[trick];
-                var repository = MoveStatRepository.Instance;
-                repository.IncrementHandResult(statKey, trick.Winner().Player == this);
-            }
         }
     }
 }

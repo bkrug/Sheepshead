@@ -104,8 +104,8 @@ namespace Sheepshead.Models
 
         public void EndHand()
         {
-            foreach (LearningPlayer player in Deck.Game.Players.OfType<LearningPlayer>())
-                player.OnHandEnd(this);
+            foreach (var trick in Tricks)
+                trick.OnHandEnd();
         }
 
         public bool IsComplete()

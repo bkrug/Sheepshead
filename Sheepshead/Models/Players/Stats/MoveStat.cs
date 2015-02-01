@@ -30,4 +30,15 @@ namespace Sheepshead.Models.Players.Stats
         public int HigherRankingCardsPlayedPreviousTricks;
         public int HigherRankingCardsPlayedThisTrick;
     }
+
+    //2 - PickerOrParner
+    //3 - Trick
+    //3 - MoveWithinTrick
+    //3 - PointsAlreadyInTrick;
+    //5 - TotalPointsInPreviousTricks;
+    //5 - PointsInThisCard;
+    //5 - RankOfThisCard;
+    //2 - PartnerCard;
+    //5 - HigherRankingCardsPlayedPreviousTricks;
+    //5 - HigherRankingCardsPlayedThisTrick;
 }

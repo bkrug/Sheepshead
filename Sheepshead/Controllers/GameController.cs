@@ -5,6 +5,7 @@ using System.Web;
 using System.Web.Mvc;
 using Sheepshead.Models;
 using Sheepshead.Models.Players;
+using Sheepshead.Models.Players.Stats;
 
 namespace Sheepshead.Controllers
 {
@@ -93,7 +94,7 @@ namespace Sheepshead.Controllers
                 throw new ApplicationException("Hand is already complete.");
             ITrick trick = hand.Tricks.LastOrDefault();
             if (trick == null || trick.IsComplete())
-                trick = new Trick(hand);
+                trick = new Trick(hand, MoveStatRepository.Instance);
             game.PlayNonHumans(trick);
         }
 
