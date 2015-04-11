@@ -11,6 +11,7 @@ namespace Sheepshead.Models.Players.Stats
 {
     public interface IMoveStatRepository
     {
+        List<MoveStatUniqueKey> Keys { get; }
         void IncrementTrickResult(MoveStatUniqueKey key, bool wonTrick);
         void IncrementHandResult(MoveStatUniqueKey key, bool wonGame);
         MoveStat GetRecordedResults(MoveStatUniqueKey key);
@@ -21,6 +22,7 @@ namespace Sheepshead.Models.Players.Stats
         private static MoveStatRepository _instance = new MoveStatRepository();
 
         private Dictionary<MoveStatUniqueKey, MoveStat> _dict = new Dictionary<MoveStatUniqueKey, MoveStat>();
+        public List<MoveStatUniqueKey> Keys { get { return _dict.Keys.ToList(); } }
 
         public static string SaveLocation { get; set; }
 
