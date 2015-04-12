@@ -5,24 +5,10 @@ using System.Web;
 
 namespace Sheepshead.Models.Players.Stats
 {
-    public interface IClusterer
-    {
-        IReadOnlyList<MoveStatCentroid> Centroids { get; }
-    }
-
-    public class Clusterer : IClusterer
+    public class Clusterer
     {
         private int _numClusters;
-        private MoveStatCentroid[] _results;
         private Random _rnd;
-
-        public IReadOnlyList<MoveStatCentroid> Centroids
-        {
-            get
-            {
-                return _results;
-            }
-        }
 
         public Clusterer(int numClusters, Random rnd)
         {
@@ -30,7 +16,7 @@ namespace Sheepshead.Models.Players.Stats
             _rnd = rnd;
         }
 
-        public void Cluster(List<MoveStatUniqueKey> data)
+        public ClusterResult Cluster(List<MoveStatUniqueKey> data)
         {
             var noPartnerData = data.Where(m => m.Partner == null).ToList();
             var partnerData = data.Where(m => m.Partner != null).ToList();
@@ -39,15 +25,20 @@ namespace Sheepshead.Models.Players.Stats
             SetClusterCounts(data, noPartnerData, out noPartnerClusters, out partnerClusters);
             var noPartnerClusterer = new InnerClusterer(noPartnerClusters, _rnd);
             var partnerClusterer = new InnerClusterer(partnerClusters, _rnd);
-            noPartnerClusterer.Cluster(noPartnerData);
-            partnerClusterer.Cluster(partnerData);
-            _results = noPartnerClusterer.Centroids.Union(partnerClusterer.Centroids).ToArray();
+            var noPartnerResults = noPartnerClusterer.Cluster(noPartnerData);
+            var partnerResults = partnerClusterer.Cluster(partnerData);
+            var combinedResults = new ClusterResult();
+            combinedResults.Data = noPartnerResults.Data.Union(partnerResults.Data).ToList();
+            combinedResults.ClusterIndicies = new int[data.Count()];
+            CopyClusterIndicies(ref noPartnerResults, ref partnerResults, ref combinedResults);
+            combinedResults.Centroids = noPartnerResults.Centroids.Union(partnerResults.Centroids).ToList();
+            return combinedResults;
         }
 
         private void SetClusterCounts(List<MoveStatUniqueKey> data, List<MoveStatUniqueKey> noPartner, out int noPartnerClusters, out int partnerClusters)
         {
-            noPartnerClusters = (int)Math.Round((decimal)(noPartner.Count() / data.Count() * _numClusters), 0);
-            partnerClusters = data.Count() - noPartnerClusters;
+            noPartnerClusters = (int)Math.Round(((decimal)noPartner.Count() / data.Count() * _numClusters), 0);
+            partnerClusters = _numClusters - noPartnerClusters;
             if (noPartnerClusters < 1)
             {
                 noPartnerClusters = 1;
@@ -58,6 +49,17 @@ namespace Sheepshead.Models.Players.Stats
                 noPartnerClusters = data.Count() - 1;
                 partnerClusters = 1;
             }
+        }
+
+        private static void CopyClusterIndicies(ref ClusterResult noPartnerResults, ref ClusterResult partnerResults, ref ClusterResult combinedResults)
+        {
+            Array.Copy(noPartnerResults.ClusterIndicies, combinedResults.ClusterIndicies, noPartnerResults.ClusterIndicies.Length);
+            //The cluster indicies in the original results refer to each centroid's original index.
+            //by combining the centroid results, we change the centroid's index.  That must be represented by increasing the index values. 
+            var arrayOffset = noPartnerResults.ClusterIndicies.Length;
+            var clusterOffset = noPartnerResults.Centroids.Count();
+            for (var i = 0; i < partnerResults.ClusterIndicies.Length; ++i)
+                combinedResults.ClusterIndicies[arrayOffset + i] = partnerResults.ClusterIndicies[i] + clusterOffset;
         }
     }
 }

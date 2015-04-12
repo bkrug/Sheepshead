@@ -13,8 +13,10 @@ namespace Sheepshead.Models.Players.Stats
             sumSquareDiffs += Math.Pow((tuple.HigherRankingCardsPlayedPreviousTricks - centroid.HigherRankingCardsPlayedPreviousTricks), 2);
             sumSquareDiffs += Math.Pow((tuple.HigherRankingCardsPlayedThisTrick - centroid.HigherRankingCardsPlayedThisTrick), 2);
             sumSquareDiffs += Math.Pow((tuple.MoveWithinTrick - centroid.MoveWithinTrick), 2);
-            if (tuple.Partner.HasValue)
+            if (tuple.Partner.HasValue && centroid.Partner.HasValue)
                 sumSquareDiffs += Math.Pow((tuple.Partner.Value - centroid.Partner.Value), 2);
+            else if (tuple.Partner.HasValue != centroid.Partner.HasValue)
+                return double.MaxValue;
             sumSquareDiffs += Math.Pow(((tuple.PartnerCard ? 1 : 0) - centroid.PartnerCard), 2);
             sumSquareDiffs += Math.Pow((tuple.Picker - centroid.Picker), 2);
             sumSquareDiffs += Math.Pow((tuple.PointsAlreadyInTrick - centroid.PointsAlreadyInTrick), 2);

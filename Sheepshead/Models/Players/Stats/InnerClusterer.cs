@@ -5,21 +5,12 @@ using System.Web;
 
 namespace Sheepshead.Models.Players.Stats
 {
-    public class InnerClusterer : IClusterer
+    public class InnerClusterer
     {
         private int _numClusters;
         private int[] _clustering;
         private MoveStatCentroid[] _centroids;
-        private MoveStatCentroid[] _results;
         private Random _rnd;
-
-        public IReadOnlyList<MoveStatCentroid> Centroids
-        {
-            get
-            {
-                return _results;
-            }
-        }
 
         public InnerClusterer(int numClusters, Random rnd)
         {
@@ -28,7 +19,7 @@ namespace Sheepshead.Models.Players.Stats
             _rnd = rnd;
         }
 
-        public void Cluster(List<MoveStatUniqueKey> data)
+        public ClusterResult Cluster(List<MoveStatUniqueKey> data)
         {
             var numTuples = data.Count();
             _clustering = new int[numTuples];
@@ -48,8 +39,14 @@ namespace Sheepshead.Models.Players.Stats
                 changed = UpdateClustering(data);
             }
 
-            MoveStatCentroid[] _results = new MoveStatCentroid[numTuples];
-            Array.Copy(_clustering, _results, _clustering.Length);
+            var clusterResult = new ClusterResult()
+            {
+                Data = data,
+                ClusterIndicies = new int[_clustering.Length],
+                Centroids = _centroids.ToList()
+            };
+            Array.Copy(_clustering, clusterResult.ClusterIndicies, _clustering.Length);
+            return clusterResult;
         }
 
         private void InitRandom(List<MoveStatUniqueKey> data)

@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
+using System.IO;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using Sheepshead.Models;
@@ -49,7 +51,7 @@ namespace Sheepshead.Tests
                     GetNearbyKey(centroid2, 1.7),
                     GetNearbyKey(centroid1, -1.6),
                 },
-                ClusterIndecies = new int[] { 1, 2, 0, 0, 2, 1, 2, 0, 1, 0 },
+                ClusterIndicies = new int[] { 1, 2, 0, 0, 2, 1, 2, 0, 1, 0 },
                 Centroids = new List<MoveStatCentroid>() { centroid1, centroid2, centroid3 }
             };
         }
@@ -59,7 +61,7 @@ namespace Sheepshead.Tests
             var mockResults = new Dictionary<MoveStatUniqueKey, MoveStat>();
             for (var i = 0; i < clusterResult.Data.Count(); ++i)
             {
-                var cluster = clusterResult.ClusterIndecies[i];
+                var cluster = clusterResult.ClusterIndicies[i];
                 mockResults.Add(clusterResult.Data[i], new MoveStat()
                 {
                     TricksTried = 1,
@@ -183,5 +185,91 @@ namespace Sheepshead.Tests
             HandsWon = 9,
             HandsTried = 18
         };
+
+        //This is not a unit test, but will generate a CSV file displaying the clustering results.
+        [TestMethod]
+        public void DoClustering()
+        {
+            var rnd = new Random();
+            var keyList = new List<MoveStatUniqueKey>();
+            for (var i = 0; i < 1000; ++i)
+                keyList.Add(GenerateKey(rnd));
+            var numClusters = (int)Math.Sqrt(keyList.Count());
+            var clusterer = new Clusterer(numClusters, new Random(65423));
+            var results = clusterer.Cluster(keyList);
+            using (
+            var sb = new StreamWriter(@"C:\Temp\temp.csv"))
+            {
+                sb.WriteLine("Picker,Partner,Trick,MoveWithinTrick,PointsAlreadyIntrick,TotalPointsInPrevioustricks,PointsInthisCard,RankOfThisCard,ParnetCard,HigherRankingCardPlayedPrevioustricks,HigherRankingCardsPlayedThisTrick,"
+                    + "Number of closer Centroids,"
+                    + "Distance to Centroid 1,Distance to Centroid 2,Distance to Centroid 3,Distance to Centroid 4,Distance to Centroid 5,Distance to Centroid 6,Distance to Centroid 7,Distance to Centroid 8,Distance to Centroid 9,Distance to Centroid 10");
+                foreach (var centroid in results.Centroids)
+                {
+                    sb.WriteLine(
+                        centroid.Picker + "," +
+                        (centroid.Partner == null ? " " : centroid.Partner.Value.ToString()) + "," +
+                        centroid.Trick + "," +
+                        centroid.MoveWithinTrick + "," +
+                        centroid.PointsAlreadyInTrick + "," +
+                        centroid.TotalPointsInPreviousTricks + "," +
+                        centroid.PointsInThisCard + "," +
+                        centroid.RankOfThisCard + "," +
+                        centroid.PartnerCard + "," +
+                        centroid.HigherRankingCardsPlayedPreviousTricks + "," +
+                        centroid.HigherRankingCardsPlayedThisTrick 
+                        );
+                    sb.WriteLine("-----,-----,-----,-----,-----,-----");
+                    foreach (var key in results.GetDataInCluster(centroid))
+                    {
+                        var comparison = "";
+                        var closerCentroids = 0;
+                        var mainDistance = ClusterUtils.Distance(key, centroid);
+                        foreach (var centroid2 in results.Centroids)
+                        {
+                            var distance = ClusterUtils.Distance(key, centroid2);
+                            comparison += "," + distance;
+                            if (distance < mainDistance)
+                                ++closerCentroids;
+                        }
+                        sb.WriteLine(
+                            key.Picker + "," +
+                            (key.Partner == null ? " " : key.Partner.Value.ToString()) + "," +
+                            key.Trick + "," +
+                            key.MoveWithinTrick + "," +
+                            key.PointsAlreadyInTrick + "," +
+                            key.TotalPointsInPreviousTricks + "," +
+                            key.PointsInThisCard + "," +
+                            key.RankOfThisCard + "," +
+                            key.PartnerCard + "," +
+                            key.HigherRankingCardsPlayedPreviousTricks + "," +
+                            key.HigherRankingCardsPlayedThisTrick + "," + 
+                            closerCentroids +
+                            comparison
+                        );
+                    }
+                    sb.WriteLine();
+                }
+            }
+        }
+
+        private MoveStatUniqueKey GenerateKey(Random rnd)
+        {
+            var partner = rnd.Next(6);
+            var totalpointsinprevioustricks = rnd.Next(120);
+            return new MoveStatUniqueKey()
+            {
+                Picker = rnd.Next(5),
+                Partner = (partner == 5 ? (int?)null : partner),
+                Trick = rnd.Next(6),
+                MoveWithinTrick = rnd.Next(5),
+                PointsAlreadyInTrick = rnd.Next(totalpointsinprevioustricks),
+                TotalPointsInPreviousTricks = totalpointsinprevioustricks,
+                PointsInThisCard = rnd.Next(11),
+                RankOfThisCard = rnd.Next(10),
+                PartnerCard = rnd.Next(1) == 1,
+                HigherRankingCardsPlayedPreviousTricks = rnd.Next(120),
+                HigherRankingCardsPlayedThisTrick = rnd.Next(120)
+            };
+        }
     }
 }
