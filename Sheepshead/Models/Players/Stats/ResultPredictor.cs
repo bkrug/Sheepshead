@@ -26,9 +26,9 @@ namespace Sheepshead.Models.Players.Stats
             var pow = Math.Log(mainStat.HandsTried) / Math.Log(10);
             var weightOfSimilar = 1 - pow / 4;
             var denominator = 1 + weightOfSimilar;
-            var percentMainHandsWon = mainStat.GamePortionWon;
+            var percentMainHandsWon = mainStat.HandPortionWon;
             var percentMainTricksWon = mainStat.TrickPortionWon;
-            var percentSimHandsWon = similarStat.GamePortionWon;
+            var percentSimHandsWon = similarStat.HandPortionWon;
             var percentSimTricksWon = similarStat.TrickPortionWon;
             var percentWeightedTricks = (percentMainTricksWon + percentSimTricksWon * weightOfSimilar) / denominator;
             var percentWeightedHands = (percentMainHandsWon + percentSimHandsWon * weightOfSimilar) / denominator;
@@ -137,7 +137,7 @@ namespace Sheepshead.Models.Players.Stats
                 if (stat != null && stat.TricksTried > 0)
                     tricksWon.Add(stat.TrickPortionWon.Value);
                 if (stat != null && stat.HandsTried > 0)
-                    handsWon.Add(stat.GamePortionWon.Value);
+                    handsWon.Add(stat.HandPortionWon.Value);
             }
             return new MoveStat()
             {

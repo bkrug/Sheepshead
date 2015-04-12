@@ -9,8 +9,72 @@ using Sheepshead.Models.Players.Stats;
 namespace Sheepshead.Tests
 {
     [TestClass]
-    public class CentroidTests
+    public class ClusterTests
     {
+        [TestMethod]
+        public void GetClusterDictionary()
+        {
+            var clusterResult = GetClusterResult();
+            var expectedDict = new Dictionary<MoveStatCentroid, MoveStat>() {
+                { centroid1, new MoveStat() { TricksTried = 4, TricksWon = 4, HandsTried = 4, HandsWon = 0 } },
+                { centroid2, new MoveStat() { TricksTried = 3, TricksWon = 0, HandsTried = 3, HandsWon = 3 } },
+                { centroid3, new MoveStat() { TricksTried = 3, TricksWon = 2, HandsTried = 3, HandsWon = 2 } },
+            };
+            var repositoryMock = GetStatRepository(clusterResult, 4);
+            var actualDict = ClusterUtils.GetClusterDictionary(repositoryMock, clusterResult);
+            Assert.AreEqual(expectedDict.Count, actualDict.Count, "Dictionaries must be the same size.");
+            var i = 0;
+            foreach (var key in expectedDict.Keys)
+            {
+                Assert.AreEqual(expectedDict[key].TrickPortionWon, actualDict[key].TrickPortionWon, "Trick portion won must match during iteration " + i + ".");
+                Assert.AreEqual(expectedDict[key].HandPortionWon, actualDict[key].HandPortionWon, "Hand portion won must match during iteration " + i + ".");
+                ++i;
+            }
+        }
+
+        private ClusterResult GetClusterResult()
+        {
+            return new ClusterResult()
+            {
+                Data = new List<MoveStatUniqueKey>()
+                {
+                    GetNearbyKey(centroid2, 2.6),
+                    GetNearbyKey(centroid3, 1.6),
+                    GetNearbyKey(centroid1, -0.6),
+                    GetNearbyKey(centroid1, -1.2),
+                    GetNearbyKey(centroid3, 0.75),
+                    GetNearbyKey(centroid2, 0.3),
+                    GetNearbyKey(centroid3, -1.4),
+                    GetNearbyKey(centroid1, -0.8),
+                    GetNearbyKey(centroid2, 1.7),
+                    GetNearbyKey(centroid1, -1.6),
+                },
+                ClusterIndecies = new int[] { 1, 2, 0, 0, 2, 1, 2, 0, 1, 0 },
+                Centroids = new List<MoveStatCentroid>() { centroid1, centroid2, centroid3 }
+            };
+        }
+
+        private IMoveStatRepository GetStatRepository(ClusterResult clusterResult, int indexOfSecondKeyInLastCentroid)
+        {
+            var mockResults = new Dictionary<MoveStatUniqueKey, MoveStat>();
+            for (var i = 0; i < clusterResult.Data.Count(); ++i)
+            {
+                var cluster = clusterResult.ClusterIndecies[i];
+                mockResults.Add(clusterResult.Data[i], new MoveStat()
+                {
+                    TricksTried = 1,
+                    TricksWon = cluster == 0 ? 1 : cluster == 1 ? 0 : i <= indexOfSecondKeyInLastCentroid ? 1 : 0,
+                    HandsTried = 1,
+                    HandsWon = cluster == 0 ? 0 : cluster == 1 ? 1 : i <= indexOfSecondKeyInLastCentroid ? 1 : 0
+                });
+            }
+            var repositoryMock = new Mock<IMoveStatRepository>();
+            repositoryMock
+                .Setup(m => m.GetRecordedResults(It.IsAny<MoveStatUniqueKey>()))
+                .Returns((MoveStatUniqueKey key) => { return mockResults[key]; });
+            return repositoryMock.Object;
+        }
+
         [TestMethod]
         public void CentroidResultPrediction()
         {

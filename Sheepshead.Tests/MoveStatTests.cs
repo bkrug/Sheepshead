@@ -52,10 +52,10 @@ namespace Sheepshead.Tests
             var result2 = repository.GetRecordedResults(identicalKey);
 
             Assert.AreEqual(1, result.TrickPortionWon);
-            Assert.AreEqual(0, result.GamePortionWon);
+            Assert.AreEqual(0, result.HandPortionWon);
             Assert.IsNotNull(result2, "Using a different instance of an identical key should return the same result");
             Assert.AreEqual(1, result2.TrickPortionWon);
-            Assert.AreEqual(0, result2.GamePortionWon);
+            Assert.AreEqual(0, result2.HandPortionWon);
         }
 
         [TestMethod]
@@ -99,12 +99,12 @@ namespace Sheepshead.Tests
             var result2 = repository.GetRecordedResults(differentKey);
 
             Assert.AreEqual(1, result.TrickPortionWon);
-            Assert.AreEqual(0, result.GamePortionWon);
+            Assert.AreEqual(0, result.HandPortionWon);
             Assert.IsNotNull(result2, "Using a different key should let us know that there were no results.");
             Assert.AreEqual(0, result2.TricksTried);
             Assert.AreEqual(0, result2.HandsTried);
             Assert.AreEqual(null, result2.TrickPortionWon);
-            Assert.AreEqual(null, result2.GamePortionWon);
+            Assert.AreEqual(null, result2.HandPortionWon);
         }
 
         const double testKeyTricks = .6;

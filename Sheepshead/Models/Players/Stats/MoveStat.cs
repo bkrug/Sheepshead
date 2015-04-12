@@ -13,7 +13,7 @@ namespace Sheepshead.Models.Players.Stats
         public int HandsTried { get; set; }
 
         public double? TrickPortionWon { get { return TricksTried == 0 ? null : (double?)TricksWon / TricksTried; } }
-        public double? GamePortionWon { get { return HandsTried == 0 ? null : (double?)HandsWon / HandsTried; } }
+        public double? HandPortionWon { get { return HandsTried == 0 ? null : (double?)HandsWon / HandsTried; } }
     }
 
     public struct MoveStatUniqueKey {

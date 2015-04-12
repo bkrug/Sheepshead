@@ -29,7 +29,7 @@ Heuristic For Whether to play the card =
                 results.Add(legalCard, result);
             }
             var orderedResults = results
-                .OrderByDescending(r => r.Value.GamePortionWon)
+                .OrderByDescending(r => r.Value.HandPortionWon)
                 .ThenByDescending(r => r.Value.TrickPortionWon);
             var selectedCard = orderedResults.First().Key;
             return selectedCard;

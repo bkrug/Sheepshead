@@ -99,7 +99,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CentroidTests.cs" />
+    <Compile Include="ClusterTests.cs" />
     <Compile Include="LearningTests.cs" />
     <Compile Include="MoveStatTests.cs" />
     <Compile Include="GameRepositoryTests.cs" />

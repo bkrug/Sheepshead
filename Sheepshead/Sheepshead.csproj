@@ -133,6 +133,7 @@
     <Compile Include="Models\Players\NewbiePlayer.cs" />
     <Compile Include="Models\Players\Stats\CentroidResultPredictor.cs" />
     <Compile Include="Models\Players\Stats\Clusterer.cs" />
+    <Compile Include="Models\Players\Stats\ClusterResult.cs" />
     <Compile Include="Models\Players\Stats\ClusterUtils.cs" />
     <Compile Include="Models\Players\Stats\InnerClusterer.cs" />
     <Compile Include="Models\Players\Stats\MoveStat.cs" />
