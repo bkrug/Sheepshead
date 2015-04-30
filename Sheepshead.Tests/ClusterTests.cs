@@ -192,7 +192,7 @@ namespace Sheepshead.Tests
         {
             var rnd = new Random();
             var keyList = new List<MoveStatUniqueKey>();
-            for (var i = 0; i < 1000; ++i)
+            for (var i = 0; i < 100; ++i)
                 keyList.Add(GenerateKey(rnd));
             var numClusters = (int)Math.Sqrt(keyList.Count());
             var clusterer = new Clusterer(numClusters, new Random(65423));
@@ -267,8 +267,8 @@ namespace Sheepshead.Tests
                 PointsInThisCard = rnd.Next(11),
                 RankOfThisCard = rnd.Next(10),
                 PartnerCard = rnd.Next(1) == 1,
-                HigherRankingCardsPlayedPreviousTricks = rnd.Next(120),
-                HigherRankingCardsPlayedThisTrick = rnd.Next(120)
+                HigherRankingCardsPlayedPreviousTricks = rnd.Next(31),
+                HigherRankingCardsPlayedThisTrick = rnd.Next(4)
             };
         }
     }

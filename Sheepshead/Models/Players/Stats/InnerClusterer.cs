@@ -21,13 +21,14 @@ namespace Sheepshead.Models.Players.Stats
 
         public ClusterResult Cluster(List<MoveStatUniqueKey> data)
         {
+            var weighedData = WeighData(data);
             var numTuples = data.Count();
             _clustering = new int[numTuples];
 
             for (int k = 0; k < _numClusters; ++k)
                 _centroids[k] = new MoveStatCentroid();
 
-            InitRandom(data);
+            InitRandom(weighedData);
 
             var changed = true;
             var maxCount = numTuples * 10;
@@ -35,21 +36,68 @@ namespace Sheepshead.Models.Players.Stats
             while (changed && ct <= maxCount)
             {
                 ++ct;
-                UpdateCentroids(data);
-                changed = UpdateClustering(data);
+                UpdateCentroids(weighedData);
+                changed = UpdateClustering(weighedData);
             }
 
             var clusterResult = new ClusterResult()
             {
                 Data = data,
                 ClusterIndicies = new int[_clustering.Length],
-                Centroids = _centroids.ToList()
+                Centroids = UnWeighCentroids(_centroids)
             };
             Array.Copy(_clustering, clusterResult.ClusterIndicies, _clustering.Length);
             return clusterResult;
         }
 
-        private void InitRandom(List<MoveStatUniqueKey> data)
+        private List<MoveStatCentroid> WeighData(List<MoveStatUniqueKey> data) {
+            var weighedData = new List<MoveStatCentroid>();
+            for (var i = 0; i < data.Count(); ++i )
+            {
+                var key = new MoveStatCentroid();
+                key.Picker = data[i].Picker * 120.0 / 5;
+                if (data[i].Partner.HasValue)
+                    key.Partner = data[i].Partner * 120.0 / 5;
+                key.Trick = data[i].Trick * 120.0 / 6;
+                key.MoveWithinTrick = data[i].MoveWithinTrick * 120.0 / 5;
+                key.PointsAlreadyInTrick = data[i].PointsAlreadyInTrick * 120.0 / 44;
+                key.TotalPointsInPreviousTricks = data[i].TotalPointsInPreviousTricks * 120.0 / 120.0;
+
+                key.PointsInThisCard = data[i].PointsInThisCard * 120.0 / 11;
+                key.RankOfThisCard = data[i].RankOfThisCard * 120.0 / 32;
+                key.PartnerCard = data[i].PartnerCard ? 120.0 : 0;
+                key.HigherRankingCardsPlayedPreviousTricks = data[i].HigherRankingCardsPlayedPreviousTricks * 120.0 / 31;
+                key.HigherRankingCardsPlayedThisTrick = data[i].HigherRankingCardsPlayedThisTrick * 120.0 / 4;
+                weighedData.Add(key);
+            }
+            return weighedData;
+        }
+
+        private List<MoveStatCentroid> UnWeighCentroids(MoveStatCentroid[] centroids)
+        {
+            List<MoveStatCentroid> list = new List<MoveStatCentroid>();
+            for (var i = 0; i < centroids.Length; ++i)
+            {
+                var key = centroids[i];
+                key.Picker *= 5.0 / 120;
+                if (key.Partner.HasValue)
+                    key.Partner *= 5.0 / 120;
+                key.Trick *= 6.0 / 120;
+                key.MoveWithinTrick *= 5.0 / 120;
+                key.PointsAlreadyInTrick *= 44.0 / 120;
+                key.TotalPointsInPreviousTricks *= 120.0 / 120;
+
+                key.PointsInThisCard *= 11.0 / 120;
+                key.RankOfThisCard *= 32.0 / 120;
+                key.PartnerCard = key.PartnerCard == 120 ? 1 : 0;
+                key.HigherRankingCardsPlayedPreviousTricks *= 31.0 / 120;
+                key.HigherRankingCardsPlayedThisTrick *= 4.0 / 120;
+                list.Add(key);
+            }
+            return list;
+        }
+
+        private void InitRandom(List<MoveStatCentroid> data)
         {
             int numTuples = data.Count();
 
@@ -70,7 +118,7 @@ namespace Sheepshead.Models.Players.Stats
         }
 
         //TODO: Either all input data elements should have a null value for Partner or none should
-        private void UpdateCentroids(List<MoveStatUniqueKey> data)
+        private void UpdateCentroids(List<MoveStatCentroid> data)
         {
             int[] clusterCounts = new int[_numClusters];
             for (int i = 0; i < data.Count; ++i)
@@ -94,7 +142,7 @@ namespace Sheepshead.Models.Players.Stats
                 _centroids[clusterID].MoveWithinTrick += data[i].MoveWithinTrick;
                 if (_centroids[clusterID].Partner != null)
                     _centroids[clusterID].Partner += data[i].Partner;
-                _centroids[clusterID].PartnerCard += (data[i].PartnerCard ? 1 : 0);
+                _centroids[clusterID].PartnerCard += data[i].PartnerCard;
                 _centroids[clusterID].Picker += data[i].Picker;
                 _centroids[clusterID].PointsAlreadyInTrick += data[i].PointsAlreadyInTrick;
                 _centroids[clusterID].PointsInThisCard += data[i].PointsInThisCard;
@@ -120,7 +168,7 @@ namespace Sheepshead.Models.Players.Stats
             }
         }
 
-        private bool UpdateClustering(List<MoveStatUniqueKey> data)
+        private bool UpdateClustering(List<MoveStatCentroid> data)
         {
             bool changed = false;
 

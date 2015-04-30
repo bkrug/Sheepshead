@@ -78,25 +78,5 @@ namespace Sheepshead.Models.Players.Stats
             //}
             //return total / count;
         //}
-
-        private MoveStatUniqueKey GenerateKey(Random rnd)
-        {
-            var partner = rnd.Next(6);
-            var totalpointsinprevioustricks = rnd.Next(120);
-            return new MoveStatUniqueKey()
-            {
-                Picker = rnd.Next(5),
-                Partner = (partner == 5 ? (int?)null : partner),
-                Trick = rnd.Next(6),
-                MoveWithinTrick = rnd.Next(5),
-                PointsAlreadyInTrick = rnd.Next(totalpointsinprevioustricks),
-                TotalPointsInPreviousTricks = totalpointsinprevioustricks,
-                PointsInThisCard = rnd.Next(11),
-                RankOfThisCard = rnd.Next(10),
-                PartnerCard = rnd.Next(1) == 1,
-                HigherRankingCardsPlayedPreviousTricks = rnd.Next(120),
-                HigherRankingCardsPlayedThisTrick = rnd.Next(120)
-            };
-        }
     }
 }
