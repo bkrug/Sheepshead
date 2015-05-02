@@ -9,7 +9,7 @@ namespace Sheepshead.Models
     public class Deck : IDeck
     {
         const int PLAYER_COUNT = 5;
-        const int CARDS_IN_DECK = 32;
+        public const int CARDS_IN_DECK = 32;
         const int BLIND_COUNT = 2;
         private List<IPlayer> _playersRefusingPick = new List<IPlayer>();
 

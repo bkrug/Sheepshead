@@ -11,22 +11,33 @@ namespace Sheepshead.Models
     {
         private Dictionary<IPlayer, ICard> _cards = new Dictionary<IPlayer, ICard>();
         private IHand _hand;
-        private Dictionary<IPlayer, MoveStatUniqueKey> _learningKeys = new Dictionary<IPlayer,MoveStatUniqueKey>();
-        private ILearningHelper _learningHelper;
 
         public IHand Hand { get { return _hand; } }
         public IGame Game { get { return _hand.Deck.Game; } }
         public IPlayer StartingPlayer { get; private set; }
         public Dictionary<IPlayer, ICard> CardsPlayed { get { return new Dictionary<IPlayer, ICard>(_cards); } }
-        public Dictionary<IPlayer, MoveStatUniqueKey> LearningKeys { get { return _learningKeys; } }
+        public event EventHandler<EventArgs> OnTrickEnd;
+        public event EventHandler<MoveEventArgs> OnMove;
+
+        public List<KeyValuePair<IPlayer, ICard>> OrderedMoves 
+        { 
+            get 
+            {
+                var indexOfStartingPlayer = Players.IndexOf(StartingPlayer);
+                var playerList = Players.Skip(indexOfStartingPlayer).Union(Players.Take(indexOfStartingPlayer)).ToList();
+                var orderedMoves = new List<KeyValuePair<IPlayer, ICard>>();
+                foreach (var player in playerList)
+                    orderedMoves.Add(new KeyValuePair<IPlayer, ICard>( player, _cards[player] ));
+                return orderedMoves;
+            } 
+        }
 
         private Trick()
         {
         }
 
-        public Trick(IHand hand, ILearningHelper learningHelper)
+        public Trick(IHand hand)
         {
-            _learningHelper = learningHelper;
             _hand = hand;
             _hand.AddTrick(this);
             SetStartingPlayer();
@@ -42,13 +53,13 @@ namespace Sheepshead.Models
 
         public void Add(IPlayer player, ICard card)
         {
-            _learningKeys.Add(player, _learningHelper.GenerateKey(this, player, card));
             _cards.Add(player, card);
             player.Cards.Remove(card);
             if (_hand.PartnerCard != null && _hand.PartnerCard.StandardSuite == card.StandardSuite && _hand.PartnerCard.CardType == card.CardType)
                 _hand.Partner = player;
+            OnMoveHandler(player, card);
             if (IsComplete())
-                _learningHelper.EndTrick(this);
+                OnTrickEndHandler();
         }
 
         public bool IsLegalAddition(ICard card, IPlayer player)
@@ -79,19 +90,33 @@ namespace Sheepshead.Models
             };
         }
 
+        public class MoveEventArgs : EventArgs
+        {
+            public IPlayer Player;
+            public ICard Card;
+        }
+
+        protected virtual void OnMoveHandler(IPlayer player, ICard card)
+        {
+            var e = new MoveEventArgs()
+            {
+                Player = player,
+                Card = card
+            };
+            if (OnMove != null)
+                OnMove(this, e);
+        }
+
+        protected virtual void OnTrickEndHandler()
+        {
+            var e = new EventArgs();
+            if (OnTrickEnd != null)
+                OnTrickEnd(this, e);
+        }
+
         public bool IsComplete()
         {
             return CardsPlayed.Count() == Hand.PlayerCount;
-        }
-
-        public MoveStatUniqueKey GenerateKey(IPlayer player, ICard legalCard)
-        {
-            return _learningHelper.GenerateKey(this, player, legalCard);
-        }
-
-        public void OnHandEnd()
-        {
-            _learningHelper.OnHandEnd(this);
         }
 
         public int PlayerCount
@@ -101,7 +126,7 @@ namespace Sheepshead.Models
 
         public List<IPlayer> Players
         {
-            get { return Hand.Deck.Game.Players; }
+            get { return Hand.Players; }
         }
 
         public int QueueRankOfPicker
@@ -129,7 +154,6 @@ namespace Sheepshead.Models
 
     public interface ITrick
     {
-        Dictionary<IPlayer, MoveStatUniqueKey> LearningKeys { get; }
         IHand Hand { get; }
         IGame Game { get; }
         TrickWinner Winner();
@@ -138,13 +162,13 @@ namespace Sheepshead.Models
         IPlayer StartingPlayer { get; }
         Dictionary<IPlayer, ICard> CardsPlayed { get; }
         bool IsComplete();
-        MoveStatUniqueKey GenerateKey(IPlayer player, ICard legalCard);
-        void OnHandEnd();
         int PlayerCount { get; }
         List<IPlayer> Players { get; }
         int QueueRankOfPicker { get; }
         int? QueueRankOfPartner { get; }
         int IndexInHand { get; }
         ICard PartnerCard { get; }
+        List<KeyValuePair<IPlayer, ICard>> OrderedMoves { get; }
+        event EventHandler<EventArgs> OnTrickEnd;
     }
 }

@@ -15,6 +15,8 @@ namespace Sheepshead.Models
         private List<ITrick> _tricks = new List<ITrick>();
         public List<ITrick> Tricks { get { return _tricks.ToList(); } }
         public IPlayer StartingPlayer { get { return Deck.StartingPlayer; } }
+        public event EventHandler<EventArgs> OnAddTrick;
+        public event EventHandler<EventArgs> OnHandEnd;
 
         public bool Leasters { get { return Picker == null; } }
 
@@ -50,6 +52,9 @@ namespace Sheepshead.Models
         public void AddTrick(ITrick trick)
         {
             _tricks.Add(trick);
+            OnAddTrickHandler();
+            if (_tricks.Count == (int)(Sheepshead.Models.Deck.CARDS_IN_DECK / Deck.PlayerCount))
+                trick.OnTrickEnd += (Object sender, EventArgs e) => { OnHandEndHandler(); };
         }
 
         public Dictionary<IPlayer, int> Scores()
@@ -103,17 +108,25 @@ namespace Sheepshead.Models
             return points;
         }
 
-        public void EndHand()
-        {
-            foreach (var trick in Tricks)
-                trick.OnHandEnd();
-        }
-
         public bool IsComplete()
         {
             const int CARDS_IN_PLAY = 30;
             var trickCount = CARDS_IN_PLAY / Deck.PlayerCount;
             return _tricks.Count() == trickCount && _tricks.Last().IsComplete();
+        }
+
+        protected virtual void OnAddTrickHandler()
+        {
+            var e = new EventArgs();
+            if (OnAddTrick != null)
+                OnAddTrick(this, e);
+        }
+
+        protected virtual void OnHandEndHandler()
+        {
+            var e = new EventArgs();
+            if (OnHandEnd != null)
+                OnHandEnd(this, e);
         }
 
         public int PlayerCount
@@ -138,10 +151,11 @@ namespace Sheepshead.Models
         Dictionary<IPlayer, int> Scores();
         bool IsComplete();
         bool Leasters { get; }
-        void EndHand();
         int PlayerCount { get; }
         List<IPlayer> Players { get; }
         IPlayer StartingPlayer { get; }
+        event EventHandler<EventArgs> OnAddTrick;
+        event EventHandler<EventArgs> OnHandEnd;
     }
 
     public class DeckHasHandException : ApplicationException

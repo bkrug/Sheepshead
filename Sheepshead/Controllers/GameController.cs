@@ -94,7 +94,7 @@ namespace Sheepshead.Controllers
                 throw new ApplicationException("Hand is already complete.");
             ITrick trick = hand.Tricks.LastOrDefault();
             if (trick == null || trick.IsComplete())
-                trick = new Trick(hand, new LearningHelper(MoveStatRepository.Instance));
+                trick = new Trick(hand);
             game.PlayNonHumans(trick);
         }
 
@@ -129,7 +129,8 @@ namespace Sheepshead.Controllers
             if (willPick)
             {
                 human.Cards.AddRange(deck.Blinds);
-                new Hand(deck, human, new List<ICard>());
+                var hand = new Hand(deck, human, new List<ICard>());
+                new LearningHelper(MoveStatRepository.Instance, hand);
             }
             else
             {

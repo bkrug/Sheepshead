@@ -23,7 +23,7 @@ Heuristic For Whether to play the card =
             var playerList = trick.Hand.Deck.Game.Players;
             foreach(var legalCard in legalCards) 
             {
-                var key = trick.GenerateKey(this, legalCard);
+                var key = LearningHelper.GenerateKey(trick, this, legalCard);
                 var predictor = new ResultPredictor(repository);
                 var result = predictor.GetWeightedStat(key);
                 results.Add(legalCard, result);
