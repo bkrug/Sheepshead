@@ -263,12 +263,13 @@ namespace Sheepshead.Tests
             //Format:
             //List the two blinds first
             //List the picker and buried card. 2 implies the player who had second turn to pick and second turn in first trick
-            //List cards for first trick. This is the only for which the first card played is the first listed.
-            //List cards for the second trick. The first card listed was played by whoever played first in the first trick, regardless of who played first in the second trick.
-            //List cards for the third trick. The first card listed was played by whoever played first in the first trick, regardless of who played first in the second trick.
-            //List cards for the fourth trick. The first card listed was played by whoever played first in the first trick, regardless of who played first in the second trick.
-            //List cards for the fifth trick. The first card listed was played by whoever played first in the first trick, regardless of who played first in the second trick.
-            //NOTICE: Player2 is the starting player for the deck.  The first card listed for each trick is player2's card.
+            //List cards for first trick.
+            //List cards for the second trick.
+            //List cards for the third trick.
+            //List cards for the fourth trick.
+            //List cards for the fifth trick.
+            //If we say that player A is the player who had the first turn during the first trick, 
+            //then player A's card is shown first for each of the following trick, even if a different player lead those turns.
             var expectedSummary = "7HJD,2ASTC,8H7SAHJDKC,8DQS8SAD9H,KSACJH9CTH,QDKH7C7HJS,7DJC9DKDTS,9SQCTD8CQH";
             Assert.AreEqual(expectedSummary, hand.Summary(), "Test output for normal hand.");
 
