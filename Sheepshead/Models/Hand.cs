@@ -115,6 +115,44 @@ namespace Sheepshead.Models
             return _tricks.Count() == trickCount && _tricks.Last().IsComplete();
         }
 
+        public string Summary()
+        {
+            var pieces = new List<string>();
+            pieces.Add(GetBlindSummary());
+            pieces.Add(GetBuriedSummary());
+            foreach(var trick in Tricks)
+                pieces.Add(GetTrickSummary(trick));
+            return String.Join(",", pieces);
+        }
+
+        private string GetBlindSummary()
+        {
+            return String.Join("", Deck.Blinds.Select(c => c.ToAbbr()));
+        }
+
+        private string GetBuriedSummary()
+        {
+            if (Leasters)
+                return String.Empty;
+            var indexOfStartingPlayer = Players.IndexOf(Deck.StartingPlayer);
+            var indexOfPicker = Players.IndexOf(Picker);
+            var pickerId = indexOfPicker - indexOfStartingPlayer + 1;
+            if (indexOfPicker <= 0) pickerId += Deck.PlayerCount;
+            return pickerId + String.Join("", Deck.Buried.Select(c => c.ToAbbr()));
+        }
+
+        private string GetTrickSummary(ITrick trick)
+        {
+            var summary = "";
+            for (var i = 0; i < 5; ++i)
+            {
+                var indexOfStartingPlayer = Players.IndexOf(Deck.StartingPlayer);
+                var player = indexOfStartingPlayer + i < Deck.PlayerCount ? indexOfStartingPlayer + i : indexOfStartingPlayer + i - Deck.PlayerCount;
+                summary += trick.CardsPlayed[Players[player]].ToAbbr();
+            }
+            return summary;
+        }
+
         protected virtual void OnAddTrickHandler()
         {
             var e = new EventArgs();
@@ -156,6 +194,7 @@ namespace Sheepshead.Models
         IPlayer StartingPlayer { get; }
         event EventHandler<EventArgs> OnAddTrick;
         event EventHandler<EventArgs> OnHandEnd;
+        string Summary();
     }
 
     public class DeckHasHandException : ApplicationException

@@ -241,5 +241,104 @@ namespace Sheepshead.Tests
                     Assert.IsFalse(endEventCalled, "Hand End event should only be called when the last trick ended.");
             }
         }
+
+        [TestMethod]
+        public void Hand_Summary()
+        {
+            var player1 = new Mock<IPlayer>();
+            var player2 = new Mock<IPlayer>();
+            var player3 = new Mock<IPlayer>();
+            var player4 = new Mock<IPlayer>();
+            var player5 = new Mock<IPlayer>();
+            player3.Setup(m => m.Cards).Returns(new List<ICard>());
+            var playerList = new List<IPlayer>() { player1.Object, player2.Object, player3.Object, player4.Object, player5.Object };
+            var deckMock = new Mock<IDeck>();
+            deckMock.Setup(m => m.StartingPlayer).Returns(player2.Object);
+            deckMock.Setup(m => m.PlayerCount).Returns(5);
+            deckMock.Setup(m => m.Players).Returns(playerList);
+            deckMock.Setup(m => m.Blinds).Returns(new List<ICard>() { new Card(StandardSuite.HEARTS, CardType.N7, 0, 0), new Card(StandardSuite.DIAMONDS, CardType.JACK, 0, 0) });
+            deckMock.Setup(m => m.Buried).Returns(new List<ICard>() { new Card(StandardSuite.SPADES, CardType.ACE, 0, 0), new Card(StandardSuite.CLUBS, CardType.N10, 0, 0) });
+            var hand = new Hand(deckMock.Object, player3.Object, deckMock.Object.Buried);
+            GetTricks(playerList, hand);
+            //Format:
+            //List the two blinds first
+            //List the picker and buried card. 2 implies the player who had second turn to pick and second turn in first trick
+            //List cards for first trick. This is the only for which the first card played is the first listed.
+            //List cards for the second trick. The first card listed was played by whoever played first in the first trick, regardless of who played first in the second trick.
+            //List cards for the third trick. The first card listed was played by whoever played first in the first trick, regardless of who played first in the second trick.
+            //List cards for the fourth trick. The first card listed was played by whoever played first in the first trick, regardless of who played first in the second trick.
+            //List cards for the fifth trick. The first card listed was played by whoever played first in the first trick, regardless of who played first in the second trick.
+            //NOTICE: Player2 is the starting player for the deck.  The first card listed for each trick is player2's card.
+            var expectedSummary = "7HJD,2ASTC,8H7SAHJDKC,8DQS8SAD9H,KSACJH9CTH,QDKH7C7HJS,7DJC9DKDTS,9SQCTD8CQH";
+            Assert.AreEqual(expectedSummary, hand.Summary(), "Test output for normal hand.");
+
+            deckMock.Setup(m => m.Buried).Returns(new List<ICard>() {  });
+            var leastersHand = new Hand(deckMock.Object, null, null);
+            GetTricks(playerList, leastersHand);
+            var leastersSummary = "7HJD,,8H7SAHJDKC,8DQS8SAD9H,KSACJH9CTH,QDKH7C7HJS,7DJC9DKDTS,9SQCTD8CQH";
+            Assert.AreEqual(leastersSummary, leastersHand.Summary(), "Test output for a leasters hand.");
+        }
+
+        private static void GetTricks(List<IPlayer> playerList, Hand hand)
+        {
+            GetTrick(hand, playerList, new List<ICard>()
+            {
+                new Card(StandardSuite.CLUBS, CardType.KING, 0, 0),
+                new Card(StandardSuite.HEARTS, CardType.N8, 0, 0),
+                new Card(StandardSuite.SPADES, CardType.N7, 0, 0),
+                new Card(StandardSuite.HEARTS, CardType.ACE, 0, 0),
+                new Card(StandardSuite.DIAMONDS, CardType.JACK, 0, 0)
+            });
+            GetTrick(hand, playerList, new List<ICard>()
+            {
+                new Card(StandardSuite.HEARTS, CardType.N9, 0, 0),
+                new Card(StandardSuite.DIAMONDS, CardType.N8, 0, 0),
+                new Card(StandardSuite.SPADES, CardType.QUEEN, 0, 0),
+                new Card(StandardSuite.SPADES, CardType.N8, 0, 0),
+                new Card(StandardSuite.DIAMONDS, CardType.ACE, 0, 0)
+            });
+            GetTrick(hand, playerList, new List<ICard>()
+            {
+                new Card(StandardSuite.HEARTS, CardType.N10, 0, 0),
+                new Card(StandardSuite.SPADES, CardType.KING, 0, 0),
+                new Card(StandardSuite.CLUBS, CardType.ACE, 0, 0),
+                new Card(StandardSuite.HEARTS, CardType.JACK, 0, 0),
+                new Card(StandardSuite.CLUBS, CardType.N9, 0, 0)
+            });
+            GetTrick(hand, playerList, new List<ICard>()
+            {
+                new Card(StandardSuite.SPADES, CardType.JACK, 0, 0),
+                new Card(StandardSuite.DIAMONDS, CardType.QUEEN, 0, 0),
+                new Card(StandardSuite.HEARTS, CardType.KING, 0, 0),
+                new Card(StandardSuite.CLUBS, CardType.N7, 0, 0),
+                new Card(StandardSuite.HEARTS, CardType.N7, 0, 0)
+            });
+            GetTrick(hand, playerList, new List<ICard>()
+            {
+                new Card(StandardSuite.SPADES, CardType.N10, 0, 0),
+                new Card(StandardSuite.DIAMONDS, CardType.N7, 0, 0),
+                new Card(StandardSuite.CLUBS, CardType.JACK, 0, 0),
+                new Card(StandardSuite.DIAMONDS, CardType.N9, 0, 0),
+                new Card(StandardSuite.DIAMONDS, CardType.KING, 0, 0)
+            });
+            GetTrick(hand, playerList, new List<ICard>()
+            {
+                new Card(StandardSuite.HEARTS, CardType.QUEEN, 0, 0),
+                new Card(StandardSuite.SPADES, CardType.N9, 0, 0),
+                new Card(StandardSuite.CLUBS, CardType.QUEEN, 0, 0),
+                new Card(StandardSuite.DIAMONDS, CardType.N10, 0, 0),
+                new Card(StandardSuite.CLUBS, CardType.N8, 0, 0)
+            });
+        }
+
+        private static void GetTrick(Hand hand, List<IPlayer> playerList, List<ICard> cards)
+        {
+            var trick = new Mock<ITrick>();
+            var moves = new Dictionary<IPlayer, ICard>();
+            for (var i = 0; i < 5; ++i)
+                moves.Add(playerList[i], cards[i]);
+            trick.Setup(m => m.CardsPlayed).Returns(moves);
+            hand.AddTrick(trick.Object);
+        }
     }
 }
