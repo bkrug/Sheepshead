@@ -8,8 +8,10 @@ namespace Sheepshead.Models
 {
     public class Game : LongId, IGame
     {
+        public const int CARDS_IN_DECK = 32;
         public string Name { get; set; }
         public int PlayerCount { get { return _players.Count(); } }
+        public int Blind { get { return CARDS_IN_DECK % _players.Count(); } }
         public int HumanPlayerCount { get { return _players.Count(p => p is IHumanPlayer); } }
         protected List<IPlayer> _players;
         public List<IPlayer> Players { get { return _players.ToList(); } }
