@@ -84,7 +84,10 @@ namespace Sheepshead.Controllers
             var deck = game.Decks.Last();
             var picker = game.PlayNonHumans(deck);
             if (picker != null)
-                ProcessPick(deck, (IComputerPlayer)picker);
+            {
+                var hand = ProcessPick(deck, (IComputerPlayer)picker);
+                new LearningHelper(MoveStatRepository.Instance, hand);
+            }
         }
 
         private void PlayTrick(IGame game)
@@ -125,19 +128,20 @@ namespace Sheepshead.Controllers
         private void Pick(IGame game, bool willPick, string buriedCardIndicies)
         {
             var deck = game.Decks.Last();
+            IHand hand;
             IPlayer human = game.Players.First(p => p is HumanPlayer);
             if (willPick)
             {
                 human.Cards.AddRange(deck.Blinds);
-                var hand = new Hand(deck, human, new List<ICard>());
-                new LearningHelper(MoveStatRepository.Instance, hand);
+                hand = new Hand(deck, human, new List<ICard>());
             }
             else
             {
                 deck.PlayerWontPick(human);
                 var picker = game.PlayNonHumans(game.Decks.Last());
-                ProcessPick(deck, (IComputerPlayer)picker);
+                hand = ProcessPick(deck, (IComputerPlayer)picker);
             }
+            new LearningHelper(MoveStatRepository.Instance, hand);
         }
 
         private void Bury(IGame game, string buriedCardsIndicies)

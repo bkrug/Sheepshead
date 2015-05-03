@@ -145,7 +145,20 @@ namespace Sheepshead.Models
             { CardType.N10, "T" }, { CardType.N9, "9" }, { CardType.N8, "8" }, { CardType.N7, "7" }
         };
         public static Dictionary<CardType, string> CardTypeLetter { get { return _cardTypeLetter; } }
-        
+
+        private static Dictionary<string, StandardSuite> _reverseSuiteLetter = new Dictionary<string, StandardSuite>()
+        {
+            { "C", StandardSuite.CLUBS }, { "D", StandardSuite.DIAMONDS }, { "H", StandardSuite.HEARTS }, { "S", StandardSuite.SPADES }
+        };
+        public static Dictionary<string, StandardSuite> ReverseSuiteLetter { get { return _reverseSuiteLetter; } }
+
+        private static Dictionary<string, CardType> _reverseCardTypeLetter = new Dictionary<string, CardType>()
+        {
+            { "A", CardType.ACE}, { "J", CardType.JACK }, { "K", CardType.KING }, { "Q", CardType.QUEEN }, 
+            { "T", CardType.N10 }, { "9", CardType.N9 }, { "8", CardType.N8 }, { "7", CardType.N7 }
+        };
+        public static Dictionary<string, CardType> ReverseCardTypeLetter { get { return _reverseCardTypeLetter; } }
+
         public static string GetPictureFilename(ICard card)
         {
             return list[card];

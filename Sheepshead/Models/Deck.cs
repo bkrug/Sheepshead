@@ -101,7 +101,6 @@ namespace Sheepshead.Models
         IPlayer StartingPlayer { get; }
         int PlayerCount { get; }
         List<IPlayer> Players { get; }
-
     }
 
     public class PreviousDeckIncompleteException : Exception

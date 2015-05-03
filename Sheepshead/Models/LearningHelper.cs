@@ -4,6 +4,7 @@ using System.Linq;
 using System.Web;
 using Sheepshead.Models.Players;
 using Sheepshead.Models.Players.Stats;
+using System.IO;
 
 namespace Sheepshead.Models
 {
@@ -19,8 +20,9 @@ namespace Sheepshead.Models
         public LearningHelper(IMoveStatRepository repository, IHand hand)
         {
             _repository = repository;
-            hand.OnAddTrick += OnAddTrickToHand;
-            hand.OnHandEnd += OnHandEnd;
+            //hand.OnAddTrick += OnAddTrickToHand;
+            //hand.OnHandEnd += OnHandEnd;
+            hand.OnHandEnd += WriteHandSummary;
         }
 
         public static MoveStatUniqueKey GenerateKey(ITrick trick, IPlayer player, ICard legalCard)
@@ -84,6 +86,21 @@ namespace Sheepshead.Models
                 var tuple = new Tuple<ITrick, IPlayer>(trick, player);
                 var statKey = _learningKeys[tuple];
                 _repository.IncrementTrickResult(statKey, trick.Winner().Player == this);
+            }
+        }
+
+        private static object lockObject = new object();
+
+        private void WriteHandSummary(object sender, EventArgs e)
+        {
+            var hand = (IHand)sender;
+            lock (lockObject)
+            {
+                using (var sw = File.AppendText(@"C:\temp\HandSummaries.txt"))
+                {
+                    sw.WriteLine(hand.Summary());
+                    sw.Flush();
+                }
             }
         }
     }

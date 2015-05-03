@@ -108,5 +108,26 @@ namespace Sheepshead.Tests
             handMock.Setup(m => m.Tricks).Returns(tricks);
             return handMock.Object;
         }
+
+        [TestMethod]
+        public void LearningHelper_FromSummary() {
+            var summary = "7HJD,2ASTC,8H7SAHJDKC,8DQS8SAD9H,KSACJH9CTH,QDKH7C7HJS,7DJC9DKDTS,9SQCTD8CQH";
+            IHand hand = SummaryReader.FromSummary(summary);
+            var players = hand.Players;
+            Assert.AreEqual(CardRepository.Instance[StandardSuite.HEARTS, CardType.N7], hand.Deck.Blinds[0]);
+            Assert.AreEqual(CardRepository.Instance[StandardSuite.DIAMONDS, CardType.JACK], hand.Deck.Blinds[1]);
+            Assert.AreSame(hand.Players[2 - 1], hand.Picker, "Second player is picker.");
+            Assert.AreEqual(CardRepository.Instance[StandardSuite.CLUBS, CardType.N10], hand.Deck.Buried[1]);
+            Assert.AreEqual(CardRepository.Instance[StandardSuite.HEARTS, CardType.N8], hand.Tricks[0].CardsPlayed[players[0]]);
+            Assert.AreEqual(CardRepository.Instance[StandardSuite.CLUBS, CardType.KING], hand.Tricks[0].CardsPlayed[players[4]]);
+            Assert.AreEqual(CardRepository.Instance[StandardSuite.CLUBS, CardType.N7], hand.Tricks[3].CardsPlayed[players[2]]);
+            Assert.AreEqual(CardRepository.Instance[StandardSuite.DIAMONDS, CardType.KING], hand.Tricks[4].CardsPlayed[players[3]]);
+            
+            var leastersSummary = "7HJD,,8H7SAHJDKC,8DQS8SAD9H,KSACJH9CTH,QDKH7C7HJS,7DJC9DKDTS,9SQCTD8CQH";
+            IHand leasterHand = SummaryReader.FromSummary(leastersSummary);
+            Assert.IsTrue(leasterHand.Leasters);
+            Assert.IsTrue(leasterHand.Deck.Buried == null || !leasterHand.Deck.Buried.Any());
+            Assert.IsNull(leasterHand.Picker);
+        }
     }
 }
