@@ -24,7 +24,7 @@ namespace Sheepshead.Models
         {
             Deck = deck;
             if (Deck.Hand != null)
-                throw new DeckHasHandException("Must add a hand to a deck without one.");
+                throw new DeckHasHandException("The specified deck is already associated with a hand.");
             Deck.Hand = this;
             Picker = picker;
             if (picker != null)
@@ -53,7 +53,7 @@ namespace Sheepshead.Models
         {
             _tricks.Add(trick);
             OnAddTrickHandler();
-            if (_tricks.Count == (int)(Sheepshead.Models.Deck.CARDS_IN_DECK / Deck.PlayerCount))
+            if (_tricks.Count == (int)(Sheepshead.Models.Game.CARDS_IN_DECK / Deck.PlayerCount))
                 trick.OnTrickEnd += (Object sender, EventArgs e) => { OnHandEndHandler(); };
         }
 

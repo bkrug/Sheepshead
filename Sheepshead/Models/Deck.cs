@@ -8,9 +8,6 @@ namespace Sheepshead.Models
 {
     public class Deck : IDeck
     {
-        const int PLAYER_COUNT = 5;
-        public const int CARDS_IN_DECK = 32;
-        const int BLIND_COUNT = 2;
         private List<IPlayer> _playersRefusingPick = new List<IPlayer>();
 
         public IGame Game { get; private set; }
@@ -36,7 +33,7 @@ namespace Sheepshead.Models
         {
             List<ICard> cards = CardRepository.Instance.UnshuffledList();
             var rnd = new Random();
-            for (var i = CARDS_IN_DECK - 1; i > 0; --i)
+            for (var i = Sheepshead.Models.Game.CARDS_IN_DECK - 1; i > 0; --i)
             {
                 var j = rnd.Next(i);
                 var swap = cards[i];
@@ -52,7 +49,8 @@ namespace Sheepshead.Models
         {
             foreach (var player in Game.Players)
                 player.Cards.RemoveAll(c => true);
-            var totalRounds = (CARDS_IN_DECK - BLIND_COUNT) / PLAYER_COUNT / 2;
+            var totalTricks = (int)(Sheepshead.Models.Game.CARDS_IN_DECK / Game.PlayerCount);
+            var totalRounds = totalTricks / 2;
             Blinds = new List<ICard>();
             for (var round = 0; round < totalRounds; ++round)
             {
@@ -106,7 +104,7 @@ namespace Sheepshead.Models
 
     }
 
-    public class PreviousDeckIncompleteException : ApplicationException
+    public class PreviousDeckIncompleteException : Exception
     {
         public PreviousDeckIncompleteException(string message) : base(message) { }
     }
