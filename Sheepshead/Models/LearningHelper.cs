@@ -25,12 +25,14 @@ namespace Sheepshead.Models
 
         public static MoveStatUniqueKey GenerateKey(ITrick trick, IPlayer player, ICard legalCard)
         {
+            var indexOfTrick = trick.Hand.Tricks.IndexOf(trick);
             List<IPlayer> playerList = trick.Hand.Players;
-            var previousTricks = trick.Hand.Tricks.Take(trick.Hand.Tricks.IndexOf(trick)).ToList();
+            var previousTricks = trick.Hand.Tricks.Take(indexOfTrick).ToList();
+            var beforePartnerCardPlayed = BeforePartnerCardPlayed(trick, indexOfTrick);
             return new MoveStatUniqueKey()
             {
                 Picker = trick.QueueRankOfPicker,
-                Partner = trick.QueueRankOfPartner,
+                Partner = beforePartnerCardPlayed ? null : trick.QueueRankOfPartner,
                 Trick = trick.IndexInHand,
                 MoveWithinTrick = player.QueueRankInTrick(trick),
                 PointsAlreadyInTrick = trick.CardsPlayed.Sum(c => c.Value.Points),
@@ -47,6 +49,16 @@ namespace Sheepshead.Models
                     .Select(kvp => kvp.Value)
                     .Count(c => c.Rank < legalCard.Rank)
             };
+        }
+
+        private static bool BeforePartnerCardPlayed(ITrick trick, int indexOfTrick)
+        {
+            if (indexOfTrick < trick.Hand.PartnerCardPlayed[0])
+                return true;
+            if (indexOfTrick > trick.Hand.PartnerCardPlayed[0])
+                return false;
+            var partnerPosition = trick.QueueRankOfPartner;
+            return !partnerPosition.HasValue || partnerPosition < trick.Hand.PartnerCardPlayed[1];
         }
 
         private void OnAddTrickToHand(object sender, EventArgs e)

@@ -6,26 +6,19 @@ using Sheepshead.Models.Players.Stats;
 
 namespace Sheepshead.Models.Players
 {
-/*
-Heuristic For Whether to play the card = 
-	GamesWon% + (TricksWon% / (2 ^ (abs(GamesWon% - 50) / 25) * 2) - 25
-*/
-
     public class LearningPlayer : BasicPlayer
     {
         private Dictionary<ITrick, MoveStatUniqueKey> _keys = new Dictionary<ITrick, MoveStatUniqueKey>();
 
         public override ICard GetMove(ITrick trick)
         {
-            var repository = MoveStatRepository.Instance;
+            var predictor = SummaryLoader.Instance.ResultPredictor;
             var legalCards = this.Cards.Where(c => trick.IsLegalAddition(c, this)).ToList();
             var results = new Dictionary<ICard, MoveStat>();
-            var playerList = trick.Hand.Deck.Game.Players;
             foreach(var legalCard in legalCards) 
             {
                 var key = LearningHelper.GenerateKey(trick, this, legalCard);
-                var predictor = new ResultPredictor(repository);
-                var result = predictor.GetWeightedStat(key);
+                var result = predictor.GetPrediction(key);
                 results.Add(legalCard, result);
             }
             var orderedResults = results

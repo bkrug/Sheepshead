@@ -49,14 +49,17 @@ namespace Sheepshead.Tests
             trickMock.Setup(m => m.QueueRankOfPicker).Returns(expectedKey.Picker);
             trickMock.Setup(m => m.QueueRankOfPartner).Returns(expectedKey.Partner.Value);
             trickMock.Setup(m => m.IndexInHand).Returns(expectedKey.Trick);
-            trickMock.Setup(m => m.CardsPlayed).Returns(new Dictionary<IPlayer, ICard>()
+            var cardsPlayed = new Dictionary<IPlayer, ICard>()
             {
                  { new Mock<IPlayer>().Object, prevCard1Mock.Object },
                  { new Mock<IPlayer>().Object, prevCard2Mock.Object },
                  { new Mock<IPlayer>().Object, prevCard3Mock.Object },
-            });
+            };
+            trickMock.Setup(m => m.CardsPlayed).Returns(cardsPlayed);
             trickMock.Setup(m => m.PartnerCard).Returns(new Mock<ICard>().Object);
-            trickMock.Setup(m => m.Hand).Returns(GetHand(trickMock.Object, expectedKey.Trick - 1, expectedKey.TotalPointsInPreviousTricks, expectedKey.HigherRankingCardsPlayedPreviousTricks));
+            var handMock = GetHand(trickMock.Object, expectedKey.Trick - 1, expectedKey.TotalPointsInPreviousTricks, expectedKey.HigherRankingCardsPlayedPreviousTricks);
+            handMock.Setup(m => m.PartnerCardPlayed).Returns(new[] { expectedKey.Trick - 1, expectedKey.Partner.Value });
+            trickMock.Setup(m => m.Hand).Returns(handMock.Object);
             var playerMock = new Mock<IPlayer>();
             playerMock.Setup(m => m.QueueRankInTrick(trickMock.Object)).Returns(expectedKey.MoveWithinTrick);
 
@@ -73,9 +76,27 @@ namespace Sheepshead.Tests
             Assert.AreEqual(expectedKey.PartnerCard, actualKey.PartnerCard, "ParnerCard");
             Assert.AreEqual(expectedKey.HigherRankingCardsPlayedPreviousTricks, actualKey.HigherRankingCardsPlayedPreviousTricks, "HigherRankingCardsPlayedPreviousTricks");
             Assert.AreEqual(expectedKey.HigherRankingCardsPlayedThisTrick, actualKey.HigherRankingCardsPlayedThisTrick, "HigherRankingCardsPlayedThisTrick");
+
+            //Same thing if we don't know who the partner is.
+            handMock.Setup(m => m.PartnerCardPlayed).Returns(new[] { expectedKey.Trick + 1, expectedKey.Partner.Value });
+
+            actualKey = LearningHelper.GenerateKey(trickMock.Object, playerMock.Object, cardMock.Object);
+
+            Assert.AreEqual(expectedKey.Picker, actualKey.Picker, "Picker");
+            Assert.AreEqual(null, actualKey.Partner, "Partner");
+            Assert.AreEqual(expectedKey.Trick, actualKey.Trick, "Trick Index");
+            Assert.AreEqual(expectedKey.MoveWithinTrick, actualKey.MoveWithinTrick, "MoveWithinTrick");
+            Assert.AreEqual(expectedKey.PointsAlreadyInTrick, actualKey.PointsAlreadyInTrick, "PointsAlreadyInTrick");
+            Assert.AreEqual(expectedKey.TotalPointsInPreviousTricks, actualKey.TotalPointsInPreviousTricks, "TotalPointsInPreviousTricks");
+            Assert.AreEqual(expectedKey.PointsInThisCard, actualKey.PointsInThisCard, "PointsInThisCard");
+            Assert.AreEqual(expectedKey.RankOfThisCard, actualKey.RankOfThisCard, "RankOfThisCard");
+            Assert.AreEqual(expectedKey.PartnerCard, actualKey.PartnerCard, "ParnerCard");
+            Assert.AreEqual(expectedKey.HigherRankingCardsPlayedPreviousTricks, actualKey.HigherRankingCardsPlayedPreviousTricks, "HigherRankingCardsPlayedPreviousTricks");
+            Assert.AreEqual(expectedKey.HigherRankingCardsPlayedThisTrick, actualKey.HigherRankingCardsPlayedThisTrick, "HigherRankingCardsPlayedThisTrick");
+
         }
 
-        private IHand GetHand(ITrick thisTrick, int previousTricks, int pointsInPreviousTricks, int higherRankingCards)
+        private Mock<IHand> GetHand(ITrick thisTrick, int previousTricks, int pointsInPreviousTricks, int higherRankingCards)
         {
             var handMock = new Mock<IHand>();
             var tricks = new List<ITrick>();
@@ -127,7 +148,7 @@ namespace Sheepshead.Tests
             }
 
             handMock.Setup(m => m.Tricks).Returns(tricks);
-            return handMock.Object;
+            return handMock;
         }
 
         [TestMethod]

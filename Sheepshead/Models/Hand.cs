@@ -8,10 +8,12 @@ namespace Sheepshead.Models
 {
     public class Hand : IHand
     {
+        private IPlayer _partner;
         public IDeck Deck { get; private set; }
         public IPlayer Picker { get; private set; }
-        public IPlayer Partner { set; get; }
+        public IPlayer Partner { set { _partner = value; } get { return _partner; } }
         public ICard PartnerCard { get; private set; }
+        public int[] PartnerCardPlayed { get { return null; } }
         private List<ITrick> _tricks = new List<ITrick>();
         public List<ITrick> Tricks { get { return _tricks.ToList(); } }
         public IPlayer StartingPlayer { get { return Deck.StartingPlayer; } }
@@ -184,6 +186,7 @@ namespace Sheepshead.Models
         IPlayer Picker { get; }
         IPlayer Partner { set; get; }
         ICard PartnerCard { get; }
+        int[] PartnerCardPlayed { get; }
         List<ITrick> Tricks { get; }
         void AddTrick(ITrick trick);
         Dictionary<IPlayer, int> Scores();
