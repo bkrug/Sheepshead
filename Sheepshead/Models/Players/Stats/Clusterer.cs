@@ -37,7 +37,10 @@ namespace Sheepshead.Models.Players.Stats
 
         private void SetClusterCounts(List<MoveStatUniqueKey> data, List<MoveStatUniqueKey> noPartner, out int noPartnerClusters, out int partnerClusters)
         {
-            noPartnerClusters = (int)Math.Round(((decimal)noPartner.Count() / data.Count() * _numClusters), 0);
+            if (!data.Any())
+                noPartnerClusters = 0;
+            else
+                noPartnerClusters = (int)Math.Round(((decimal)noPartner.Count() / data.Count() * _numClusters), 0);
             partnerClusters = _numClusters - noPartnerClusters;
             if (noPartnerClusters < 1 && noPartner.Any())
             {

@@ -251,15 +251,15 @@ namespace Sheepshead.Tests
             var player3 = new Mock<IPlayer>();
             var player4 = new Mock<IPlayer>();
             var player5 = new Mock<IPlayer>();
-            player3.Setup(m => m.Cards).Returns(new List<ICard>());
+            player2.Setup(m => m.Cards).Returns(new List<ICard>());
             var playerList = new List<IPlayer>() { player1.Object, player2.Object, player3.Object, player4.Object, player5.Object };
             var deckMock = new Mock<IDeck>();
-            deckMock.Setup(m => m.StartingPlayer).Returns(player2.Object);
+            deckMock.Setup(m => m.StartingPlayer).Returns(player5.Object);
             deckMock.Setup(m => m.PlayerCount).Returns(5);
             deckMock.Setup(m => m.Players).Returns(playerList);
             deckMock.Setup(m => m.Blinds).Returns(new List<ICard>() { new Card(StandardSuite.HEARTS, CardType.N7, 0, 0), new Card(StandardSuite.DIAMONDS, CardType.JACK, 0, 0) });
             deckMock.Setup(m => m.Buried).Returns(new List<ICard>() { new Card(StandardSuite.SPADES, CardType.ACE, 0, 0), new Card(StandardSuite.CLUBS, CardType.N10, 0, 0) });
-            var hand = new Hand(deckMock.Object, player3.Object, deckMock.Object.Buried);
+            var hand = new Hand(deckMock.Object, player2.Object, deckMock.Object.Buried);
             GetTricks(playerList, hand);
             //Format:
             //List the two blinds first
@@ -271,13 +271,13 @@ namespace Sheepshead.Tests
             //List cards for the fifth trick.
             //If we say that player A is the player who had the first turn during the first trick, 
             //then player A's card is shown first for each of the following trick, even if a different player lead those turns.
-            var expectedSummary = "7HJD,2ASTC,8H7SAHJDKC,8DQS8SAD9H,KSACJH9CTH,QDKH7C7HJS,7DJC9DKDTS,9SQCTD8CQH";
+            var expectedSummary = "7HJD,3ASTC,JDKC8H7SAH,AD9H8DQS8S,9CTHKSACJH,7HJSQDKH7C,KDTS7DJC9D,8CQH9SQCTD";
             Assert.AreEqual(expectedSummary, hand.Summary(), "Test output for normal hand.");
 
             deckMock.Setup(m => m.Buried).Returns(new List<ICard>() {  });
             var leastersHand = new Hand(deckMock.Object, null, null);
             GetTricks(playerList, leastersHand);
-            var leastersSummary = "7HJD,,8H7SAHJDKC,8DQS8SAD9H,KSACJH9CTH,QDKH7C7HJS,7DJC9DKDTS,9SQCTD8CQH";
+            var leastersSummary = "7HJD,,JDKC8H7SAH,AD9H8DQS8S,9CTHKSACJH,7HJSQDKH7C,KDTS7DJC9D,8CQH9SQCTD";
             Assert.AreEqual(leastersSummary, leastersHand.Summary(), "Test output for a leasters hand.");
         }
 

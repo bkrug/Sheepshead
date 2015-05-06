@@ -45,8 +45,16 @@ namespace Sheepshead.Models
                 cri[StandardSuite.HEARTS, CardType.JACK],
                 cri[StandardSuite.SPADES, CardType.JACK],
                 cri[StandardSuite.CLUBS, CardType.JACK],
-                cri[StandardSuite.DIAMONDS, CardType.QUEEN] 
+                cri[StandardSuite.DIAMONDS, CardType.QUEEN],
+                cri[StandardSuite.HEARTS, CardType.QUEEN],
+                cri[StandardSuite.SPADES, CardType.QUEEN]
             };
+            if (!picker.Cards.Any())
+            {
+            }
+            if (!potentialPartnerCards.Any(c => !picker.Cards.Contains(c)))
+            {
+            }
             var partnerCard = potentialPartnerCards.First(c => !picker.Cards.Contains(c));
             return partnerCard;
         }
@@ -139,7 +147,7 @@ namespace Sheepshead.Models
             var indexOfStartingPlayer = Players.IndexOf(Deck.StartingPlayer);
             var indexOfPicker = Players.IndexOf(Picker);
             var pickerId = indexOfPicker - indexOfStartingPlayer + 1;
-            if (indexOfPicker <= 0) pickerId += Deck.PlayerCount;
+            if (pickerId <= 0) pickerId += Deck.PlayerCount;
             return pickerId + String.Join("", Deck.Buried.Select(c => c.ToAbbr()));
         }
 

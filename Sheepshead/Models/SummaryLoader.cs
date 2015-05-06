@@ -41,6 +41,8 @@ namespace Sheepshead.Models
         private static Dictionary<MoveStatUniqueKey, MoveStat> ReadMoves()
         {
             var moves = new Dictionary<MoveStatUniqueKey, MoveStat>();
+            if (!File.Exists(SAVE_LOCATION))
+                return moves;
             using (var reader = File.OpenText(SAVE_LOCATION))
             {
                 while (!reader.EndOfStream)

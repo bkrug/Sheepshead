@@ -171,5 +171,29 @@ namespace Sheepshead.Tests
             Assert.IsTrue(leasterHand.Deck.Buried == null || !leasterHand.Deck.Buried.Any());
             Assert.IsNull(leasterHand.Picker);
         }
+
+        [TestMethod]
+        public void LearningHelper_PlayGame()
+        {
+            var repository = new GameRepository(GameDictionary.Instance.Dictionary);
+            var playerList = new List<IPlayer>();
+            for (var i = 0; i < 5; ++i)
+                playerList.Add(new BasicPlayer());
+            for (var g = 0; g < 100000; ++g)
+            {
+                var game = repository.CreateGame("Poker", playerList);
+                game.RearrangePlayers();
+                var deck = new Deck(game);
+                var picker = game.PlayNonHumans(deck) as ComputerPlayer;
+                var buriedCards = picker != null ? picker.DropCardsForPick(deck) : new List<ICard>();
+                var hand = new Hand(deck, picker, buriedCards);
+                new LearningHelper(MoveStatRepository.Instance, hand);
+                while (!hand.IsComplete())
+                {
+                    var trick = new Trick(hand);
+                    game.PlayNonHumans(trick);
+                }
+            }
+        }
     }
 }
