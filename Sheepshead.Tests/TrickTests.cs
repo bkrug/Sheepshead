@@ -150,9 +150,15 @@ namespace Sheepshead.Tests
             var player = new Mock<IPlayer>();
             player.Setup(c => c.Name).Returns("DesiredPlayer");
             player.Setup(c => c.Cards).Returns(new List<ICard>() { CardRepository.Instance[StandardSuite.DIAMONDS, CardType.QUEEN]});
-            mockHand.SetupProperty(f => f.Partner);
+            IPlayer partner = player.Object;
+            var _methodCalled = false;
+            mockHand.Setup(f => f.SetPartner(It.IsAny<IPlayer>(), It.IsAny<ITrick>())).Callback((IPlayer pl, ITrick tr) => {
+                _methodCalled = true;
+                Assert.AreEqual(partner, pl);
+                Assert.AreEqual(trick, tr);
+            });
             trick.Add(player.Object, CardRepository.Instance[StandardSuite.DIAMONDS, CardType.QUEEN]);
-            Assert.AreEqual(player.Object, hand.Partner, "When someone adds the partner card to the trick, the hand's partner get's specified.");
+            Assert.IsTrue(_methodCalled, "When someone adds the partner card to the trick, the hand's partner get's specified.");
         }
 
         [TestMethod]

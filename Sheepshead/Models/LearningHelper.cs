@@ -53,6 +53,8 @@ namespace Sheepshead.Models
 
         private static bool BeforePartnerCardPlayed(ITrick trick, int indexOfTrick)
         {
+            if (trick.Hand.PartnerCardPlayed == null)
+                return true;
             if (indexOfTrick < trick.Hand.PartnerCardPlayed[0])
                 return true;
             if (indexOfTrick > trick.Hand.PartnerCardPlayed[0])

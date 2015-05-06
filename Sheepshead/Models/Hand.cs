@@ -8,12 +8,11 @@ namespace Sheepshead.Models
 {
     public class Hand : IHand
     {
-        private IPlayer _partner;
         public IDeck Deck { get; private set; }
         public IPlayer Picker { get; private set; }
-        public IPlayer Partner { set { _partner = value; } get { return _partner; } }
+        public IPlayer Partner { get; private set; }
         public ICard PartnerCard { get; private set; }
-        public int[] PartnerCardPlayed { get { return null; } }
+        public int[] PartnerCardPlayed { get; private set; }
         private List<ITrick> _tricks = new List<ITrick>();
         public List<ITrick> Tricks { get { return _tricks.ToList(); } }
         public IPlayer StartingPlayer { get { return Deck.StartingPlayer; } }
@@ -35,6 +34,7 @@ namespace Sheepshead.Models
                 picker.Cards.Where(c => droppedCards.Contains(c)).ToList().ForEach(c => picker.Cards.Remove(c));
                 PartnerCard = ChoosePartnerCard(picker);
             }
+            PartnerCardPlayed = null;
         }
 
         private ICard ChoosePartnerCard(IPlayer picker)
@@ -169,6 +169,14 @@ namespace Sheepshead.Models
                 OnHandEnd(this, e);
         }
 
+        public void SetPartner(IPlayer partner, ITrick trick)
+        {
+            Partner = partner;
+            PartnerCardPlayed = new[] { -1, -1 };
+            PartnerCardPlayed[0] = Tricks.IndexOf(trick);
+            PartnerCardPlayed[1] = trick.QueueRankOfPartner.Value;
+        }
+
         public int PlayerCount
         {
             get { return Deck.PlayerCount; }
@@ -184,7 +192,7 @@ namespace Sheepshead.Models
     {
         IDeck Deck { get; }
         IPlayer Picker { get; }
-        IPlayer Partner { set; get; }
+        IPlayer Partner { get; }
         ICard PartnerCard { get; }
         int[] PartnerCardPlayed { get; }
         List<ITrick> Tricks { get; }
@@ -198,6 +206,7 @@ namespace Sheepshead.Models
         event EventHandler<EventArgs> OnAddTrick;
         event EventHandler<EventArgs> OnHandEnd;
         string Summary();
+        void SetPartner(IPlayer partner, ITrick trick);
     }
 
     public class DeckHasHandException : ApplicationException
