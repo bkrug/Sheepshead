@@ -20,14 +20,13 @@ namespace Sheepshead.Models
         public LearningHelper(IMoveStatRepository repository, IHand hand)
         {
             _repository = repository;
-            //hand.OnAddTrick += OnAddTrickToHand;
-            //hand.OnHandEnd += OnHandEnd;
             hand.OnHandEnd += WriteHandSummary;
         }
 
         public static MoveStatUniqueKey GenerateKey(ITrick trick, IPlayer player, ICard legalCard)
         {
             List<IPlayer> playerList = trick.Hand.Players;
+            var previousTricks = trick.Hand.Tricks.Take(trick.Hand.Tricks.IndexOf(trick)).ToList();
             return new MoveStatUniqueKey()
             {
                 Picker = trick.QueueRankOfPicker,
@@ -35,13 +34,12 @@ namespace Sheepshead.Models
                 Trick = trick.IndexInHand,
                 MoveWithinTrick = player.QueueRankInTrick(trick),
                 PointsAlreadyInTrick = trick.CardsPlayed.Sum(c => c.Value.Points),
-                TotalPointsInPreviousTricks = trick.Hand.Tricks.Where(t => t != trick).Sum(t => t.CardsPlayed.Sum(c => c.Value.Points)),
+                TotalPointsInPreviousTricks = previousTricks.Sum(t => t.CardsPlayed.Sum(c => c.Value.Points)),
                 PointsInThisCard = legalCard.Points,
                 RankOfThisCard = legalCard.Rank,
                 PartnerCard = trick.Hand.PartnerCard == legalCard,
                 HigherRankingCardsPlayedPreviousTricks =
-                    trick.Hand.Tricks
-                    .Where(t => t != trick) //SUSPECT: so this will break if the method is ever called when "trick" is not the most recent trick.
+                    previousTricks
                     .SelectMany(t => t.CardsPlayed.Select(kvp => kvp.Value))
                     .Count(c => c.Rank < legalCard.Rank),
                 HigherRankingCardsPlayedThisTrick =
@@ -96,7 +94,7 @@ namespace Sheepshead.Models
             var hand = (IHand)sender;
             lock (lockObject)
             {
-                using (var sw = File.AppendText(@"C:\temp\HandSummaries.txt"))
+                using (var sw = File.AppendText(SummaryLoader.SAVE_LOCATION))
                 {
                     sw.WriteLine(hand.Summary());
                     sw.Flush();

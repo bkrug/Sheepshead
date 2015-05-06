@@ -56,7 +56,7 @@ namespace Sheepshead.Tests
                  { new Mock<IPlayer>().Object, prevCard3Mock.Object },
             });
             trickMock.Setup(m => m.PartnerCard).Returns(new Mock<ICard>().Object);
-            trickMock.Setup(m => m.Hand).Returns(GetHand(expectedKey.Trick - 1, expectedKey.TotalPointsInPreviousTricks, expectedKey.HigherRankingCardsPlayedPreviousTricks));
+            trickMock.Setup(m => m.Hand).Returns(GetHand(trickMock.Object, expectedKey.Trick - 1, expectedKey.TotalPointsInPreviousTricks, expectedKey.HigherRankingCardsPlayedPreviousTricks));
             var playerMock = new Mock<IPlayer>();
             playerMock.Setup(m => m.QueueRankInTrick(trickMock.Object)).Returns(expectedKey.MoveWithinTrick);
 
@@ -75,7 +75,7 @@ namespace Sheepshead.Tests
             Assert.AreEqual(expectedKey.HigherRankingCardsPlayedThisTrick, actualKey.HigherRankingCardsPlayedThisTrick, "HigherRankingCardsPlayedThisTrick");
         }
 
-        private IHand GetHand(int previousTricks, int pointsInPreviousTricks, int higherRankingCards)
+        private IHand GetHand(ITrick thisTrick, int previousTricks, int pointsInPreviousTricks, int higherRankingCards)
         {
             var handMock = new Mock<IHand>();
             var tricks = new List<ITrick>();
@@ -105,6 +105,27 @@ namespace Sheepshead.Tests
             }
             if (higherRankingCards > 0)
                 throw new ApplicationException("Invalid Test");
+            tricks.Add(thisTrick);
+            for (var i = previousTricks + 1; i < 5; ++i)
+            {
+                var trickMock = new Mock<ITrick>();
+                trickMock.Setup(m => m.IndexInHand).Returns(i + 1);
+                var dict = new Dictionary<IPlayer, ICard>();
+                for (var j = 0; j < 5; ++j)
+                {
+                    int points = 0;
+                    if (i == previousTricks + 1 && j == 0) points = 10;
+                    if (i == previousTricks + 1 && j == 1) points = 1;
+                    int rank = points > 0 ? 2 : 100;
+                    var cardMock = new Mock<ICard>();
+                    cardMock.Setup(m => m.Points).Returns(points);
+                    cardMock.Setup(m => m.Rank).Returns(rank);
+                    dict.Add(new Mock<IPlayer>().Object, cardMock.Object);
+                }
+                trickMock.Setup(m => m.CardsPlayed).Returns(dict);
+                tricks.Add(trickMock.Object);
+            }
+
             handMock.Setup(m => m.Tricks).Returns(tricks);
             return handMock.Object;
         }
