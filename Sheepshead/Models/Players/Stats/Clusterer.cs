@@ -39,12 +39,12 @@ namespace Sheepshead.Models.Players.Stats
         {
             noPartnerClusters = (int)Math.Round(((decimal)noPartner.Count() / data.Count() * _numClusters), 0);
             partnerClusters = _numClusters - noPartnerClusters;
-            if (noPartnerClusters < 1)
+            if (noPartnerClusters < 1 && noPartner.Any())
             {
                 noPartnerClusters = 1;
                 partnerClusters = data.Count() - 1;
             }
-            if (partnerClusters < 1)
+            if (partnerClusters < 1 && data.Any())
             {
                 noPartnerClusters = data.Count() - 1;
                 partnerClusters = 1;

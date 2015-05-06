@@ -21,6 +21,13 @@ namespace Sheepshead.Models.Players.Stats
 
         public ClusterResult Cluster(List<MoveStatUniqueKey> data)
         {
+            if (!data.Any())
+                return new ClusterResult()
+                {
+                    Data = data,
+                    ClusterIndicies = new int[] { },
+                    Centroids = new List<MoveStatCentroid>()
+                };
             var weighedData = WeighData(data);
             var numTuples = data.Count();
             _clustering = new int[numTuples];
