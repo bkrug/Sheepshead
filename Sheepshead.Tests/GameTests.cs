@@ -5,6 +5,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using Sheepshead.Models;
 using Sheepshead.Models.Players;
+using Sheepshead.Models.Wrappers;
 
 namespace Sheepshead.Tests
 {
@@ -12,7 +13,7 @@ namespace Sheepshead.Tests
     public class GameTests
     {
         private class ExposeGame : Game {
-            public ExposeGame() : base (0, new List<IPlayer>())
+            public ExposeGame() : base (0, new List<IPlayer>(), new RandomWrapper())
             {
 
             }
@@ -48,7 +49,7 @@ namespace Sheepshead.Tests
             var handMock = new Mock<IHand>();
             var trickMock = new Mock<ITrick>();
             trickMock.Setup(m => m.Hand).Returns(handMock.Object);
-            var game = new Game(42340, playerList);
+            var game = new Game(42340, playerList, new RandomWrapper());
             trickMock.Setup(m => m.StartingPlayer).Returns(player1.Object);
             bool player1Moved = false;
             bool player3Moved = false;
@@ -82,7 +83,7 @@ namespace Sheepshead.Tests
             var player5 = new Mock<BasicPlayer>();
             var playerList = new List<IPlayer>() { player3.Object, player4.Object, player5.Object, player1.Object, player2.Object };
             var trickMock = new Mock<ITrick>();
-            var game = new Game(42340, playerList);
+            var game = new Game(42340, playerList, new RandomWrapper());
             trickMock.Setup(m => m.Game).Returns(game);
             trickMock.Setup(m => m.StartingPlayer).Returns(player1.Object);
             trickMock.Setup(m => m.CardsPlayed).Returns(new Dictionary<IPlayer, ICard>());
@@ -100,7 +101,7 @@ namespace Sheepshead.Tests
             var player5 = new HumanPlayer(new User());
             var playerList = new List<IPlayer>() { player3.Object, player4.Object, player5, player1.Object, player2 };
             var deckMock = new Mock<IDeck>();
-            var game = new Game(42340, playerList);
+            var game = new Game(42340, playerList, new RandomWrapper());
             deckMock.Setup(m => m.Game).Returns(game);
             deckMock.Setup(m => m.StartingPlayer).Returns(player1.Object);
             bool player1Moved = false;
@@ -144,7 +145,7 @@ namespace Sheepshead.Tests
             var playerList = new List<IPlayer>() { player3.Object, player4.Object, player5.Object, player1.Object, player2.Object };
             player3.Setup(m => m.WillPick(It.IsAny<IDeck>())).Returns(true);
             player3.Setup(m => m.DropCardsForPick(It.IsAny<IDeck>())).Returns(new List<ICard>() { new Mock<ICard>().Object, new Mock<ICard>().Object });
-            var game = new Game(42340, playerList);
+            var game = new Game(42340, playerList, new RandomWrapper());
             var deckMock = new Mock<IDeck>();
             var refusingPick = new List<IPlayer>();
             var discards = new List<ICard>();
@@ -166,7 +167,7 @@ namespace Sheepshead.Tests
             var player4 = new Mock<IComputerPlayer>();
             var player5 = new Mock<IComputerPlayer>();
             var playerList = new List<IPlayer>() { player3.Object, player4.Object, player5.Object, player1.Object, player2.Object };
-            var game = new Game(42340, playerList);
+            var game = new Game(42340, playerList, new RandomWrapper());
             var deckMock = new Mock<IDeck>();
             var refusingPick = new List<IPlayer>();
             deckMock.Setup(m => m.PlayersRefusingPick).Returns(refusingPick);
@@ -190,7 +191,7 @@ namespace Sheepshead.Tests
             player2.Setup(m => m.DropCardsForPick(It.IsAny<IDeck>()))
                 .Callback((IDeck givenDeck) => { playerBuriedCards = true; })
                 .Returns(new List<ICard>() { new Mock<ICard>().Object, new Mock<ICard>().Object });
-            var game = new Game(42340, playerList);
+            var game = new Game(42340, playerList, new RandomWrapper());
             var deckMock = new Mock<IDeck>();
             var refusingPick = new List<IPlayer>();
             var discards = new List<ICard>();
@@ -222,8 +223,8 @@ namespace Sheepshead.Tests
             var playerList = new List<IPlayer>();
             for (var i = 0; i < 5; ++i)
                 playerList.Add(new Player());
-            var game = new Game(4982, playerList);
-            var deck = new Deck(game);
+            var game = new Game(4982, playerList, new RandomWrapper());
+            var deck = new Deck(game, new RandomWrapper());
             Assert.AreEqual(2, deck.Blinds.Count(), "There should be two blinds after dealing");
             Assert.AreEqual(5, game.Players.Count(), "There should be five doctores");
             foreach (var player in deck.Game.Players)
@@ -250,13 +251,13 @@ namespace Sheepshead.Tests
             mockGame.Setup(m => m.LastDeckIsComplete()).Returns(true);
 
             mockDeck.Setup(m => m.StartingPlayer).Returns(player1.Object);
-            deck2 = new Deck(mockGame.Object);
+            deck2 = new Deck(mockGame.Object, new RandomWrapper());
             //We won't test the Starting Player for the first deck in the game.  It should be random.
             Assert.AreEqual(player2.Object, deck2.StartingPlayer, "The starting player for one deck should be the player to the left of the previous starting player.");
 
             mockGame.Object.Decks.RemoveAt(1);
             mockDeck.Setup(m => m.StartingPlayer).Returns(player2.Object);
-            deck2 = new Deck(mockGame.Object);
+            deck2 = new Deck(mockGame.Object, new RandomWrapper());
             //We won't test the Starting Player for the first deck in the game.  It should be random.
             Assert.AreEqual(player3.Object, deck2.StartingPlayer, "Again, the starting player for one deck should be the player to the left of the previous starting player.");
         }

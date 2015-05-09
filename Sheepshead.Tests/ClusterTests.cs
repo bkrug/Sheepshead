@@ -6,6 +6,7 @@ using System.IO;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using Sheepshead.Models;
+using Sheepshead.Models.Wrappers;
 using Sheepshead.Models.Players.Stats;
 
 namespace Sheepshead.Tests
@@ -228,12 +229,12 @@ namespace Sheepshead.Tests
         //[TestMethod]
         public void DoClustering()
         {
-            var rnd = new Random();
+            var rnd = new RandomWrapper();
             var keyList = new List<MoveStatUniqueKey>();
             for (var i = 0; i < 100; ++i)
                 keyList.Add(GenerateKey(rnd));
             var numClusters = (int)Math.Sqrt(keyList.Count());
-            var clusterer = new Clusterer(numClusters, new Random(65423));
+            var clusterer = new Clusterer(numClusters, rnd);
             var results = clusterer.Cluster(keyList);
             using (
             var sb = new StreamWriter(@"C:\Temp\temp.csv"))
@@ -290,7 +291,7 @@ namespace Sheepshead.Tests
             }
         }
 
-        private MoveStatUniqueKey GenerateKey(Random rnd)
+        private MoveStatUniqueKey GenerateKey(IRandomWrapper rnd)
         {
             var partner = rnd.Next(6);
             var totalpointsinprevioustricks = rnd.Next(120);

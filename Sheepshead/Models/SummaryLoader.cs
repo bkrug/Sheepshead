@@ -5,6 +5,7 @@ using System.Web;
 using System.IO;
 using Sheepshead.Models.Players;
 using Sheepshead.Models.Players.Stats;
+using Sheepshead.Models.Wrappers;
 
 namespace Sheepshead.Models
 {
@@ -31,7 +32,7 @@ namespace Sheepshead.Models
         private CentroidResultPredictor Load()
         {
             var keys = ReadMoves();
-            var clusterer = new Clusterer((int)Math.Round(Math.Sqrt(keys.Count())), new Random(DateTime.Now.TimeOfDay.Milliseconds));
+            var clusterer = new Clusterer((int)Math.Round(Math.Sqrt(keys.Count())), new RandomWrapper());
             var clusterResult = clusterer.Cluster(keys.Select(d => d.Key).ToList());
             var clusterDictionary = ClusterUtils.GetClusterDictionary(keys, clusterResult);
             var resultPredictor = new CentroidResultPredictor(clusterDictionary);

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using Sheepshead.Models.Wrappers;
 
 namespace Sheepshead.Models.Players.Stats
 {
@@ -10,9 +11,9 @@ namespace Sheepshead.Models.Players.Stats
         private int _numClusters;
         private int[] _clustering;
         private MoveStatCentroid[] _centroids;
-        private Random _rnd;
+        private IRandomWrapper _rnd;
 
-        public InnerClusterer(int numClusters, Random rnd)
+        public InnerClusterer(int numClusters, IRandomWrapper rnd)
         {
             _numClusters = numClusters;
             _centroids = new MoveStatCentroid[numClusters];

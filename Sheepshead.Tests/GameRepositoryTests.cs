@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using Sheepshead.Models;
+using Sheepshead.Models.Wrappers;
 using Sheepshead.Models.Players;
 
 namespace Sheepshead.Tests
@@ -17,7 +18,7 @@ namespace Sheepshead.Tests
             var dict = new Dictionary<long, IGame>();
             var repository = new GameRepository(dict);
             var expectedName = "Dwayne's Game";
-            var game = repository.CreateGame(expectedName, new List<IPlayer>());
+            var game = repository.CreateGame(expectedName, new List<IPlayer>(), new RandomWrapper());
             game.Name = expectedName;
             repository.Save(game);
             Assert.AreEqual(expectedName, game.Name, "Name is correct.");
@@ -31,9 +32,9 @@ namespace Sheepshead.Tests
         {
             var dict = new Dictionary<long, IGame>();
             var repository = new GameRepository(dict);
-            dict.Add(101, new Game(101, new List<IPlayer>()) { Name = "Fred's Game" });
-            dict.Add(102, new Game(102, new List<IPlayer>()) { Name = "Bill's Game" });
-            dict.Add(103, new Game(103, new List<IPlayer>()) { Name = "Andy's Game" });
+            dict.Add(101, new Game(101, new List<IPlayer>(), new RandomWrapper()) { Name = "Fred's Game" });
+            dict.Add(102, new Game(102, new List<IPlayer>(), new RandomWrapper()) { Name = "Bill's Game" });
+            dict.Add(103, new Game(103, new List<IPlayer>(), new RandomWrapper()) { Name = "Andy's Game" });
             Assert.AreEqual(dict[102].Name, repository.GetGame(g => g.Id == 102).Name, "GetGame() returned correct results when searching by id.");
             Assert.AreEqual(dict[103].Id, repository.GetGame(g => g.Name == "Andy's Game").Id, "GetGame() returned correct results when searching by Name.");
         }
@@ -43,9 +44,9 @@ namespace Sheepshead.Tests
         {
             var dict = new Dictionary<long, IGame>();
             var repository = new BaseRepository<IGame>(dict);
-            dict.Add(101, new Game(101, new List<IPlayer>()) { Name = "Fred's Game" });
-            dict.Add(102, new Game(102, new List<IPlayer>()) { Name = "Bill's Game" });
-            dict.Add(103, new Game(103, new List<IPlayer>()) { Name = "Andy's Game" });
+            dict.Add(101, new Game(101, new List<IPlayer>(), new RandomWrapper()) { Name = "Fred's Game" });
+            dict.Add(102, new Game(102, new List<IPlayer>(), new RandomWrapper()) { Name = "Bill's Game" });
+            dict.Add(103, new Game(103, new List<IPlayer>(), new RandomWrapper()) { Name = "Andy's Game" });
             Assert.AreEqual(dict[101].Name, repository.GetById(101).Name, "GetGame() returned correct results when searching by id.");
             Assert.AreEqual(null, repository.GetById(104), "GetGame() returned null and not an error when there were no results.");
         }

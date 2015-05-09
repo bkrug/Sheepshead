@@ -2,15 +2,16 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using Sheepshead.Models.Wrappers;
 
 namespace Sheepshead.Models.Players.Stats
 {
     public class Clusterer
     {
         private int _numClusters;
-        private Random _rnd;
+        private IRandomWrapper _rnd;
 
-        public Clusterer(int numClusters, Random rnd)
+        public Clusterer(int numClusters, IRandomWrapper rnd)
         {
             _numClusters = numClusters;
             _rnd = rnd;

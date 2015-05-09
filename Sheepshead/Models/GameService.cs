@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using Sheepshead.Models.Wrappers;
 using Sheepshead.Models.Players;
 
 namespace Sheepshead.Models
@@ -17,9 +18,9 @@ namespace Sheepshead.Models
             _repository = repository;
         }
 
-        public IGame CreateGame(string name, List<IPlayer> players)
+        public IGame CreateGame(string name, List<IPlayer> players, IRandomWrapper rnd)
         {
-            var game = _repository.CreateGame(name, players);
+            var game = _repository.CreateGame(name, players, rnd);
             return game;
         }
 
@@ -31,7 +32,7 @@ namespace Sheepshead.Models
 
     public interface IGameService
     {
-        IGame CreateGame(string name, List<IPlayer> players);
+        IGame CreateGame(string name, List<IPlayer> players, IRandomWrapper rnd);
         IGame GetGame(long id);
     }
 }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using Sheepshead.Models.Players;
+using Sheepshead.Models.Wrappers;
 
 namespace Sheepshead.Models
 {
@@ -17,11 +18,13 @@ namespace Sheepshead.Models
         public List<IPlayer> Players { get { return _players.ToList(); } }
         private List<IDeck> _decks = new List<IDeck>();
         public List<IDeck> Decks { get { return _decks; } }
+        public IRandomWrapper _random { get; private set; }
 
-        public Game(long id, List<IPlayer> players)
+        public Game(long id, List<IPlayer> players, IRandomWrapper random)
         {
             _players = players;
             _id = id;
+            _random = random;
         }
 
         public void PlayNonHumans(ITrick trick)
@@ -74,10 +77,9 @@ namespace Sheepshead.Models
 
         public void RearrangePlayers()
         {
-            var rnd = new Random();
             for (var i = PlayerCount - 1; i > 0; --i)
             {
-                var j = rnd.Next(i);
+                var j = _random.Next(i);
                 var swap = Players[i];
                 Players[i] = Players[j];
                 Players[j] = swap;

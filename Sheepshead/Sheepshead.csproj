@@ -152,6 +152,7 @@
     <Compile Include="Models\LongId.cs" />
     <Compile Include="Models\Players\Player.cs" />
     <Compile Include="Models\User.cs" />
+    <Compile Include="Models\Wrappers\RandomWrapper.cs" />
     <Compile Include="Models\Wrappers\StreamReaderWrapper.cs" />
     <Compile Include="Models\Wrappers\StreamWriterWrapper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

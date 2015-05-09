@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using Sheepshead.Models;
+using Sheepshead.Models.Wrappers;
 using Sheepshead.Models.Players;
 using Sheepshead.Models.Players.Stats;
 
@@ -177,13 +178,14 @@ namespace Sheepshead.Tests
         {
             var repository = new GameRepository(GameDictionary.Instance.Dictionary);
             var playerList = new List<IPlayer>();
+            var rnd = new RandomWrapper();
             for (var i = 0; i < 5; ++i)
                 playerList.Add(new BasicPlayer());
             for (var g = 0; g < 100000; ++g)
             {
-                var game = repository.CreateGame("Poker", playerList);
+                var game = repository.CreateGame("Poker", playerList, rnd);
                 game.RearrangePlayers();
-                var deck = new Deck(game);
+                var deck = new Deck(game, rnd);
                 var picker = game.PlayNonHumans(deck) as ComputerPlayer;
                 var buriedCards = picker != null ? picker.DropCardsForPick(deck) : new List<ICard>();
                 var hand = new Hand(deck, picker, buriedCards);

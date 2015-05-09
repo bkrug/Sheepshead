@@ -4,6 +4,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using Sheepshead.Models;
+using Sheepshead.Models.Wrappers;
 using Sheepshead.Models.Players;
 using Sheepshead.Models.Players.Stats;
 
@@ -11,6 +12,8 @@ namespace Sheepshead.Controllers
 {
     public class GameController : Controller
     {
+        private static IRandomWrapper _rnd = new RandomWrapper();
+
         public ActionResult Index()
         {
             var repository = new GameRepository(GameDictionary.Instance.Dictionary);
@@ -42,7 +45,7 @@ namespace Sheepshead.Controllers
                 playerList.Add(new BasicPlayer());
             for (var i = 0; i < model.LearningCount; ++i)
                 playerList.Add(new LearningPlayer());
-            var newGame = repository.CreateGame(model.Name, playerList);
+            var newGame = repository.CreateGame(model.Name, playerList, _rnd);
             repository.Save(newGame);
             Session["gameId"] = newGame.Id;
             newGame.RearrangePlayers();
@@ -60,7 +63,7 @@ namespace Sheepshead.Controllers
             if (!game.Decks.Any() || game.LastDeckIsComplete())
             {
                 turnState.TurnType = TurnType.BeginDeck;
-                turnState.Deck = new Deck(game);
+                turnState.Deck = new Deck(game, _rnd);
             }
             else if (game.Decks.Last().Hand == null)
             {

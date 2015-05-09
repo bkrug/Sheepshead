@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using Sheepshead.Models.Players;
+using Sheepshead.Models.Wrappers;
 
 namespace Sheepshead.Models
 {
@@ -16,11 +17,13 @@ namespace Sheepshead.Models
         public IHand Hand { get; set; }
         public List<IPlayer> PlayersRefusingPick { get { return _playersRefusingPick.ToList(); } }
         public IPlayer StartingPlayer { get; private set; }
+        public IRandomWrapper _random { get; private set; }
 
-        public Deck(IGame game)
+        public Deck(IGame game, IRandomWrapper random)
         {
             if (!game.LastDeckIsComplete())
                 throw new PreviousDeckIncompleteException("Cannot add a deck until the prvious one is complete.");
+            _random = random;
             Game = game;
             var cards = ShuffleCards();
             DealCards(cards);
@@ -32,10 +35,9 @@ namespace Sheepshead.Models
         private Queue<ICard> ShuffleCards()
         {
             List<ICard> cards = CardRepository.Instance.UnshuffledList();
-            var rnd = new Random();
             for (var i = Sheepshead.Models.Game.CARDS_IN_DECK - 1; i > 0; --i)
             {
-                var j = rnd.Next(i);
+                var j = _random.Next(i);
                 var swap = cards[i];
                 cards[i] = cards[j];
                 cards[j] = swap;
@@ -68,7 +70,7 @@ namespace Sheepshead.Models
         {
             var index = Game.Decks.IndexOf(this);
             var indexOfPlayer = (index == 0)
-                ? (new Random()).Next(Game.PlayerCount) 
+                ? _random.Next(Game.PlayerCount) 
                 : Game.Players.IndexOf(Game.Decks[index - 1].StartingPlayer) + 1;
             if (indexOfPlayer == Game.PlayerCount) indexOfPlayer = 0;
             StartingPlayer = Game.Players[indexOfPlayer];
