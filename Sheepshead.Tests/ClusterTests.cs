@@ -232,7 +232,7 @@ namespace Sheepshead.Tests
             var rnd = new RandomWrapper();
             var keyList = new List<MoveStatUniqueKey>();
             for (var i = 0; i < 100; ++i)
-                keyList.Add(GenerateKey(rnd));
+                keyList.Add(TestUtils.GenerateRandomKey(rnd));
             var numClusters = (int)Math.Sqrt(keyList.Count());
             var clusterer = new Clusterer(numClusters, rnd);
             var results = clusterer.Cluster(keyList);
@@ -290,8 +290,11 @@ namespace Sheepshead.Tests
                 }
             }
         }
+    }
 
-        private MoveStatUniqueKey GenerateKey(IRandomWrapper rnd)
+    public class TestUtils
+    {
+        public static MoveStatUniqueKey GenerateRandomKey(IRandomWrapper rnd)
         {
             var partner = rnd.Next(6);
             var totalpointsinprevioustricks = rnd.Next(120);

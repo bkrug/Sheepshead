@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -194,6 +195,27 @@ namespace Sheepshead.Tests
                 {
                     var trick = new Trick(hand);
                     game.PlayNonHumans(trick);
+                }
+            }
+        }
+
+        [TestMethod]
+        public void LearningHelper_CompareResults()
+        {
+            var rnd = new RandomWrapper();
+            var predictors = SummaryLoader.Instance.ResultPredictors;
+            using (var sb = new StreamWriter(@"C:\Temp\result compare.csv"))
+            {
+                sb.WriteLine(",Trick % Won, Hand % Won,Trick Diff,Hand Diff");
+                for (var i = 0; i < 1000; ++i)
+                {
+                    var key = TestUtils.GenerateRandomKey(rnd);
+                    var results = predictors.Select(p => p.GetPrediction(key)).ToList();
+                    var trickDiff = Math.Abs((double)(results[1].TrickPortionWon - results[0].TrickPortionWon));
+                    var handDiff = Math.Abs((double)(results[1].HandPortionWon - results[0].HandPortionWon));
+                    var trickAvg = (results[1].TrickPortionWon + results[0].TrickPortionWon) / 2;
+                    var handAvg = (results[1].HandPortionWon + results[0].HandPortionWon) / 2;
+                    sb.WriteLine(i + "," + trickAvg  + "," + handAvg + "," + trickDiff + "," + handDiff);
                 }
             }
         }
