@@ -64,7 +64,7 @@ namespace Sheepshead.Tests
             var playerMock = new Mock<IPlayer>();
             playerMock.Setup(m => m.QueueRankInTrick(trickMock.Object)).Returns(expectedKey.MoveWithinTrick);
 
-            var actualKey = LearningHelper.GenerateKey(trickMock.Object, playerMock.Object, cardMock.Object);
+            var actualKey = new KeyGenerator().GenerateKey(trickMock.Object, playerMock.Object, cardMock.Object);
 
             Assert.AreEqual(expectedKey.Picker, actualKey.Picker, "Picker");
             Assert.AreEqual(expectedKey.Partner, actualKey.Partner, "Partner");
@@ -81,7 +81,7 @@ namespace Sheepshead.Tests
             //Same thing if we don't know who the partner is.
             handMock.Setup(m => m.PartnerCardPlayed).Returns(new[] { expectedKey.Trick + 1, expectedKey.Partner.Value });
 
-            actualKey = LearningHelper.GenerateKey(trickMock.Object, playerMock.Object, cardMock.Object);
+            actualKey = new KeyGenerator().GenerateKey(trickMock.Object, playerMock.Object, cardMock.Object);
 
             Assert.AreEqual(expectedKey.Picker, actualKey.Picker, "Picker");
             Assert.AreEqual(null, actualKey.Partner, "Partner");

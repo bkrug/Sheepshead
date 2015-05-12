@@ -44,6 +44,7 @@ namespace Sheepshead.Models
             var moves = new Dictionary<MoveStatUniqueKey, MoveStat>();
             if (!File.Exists(SAVE_LOCATION))
                 return moves;
+            var generator = new KeyGenerator();
             using (var reader = File.OpenText(SAVE_LOCATION))
             {
                 while (!reader.EndOfStream)
@@ -56,7 +57,7 @@ namespace Sheepshead.Models
                         var trickWinner = trick.Winner().Player;
                         foreach (var move in trick.OrderedMoves)
                         {
-                            var key = LearningHelper.GenerateKey(trick, move.Key, move.Value);
+                            var key = generator.GenerateKey(trick, move.Key, move.Value);
                             if (!moves.ContainsKey(key))
                                 moves.Add(key, new MoveStat()
                                 {

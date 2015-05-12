@@ -9,6 +9,14 @@ namespace Sheepshead.Models.Players
     public class LearningPlayer : BasicPlayer
     {
         private Dictionary<ITrick, MoveStatUniqueKey> _keys = new Dictionary<ITrick, MoveStatUniqueKey>();
+        private IKeyGenerator _generator;
+
+        private LearningPlayer() { }
+
+        public LearningPlayer(IKeyGenerator generator)
+        {
+            _generator = generator;
+        }
 
         public override ICard GetMove(ITrick trick)
         {
@@ -17,7 +25,7 @@ namespace Sheepshead.Models.Players
             var results = new Dictionary<ICard, MoveStat>();
             foreach(var legalCard in legalCards) 
             {
-                var key = LearningHelper.GenerateKey(trick, this, legalCard);
+                var key = _generator.GenerateKey(trick, this, legalCard);
                 var result = predictor.GetPrediction(key);
                 results.Add(legalCard, result);
             }

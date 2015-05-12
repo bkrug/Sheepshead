@@ -8,18 +8,14 @@ using System.IO;
 
 namespace Sheepshead.Models
 {
-    public class LearningHelper
+    public interface IKeyGenerator
     {
-        private LearningHelper()
-        {
-        }
+        MoveStatUniqueKey GenerateKey(ITrick trick, IPlayer player, ICard legalCard);
+    }
 
-        public LearningHelper(IHand hand)
-        {
-            hand.OnHandEnd += WriteHandSummary;
-        }
-
-        public static MoveStatUniqueKey GenerateKey(ITrick trick, IPlayer player, ICard legalCard)
+    public class KeyGenerator : IKeyGenerator
+    {
+        public MoveStatUniqueKey GenerateKey(ITrick trick, IPlayer player, ICard legalCard)
         {
             var indexOfTrick = trick.Hand.Tricks.IndexOf(trick);
             List<IPlayer> playerList = trick.Hand.Players;
@@ -57,6 +53,18 @@ namespace Sheepshead.Models
                 return false;
             var partnerPosition = trick.QueueRankOfPartner;
             return !partnerPosition.HasValue || partnerPosition < trick.Hand.PartnerCardPlayed[1];
+        }
+    }
+
+    public class LearningHelper
+    {
+        private LearningHelper()
+        {
+        }
+
+        public LearningHelper(IHand hand)
+        {
+            hand.OnHandEnd += WriteHandSummary;
         }
 
         private static object lockObject = new object();
