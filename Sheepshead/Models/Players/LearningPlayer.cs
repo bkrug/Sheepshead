@@ -10,29 +10,34 @@ namespace Sheepshead.Models.Players
     {
         private Dictionary<ITrick, MoveStatUniqueKey> _keys = new Dictionary<ITrick, MoveStatUniqueKey>();
         private IKeyGenerator _generator;
+        private ICentroidResultPredictor _predictor;
 
         private LearningPlayer() { }
 
-        public LearningPlayer(IKeyGenerator generator)
+        public LearningPlayer(IKeyGenerator generator, ICentroidResultPredictor predictor)
         {
             _generator = generator;
+            _predictor = predictor;
         }
 
         public override ICard GetMove(ITrick trick)
         {
-            var predictor = SummaryLoader.Instance.ResultPredictor;
             var legalCards = this.Cards.Where(c => trick.IsLegalAddition(c, this)).ToList();
             var results = new Dictionary<ICard, MoveStat>();
             foreach(var legalCard in legalCards) 
             {
                 var key = _generator.GenerateKey(trick, this, legalCard);
-                var result = predictor.GetPrediction(key);
+                var result = _predictor.GetPrediction(key);
                 results.Add(legalCard, result);
             }
-            var orderedResults = results
-                .OrderByDescending(r => r.Value.HandPortionWon)
-                .ThenByDescending(r => r.Value.TrickPortionWon);
-            var selectedCard = orderedResults.First().Key;
+            var handOrderedResults = results
+                .OrderByDescending(r => r.Value.HandPortionWon);
+            var firstResult = handOrderedResults.First();
+            var closeResults = results
+                .Where(r => Math.Abs((double)(r.Value.HandPortionWon - firstResult.Value.HandPortionWon)) < 0.1);
+            var trickOrderedResults = results
+                .OrderByDescending(r => r.Value.TrickPortionWon);
+            var selectedCard = trickOrderedResults.First().Key;
             return selectedCard;
         }
     }

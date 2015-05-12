@@ -5,7 +5,12 @@ using System.Web;
 
 namespace Sheepshead.Models.Players.Stats
 {
-    public class CentroidResultPredictor
+    public interface ICentroidResultPredictor
+    {
+        MoveStat GetPrediction(MoveStatUniqueKey key);
+    }
+
+    public class CentroidResultPredictor : ICentroidResultPredictor
     {
         private Dictionary<MoveStatCentroid, MoveStat> _centroidAndStats;
 

@@ -44,7 +44,7 @@ namespace Sheepshead.Controllers
             for (var i = 0; i < model.BasicCount; ++i)
                 playerList.Add(new BasicPlayer());
             for (var i = 0; i < model.LearningCount; ++i)
-                playerList.Add(new LearningPlayer(new KeyGenerator()));
+                playerList.Add(new LearningPlayer(new KeyGenerator(), SummaryLoader.Instance.ResultPredictor));
             var newGame = repository.CreateGame(model.Name, playerList, _rnd);
             repository.Save(newGame);
             Session["gameId"] = newGame.Id;
