@@ -89,7 +89,7 @@ namespace Sheepshead.Controllers
             if (picker != null)
             {
                 var hand = ProcessPick(deck, (IComputerPlayer)picker);
-                new LearningHelper(MoveStatRepository.Instance, hand);
+                new LearningHelper(hand);
             }
         }
 
@@ -144,7 +144,7 @@ namespace Sheepshead.Controllers
                 var picker = game.PlayNonHumans(game.Decks.Last());
                 hand = ProcessPick(deck, (IComputerPlayer)picker);
             }
-            new LearningHelper(MoveStatRepository.Instance, hand);
+            new LearningHelper(hand);
         }
 
         private void Bury(IGame game, string buriedCardsIndicies)

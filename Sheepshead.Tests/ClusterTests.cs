@@ -23,8 +23,8 @@ namespace Sheepshead.Tests
                 { centroid2, new MoveStat() { TricksTried = 3, TricksWon = 0, HandsTried = 3, HandsWon = 3 } },
                 { centroid3, new MoveStat() { TricksTried = 3, TricksWon = 2, HandsTried = 3, HandsWon = 2 } },
             };
-            var repositoryMock = GetStatRepository(clusterResult, 4);
-            var actualDict = ClusterUtils.GetClusterDictionary(repositoryMock, clusterResult);
+            var statList = GetStatList(clusterResult, 4);
+            var actualDict = ClusterUtils.GetClusterDictionary(statList, clusterResult);
             Assert.AreEqual(expectedDict.Count, actualDict.Count, "Dictionaries must be the same size.");
             var i = 0;
             foreach (var key in expectedDict.Keys)
@@ -56,49 +56,7 @@ namespace Sheepshead.Tests
                 Centroids = new List<MoveStatCentroid>() { centroid1, centroid2, centroid3 }
             };
         }
-
-        private IMoveStatRepository GetStatRepository(ClusterResult clusterResult, int indexOfSecondKeyInLastCentroid)
-        {
-            var mockResults = new Dictionary<MoveStatUniqueKey, MoveStat>();
-            for (var i = 0; i < clusterResult.Data.Count(); ++i)
-            {
-                var cluster = clusterResult.ClusterIndicies[i];
-                mockResults.Add(clusterResult.Data[i], new MoveStat()
-                {
-                    TricksTried = 1,
-                    TricksWon = cluster == 0 ? 1 : cluster == 1 ? 0 : i <= indexOfSecondKeyInLastCentroid ? 1 : 0,
-                    HandsTried = 1,
-                    HandsWon = cluster == 0 ? 0 : cluster == 1 ? 1 : i <= indexOfSecondKeyInLastCentroid ? 1 : 0
-                });
-            }
-            var repositoryMock = new Mock<IMoveStatRepository>();
-            repositoryMock
-                .Setup(m => m.GetRecordedResults(It.IsAny<MoveStatUniqueKey>()))
-                .Returns((MoveStatUniqueKey key) => { return mockResults[key]; });
-            return repositoryMock.Object;
-        }
-
-        [TestMethod]
-        public void GetClusterDictionary2()
-        {
-            var clusterResult = GetClusterResult();
-            var expectedDict = new Dictionary<MoveStatCentroid, MoveStat>() {
-                { centroid1, new MoveStat() { TricksTried = 4, TricksWon = 4, HandsTried = 4, HandsWon = 0 } },
-                { centroid2, new MoveStat() { TricksTried = 3, TricksWon = 0, HandsTried = 3, HandsWon = 3 } },
-                { centroid3, new MoveStat() { TricksTried = 3, TricksWon = 2, HandsTried = 3, HandsWon = 2 } },
-            };
-            var statList = GetStatList(clusterResult, 4);
-            var actualDict = ClusterUtils.GetClusterDictionary(statList, clusterResult);
-            Assert.AreEqual(expectedDict.Count, actualDict.Count, "Dictionaries must be the same size.");
-            var i = 0;
-            foreach (var key in expectedDict.Keys)
-            {
-                Assert.AreEqual(expectedDict[key].TrickPortionWon, actualDict[key].TrickPortionWon, "Trick portion won must match during iteration " + i + ".");
-                Assert.AreEqual(expectedDict[key].HandPortionWon, actualDict[key].HandPortionWon, "Hand portion won must match during iteration " + i + ".");
-                ++i;
-            }
-        }
-
+        
         private Dictionary<MoveStatUniqueKey, MoveStat> GetStatList(ClusterResult clusterResult, int indexOfSecondKeyInLastCentroid)
         {
             var moveList = new Dictionary<MoveStatUniqueKey, MoveStat>();

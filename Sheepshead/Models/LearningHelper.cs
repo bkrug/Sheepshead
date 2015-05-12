@@ -10,16 +10,12 @@ namespace Sheepshead.Models
 {
     public class LearningHelper
     {
-        private IMoveStatRepository _repository;
-        private Dictionary<Tuple<ITrick, IPlayer>, MoveStatUniqueKey> _learningKeys = new Dictionary<Tuple<ITrick, IPlayer>, MoveStatUniqueKey>();
-
         private LearningHelper()
         {
         }
 
-        public LearningHelper(IMoveStatRepository repository, IHand hand)
+        public LearningHelper(IHand hand)
         {
-            _repository = repository;
             hand.OnHandEnd += WriteHandSummary;
         }
 
@@ -61,44 +57,6 @@ namespace Sheepshead.Models
                 return false;
             var partnerPosition = trick.QueueRankOfPartner;
             return !partnerPosition.HasValue || partnerPosition < trick.Hand.PartnerCardPlayed[1];
-        }
-
-        private void OnAddTrickToHand(object sender, EventArgs e)
-        {
-            var hand = (IHand)sender;
-            hand.Tricks.Last().OnTrickEnd += OnTrickEnd;
-        }
-
-        private void OnHandEnd(object sender, EventArgs e)
-        {
-            var hand = (IHand)sender;
-            foreach (var trick in hand.Tricks)
-            {
-                foreach (var player in trick.Players)
-                {
-                    var tuple = new Tuple<ITrick, IPlayer>(trick, player);
-                    var statKey = _learningKeys[tuple];
-                    _repository.IncrementHandResult(statKey, trick.Hand.Scores()[player] > 0);
-                }
-            }
-        }
-
-        private void OnTrickMove(object sender, Trick.MoveEventArgs e)
-        {
-            var trick = (ITrick)sender;
-            var tuple = new Tuple<ITrick, IPlayer>(trick, e.Player);
-            _learningKeys.Add(tuple, LearningHelper.GenerateKey(trick, e.Player, e.Card));
-        }
-
-        private void OnTrickEnd(object sender, EventArgs e)
-        {
-            var trick = (ITrick)sender;
-            foreach (var player in trick.Players)
-            {
-                var tuple = new Tuple<ITrick, IPlayer>(trick, player);
-                var statKey = _learningKeys[tuple];
-                _repository.IncrementTrickResult(statKey, trick.Winner().Player == this);
-            }
         }
 
         private static object lockObject = new object();

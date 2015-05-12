@@ -102,7 +102,6 @@
     <Compile Include="ClusterTests.cs" />
     <Compile Include="CardTests.cs" />
     <Compile Include="LearningTests.cs" />
-    <Compile Include="MoveStatTests.cs" />
     <Compile Include="GameRepositoryTests.cs" />
     <Compile Include="GameTests.cs" />
     <Compile Include="HandTest.cs" />

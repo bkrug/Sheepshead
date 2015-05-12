@@ -138,8 +138,6 @@
     <Compile Include="Models\Players\Stats\InnerClusterer.cs" />
     <Compile Include="Models\Players\Stats\MoveStat.cs" />
     <Compile Include="Models\Players\Stats\MoveStatCentroid.cs" />
-    <Compile Include="Models\Players\Stats\MoveStatRepository.cs" />
-    <Compile Include="Models\Players\Stats\ResultPredictor.cs" />
     <Compile Include="Models\SummaryLoader.cs" />
     <Compile Include="Models\SummaryReader.cs" />
     <Compile Include="Models\Trick.cs" />

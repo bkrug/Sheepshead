@@ -173,7 +173,7 @@ namespace Sheepshead.Tests
             Assert.IsNull(leasterHand.Picker);
         }
 
-        [TestMethod]
+        //[TestMethod]
         public void LearningHelper_PlayGame()
         {
             var repository = new GameRepository(GameDictionary.Instance.Dictionary);
@@ -189,7 +189,7 @@ namespace Sheepshead.Tests
                 var picker = game.PlayNonHumans(deck) as ComputerPlayer;
                 var buriedCards = picker != null ? picker.DropCardsForPick(deck) : new List<ICard>();
                 var hand = new Hand(deck, picker, buriedCards);
-                new LearningHelper(MoveStatRepository.Instance, hand);
+                new LearningHelper(hand);
                 while (!hand.IsComplete())
                 {
                     var trick = new Trick(hand);

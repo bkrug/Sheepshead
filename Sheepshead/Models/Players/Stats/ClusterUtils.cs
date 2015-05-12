@@ -47,24 +47,6 @@ namespace Sheepshead.Models.Players.Stats
             return Math.Sqrt(sumSquareDiffs);
         }
 
-        public static Dictionary<MoveStatCentroid, MoveStat> GetClusterDictionary(IMoveStatRepository repository, ClusterResult clusterResult) 
-        {
-            var dict = new Dictionary<MoveStatCentroid, MoveStat>();
-            for (var i = 0; i < clusterResult.Data.Count(); ++i)
-            {
-                var centroid = clusterResult.GetCentroid(i);
-                if (!dict.ContainsKey(centroid))
-                    dict.Add(centroid, new MoveStat());
-                var key = clusterResult.Data[i];
-                var existingStat = repository.GetRecordedResults(key);
-                dict[centroid].TricksTried += existingStat.TricksTried;
-                dict[centroid].TricksWon += existingStat.TricksWon;
-                dict[centroid].HandsTried += existingStat.HandsTried;
-                dict[centroid].HandsWon += existingStat.HandsWon;
-            }
-            return dict;
-        }
-
         public static Dictionary<MoveStatCentroid, MoveStat> GetClusterDictionary(Dictionary<MoveStatUniqueKey, MoveStat> moveResults, ClusterResult clusterResult)
         {
             var dict = new Dictionary<MoveStatCentroid, MoveStat>();
