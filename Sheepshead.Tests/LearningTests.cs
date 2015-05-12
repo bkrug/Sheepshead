@@ -187,7 +187,7 @@ namespace Sheepshead.Tests
             {
                 new MoveStat() { HandsWon = 72, HandsTried = 100, TricksWon = 63, TricksTried = 100 },
                 new MoveStat() { HandsWon = 74, HandsTried = 100, TricksWon = 69, TricksTried = 100 },
-                new MoveStat() { HandsWon = 49, HandsTried = 100, TricksWon = 32, TricksTried = 100 }
+                new MoveStat() { HandsWon = 49, HandsTried = 100, TricksWon = 98, TricksTried = 100 }
             };
             var generatorMock = new Mock<IKeyGenerator>();
             generatorMock
@@ -209,7 +209,7 @@ namespace Sheepshead.Tests
             {
                 new MoveStat() { HandsWon = 74, HandsTried = 100, TricksWon = 63, TricksTried = 100 },
                 new MoveStat() { HandsWon = 72, HandsTried = 100, TricksWon = 69, TricksTried = 100 },
-                new MoveStat() { HandsWon = 49, HandsTried = 100, TricksWon = 32, TricksTried = 100 }
+                new MoveStat() { HandsWon = 49, HandsTried = 100, TricksWon = 98, TricksTried = 100 }
             };
             predictorMock
                 .Setup(m => m.GetPrediction(It.IsAny<MoveStatUniqueKey>()))

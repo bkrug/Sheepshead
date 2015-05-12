@@ -35,7 +35,7 @@ namespace Sheepshead.Models.Players
             var firstResult = handOrderedResults.First();
             var closeResults = results
                 .Where(r => Math.Abs((double)(r.Value.HandPortionWon - firstResult.Value.HandPortionWon)) < 0.1);
-            var trickOrderedResults = results
+            var trickOrderedResults = closeResults
                 .OrderByDescending(r => r.Value.TrickPortionWon);
             var selectedCard = trickOrderedResults.First().Key;
             return selectedCard;
