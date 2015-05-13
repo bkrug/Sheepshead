@@ -47,37 +47,60 @@ namespace Sheepshead.Models
             var generator = new KeyGenerator();
             using (var reader = File.OpenText(SAVE_LOCATION))
             {
+                var i = 0;
                 while (!reader.EndOfStream)
                 {
                     var summary = reader.ReadLine();
                     var hand = SummaryReader.FromSummary(summary);
+                    var indexOfTrick = 0;
                     var handWinner = hand.Scores().Where(s => s.Value > 0).Select(s => s.Key).ToList();
+                    var pointsInPreviousTricks = 0;
+                    var previousTricks = new List<ITrick>();
+                    var beforePartnerCardPlayed = true;
                     foreach (var trick in hand.Tricks)
                     {
                         var trickWinner = trick.Winner().Player;
+                        var indexOfPlayer = 0;
+                        var queueRankOfPicker = trick.QueueRankOfPicker;
+                        var previousCards = new List<ICard>();
+                        var pointsInTrick = 0;
+                        int? queueRankOfPartner = null;
                         foreach (var move in trick.OrderedMoves)
                         {
-                            var key = generator.GenerateKey(trick, move.Key, move.Value);
-                            if (!moves.ContainsKey(key))
-                                moves.Add(key, new MoveStat()
-                                {
-                                    TricksTried = 1,
-                                    TricksWon = trickWinner == move.Key ? 1 : 0,
-                                    HandsTried = 1,
-                                    HandsWon = handWinner.Contains(move.Key) ? 1 : 0
-                                });
-                            else
-                            {
-                                moves[key].TricksTried += 1;
-                                moves[key].TricksWon += trickWinner == move.Key ? 1 : 0;
-                                moves[key].HandsTried += 1;
-                                moves[key].HandsWon += handWinner.Contains(move.Key) ? 1 : 0;
-                            }
+                            var key = generator.GenerateKey(
+                                            indexOfTrick, indexOfPlayer, queueRankOfPicker, pointsInPreviousTricks,
+                                            trick, move.Value, previousTricks, previousCards,
+                                            ref beforePartnerCardPlayed, ref queueRankOfPartner, ref pointsInTrick);
+                            RecordMove(moves, handWinner, trickWinner, move.Key, key);
+                            ++indexOfTrick;
+                            ++indexOfPlayer;
+                            previousCards.Add(move.Value);
                         }
+                        pointsInPreviousTricks += pointsInTrick;
+                        previousTricks.Add(trick);
                     }
                 }
             }
             return moves;
+        }
+
+        private static void RecordMove(Dictionary<MoveStatUniqueKey, MoveStat> moves, List<IPlayer> handWinner, IPlayer trickWinner, IPlayer player, MoveStatUniqueKey key)
+        {
+            if (!moves.ContainsKey(key))
+                moves.Add(key, new MoveStat()
+                {
+                    TricksTried = 1,
+                    TricksWon = trickWinner == player ? 1 : 0,
+                    HandsTried = 1,
+                    HandsWon = handWinner.Contains(player) ? 1 : 0
+                });
+            else
+            {
+                moves[key].TricksTried += 1;
+                moves[key].TricksWon += trickWinner == player ? 1 : 0;
+                moves[key].HandsTried += 1;
+                moves[key].HandsWon += handWinner.Contains(player) ? 1 : 0;
+            }
         }
     }
 }

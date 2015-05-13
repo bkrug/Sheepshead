@@ -226,7 +226,7 @@ namespace Sheepshead.Tests
             var rnd = new RandomWrapper();
             for (var i = 0; i < 5; ++i)
                 playerList.Add(new BasicPlayer());
-            for (var g = 0; g < 100000; ++g)
+            for (var g = 0; g < 500; ++g)
             {
                 var game = repository.CreateGame("Poker", playerList, rnd);
                 game.RearrangePlayers();
@@ -241,6 +241,13 @@ namespace Sheepshead.Tests
                     game.PlayNonHumans(trick);
                 }
             }
+        }
+
+        //[TestMethod]
+        public void LearningHelper_Read()
+        {
+            var instance = SummaryLoader.Instance;
+            var predictor = instance.ResultPredictor;
         }
     }
 }

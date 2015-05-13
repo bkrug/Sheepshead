@@ -11,6 +11,9 @@ namespace Sheepshead.Models
     public interface IKeyGenerator
     {
         MoveStatUniqueKey GenerateKey(ITrick trick, IPlayer player, ICard legalCard);
+        MoveStatUniqueKey GenerateKey(int indexOfTrick, int indexOfPlayer, int queueRankOfPicker, int pointsInPreviousTricks,
+            ITrick trick, ICard playedCard, List<ITrick> previousTricks, List<ICard> previousCards,
+            ref bool beforePartnerCardPlayed, ref int? queueRankOfPartner, ref int pointsInTrick);
     }
 
     public class KeyGenerator : IKeyGenerator
@@ -53,6 +56,32 @@ namespace Sheepshead.Models
                 return false;
             var partnerPosition = trick.QueueRankOfPartner;
             return !partnerPosition.HasValue || partnerPosition < trick.Hand.PartnerCardPlayed[1];
+        }
+
+        public MoveStatUniqueKey GenerateKey(int indexOfTrick, int indexOfPlayer, int queueRankOfPicker, int pointsInPreviousTricks, 
+            ITrick trick, ICard playedCard, List<ITrick> previousTricks, List<ICard> previousCards, 
+            ref bool beforePartnerCardPlayed, ref int? queueRankOfPartner, ref int pointsInTrick)
+        {
+            if (trick.Hand.PartnerCard == playedCard) beforePartnerCardPlayed = false;
+            queueRankOfPartner = beforePartnerCardPlayed ? null : queueRankOfPartner ?? trick.QueueRankOfPartner;
+            var key = new MoveStatUniqueKey()
+            {
+                Picker = queueRankOfPicker,
+                Partner = queueRankOfPartner,
+                Trick = indexOfTrick,
+                MoveWithinTrick = indexOfPlayer,
+                PointsAlreadyInTrick = pointsInTrick,
+                TotalPointsInPreviousTricks = pointsInPreviousTricks,
+                PointsInThisCard = playedCard.Points,
+                RankOfThisCard = playedCard.Rank,
+                PartnerCard = trick.Hand.PartnerCard == playedCard,
+                HigherRankingCardsPlayedPreviousTricks =
+                    previousTricks.Sum(t => t.CardsPlayed.Count(c => c.Value.Rank < playedCard.Rank)),
+                HigherRankingCardsPlayedThisTrick =
+                    previousCards.Count(c => c.Rank < playedCard.Rank)
+            };
+            pointsInTrick += playedCard.Points;
+            return key;
         }
     }
 
