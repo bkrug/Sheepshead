@@ -16,8 +16,8 @@ namespace Sheepshead.Models.Players
 
         public int QueueRankInTrick(ITrick trick)
         {
-            var indexOfMe = trick.Hand.Deck.Game.Players.IndexOf(this);
-            var indexOfStartingPlayer = trick.Hand.Deck.Game.Players.IndexOf(trick.StartingPlayer);
+            var indexOfMe = trick.Players.IndexOf(this);
+            var indexOfStartingPlayer = trick.Players.IndexOf(trick.StartingPlayer);
             var rank = indexOfMe - indexOfStartingPlayer;
             if (rank < 0) rank += trick.Hand.Deck.Game.PlayerCount;
             return rank + 1;

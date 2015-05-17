@@ -216,6 +216,18 @@ namespace Sheepshead.Tests
                 .Returns((MoveStatUniqueKey key) => statList[keyList.IndexOf(key)]); 
             actualCard = player.GetMove(trickMock.Object);
             Assert.AreSame(cardList[1], actualCard, "We should see the get the second card in the list back because the first and second move stats have similar hand results, but the trick results are better for the second hand. Actual result: " + (cardList.IndexOf(actualCard) + 1));
+
+            statList[1] = null;
+            actualCard = player.GetMove(trickMock.Object);
+            Assert.AreSame(cardList[0], actualCard, "If the predictor returns null for one of the moves, that shouldn't hurt anything.");
+
+            statList[0] = null;
+            statList[2] = null;
+            trickMock.Setup(m => m.Hand).Returns(new Mock<IHand>().Object);
+            trickMock.Setup(m => m.Players).Returns(new List<IPlayer>() { player, new Mock<IPlayer>().Object });
+            trickMock.Setup(m => m.PlayerCount).Returns(5);
+            actualCard = player.GetMove(trickMock.Object);
+            Assert.IsTrue(actualCard is ICard, "If the predictor returns null for all of the moves, just guess.");
         }
 
         //[TestMethod]

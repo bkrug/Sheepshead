@@ -29,7 +29,7 @@ namespace Sheepshead.Models.Players
             if (trick.StartingPlayer == this)
                 return GetLeadCard(trick, this.Cards);
             var legalCards = Cards.Where(c => trick.IsLegalAddition(c, this));
-            if (QueueRankInTrick(trick) < trick.Hand.Deck.Game.PlayerCount)
+            if (QueueRankInTrick(trick) < trick.PlayerCount)
                 return GetMiddleCard(trick, legalCards);
             return GetFinishingCard(trick, legalCards);
         }

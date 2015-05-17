@@ -28,17 +28,23 @@ namespace Sheepshead.Models.Players
             {
                 var key = _generator.GenerateKey(trick, this, legalCard);
                 var result = _predictor.GetPrediction(key);
-                results.Add(legalCard, result);
+                if (result != null)
+                    results.Add(legalCard, result);
             }
-            var handOrderedResults = results
-                .OrderByDescending(r => r.Value.HandPortionWon);
-            var firstResult = handOrderedResults.First();
-            var closeResults = results
-                .Where(r => Math.Abs((double)(r.Value.HandPortionWon - firstResult.Value.HandPortionWon)) < 0.1);
-            var trickOrderedResults = closeResults
-                .OrderByDescending(r => r.Value.TrickPortionWon);
-            var selectedCard = trickOrderedResults.First().Key;
-            return selectedCard;
+            if (results.Any())
+            {
+                var handOrderedResults = results
+                    .OrderByDescending(r => r.Value.HandPortionWon);
+                var firstResult = handOrderedResults.First();
+                var closeResults = results
+                    .Where(r => Math.Abs((double)(r.Value.HandPortionWon - firstResult.Value.HandPortionWon)) < 0.1);
+                var trickOrderedResults = closeResults
+                    .OrderByDescending(r => r.Value.TrickPortionWon);
+                var selectedCard = trickOrderedResults.First().Key;
+                return selectedCard;
+            }
+            else
+                return base.GetMove(trick);
         }
     }
 }
