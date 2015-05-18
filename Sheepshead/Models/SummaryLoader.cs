@@ -9,6 +9,12 @@ using Sheepshead.Models.Wrappers;
 
 namespace Sheepshead.Models
 {
+    public class SummaryLoaderSingleton
+    {
+        public static string SAVE_LOCATION { get { return @"c:\temp\HandSummaries.txt"; } }
+        private static SummaryLoader _instance = new SummaryLoader(SAVE_LOCATION, 200);
+        public static SummaryLoader Instance { get { return _instance; } }
+    }
 
     public interface ISummaryLoader
     {
@@ -17,21 +23,19 @@ namespace Sheepshead.Models
 
     public class SummaryLoader : ISummaryLoader
     {
-        private static SummaryLoader _instance = new SummaryLoader();
-        public static string SAVE_LOCATION { get { return @"c:\temp\HandSummaries.txt"; } }
-
         private SummaryLoader()
         {
-            ResultPredictor = Load();
         }
-
-        public static SummaryLoader Instance { get { return _instance; } }
+        public SummaryLoader(string filePath, int numOfGames)
+        {
+            ResultPredictor = Load(filePath, numOfGames);
+        }
 
         public CentroidResultPredictor ResultPredictor { get; private set; }
 
-        private CentroidResultPredictor Load()
+        private CentroidResultPredictor Load(string filePath, int numOfGames)
         {
-            var keys = ReadMoves();
+            var keys = ReadMoves(filePath, numOfGames);
             var clusterer = new Clusterer((int)Math.Round(Math.Sqrt(keys.Count())), new RandomWrapper());
             var clusterResult = clusterer.Cluster(keys.Select(d => d.Key).ToList());
             var clusterDictionary = ClusterUtils.GetClusterDictionary(keys, clusterResult);
@@ -39,16 +43,16 @@ namespace Sheepshead.Models
             return resultPredictor;
         }
 
-        private static Dictionary<MoveStatUniqueKey, MoveStat> ReadMoves()
+        private static Dictionary<MoveStatUniqueKey, MoveStat> ReadMoves(string filePath, int numOfGames)
         {
             var moves = new Dictionary<MoveStatUniqueKey, MoveStat>();
-            if (!File.Exists(SAVE_LOCATION))
+            if (!File.Exists(filePath))
                 return moves;
             var generator = new KeyGenerator();
-            using (var reader = File.OpenText(SAVE_LOCATION))
+            using (var reader = File.OpenText(filePath))
             {
                 var i = 0;
-                while (!reader.EndOfStream)
+                while (!reader.EndOfStream && i++ < numOfGames)
                 {
                     var summary = reader.ReadLine();
                     var hand = SummaryReader.FromSummary(summary);
