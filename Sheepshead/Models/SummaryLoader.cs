@@ -9,10 +9,14 @@ using Sheepshead.Models.Wrappers;
 
 namespace Sheepshead.Models
 {
+    public class SaveLocations
+    {
+        public static string FIRST_SAVE { get { return @"c:\temp\HandSummaries.txt"; } }
+    }
+
     public class SummaryLoaderSingleton
     {
-        public static string SAVE_LOCATION { get { return @"c:\temp\HandSummaries.txt"; } }
-        private static SummaryLoader _instance = new SummaryLoader(SAVE_LOCATION, 200);
+        private static SummaryLoader _instance = new SummaryLoader(SaveLocations.FIRST_SAVE, 200);
         public static SummaryLoader Instance { get { return _instance; } }
     }
 
@@ -28,14 +32,18 @@ namespace Sheepshead.Models
         }
         public SummaryLoader(string filePath, int numOfGames)
         {
-            ResultPredictor = Load(filePath, numOfGames);
+            Load(filePath, 0, numOfGames);
+        }
+        public SummaryLoader(string filePath, int skip, int numOfGames)
+        {
+            ResultPredictor = Load(filePath, 0, numOfGames);
         }
 
         public CentroidResultPredictor ResultPredictor { get; private set; }
 
-        private CentroidResultPredictor Load(string filePath, int numOfGames)
+        private CentroidResultPredictor Load(string filePath, int skip, int numOfGames)
         {
-            var keys = ReadMoves(filePath, numOfGames);
+            var keys = ReadMoves(filePath, skip, numOfGames);
             var clusterer = new Clusterer((int)Math.Round(Math.Sqrt(keys.Count())), new RandomWrapper());
             var clusterResult = clusterer.Cluster(keys.Select(d => d.Key).ToList());
             var clusterDictionary = ClusterUtils.GetClusterDictionary(keys, clusterResult);
@@ -43,7 +51,7 @@ namespace Sheepshead.Models
             return resultPredictor;
         }
 
-        private static Dictionary<MoveStatUniqueKey, MoveStat> ReadMoves(string filePath, int numOfGames)
+        private static Dictionary<MoveStatUniqueKey, MoveStat> ReadMoves(string filePath, int skip, int numOfGames)
         {
             var moves = new Dictionary<MoveStatUniqueKey, MoveStat>();
             if (!File.Exists(filePath))
@@ -52,9 +60,11 @@ namespace Sheepshead.Models
             using (var reader = File.OpenText(filePath))
             {
                 var i = 0;
-                while (!reader.EndOfStream && i++ < numOfGames)
+                while (!reader.EndOfStream && i++ < skip + numOfGames)
                 {
                     var summary = reader.ReadLine();
+                    if (i < skip)
+                        continue;
                     var hand = SummaryReader.FromSummary(summary);
                     var indexOfTrick = 0;
                     var handWinner = hand.Scores().Where(s => s.Value > 0).Select(s => s.Key).ToList();

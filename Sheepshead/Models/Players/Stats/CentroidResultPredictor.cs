@@ -24,10 +24,10 @@ namespace Sheepshead.Models.Players.Stats
         public MoveStat GetPrediction(MoveStatUniqueKey key)
         {
             var nearestCentroid = GetNearestCentroid(key);
-            return _centroidAndStats[nearestCentroid];
+            return nearestCentroid.HasValue ? _centroidAndStats[nearestCentroid.Value] : null;
         }
 
-        private MoveStatCentroid GetNearestCentroid(MoveStatUniqueKey key)
+        private MoveStatCentroid? GetNearestCentroid(MoveStatUniqueKey key)
         {
             var minDistance = Double.MaxValue;
             MoveStatCentroid bestMatch = new MoveStatCentroid();
@@ -41,7 +41,7 @@ namespace Sheepshead.Models.Players.Stats
                 }
             }
             if (minDistance == Double.MaxValue)
-                throw new ApplicationException("No centroid found.");
+                return null;
             return bestMatch;
         }
     }

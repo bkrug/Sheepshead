@@ -194,8 +194,7 @@ namespace Sheepshead.Tests
             var numClusters = (int)Math.Sqrt(keyList.Count());
             var clusterer = new Clusterer(numClusters, rnd);
             var results = clusterer.Cluster(keyList);
-            using (
-            var sb = new StreamWriter(@"C:\Temp\temp.csv"))
+            using (var sb = new StreamWriter(@"C:\Temp\temp.csv"))
             {
                 sb.WriteLine("Picker,Partner,Trick,MoveWithinTrick,PointsAlreadyIntrick,TotalPointsInPrevioustricks,PointsInthisCard,RankOfThisCard,ParnetCard,HigherRankingCardPlayedPrevioustricks,HigherRankingCardsPlayedThisTrick,"
                     + "Number of closer Centroids,"

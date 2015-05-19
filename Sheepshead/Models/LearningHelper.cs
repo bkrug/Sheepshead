@@ -62,7 +62,7 @@ namespace Sheepshead.Models
             ITrick trick, ICard playedCard, List<ITrick> previousTricks, List<ICard> previousCards, 
             ref bool beforePartnerCardPlayed, ref int? queueRankOfPartner, ref int pointsInTrick)
         {
-            if (trick.Hand.PartnerCard == playedCard) beforePartnerCardPlayed = false;
+            if (trick.Hand.PartnerCard.Id == playedCard.Id) beforePartnerCardPlayed = false;
             queueRankOfPartner = beforePartnerCardPlayed ? null : queueRankOfPartner ?? trick.QueueRankOfPartner;
             var key = new MoveStatUniqueKey()
             {
@@ -87,12 +87,15 @@ namespace Sheepshead.Models
 
     public class LearningHelper
     {
+        private string _saveLocation;
+
         private LearningHelper()
         {
         }
 
-        public LearningHelper(IHand hand)
+        public LearningHelper(IHand hand, string saveLocation)
         {
+            _saveLocation = saveLocation;
             hand.OnHandEnd += WriteHandSummary;
         }
 
@@ -103,7 +106,7 @@ namespace Sheepshead.Models
             var hand = (IHand)sender;
             lock (lockObject)
             {
-                using (var sw = File.AppendText(SummaryLoader.SAVE_LOCATION))
+                using (var sw = File.AppendText(_saveLocation))
                 {
                     sw.WriteLine(hand.Summary());
                     sw.Flush();

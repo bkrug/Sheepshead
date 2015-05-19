@@ -44,7 +44,7 @@ namespace Sheepshead.Controllers
             for (var i = 0; i < model.BasicCount; ++i)
                 playerList.Add(new BasicPlayer());
             for (var i = 0; i < model.LearningCount; ++i)
-                playerList.Add(new LearningPlayer(new KeyGenerator(), SummaryLoader.Instance.ResultPredictor));
+                playerList.Add(new LearningPlayer(new KeyGenerator(), SummaryLoaderSingleton.Instance.ResultPredictor));
             var newGame = repository.CreateGame(model.Name, playerList, _rnd);
             repository.Save(newGame);
             Session["gameId"] = newGame.Id;
@@ -89,7 +89,7 @@ namespace Sheepshead.Controllers
             if (picker != null)
             {
                 var hand = ProcessPick(deck, (IComputerPlayer)picker);
-                new LearningHelper(hand);
+                new LearningHelper(hand, SaveLocations.FIRST_SAVE);
             }
         }
 
@@ -144,7 +144,7 @@ namespace Sheepshead.Controllers
                 var picker = game.PlayNonHumans(game.Decks.Last());
                 hand = ProcessPick(deck, (IComputerPlayer)picker);
             }
-            new LearningHelper(hand);
+            new LearningHelper(hand, SaveLocations.FIRST_SAVE);
         }
 
         private void Bury(IGame game, string buriedCardsIndicies)

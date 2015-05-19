@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.IO;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
@@ -233,12 +234,78 @@ namespace Sheepshead.Tests
         //[TestMethod]
         public void LearningHelper_PlayGame()
         {
-            var repository = new GameRepository(GameDictionary.Instance.Dictionary);
             var playerList = new List<IPlayer>();
-            var rnd = new RandomWrapper();
             for (var i = 0; i < 5; ++i)
                 playerList.Add(new BasicPlayer());
-            for (var g = 0; g < 500; ++g)
+            PlayGame(playerList, 500, SaveLocations.FIRST_SAVE);
+        }
+
+        [TestMethod]
+        public void LearningHelper_Read()
+        {
+            var loadSize = 1000;
+            var loader = new SummaryLoader(SaveLocations.FIRST_SAVE, 0, loadSize);
+            _predictor1 = loader.ResultPredictor;
+            var loader1 = new SummaryLoader(SaveLocations.FIRST_SAVE, loadSize, loadSize);
+            _predictor2 = loader1.ResultPredictor;
+            var playerList = new List<IPlayer>();
+            using (_sw = new StreamWriter(@"C:\Temp\learningResults.csv"))
+            {
+                _sw.WriteLine("Trick % 1,Trick % 2,Diff,Hand % 1,Hand % 2,Diff,Picker,Partner,Trick,MoveWithinTrick,PointsAlreadyIntrick,TotalPointsInPrevioustricks,PointsInthisCard,RankOfThisCard,ParnetCard,HigherRankingCardPlayedPrevioustricks,HigherRankingCardsPlayedThisTrick");
+                for (var i = 0; i < 5; ++i)
+                {
+                    var lPlayer = new LearningPlayer(new KeyGenerator(), _predictor1);
+                    playerList.Add(lPlayer);
+                    lPlayer.OnMove += lPlayer_OnMove;
+                }
+                var handNumber = 50;
+                PlayGame(playerList, handNumber, @"c:\temp\LearningPlayerStage1.txt");
+                _sw.WriteLine(",," + (_trickDiffSum / handNumber / 30) + ",,," + (_handDiffSum / handNumber / 30));
+            }
+        }
+
+        private StreamWriter _sw;
+        private CentroidResultPredictor _predictor1;
+        private CentroidResultPredictor _predictor2;
+        private decimal _trickDiffSum = 0;
+        private decimal _handDiffSum = 0;
+        void lPlayer_OnMove(object sender, LearningPlayer.OnMoveEventArgs e)
+        {
+            IPlayer player = (IPlayer)sender;
+            var generator = new KeyGenerator();
+            var key = generator.GenerateKey(e.Trick, player, e.Card);
+            var moveStat1 = _predictor1.GetPrediction(key);
+            var moveStat2 = _predictor2.GetPrediction(key);
+            var trickDiff = moveStat1 == null || moveStat2 == null ? -1 : Math.Abs((decimal)moveStat1.TrickPortionWon - (decimal)moveStat2.TrickPortionWon);
+            var handDiff = moveStat1 == null || moveStat2 == null ? -1 : Math.Abs((decimal)moveStat1.HandPortionWon - (decimal)moveStat2.HandPortionWon);
+            _sw.WriteLine(
+                (moveStat1 == null ? "" : moveStat1.TrickPortionWon.ToString()) + "," +
+                (moveStat2 == null ? "" : moveStat2.TrickPortionWon.ToString()) + "," +
+                trickDiff + "," +
+                (moveStat1 == null ? "" : moveStat1.HandPortionWon.ToString()) + "," +
+                (moveStat2 == null ? "" : moveStat2.HandPortionWon.ToString()) + "," +
+                handDiff + "," +
+                key.Picker + "," +
+                (key.Partner == null ? " " : key.Partner.Value.ToString()) + "," +
+                key.Trick + "," +
+                key.MoveWithinTrick + "," +
+                key.PointsAlreadyInTrick + "," +
+                key.TotalPointsInPreviousTricks + "," +
+                key.PointsInThisCard + "," +
+                key.RankOfThisCard + "," +
+                key.PartnerCard + "," +
+                key.HigherRankingCardsPlayedPreviousTricks + "," +
+                key.HigherRankingCardsPlayedThisTrick
+            );
+            _trickDiffSum += trickDiff;
+            _handDiffSum += handDiff;
+        }
+
+        private static void PlayGame(List<IPlayer> playerList, int handNumber, string saveLocation)
+        {
+            var repository = new GameRepository(GameDictionary.Instance.Dictionary);
+            var rnd = new RandomWrapper();
+            for (var g = 0; g < handNumber; ++g)
             {
                 var game = repository.CreateGame("Poker", playerList, rnd);
                 game.RearrangePlayers();
@@ -246,20 +313,13 @@ namespace Sheepshead.Tests
                 var picker = game.PlayNonHumans(deck) as ComputerPlayer;
                 var buriedCards = picker != null ? picker.DropCardsForPick(deck) : new List<ICard>();
                 var hand = new Hand(deck, picker, buriedCards);
-                new LearningHelper(hand);
+                new LearningHelper(hand, saveLocation);
                 while (!hand.IsComplete())
                 {
                     var trick = new Trick(hand);
                     game.PlayNonHumans(trick);
                 }
             }
-        }
-
-        //[TestMethod]
-        public void LearningHelper_Read()
-        {
-            var instance = SummaryLoader.Instance;
-            var predictor = instance.ResultPredictor;
         }
     }
 }
