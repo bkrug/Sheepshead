@@ -74,7 +74,7 @@ namespace Sheepshead.Models
                 TotalPointsInPreviousTricks = pointsInPreviousTricks,
                 PointsInThisCard = playedCard.Points,
                 RankOfThisCard = playedCard.Rank,
-                PartnerCard = trick.Hand.PartnerCard == playedCard,
+                PartnerCard = trick.Hand.PartnerCard.Id == playedCard.Id,
                 HigherRankingCardsPlayedPreviousTricks =
                     previousTricks.Sum(t => t.CardsPlayed.Count(c => c.Value.Rank < playedCard.Rank)),
                 HigherRankingCardsPlayedThisTrick =

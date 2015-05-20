@@ -251,7 +251,7 @@ namespace Sheepshead.Tests
             var playerList = new List<IPlayer>();
             using (_sw = new StreamWriter(@"C:\Temp\learningResults.csv"))
             {
-                _sw.WriteLine("Trick % 1,Trick % 2,Diff,Hand % 1,Hand % 2,Diff,Picker,Partner,Trick,MoveWithinTrick,PointsAlreadyIntrick,TotalPointsInPrevioustricks,PointsInthisCard,RankOfThisCard,ParnetCard,HigherRankingCardPlayedPrevioustricks,HigherRankingCardsPlayedThisTrick");
+                _sw.WriteLine("Trick % 1,Trick % 2,Diff,Hand % 1,Hand % 2,Diff,Picker,Partner,Trick,Move Within Trick,Points Already In trick,Total Points In Previous tricks,Points In this Card,Rank Of This Card,Parnet Card,Higher Ranking Card Played Previous tricks,Higher Ranking Cards Played This Trick");
                 for (var i = 0; i < 5; ++i)
                 {
                     var lPlayer = new LearningPlayer(new KeyGenerator(), _predictor1);

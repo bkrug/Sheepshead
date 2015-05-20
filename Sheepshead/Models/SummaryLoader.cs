@@ -44,7 +44,8 @@ namespace Sheepshead.Models
         private CentroidResultPredictor Load(string filePath, int skip, int numOfGames)
         {
             var keys = ReadMoves(filePath, skip, numOfGames);
-            var clusterer = new Clusterer((int)Math.Round(Math.Sqrt(keys.Count())), new RandomWrapper());
+            var numOfClusters = (int)Math.Round(Math.Sqrt(keys.Count())) * 2;
+            var clusterer = new Clusterer(numOfClusters, new RandomWrapper());
             var clusterResult = clusterer.Cluster(keys.Select(d => d.Key).ToList());
             var clusterDictionary = ClusterUtils.GetClusterDictionary(keys, clusterResult);
             var resultPredictor = new CentroidResultPredictor(clusterDictionary);
