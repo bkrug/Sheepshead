@@ -17,20 +17,23 @@ namespace Sheepshead.Tests
         [TestMethod]
         public void GetClusterDictionary()
         {
-            var clusterResult = GetClusterResult();
+            var roomNo = 32;
+            var clusterResult = new Dictionary<int, ClusterResult>() {
+                { roomNo, GetClusterResult() }
+            };
             var expectedDict = new Dictionary<MoveStatCentroid, MoveStat>() {
                 { centroid1, new MoveStat() { TricksTried = 4, TricksWon = 4, HandsTried = 4, HandsWon = 0 } },
                 { centroid2, new MoveStat() { TricksTried = 3, TricksWon = 0, HandsTried = 3, HandsWon = 3 } },
                 { centroid3, new MoveStat() { TricksTried = 3, TricksWon = 2, HandsTried = 3, HandsWon = 2 } },
             };
-            var statList = GetStatList(clusterResult, 4);
+            var statList = GetStatList(clusterResult[roomNo], 4);
             var actualDict = ClusterUtils.GetClusterDictionary(statList, clusterResult);
-            Assert.AreEqual(expectedDict.Count, actualDict.Count, "Dictionaries must be the same size.");
+            Assert.AreEqual(expectedDict.Count, actualDict[roomNo].Count, "Dictionaries must be the same size.");
             var i = 0;
             foreach (var key in expectedDict.Keys)
             {
-                Assert.AreEqual(expectedDict[key].TrickPortionWon, actualDict[key].TrickPortionWon, "Trick portion won must match during iteration " + i + ".");
-                Assert.AreEqual(expectedDict[key].HandPortionWon, actualDict[key].HandPortionWon, "Hand portion won must match during iteration " + i + ".");
+                Assert.AreEqual(expectedDict[key].TrickPortionWon, actualDict[roomNo][key].TrickPortionWon, "Trick portion won must match during iteration " + i + ".");
+                Assert.AreEqual(expectedDict[key].HandPortionWon, actualDict[roomNo][key].HandPortionWon, "Hand portion won must match during iteration " + i + ".");
                 ++i;
             }
         }
@@ -77,12 +80,16 @@ namespace Sheepshead.Tests
         [TestMethod]
         public void CentroidResultPrediction()
         {
+            var roomNo = 32;
             var dict = new Dictionary<MoveStatCentroid, MoveStat>() {
                 { centroid1, stat1 },
                 { centroid2, stat2 },
-                { centroid3, stat3 },
+                { centroid3, stat3 }
             };
-            var predictor = new CentroidResultPredictor  (dict);
+            var movesInRoom = new Dictionary<int, Dictionary<MoveStatCentroid, MoveStat>>() {
+                { roomNo, dict }
+            };
+            var predictor = new CentroidResultPredictor(movesInRoom);
 
             Assert.AreSame(stat1, predictor.GetPrediction(GetNearbyKey(centroid1, 2.6)));
             Assert.AreSame(stat2, predictor.GetPrediction(GetNearbyKey(centroid2, -0.8)));
@@ -190,62 +197,76 @@ namespace Sheepshead.Tests
         {
             var rnd = new RandomWrapper();
             var keyList = new List<MoveStatUniqueKey>();
-            for (var i = 0; i < 100; ++i)
+            for (var i = 0; i < 1000; ++i)
                 keyList.Add(GenerateKey(rnd));
             var numClusters = (int)Math.Sqrt(keyList.Count());
             var clusterer = new Clusterer(numClusters, rnd);
             var results = clusterer.Cluster(keyList);
-            using (var sb = new StreamWriter(@"C:\Temp\temp.csv"))
+            using (var sb = new StreamWriter(@"C:\Temp\ClusterTest.csv"))
             {
-                sb.WriteLine("Picker,Partner,Trick,MoveWithinTrick,PointsAlreadyIntrick,TotalPointsInPrevioustricks,PointsInthisCard,RankOfThisCard,ParnetCard,HigherRankingCardPlayedPrevioustricks,HigherRankingCardsPlayedThisTrick,"
-                    + "Number of closer Centroids,"
-                    + "Distance to Centroid 1,Distance to Centroid 2,Distance to Centroid 3,Distance to Centroid 4,Distance to Centroid 5,Distance to Centroid 6,Distance to Centroid 7,Distance to Centroid 8,Distance to Centroid 9,Distance to Centroid 10");
-                foreach (var centroid in results.Centroids)
+                sb.WriteLine("Offense,Picker,Partner,Points,Highest Rank,Winning,This Card," +
+                    "More Powerful,Remaining,More Powerful,Points,Cards Held," +
+                    "Move,Trick,Closer," +
+                    "Distance to,Distance to,Distance to,Distance to,Distance to,"+
+                    "Distance to,Distance to,Distance to,Distance to,Distance to");
+                sb.WriteLine("Side,Done,Done,In Trick,In Trick,Side,More Powerful," +
+                    "Unknown Cards,Unknown Points,Held,Held,With Points," +
+                    "Index,Index,Centroids," +
+                    "Centroid 1,Centroid 2,Centroid 3,Centroid 4,Centroid 5," +
+                    "Centroid 6,Centroid 7,Centroid 8,Centroid 9,Centroid 10"); 
+                foreach (var roomAndResult in results)
                 {
-                    sb.WriteLine(
-                        centroid.PointsInTrick + "," +
-                        centroid.HighestRankInTrick + "," +
-                        centroid.MorePowerfulUnknownCards + "," +
-                        centroid.RemainingUnknownPoints + "," +
-                        centroid.MorePowerfulHeld + "," +
-                        centroid.PointsHeld + "," +
-                        centroid.CardsHeldWithPoints + "," +
-                        centroid.MoveIndex + "," +
-                        centroid.TrickIndex 
-                        );
-                    sb.WriteLine("-----,-----,-----,-----,-----,-----");
-                    foreach (var key in results.GetDataInCluster(centroid))
+                    var roomNo = roomAndResult.Key;
+                    var result = roomAndResult.Value;
+                    sb.WriteLine("Room: " + roomNo);
+                    foreach (var centroid in result.Centroids)
                     {
-                        var comparison = "";
-                        var closerCentroids = 0;
-                        var mainDistance = ClusterUtils.Distance(key, centroid);
-                        foreach (var centroid2 in results.Centroids)
-                        {
-                            var distance = ClusterUtils.Distance(key, centroid2);
-                            comparison += "," + distance;
-                            if (distance < mainDistance)
-                                ++closerCentroids;
-                        }
                         sb.WriteLine(
-                            key.OffenseSide + "," +
-                            key.PickerDone + "," +
-                            (key.PartnerDone == null ? " " : key.PartnerDone.Value.ToString()) + "," +
-                            key.PointsInTrick + "," +
-                            key.HighestRankInTrick + "," +
-                            key.WinningSide + "," +
-                            key.ThisCardMorePowerful + "," +
-                            key.MorePowerfulUnknownCards + "," +
-                            key.RemainingUnknownPoints + "," +
-                            key.MorePowerfulHeld + "," +
-                            key.PointsHeld + "," +
-                            key.CardsHeldWithPoints + "," + 
-                            key.MoveIndex + "," +
-                            key.TrickIndex + "," +
-                            closerCentroids +
-                            comparison
-                        );
+                            ",,," +
+                            "*" + centroid.PointsInTrick.ToString("F3") + "*," +
+                            "*" + centroid.HighestRankInTrick.ToString("F3") + "*," +
+                            ",," +
+                            "*" + centroid.MorePowerfulUnknownCards.ToString("F3") + "*," +
+                            "*" + centroid.RemainingUnknownPoints.ToString("F3") + "*," +
+                            "*" + centroid.MorePowerfulHeld.ToString("F3") + "*," +
+                            "*" + centroid.PointsHeld.ToString("F3") + "*," +
+                            "*" + centroid.CardsHeldWithPoints.ToString("F3") + "*," +
+                            "*" + centroid.MoveIndex.ToString("F3") + "*," +
+                            "*" + centroid.TrickIndex.ToString("F3") + "*"
+                            );
+                        foreach (var key in result.GetDataInCluster(centroid))
+                        {
+                            var comparison = "";
+                            var closerCentroids = 0;
+                            var mainDistance = ClusterUtils.Distance(key, centroid);
+                            foreach (var searchCentroid in result.Centroids)
+                            {
+                                var distance = ClusterUtils.Distance(key, searchCentroid);
+                                comparison += "," + distance;
+                                if (distance < mainDistance)
+                                    ++closerCentroids;
+                            }
+                            sb.WriteLine(
+                                key.OffenseSide + "," +
+                                key.PickerDone + "," +
+                                (key.PartnerDone == null ? " " : key.PartnerDone.Value.ToString()) + "," +
+                                key.PointsInTrick + "," +
+                                key.HighestRankInTrick + "," +
+                                key.WinningSide + "," +
+                                key.ThisCardMorePowerful + "," +
+                                key.MorePowerfulUnknownCards + "," +
+                                key.RemainingUnknownPoints + "," +
+                                key.MorePowerfulHeld + "," +
+                                key.PointsHeld + "," +
+                                key.CardsHeldWithPoints + "," +
+                                key.MoveIndex + "," +
+                                key.TrickIndex + "," +
+                                closerCentroids +
+                                comparison
+                            );
+                        }
+                        sb.WriteLine();
                     }
-                    sb.WriteLine();
                 }
             }
         }
@@ -256,13 +277,13 @@ namespace Sheepshead.Tests
             var totalpointsinprevioustricks = rnd.Next(120);
             return new MoveStatUniqueKey()
             {
-                OffenseSide = rnd.Next(1) == 1,
-                PickerDone = rnd.Next(1) == 1,
+                OffenseSide = rnd.Next(2) == 1,
+                PickerDone = rnd.Next(2) == 1,
                 PartnerDone = GetPartnerDone(rnd.Next(2)),
                 PointsInTrick = rnd.Next(54),
                 HighestRankInTrick = rnd.Next(32),
-                WinningSide = rnd.Next(1) == 1,
-                ThisCardMorePowerful = rnd.Next(1) == 1,
+                WinningSide = rnd.Next(2) == 1,
+                ThisCardMorePowerful = rnd.Next(2) == 1,
                 MorePowerfulUnknownCards = rnd.Next(31),
                 RemainingUnknownPoints = rnd.Next(120),
                 MorePowerfulHeld = rnd.Next(5),

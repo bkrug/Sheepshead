@@ -25,7 +25,7 @@ namespace Sheepshead.Tests.NonUnitTests
             PlayGame(playerList, 500, SaveLocations.FIRST_SAVE);
         }
 
-        [TestMethod]
+        //[TestMethod]
         public void LearningHelper_GenerateKeys()
         {
             var predictorMock = new Mock<ICentroidResultPredictor>();
@@ -61,12 +61,12 @@ namespace Sheepshead.Tests.NonUnitTests
                         );
                     };
                 }
-                _sw.WriteLine("Card,Rank,Points,Offense Side,Picker Done,Partner Done,Points In Trick,Highest Rank In Trick,Winning Side,This Card More Power,MorePowerful Unknown,Remaining Unknown,More Powerful Held,Points Held,Cards Held With Points,Move Index,Trick Index");
+                _sw.WriteLine("Card,Rank,Points,Offense Side,Picker Done,Partner Done,Points In Trick,Highest Rank In Trick,Winning Side,This Card More Power,More Powerful Unknown Cards,Remaining Unknown Points,More Powerful Held,Points Held,Cards Held With Points,Move Index,Trick Index");
                 PlayGame(playerList, 1, @"c:\temp\LearningPlayerStage1.txt");
             }
         }
 
-        //[TestMethod]
+        [TestMethod]
         public void LearningHelper_Read()
         {
             var loadSize = 1000;
@@ -77,14 +77,14 @@ namespace Sheepshead.Tests.NonUnitTests
             var playerList = new List<IPlayer>();
             using (_sw = new StreamWriter(@"C:\Temp\learningResults.csv"))
             {
-                _sw.WriteLine("Trick % 1,Trick % 2,Diff,Hand % 1,Hand % 2,Diff,Picker,Partner,Trick,Move Within Trick,Points Already In trick,Total Points In Previous tricks,Points In this Card,Rank Of This Card,Parnet Card,Higher Ranking Card Played Previous tricks,Higher Ranking Cards Played This Trick");
+                _sw.WriteLine("Trick % 1,Trick % 2,Diff,Hand % 1,Hand % 2,Diff,Offense Side,Picker Done,Partner Done,Points In Trick,Highest Rank In Trick,Winning Side,This Card More Power,More Powerful Unknown Cards,Remaining Unknown Points,More Powerful Held,Points Held,Cards Held With Points,Move Index,Trick Index");
                 for (var i = 0; i < 5; ++i)
                 {
                     var lPlayer = new LearningPlayer(new KeyGenerator(), _predictor1);
                     playerList.Add(lPlayer);
                     lPlayer.OnMove += lPlayer_OnMove;
                 }
-                var handNumber = 50;
+                var handNumber = 1000;
                 PlayGame(playerList, handNumber, @"c:\temp\LearningPlayerStage1.txt");
                 _sw.WriteLine(",," + (_trickDiffSum / handNumber / 30) + ",,," + (_handDiffSum / handNumber / 30));
             }

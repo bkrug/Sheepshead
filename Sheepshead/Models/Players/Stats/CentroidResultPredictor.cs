@@ -12,26 +12,29 @@ namespace Sheepshead.Models.Players.Stats
 
     public class CentroidResultPredictor : ICentroidResultPredictor
     {
-        private Dictionary<MoveStatCentroid, MoveStat> _centroidAndStats;
+        private Dictionary<int, Dictionary<MoveStatCentroid, MoveStat>> _centroidAndStats;
 
         private CentroidResultPredictor() { }
 
-        public CentroidResultPredictor(Dictionary<MoveStatCentroid, MoveStat> centroidAndStats)
+        public CentroidResultPredictor(Dictionary<int, Dictionary<MoveStatCentroid, MoveStat>> centroidAndStats)
         {
             _centroidAndStats = centroidAndStats;
         }
 
         public MoveStat GetPrediction(MoveStatUniqueKey key)
         {
+            var roomNo = key.CentroidRoom;
             var nearestCentroid = GetNearestCentroid(key);
-            return nearestCentroid.HasValue ? _centroidAndStats[nearestCentroid.Value] : null;
+            return nearestCentroid.HasValue ? _centroidAndStats[roomNo][nearestCentroid.Value] : null;
         }
 
         private MoveStatCentroid? GetNearestCentroid(MoveStatUniqueKey key)
         {
             var minDistance = Double.MaxValue;
             MoveStatCentroid bestMatch = new MoveStatCentroid();
-            foreach (var centroid in _centroidAndStats.Keys)
+            if (!_centroidAndStats.ContainsKey(key.CentroidRoom))
+                return null;
+            foreach (var centroid in _centroidAndStats[key.CentroidRoom].Keys)
             {
                 var curDistance = ClusterUtils.Distance(key, centroid);
                 if (curDistance < minDistance)

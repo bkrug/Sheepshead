@@ -37,22 +37,29 @@ namespace Sheepshead.Models.Players.Stats
             return Math.Sqrt(sumSquareDiffs);
         }
 
-        public static Dictionary<MoveStatCentroid, MoveStat> GetClusterDictionary(Dictionary<MoveStatUniqueKey, MoveStat> moveResults, ClusterResult clusterResult)
+        public static Dictionary<int, Dictionary<MoveStatCentroid, MoveStat>> GetClusterDictionary(Dictionary<MoveStatUniqueKey, MoveStat> moveResults, Dictionary<int, ClusterResult> clusterResultRooms)
         {
-            var dict = new Dictionary<MoveStatCentroid, MoveStat>();
-            for (var i = 0; i < clusterResult.Data.Count(); ++i)
+            var dictByRoom = new Dictionary<int, Dictionary<MoveStatCentroid, MoveStat>>();
+            for (var j = 0; j < clusterResultRooms.Count(); ++j)
             {
-                var centroid = clusterResult.GetCentroid(i);
-                if (!dict.ContainsKey(centroid))
-                    dict.Add(centroid, new MoveStat());
-                var key = clusterResult.Data[i];
-                var existingStat = moveResults[key];
-                dict[centroid].TricksTried += existingStat.TricksTried;
-                dict[centroid].TricksWon += existingStat.TricksWon;
-                dict[centroid].HandsTried += existingStat.HandsTried;
-                dict[centroid].HandsWon += existingStat.HandsWon;
+                var clusterResult = clusterResultRooms.ElementAt(j).Value;
+                var roomNo = clusterResultRooms.ElementAt(j).Key;
+                var statDict = new Dictionary<MoveStatCentroid, MoveStat>();
+                for (var i = 0; i < clusterResult.Data.Count(); ++i)
+                {
+                    var centroid = clusterResult.GetCentroid(i);
+                    if (!statDict.ContainsKey(centroid))
+                        statDict.Add(centroid, new MoveStat());
+                    var key = clusterResult.Data[i];
+                    var existingStat = moveResults[key];
+                    statDict[centroid].TricksTried += existingStat.TricksTried;
+                    statDict[centroid].TricksWon += existingStat.TricksWon;
+                    statDict[centroid].HandsTried += existingStat.HandsTried;
+                    statDict[centroid].HandsWon += existingStat.HandsWon;
+                }
+                dictByRoom.Add(roomNo, statDict);
             }
-            return dict;
+            return dictByRoom;
         }
     }
 }

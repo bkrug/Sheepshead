@@ -46,9 +46,9 @@ namespace Sheepshead.Models
             var keys = ReadMoves(filePath, skip, numOfGames);
             var numOfClusters = (int)Math.Round(Math.Sqrt(keys.Count())) * 2;
             var clusterer = new Clusterer(numOfClusters, new RandomWrapper());
-            var clusterResult = clusterer.Cluster(keys.Select(d => d.Key).ToList());
-            var clusterDictionary = ClusterUtils.GetClusterDictionary(keys, clusterResult);
-            var resultPredictor = new CentroidResultPredictor(clusterDictionary);
+            var resultsInRooms = clusterer.Cluster(keys.Select(d => d.Key).ToList());
+            var centroidsInRooms = ClusterUtils.GetClusterDictionary(keys, resultsInRooms);
+            var resultPredictor = new CentroidResultPredictor(centroidsInRooms);
             return resultPredictor;
         }
 
