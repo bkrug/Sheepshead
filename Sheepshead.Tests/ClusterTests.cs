@@ -192,7 +192,7 @@ namespace Sheepshead.Tests
         };
 
         //This is not a unit test, but will generate a CSV file displaying the clustering results.
-        //[TestMethod]
+        [TestMethod]
         public void DoClustering()
         {
             var rnd = new RandomWrapper();

@@ -47,12 +47,15 @@ namespace Sheepshead.Models.Players.Stats
                 UpdateCentroids(weighedData);
                 changed = UpdateClustering(weighedData);
             }
+            _centroids = UnWeighCentroids(_centroids).ToArray();
+            var unWeighedData = UnWeighCentroids(weighedData.ToArray());
+            UpdateClustering(unWeighedData);
 
             var clusterResult = new ClusterResult()
             {
                 Data = data,
                 ClusterIndicies = new int[_clustering.Length],
-                Centroids = UnWeighCentroids(_centroids)
+                Centroids = _centroids.ToList()
             };
             Array.Copy(_clustering, clusterResult.ClusterIndicies, _clustering.Length);
             return clusterResult;
@@ -117,7 +120,8 @@ namespace Sheepshead.Models.Players.Stats
             }
         }
 
-        //TODO: Either all input data elements should have a null value for Partner or none should
+        //This accepts list of centroid instead of MoveStateKeys because it must accept weighed data.
+        //That is, the data must be double's and not int's.
         private void UpdateCentroids(List<MoveStatCentroid> data)
         {
             int[] clusterCounts = new int[_numClusters];
@@ -159,6 +163,8 @@ namespace Sheepshead.Models.Players.Stats
             }
         }
 
+        //This accepts list of centroid instead of MoveStateKeys because it must accept weighed data.
+        //That is, the data must be double's and not int's.
         private bool UpdateClustering(List<MoveStatCentroid> data)
         {
             bool changed = false;
