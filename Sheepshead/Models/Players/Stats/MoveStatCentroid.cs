@@ -7,17 +7,14 @@ namespace Sheepshead.Models.Players.Stats
 {
     public struct MoveStatCentroid
     {
-        public double Picker;
-        public double? Partner;
-        public double Trick;
-        public double MoveWithinTrick;
-        public double PointsAlreadyInTrick;
-        public double TotalPointsInPreviousTricks;
-
-        public double PointsInThisCard;
-        public double RankOfThisCard;
-        public double PartnerCard;
-        public double HigherRankingCardsPlayedPreviousTricks;
-        public double HigherRankingCardsPlayedThisTrick;
+        public double PointsInTrick;
+        public double HighestRankInTrick;
+        public double MorePowerfulUnknownCards; //Includes cards in other players' hands, or in the blind unless this is the picker.
+        public double RemainingUnknownPoints; //Total points, not total cards
+        public double MorePowerfulHeld;
+        public double PointsHeld; //Total points, not total cards
+        public double CardsHeldWithPoints;
+        public double MoveIndex;
+        public double TrickIndex;
     }
 }

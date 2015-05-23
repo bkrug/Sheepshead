@@ -96,18 +96,20 @@ namespace Sheepshead.Tests
         {
             return new MoveStatUniqueKey()
             {
-                Picker = Round(centroid.Picker + offset * .95),
-                Partner = null,
-                Trick = Round(centroid.Trick + offset * -0.5),
-                MoveWithinTrick = Round(centroid.MoveWithinTrick + offset * -1.5),
-                PointsAlreadyInTrick = Round(centroid.PointsAlreadyInTrick + offset * 1.2),
-                TotalPointsInPreviousTricks = Round(centroid.TotalPointsInPreviousTricks + offset * 2.7),
-
-                PointsInThisCard = Round(centroid.PointsInThisCard + offset * -1.1),
-                RankOfThisCard = Round(centroid.RankOfThisCard + offset * -0.8),
-                PartnerCard = Round(centroid.PartnerCard + offset * 0.04) == 1,
-                HigherRankingCardsPlayedPreviousTricks = Round(centroid.HigherRankingCardsPlayedPreviousTricks + offset * -2.1),
-                HigherRankingCardsPlayedThisTrick = Round(centroid.HigherRankingCardsPlayedThisTrick + offset * 1.5)
+                OffenseSide = false,
+                PickerDone = false,
+                PartnerDone = null,
+                PointsInTrick = Round(centroid.PointsInTrick + offset * .95),
+                HighestRankInTrick = Round(centroid.HighestRankInTrick + offset * .32),
+                WinningSide = false,
+                ThisCardMorePowerful = false,
+                MorePowerfulUnknownCards = Round(centroid.MorePowerfulUnknownCards + offset * -0.5),
+                RemainingUnknownPoints = Round(centroid.RemainingUnknownPoints + offset * -1.5),
+                MorePowerfulHeld = Round(centroid.MorePowerfulHeld + offset * 1.2),
+                PointsHeld = Round(centroid.PointsHeld + offset * 2.7),
+                CardsHeldWithPoints = Round(centroid.CardsHeldWithPoints + offset * -1.1),
+                MoveIndex = Round(centroid.MoveIndex + offset * -0.8),
+                TrickIndex = Round(centroid.TrickIndex + offset * 0.04)
             };
         }
 
@@ -118,48 +120,47 @@ namespace Sheepshead.Tests
 
         private MoveStatCentroid centroid1 = new MoveStatCentroid()
         {
-            Picker = 3.2,
-            Partner = null,
-            Trick = 4.3,
-            MoveWithinTrick = 0.4,
-            PointsAlreadyInTrick = 1.4,
-            TotalPointsInPreviousTricks = 181.9,
-
-            PointsInThisCard = 12.3,
-            RankOfThisCard = 4.1,
-            PartnerCard = 0.2,
-            HigherRankingCardsPlayedPreviousTricks = 25.1,
-            HigherRankingCardsPlayedThisTrick = 0.3
+            TrickIndex = 4.3,
+            MoveIndex = 0.4,
+            PointsInTrick = 1.4,
+            HighestRankInTrick = 5.2,
+            MorePowerfulUnknownCards = 25.1,
+            RemainingUnknownPoints = 181.9,
+            MorePowerfulHeld = 2.1,
+            PointsHeld = 32.4,
+            CardsHeldWithPoints = 1.4
+            //PointsInThisCard = 12.3,
+            //RankOfThisCard = 4.1,
+            
         };
         private MoveStatCentroid centroid2 = new MoveStatCentroid()
         {
-            Picker = 1.2,
-            Partner = null,
-            Trick = 2.1,
-            MoveWithinTrick = 4.8,
-            PointsAlreadyInTrick = 11.2,
-            TotalPointsInPreviousTricks = 34.6,
-
-            PointsInThisCard = 4.1,
-            RankOfThisCard = 7.8,
-            PartnerCard = 0.6,
-            HigherRankingCardsPlayedPreviousTricks = 3.1,
-            HigherRankingCardsPlayedThisTrick = 2.1
+            TrickIndex = 2.1,
+            MoveIndex = 4.8,
+            PointsInTrick = 11.2,
+            HighestRankInTrick = 24.1,
+            MorePowerfulUnknownCards = 3.1,
+            RemainingUnknownPoints = 34.6,
+            MorePowerfulHeld = 4.1,
+            PointsHeld = 4.3,
+            CardsHeldWithPoints = 1.2
+            //PointsInThisCard = 4.1,
+            //RankOfThisCard = 7.8,
         };
         private MoveStatCentroid centroid3 = new MoveStatCentroid()
         {
-            Picker = 1.9,
-            Partner = null,
-            Trick = 0.4,
-            MoveWithinTrick = 3.8,
-            PointsAlreadyInTrick = 12.1,
-            TotalPointsInPreviousTricks = 0.4,
-
-            PointsInThisCard = 4.4,
-            RankOfThisCard = 9.1,
-            PartnerCard = 0.44,
-            HigherRankingCardsPlayedPreviousTricks = 0.2,
-            HigherRankingCardsPlayedThisTrick = 2.1
+            TrickIndex = 0.4,
+            MoveIndex = 3.8,
+            PointsInTrick = 12.1,
+            HighestRankInTrick = 12.3,
+            MorePowerfulUnknownCards = 0.2,
+            RemainingUnknownPoints = 0.4,
+            MorePowerfulHeld = 0.3,
+            PointsHeld = 21.7,
+            CardsHeldWithPoints = 4.8
+            //PointsInThisCard = 4.4,
+            //RankOfThisCard = 9.1,
+            
         };
         private MoveStat stat1 = new MoveStat()
         {
@@ -202,17 +203,15 @@ namespace Sheepshead.Tests
                 foreach (var centroid in results.Centroids)
                 {
                     sb.WriteLine(
-                        centroid.Picker + "," +
-                        (centroid.Partner == null ? " " : centroid.Partner.Value.ToString()) + "," +
-                        centroid.Trick + "," +
-                        centroid.MoveWithinTrick + "," +
-                        centroid.PointsAlreadyInTrick + "," +
-                        centroid.TotalPointsInPreviousTricks + "," +
-                        centroid.PointsInThisCard + "," +
-                        centroid.RankOfThisCard + "," +
-                        centroid.PartnerCard + "," +
-                        centroid.HigherRankingCardsPlayedPreviousTricks + "," +
-                        centroid.HigherRankingCardsPlayedThisTrick 
+                        centroid.PointsInTrick + "," +
+                        centroid.HighestRankInTrick + "," +
+                        centroid.MorePowerfulUnknownCards + "," +
+                        centroid.RemainingUnknownPoints + "," +
+                        centroid.MorePowerfulHeld + "," +
+                        centroid.PointsHeld + "," +
+                        centroid.CardsHeldWithPoints + "," +
+                        centroid.MoveIndex + "," +
+                        centroid.TrickIndex 
                         );
                     sb.WriteLine("-----,-----,-----,-----,-----,-----");
                     foreach (var key in results.GetDataInCluster(centroid))
@@ -228,17 +227,20 @@ namespace Sheepshead.Tests
                                 ++closerCentroids;
                         }
                         sb.WriteLine(
-                            key.Picker + "," +
-                            (key.Partner == null ? " " : key.Partner.Value.ToString()) + "," +
-                            key.Trick + "," +
-                            key.MoveWithinTrick + "," +
-                            key.PointsAlreadyInTrick + "," +
-                            key.TotalPointsInPreviousTricks + "," +
-                            key.PointsInThisCard + "," +
-                            key.RankOfThisCard + "," +
-                            key.PartnerCard + "," +
-                            key.HigherRankingCardsPlayedPreviousTricks + "," +
-                            key.HigherRankingCardsPlayedThisTrick + "," + 
+                            key.OffenseSide + "," +
+                            key.PickerDone + "," +
+                            (key.PartnerDone == null ? " " : key.PartnerDone.Value.ToString()) + "," +
+                            key.PointsInTrick + "," +
+                            key.HighestRankInTrick + "," +
+                            key.WinningSide + "," +
+                            key.ThisCardMorePowerful + "," +
+                            key.MorePowerfulUnknownCards + "," +
+                            key.RemainingUnknownPoints + "," +
+                            key.MorePowerfulHeld + "," +
+                            key.PointsHeld + "," +
+                            key.CardsHeldWithPoints + "," + 
+                            key.MoveIndex + "," +
+                            key.TrickIndex + "," +
                             closerCentroids +
                             comparison
                         );
@@ -254,18 +256,34 @@ namespace Sheepshead.Tests
             var totalpointsinprevioustricks = rnd.Next(120);
             return new MoveStatUniqueKey()
             {
-                Picker = rnd.Next(5),
-                Partner = (partner == 5 ? (int?)null : partner),
-                Trick = rnd.Next(6),
-                MoveWithinTrick = rnd.Next(5),
-                PointsAlreadyInTrick = rnd.Next(totalpointsinprevioustricks),
-                TotalPointsInPreviousTricks = totalpointsinprevioustricks,
-                PointsInThisCard = rnd.Next(11),
-                RankOfThisCard = rnd.Next(10),
-                PartnerCard = rnd.Next(1) == 1,
-                HigherRankingCardsPlayedPreviousTricks = rnd.Next(31),
-                HigherRankingCardsPlayedThisTrick = rnd.Next(4)
+                OffenseSide = rnd.Next(1) == 1,
+                PickerDone = rnd.Next(1) == 1,
+                PartnerDone = GetPartnerDone(rnd.Next(2)),
+                PointsInTrick = rnd.Next(54),
+                HighestRankInTrick = rnd.Next(32),
+                WinningSide = rnd.Next(1) == 1,
+                ThisCardMorePowerful = rnd.Next(1) == 1,
+                MorePowerfulUnknownCards = rnd.Next(31),
+                RemainingUnknownPoints = rnd.Next(120),
+                MorePowerfulHeld = rnd.Next(5),
+                PointsHeld = rnd.Next(54),
+                CardsHeldWithPoints = rnd.Next(5),
+                MoveIndex = rnd.Next(4),
+                TrickIndex = rnd.Next(5),
             };
+        }
+
+        private bool? GetPartnerDone(int i)
+        {
+            switch (i)
+            {
+                case 1:
+                    return true;
+                case 0:
+                    return false;
+                default:
+                    return null;
+            }
         }
     }
 }

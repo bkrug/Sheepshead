@@ -63,19 +63,15 @@ namespace Sheepshead.Models.Players.Stats
             for (var i = 0; i < data.Count(); ++i )
             {
                 var key = new MoveStatCentroid();
-                key.Picker = data[i].Picker * 120.0 / 5;
-                if (data[i].Partner.HasValue)
-                    key.Partner = data[i].Partner * 120.0 / 5;
-                key.Trick = data[i].Trick * 120.0 / 6;
-                key.MoveWithinTrick = data[i].MoveWithinTrick * 120.0 / 5;
-                key.PointsAlreadyInTrick = data[i].PointsAlreadyInTrick * 120.0 / 44;
-                key.TotalPointsInPreviousTricks = data[i].TotalPointsInPreviousTricks * 120.0 / 120.0;
-
-                key.PointsInThisCard = data[i].PointsInThisCard * 120.0 / 11;
-                key.RankOfThisCard = data[i].RankOfThisCard * 120.0 / 32;
-                key.PartnerCard = data[i].PartnerCard ? 120.0 : 0;
-                key.HigherRankingCardsPlayedPreviousTricks = data[i].HigherRankingCardsPlayedPreviousTricks * 120.0 / 31;
-                key.HigherRankingCardsPlayedThisTrick = data[i].HigherRankingCardsPlayedThisTrick * 120.0 / 4;
+                key.PointsInTrick = data[i].PointsInTrick * 120.0 / 44;
+                key.HighestRankInTrick = data[i].HighestRankInTrick * 120.0 / 32;
+                key.MorePowerfulUnknownCards = data[i].MorePowerfulUnknownCards * 120.0 / 26;
+                key.RemainingUnknownPoints = data[i].RemainingUnknownPoints * 120.0 / 120;
+                key.MorePowerfulHeld = data[i].MorePowerfulHeld * 120.0 / 5;
+                key.PointsHeld = data[i].PointsHeld * 120.0 / 54;
+                key.CardsHeldWithPoints = data[i].CardsHeldWithPoints * 120.0 / 5;
+                key.MoveIndex = data[i].MoveIndex * 120.0 / 5;
+                key.TrickIndex = data[i].TrickIndex * 120.0 / 6;
                 weighedData.Add(key);
             }
             return weighedData;
@@ -87,19 +83,15 @@ namespace Sheepshead.Models.Players.Stats
             for (var i = 0; i < centroids.Length; ++i)
             {
                 var key = centroids[i];
-                key.Picker *= 5.0 / 120;
-                if (key.Partner.HasValue)
-                    key.Partner *= 5.0 / 120;
-                key.Trick *= 6.0 / 120;
-                key.MoveWithinTrick *= 5.0 / 120;
-                key.PointsAlreadyInTrick *= 44.0 / 120;
-                key.TotalPointsInPreviousTricks *= 120.0 / 120;
-
-                key.PointsInThisCard *= 11.0 / 120;
-                key.RankOfThisCard *= 32.0 / 120;
-                key.PartnerCard = key.PartnerCard == 120 ? 1 : 0;
-                key.HigherRankingCardsPlayedPreviousTricks *= 31.0 / 120;
-                key.HigherRankingCardsPlayedThisTrick *= 4.0 / 120;
+                key.PointsInTrick *= 44.0 / 120;
+                key.HighestRankInTrick *= 32.0 / 120.0;
+                key.MorePowerfulUnknownCards *= 26.0 / 120.0;
+                key.RemainingUnknownPoints *= 120.0 / 120.0;
+                key.MorePowerfulHeld *= 5.0 / 120.0;
+                key.PointsHeld *= 54.0 / 120.0;
+                key.CardsHeldWithPoints *= 5.0 / 120.0;
+                key.MoveIndex *= 5.0 / 120.0;
+                key.TrickIndex *= 6.0 / 120.0;
                 list.Add(key);
             }
             return list;
@@ -138,41 +130,32 @@ namespace Sheepshead.Models.Players.Stats
             //zero-out this centroids so it can be used as scratch
             for (var k = 0; k < _centroids.Length; ++k)
                 _centroids[k] = new MoveStatCentroid();
-            if (data[0].Partner != null)
-                for (var k = 0; k < _centroids.Length; ++k)
-                    _centroids[k].Partner = 0;
 
             for (var i = 0; i < data.Count; ++i)
             {
                 int clusterID = _clustering[i];
-                _centroids[clusterID].HigherRankingCardsPlayedPreviousTricks += data[i].HigherRankingCardsPlayedPreviousTricks;
-                _centroids[clusterID].HigherRankingCardsPlayedThisTrick += data[i].HigherRankingCardsPlayedThisTrick;
-                _centroids[clusterID].MoveWithinTrick += data[i].MoveWithinTrick;
-                if (_centroids[clusterID].Partner != null)
-                    _centroids[clusterID].Partner += data[i].Partner;
-                _centroids[clusterID].PartnerCard += data[i].PartnerCard;
-                _centroids[clusterID].Picker += data[i].Picker;
-                _centroids[clusterID].PointsAlreadyInTrick += data[i].PointsAlreadyInTrick;
-                _centroids[clusterID].PointsInThisCard += data[i].PointsInThisCard;
-                _centroids[clusterID].RankOfThisCard += data[i].RankOfThisCard;
-                _centroids[clusterID].TotalPointsInPreviousTricks += data[i].TotalPointsInPreviousTricks;
-                _centroids[clusterID].Trick += data[i].Trick;
+                _centroids[clusterID].PointsInTrick += data[i].PointsInTrick;
+                _centroids[clusterID].HighestRankInTrick += data[i].HighestRankInTrick;
+                _centroids[clusterID].MorePowerfulUnknownCards += data[i].MorePowerfulUnknownCards;
+                _centroids[clusterID].RemainingUnknownPoints += data[i].RemainingUnknownPoints;
+                _centroids[clusterID].MorePowerfulHeld += data[i].MorePowerfulHeld;
+                _centroids[clusterID].PointsHeld += data[i].PointsHeld;
+                _centroids[clusterID].CardsHeldWithPoints += data[i].CardsHeldWithPoints;
+                _centroids[clusterID].MoveIndex += data[i].MoveIndex;
+                _centroids[clusterID].TrickIndex += data[i].TrickIndex;
             }
 
             for (var k = 0; k < _centroids.Length; ++k)
             {
-                _centroids[k].HigherRankingCardsPlayedPreviousTricks /= clusterCounts[k];
-                _centroids[k].HigherRankingCardsPlayedThisTrick /= clusterCounts[k];
-                _centroids[k].MoveWithinTrick /= clusterCounts[k];
-                if (_centroids[k].Partner != null)
-                    _centroids[k].Partner /= clusterCounts[k];
-                _centroids[k].PartnerCard /= clusterCounts[k];
-                _centroids[k].Picker /= clusterCounts[k];
-                _centroids[k].PointsAlreadyInTrick /= clusterCounts[k];
-                _centroids[k].PointsInThisCard /= clusterCounts[k];
-                _centroids[k].RankOfThisCard /= clusterCounts[k];
-                _centroids[k].TotalPointsInPreviousTricks /= clusterCounts[k];
-                _centroids[k].Trick /= clusterCounts[k];
+                _centroids[k].PointsInTrick /= clusterCounts[k];
+                _centroids[k].HighestRankInTrick /= clusterCounts[k];
+                _centroids[k].MorePowerfulUnknownCards /= clusterCounts[k];
+                _centroids[k].RemainingUnknownPoints /= clusterCounts[k];
+                _centroids[k].MorePowerfulHeld /= clusterCounts[k];
+                _centroids[k].PointsHeld /= clusterCounts[k];
+                _centroids[k].CardsHeldWithPoints /= clusterCounts[k];
+                _centroids[k].MoveIndex /= clusterCounts[k];
+                _centroids[k].TrickIndex /= clusterCounts[k];
             }
         }
 

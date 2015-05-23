@@ -27,7 +27,8 @@ namespace Sheepshead.Models
                 var playerList = Players.Skip(indexOfStartingPlayer).Union(Players.Take(indexOfStartingPlayer)).ToList();
                 var orderedMoves = new List<KeyValuePair<IPlayer, ICard>>();
                 foreach (var player in playerList)
-                    orderedMoves.Add(new KeyValuePair<IPlayer, ICard>( player, _cards[player] ));
+                    if (_cards.ContainsKey(player))
+                        orderedMoves.Add(new KeyValuePair<IPlayer, ICard>( player, _cards[player] ));
                 return orderedMoves;
             } 
         }

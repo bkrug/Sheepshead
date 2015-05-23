@@ -19,39 +19,32 @@ namespace Sheepshead.Models.Players.Stats
 
         public ClusterResult Cluster(List<MoveStatUniqueKey> data)
         {
-            var noPartnerData = data.Where(m => m.Partner == null).ToList();
-            var partnerData = data.Where(m => m.Partner != null).ToList();
-            int noPartnerClusters;
-            int partnerClusters;
-            SetClusterCounts(data, noPartnerData, out noPartnerClusters, out partnerClusters);
-            var noPartnerClusterer = new InnerClusterer(noPartnerClusters, _rnd);
-            var partnerClusterer = new InnerClusterer(partnerClusters, _rnd);
-            var noPartnerResults = noPartnerClusterer.Cluster(noPartnerData);
-            var partnerResults = partnerClusterer.Cluster(partnerData);
+            var dataInRooms = data.GroupBy(m => m.CentroidRoom).ToList();
+            var clusterCounts = new List<int>();
+            SetClusterCounts(dataInRooms, out clusterCounts);
+            var clusterers = clusterCounts.Select(c => new InnerClusterer(c, _rnd)).ToList();
+            var results = new List<ClusterResult>();
+            for (var i = 0; i < dataInRooms.Count(); ++i)
+                results.Add(clusterers[i].Cluster(dataInRooms[i].ToList()));
             var combinedResults = new ClusterResult();
-            combinedResults.Data = noPartnerResults.Data.Union(partnerResults.Data).ToList();
+            combinedResults.Data = new List<MoveStatUniqueKey>();
             combinedResults.ClusterIndicies = new int[data.Count()];
-            CopyClusterIndicies(ref noPartnerResults, ref partnerResults, ref combinedResults);
-            combinedResults.Centroids = noPartnerResults.Centroids.Union(partnerResults.Centroids).ToList();
+            foreach (var result in results)
+            {
+                combinedResults.Data.AddRange(result.Data);
+                Array.Copy(result.ClusterIndicies, combinedResults.ClusterIndicies, result.ClusterIndicies.Count());
+                combinedResults.Centroids.AddRange(result.Centroids);
+            }
             return combinedResults;
         }
 
-        private void SetClusterCounts(List<MoveStatUniqueKey> data, List<MoveStatUniqueKey> noPartner, out int noPartnerClusters, out int partnerClusters)
+        private void SetClusterCounts(List<IGrouping<int, MoveStatUniqueKey>> dataInRooms, out List<int> clusterCounts)
         {
-            if (!data.Any())
-                noPartnerClusters = 0;
-            else
-                noPartnerClusters = (int)Math.Round(((decimal)noPartner.Count() / data.Count() * _numClusters), 0);
-            partnerClusters = _numClusters - noPartnerClusters;
-            if (noPartnerClusters < 1 && noPartner.Any())
+            clusterCounts = new List<int>();
+            foreach (var room in dataInRooms.OrderBy(d => d.Key))
             {
-                noPartnerClusters = 1;
-                partnerClusters = data.Count() - 1;
-            }
-            if (partnerClusters < 1 && data.Any())
-            {
-                noPartnerClusters = data.Count() - 1;
-                partnerClusters = 1;
+                var count = (int)Math.Round(Math.Sqrt(room.Count()));
+                clusterCounts.Add(count);
             }
         }
 

@@ -79,13 +79,19 @@ namespace Sheepshead.Models
                         var queueRankOfPicker = trick.QueueRankOfPicker;
                         var previousCards = new List<ICard>();
                         var pointsInTrick = 0;
+                        var highestRankInTrick = 32;
                         int? queueRankOfPartner = null;
+                        var indexOfWinningPlayer = -1;
+                        List<List<ICard>> allHeldCards = hand.Players.Select(p => p.Cards).ToList();
+                        var m = 0;
                         foreach (var move in trick.OrderedMoves)
                         {
+                            var heldCards = allHeldCards[m++];
                             var key = generator.GenerateKey(
                                             indexOfTrick, indexOfPlayer, queueRankOfPicker, pointsInPreviousTricks,
-                                            trick, move.Value, previousTricks, previousCards,
-                                            ref beforePartnerCardPlayed, ref queueRankOfPartner, ref pointsInTrick);
+                                            trick, move.Value, previousTricks, previousCards, heldCards,
+                                            ref beforePartnerCardPlayed, ref queueRankOfPartner, ref pointsInTrick,
+                                            ref highestRankInTrick, ref indexOfWinningPlayer);
                             RecordMove(moves, handWinner, trickWinner, move.Key, key);
                             ++indexOfTrick;
                             ++indexOfPlayer;
