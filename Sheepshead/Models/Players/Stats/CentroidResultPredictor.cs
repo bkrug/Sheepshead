@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.IO;
 using System.Web;
+using System.Web.Script.Serialization;
 
 namespace Sheepshead.Models.Players.Stats
 {
@@ -46,6 +48,22 @@ namespace Sheepshead.Models.Players.Stats
             if (minDistance == Double.MaxValue)
                 return null;
             return bestMatch;
+        }
+
+        public void SaveStats(string filename)
+        {
+            var jss = new JavaScriptSerializer();
+            var dictWithStringKey = new Dictionary<string, Dictionary<string, string>>();
+            foreach (var centroidAndStatElem in _centroidAndStats)
+            {
+                var innerDict = new Dictionary<string, string>();
+                foreach (var statElem in centroidAndStatElem.Value)
+                    innerDict.Add(jss.Serialize(statElem.Key), jss.Serialize(statElem.Value));
+                dictWithStringKey.Add(centroidAndStatElem.Key.ToString(), innerDict);
+            }
+            var text = jss.Serialize(dictWithStringKey);
+            using (var sw = new StreamWriter(filename))
+                sw.WriteLine(text);
         }
     }
 }

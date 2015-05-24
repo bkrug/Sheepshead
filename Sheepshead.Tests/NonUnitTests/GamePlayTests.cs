@@ -69,11 +69,12 @@ namespace Sheepshead.Tests.NonUnitTests
         [TestMethod]
         public void LearningHelper_Read()
         {
-            var loadSize = 1000;
+            var loadSize = 2500;
             var loader = new SummaryLoader(SaveLocations.FIRST_SAVE, 0, loadSize);
             _predictor1 = loader.ResultPredictor;
             var loader1 = new SummaryLoader(SaveLocations.FIRST_SAVE, loadSize, loadSize);
             _predictor2 = loader1.ResultPredictor;
+            _predictor1.SaveStats(@"C:\Temp\learningStatsStage1.json");
             var playerList = new List<IPlayer>();
             using (_sw = new StreamWriter(@"C:\Temp\learningResults.csv"))
             {
@@ -84,7 +85,7 @@ namespace Sheepshead.Tests.NonUnitTests
                     playerList.Add(lPlayer);
                     lPlayer.OnMove += lPlayer_OnMove;
                 }
-                var handNumber = 1000;
+                var handNumber = loadSize * 2;
                 PlayGame(playerList, handNumber, @"c:\temp\LearningPlayerStage1.txt");
                 _sw.WriteLine(",," + (_trickDiffSum / handNumber / 30) + ",,," + (_handDiffSum / handNumber / 30));
             }

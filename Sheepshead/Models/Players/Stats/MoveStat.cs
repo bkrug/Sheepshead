@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using System.Web.Script.Serialization;
 
 namespace Sheepshead.Models.Players.Stats
 {
@@ -12,7 +13,9 @@ namespace Sheepshead.Models.Players.Stats
         public int HandsWon {get; set; }
         public int HandsTried { get; set; }
 
+        [ScriptIgnore]
         public double? TrickPortionWon { get { return TricksTried == 0 ? null : (double?)TricksWon / TricksTried; } }
+        [ScriptIgnore]
         public double? HandPortionWon { get { return HandsTried == 0 ? null : (double?)HandsWon / HandsTried; } }
     }
 
