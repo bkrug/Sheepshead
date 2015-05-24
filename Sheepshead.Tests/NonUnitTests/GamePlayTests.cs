@@ -66,7 +66,7 @@ namespace Sheepshead.Tests.NonUnitTests
             }
         }
 
-        [TestMethod]
+        //[TestMethod]
         public void LearningHelper_Read()
         {
             var loadSize = 2500;
@@ -131,7 +131,41 @@ namespace Sheepshead.Tests.NonUnitTests
             _handDiffSum += handDiff;
         }
 
-        private static void PlayGame(List<IPlayer> playerList, int handNumber, string saveLocation)
+        [TestMethod]
+        public void LearningVsBasicPlayer()
+        {
+            var predictor = CentroidResultPredictor.FromFile(@"C:\Temp\learningStatsStage1.json");
+            using (var sw = new StreamWriter(@"C:\Temp\learningVsBasicPlayer.txt"))
+            {
+                for (var noOfLearning = 1; noOfLearning <= 4; ++noOfLearning)
+                {
+                    var playerList = new List<IPlayer>();
+                    var wins = new double[5];
+                    for (var i = 0; i < 5; ++i)
+                    {
+                        BasicPlayer lPlayer = i < noOfLearning ? new LearningPlayer(new KeyGenerator(), predictor) : new BasicPlayer();
+                        playerList.Add(lPlayer);
+                    }
+                    var handNumber = 100000;
+                    PlayGame(playerList, handNumber, "", (object sender, EventArgs args) =>
+                    {
+                        var hand = sender as IHand;
+                        var scores = hand.Scores();
+                        for (var s = 0; s < scores.Count; ++s)
+                        {
+                            if (scores[playerList[s]] > 0)
+                                wins[s] += 1;
+                        }
+                    });
+                    sw.WriteLine(noOfLearning + " learning players.");
+                    for (var i = 0; i < wins.Length; ++i)
+                        sw.WriteLine("Player " + i + ": " + (wins[i]/handNumber).ToString("P3"));
+                    sw.WriteLine();
+                }
+            }
+        }
+
+        private static void PlayGame(List<IPlayer> playerList, int handNumber, string saveLocation, EventHandler<EventArgs> del = null)
         {
             var repository = new GameRepository(GameDictionary.Instance.Dictionary);
             var rnd = new RandomWrapper();
@@ -143,7 +177,10 @@ namespace Sheepshead.Tests.NonUnitTests
                 var picker = game.PlayNonHumans(deck) as ComputerPlayer;
                 var buriedCards = picker != null ? picker.DropCardsForPick(deck) : new List<ICard>();
                 var hand = new Hand(deck, picker, buriedCards);
-                new LearningHelper(hand, saveLocation);
+                if (!String.IsNullOrWhiteSpace(saveLocation))
+                    new LearningHelper(hand, saveLocation);
+                if (del != null)
+                    hand.OnHandEnd += del;
                 while (!hand.IsComplete())
                 {
                     var trick = new Trick(hand);

@@ -12,13 +12,6 @@ namespace Sheepshead.Models.Players
         private IKeyGenerator _generator;
         private ICentroidResultPredictor _predictor;
 
-        public event EventHandler<OnMoveEventArgs> OnMove;
-        public class OnMoveEventArgs : EventArgs
-        {
-            public ITrick Trick;
-            public ICard Card;
-        }
-
         private LearningPlayer() { }
 
         public LearningPlayer(IKeyGenerator generator, ICentroidResultPredictor predictor)
@@ -54,17 +47,6 @@ namespace Sheepshead.Models.Players
                 selectedCard = base.GetMove(trick);
             OnMoveHandler(trick, selectedCard);
             return selectedCard;
-        }
-
-        protected virtual void OnMoveHandler(ITrick trick, ICard card)
-        {
-            var e = new OnMoveEventArgs()
-            {
-                Trick = trick,
-                Card = card
-            };
-            if (OnMove != null)
-                OnMove(this, e);
         }
     }
 }

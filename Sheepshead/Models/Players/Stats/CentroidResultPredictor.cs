@@ -65,5 +65,30 @@ namespace Sheepshead.Models.Players.Stats
             using (var sw = new StreamWriter(filename))
                 sw.WriteLine(text);
         }
+
+        public static CentroidResultPredictor FromFile(string filename)
+        {
+            string json;
+            using (var sr = new StreamReader(filename))
+            {
+                json = sr.ReadLine();
+                var json1 = sr.ReadLine();
+            }
+            var jss = new JavaScriptSerializer();
+            var dictWithStringKey = jss.Deserialize<Dictionary<string, Dictionary<string, string>>>(json);
+            var centroidByRoomNo = new Dictionary<int, Dictionary<MoveStatCentroid, MoveStat>>();
+            foreach (var innerStringDict in dictWithStringKey)
+            {
+                var moveDict = new Dictionary<MoveStatCentroid, MoveStat>();
+                foreach (var kvPair in innerStringDict.Value) {
+                    moveDict.Add(
+                        jss.Deserialize<MoveStatCentroid>(kvPair.Key),
+                        jss.Deserialize<MoveStat>(kvPair.Value)
+                    );
+                }
+                centroidByRoomNo.Add(Int16.Parse(innerStringDict.Key), moveDict);
+            }
+            return new CentroidResultPredictor(centroidByRoomNo);
+        }
     }
 }

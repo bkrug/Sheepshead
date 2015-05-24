@@ -7,6 +7,13 @@ namespace Sheepshead.Models.Players
 {
     public class BasicPlayer : ComputerPlayer
     {
+        public event EventHandler<OnMoveEventArgs> OnMove;
+        public class OnMoveEventArgs : EventArgs
+        {
+            public ITrick Trick;
+            public ICard Card;
+        }
+
         public override ICard GetMove(ITrick trick)
         {
             if (!trick.Hand.Leasters)
@@ -84,6 +91,17 @@ namespace Sheepshead.Models.Players
                 .Where(g => g.Count() == 1 && CardRepository.GetSuite(g.First()) != Suite.TRUMP)
                 .Select(g => g.First()).ToList();
             return Cards.OrderBy(c => soloCardsOfSuite.Contains(c) ? 1 : 2).ThenByDescending(c => c.Rank).Take(2).ToList();
+        }
+
+        protected virtual void OnMoveHandler(ITrick trick, ICard card)
+        {
+            var e = new OnMoveEventArgs()
+            {
+                Trick = trick,
+                Card = card
+            };
+            if (OnMove != null)
+                OnMove(this, e);
         }
     }
 }
