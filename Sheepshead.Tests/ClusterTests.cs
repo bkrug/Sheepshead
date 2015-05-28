@@ -192,7 +192,7 @@ namespace Sheepshead.Tests
         };
 
         //This is not a unit test, but will generate a CSV file displaying the clustering results.
-        [TestMethod]
+        //[TestMethod]
         public void DoClustering()
         {
             var rnd = new RandomWrapper();
@@ -200,7 +200,7 @@ namespace Sheepshead.Tests
             for (var i = 0; i < 1000; ++i)
                 keyList.Add(GenerateKey(rnd));
             var numClusters = (int)Math.Sqrt(keyList.Count());
-            var clusterer = new Clusterer(numClusters, rnd);
+            var clusterer = new Clusterer(rnd);
             var results = clusterer.Cluster(keyList);
             using (var sb = new StreamWriter(@"C:\Temp\ClusterTest.csv"))
             {

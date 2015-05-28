@@ -131,10 +131,10 @@ namespace Sheepshead.Tests.NonUnitTests
             _handDiffSum += handDiff;
         }
 
-        [TestMethod]
+        //[TestMethod]
         public void LearningVsBasicPlayer()
         {
-            var predictor = CentroidResultPredictor.FromFile(@"C:\Temp\learningStatsStage1.json");
+            var predictor = CentroidResultPredictor.FromFile(@"C:\Temp\learningStatsStage1-2500hands.json");
             using (var sw = new StreamWriter(@"C:\Temp\learningVsBasicPlayer.txt"))
             {
                 for (var noOfLearning = 1; noOfLearning <= 4; ++noOfLearning)
@@ -146,7 +146,7 @@ namespace Sheepshead.Tests.NonUnitTests
                         BasicPlayer lPlayer = i < noOfLearning ? new LearningPlayer(new KeyGenerator(), predictor) : new BasicPlayer();
                         playerList.Add(lPlayer);
                     }
-                    var handNumber = 100000;
+                    var handNumber = 1 * 1000 * 1000;
                     PlayGame(playerList, handNumber, "", (object sender, EventArgs args) =>
                     {
                         var hand = sender as IHand;

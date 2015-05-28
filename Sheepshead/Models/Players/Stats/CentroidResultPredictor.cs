@@ -68,6 +68,14 @@ namespace Sheepshead.Models.Players.Stats
 
         public static CentroidResultPredictor FromFile(string filename)
         {
+            return new CentroidResultPredictor(MoveStatJsonReader.Read(filename));
+        }
+    }
+
+    public class MoveStatJsonReader
+    {
+        public static Dictionary<int, Dictionary<MoveStatCentroid, MoveStat>> Read(string filename)
+        {
             string json;
             using (var sr = new StreamReader(filename))
             {
@@ -80,7 +88,8 @@ namespace Sheepshead.Models.Players.Stats
             foreach (var innerStringDict in dictWithStringKey)
             {
                 var moveDict = new Dictionary<MoveStatCentroid, MoveStat>();
-                foreach (var kvPair in innerStringDict.Value) {
+                foreach (var kvPair in innerStringDict.Value)
+                {
                     moveDict.Add(
                         jss.Deserialize<MoveStatCentroid>(kvPair.Key),
                         jss.Deserialize<MoveStat>(kvPair.Value)
@@ -88,7 +97,7 @@ namespace Sheepshead.Models.Players.Stats
                 }
                 centroidByRoomNo.Add(Int16.Parse(innerStringDict.Key), moveDict);
             }
-            return new CentroidResultPredictor(centroidByRoomNo);
+            return centroidByRoomNo;
         }
     }
 }

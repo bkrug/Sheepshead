@@ -8,12 +8,10 @@ namespace Sheepshead.Models.Players.Stats
 {
     public class Clusterer
     {
-        private int _numClusters;
         private IRandomWrapper _rnd;
 
-        public Clusterer(int numClusters, IRandomWrapper rnd)
+        public Clusterer(IRandomWrapper rnd)
         {
-            _numClusters = numClusters;
             _rnd = rnd;
         }
 

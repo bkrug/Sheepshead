@@ -43,16 +43,15 @@ namespace Sheepshead.Models
 
         private CentroidResultPredictor Load(string filePath, int skip, int numOfGames)
         {
-            var keys = ReadMoves(filePath, skip, numOfGames);
-            var numOfClusters = (int)Math.Round(Math.Sqrt(keys.Count())) * 2;
-            var clusterer = new Clusterer(numOfClusters, new RandomWrapper());
-            var resultsInRooms = clusterer.Cluster(keys.Select(d => d.Key).ToList());
-            var centroidsInRooms = ClusterUtils.GetClusterDictionary(keys, resultsInRooms);
+            var movesAndStats = ReadMoves(filePath, skip, numOfGames);
+            var clusterer = new Clusterer(new RandomWrapper());
+            var resultsInRooms = clusterer.Cluster(movesAndStats.Select(d => d.Key).ToList());
+            var centroidsInRooms = ClusterUtils.GetClusterDictionary(movesAndStats, resultsInRooms);
             var resultPredictor = new CentroidResultPredictor(centroidsInRooms);
             return resultPredictor;
         }
 
-        private static Dictionary<MoveStatUniqueKey, MoveStat> ReadMoves(string filePath, int skip, int numOfGames)
+        public static Dictionary<MoveStatUniqueKey, MoveStat> ReadMoves(string filePath, int skip, int numOfGames)
         {
             var moves = new Dictionary<MoveStatUniqueKey, MoveStat>();
             if (!File.Exists(filePath))
