@@ -20,6 +20,13 @@ namespace Sheepshead.Models.Players.Stats
     }
 
     public struct MoveStatUniqueKey {
+        //bool CardWillOverpower;   //Only true if this card changes the player's win state from loosing to winning
+        //double OpponentPortionDone;  //If partner unknown, this won't reach 1.0 unless current player is last.
+        //bool PartnerKnown;
+        //bool CardPoints;          //Negative if given to opposing team
+        //int UnknownStrongerCards;
+        //int KnownStrongerCards;   //That have not been played
+
         public bool OffenseSide; //Card is played by Offense
         public bool PickerDone; //Picker already played this trick
         public bool? PartnerDone;
