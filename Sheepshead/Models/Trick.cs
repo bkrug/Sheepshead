@@ -70,18 +70,18 @@ namespace Sheepshead.Models
                 return true;
             var firstCard = _cards.First().Value;
             return hand.Contains(card) 
-                && (CardRepository.GetSuite(card) == CardRepository.GetSuite(firstCard) || !hand.Any(c => CardRepository.GetSuite(c) == CardRepository.GetSuite(firstCard)));
+                && (CardRepository.GetSuit(card) == CardRepository.GetSuit(firstCard) || !hand.Any(c => CardRepository.GetSuit(c) == CardRepository.GetSuit(firstCard)));
         }
 
         public TrickWinner Winner()
         {
             if (!_cards.Any())
                 return null;
-            var firstSuite = CardRepository.GetSuite(_cards.First().Value);
+            var firstSuite = CardRepository.GetSuit(_cards.First().Value);
             var validCards = new List<KeyValuePair<IPlayer, ICard>>();
             foreach(var keyValuePair in _cards) {
-                var suite = CardRepository.GetSuite(keyValuePair.Value);
-                if (suite == firstSuite || suite == Suite.TRUMP)
+                var suite = CardRepository.GetSuit(keyValuePair.Value);
+                if (suite == firstSuite || suite == Suit.TRUMP)
                     validCards.Add(keyValuePair);
             }
             return new TrickWinner()

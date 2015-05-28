@@ -15,7 +15,7 @@ namespace Sheepshead.Models
         QUEEN, JACK, ACE, N10, KING, N9, N8, N7
     }
 
-    public enum Suite 
+    public enum Suit 
     {
         CLUBS, SPADES, HEARTS, TRUMP
     }
@@ -82,11 +82,11 @@ namespace Sheepshead.Models
             get { return _cards[(int)ss, (int)ct]; }
         }
 
-        public static Suite GetSuite(ICard card)
+        public static Suit GetSuit(ICard card)
         {
             if (card.CardType == CardType.QUEEN || card.CardType == CardType.JACK)
-                return Suite.TRUMP;
-            return (Suite)card.StandardSuite;
+                return Suit.TRUMP;
+            return (Suit)card.StandardSuite;
         }
 
         public List<ICard> UnshuffledList()

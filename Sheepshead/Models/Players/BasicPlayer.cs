@@ -51,9 +51,9 @@ namespace Sheepshead.Models.Players
         {
             IEnumerable<ICard> cardsOfPreferedSuite;
             if (trick.Hand.Picker == this || this.Cards.Any(c => c.StandardSuite == trick.Hand.PartnerCard.StandardSuite && c.CardType == trick.Hand.PartnerCard.CardType))
-                cardsOfPreferedSuite = legalCards.Where(c => CardRepository.GetSuite(c) == Suite.TRUMP).ToList();
+                cardsOfPreferedSuite = legalCards.Where(c => CardRepository.GetSuit(c) == Suit.TRUMP).ToList();
             else
-                cardsOfPreferedSuite = legalCards.Where(c => CardRepository.GetSuite(c) != Suite.TRUMP).ToList();
+                cardsOfPreferedSuite = legalCards.Where(c => CardRepository.GetSuit(c) != Suit.TRUMP).ToList();
             return legalCards.OrderBy(c => cardsOfPreferedSuite.Contains(c) ? 1 : 2)
                              .OrderByDescending(c => c.Rank)
                              .ThenByDescending(c => c.Points)
@@ -77,7 +77,7 @@ namespace Sheepshead.Models.Players
         public override bool WillPick(IDeck deck)
         {
             var middleQueueRankInTrick = (deck.Game.PlayerCount + 1) / 2;
-            var trumpCount = this.Cards.Count(c => CardRepository.GetSuite(c) == Suite.TRUMP);
+            var trumpCount = this.Cards.Count(c => CardRepository.GetSuit(c) == Suit.TRUMP);
             return QueueRankInDeck(deck) > middleQueueRankInTrick && trumpCount >= 2
                 || QueueRankInDeck(deck) == middleQueueRankInTrick && trumpCount >= 3
                 || trumpCount >= 4;
@@ -87,8 +87,8 @@ namespace Sheepshead.Models.Players
         {
             //get a list of cards for which there are no other cards in their suite.  Exclude Trump cards.
             var soloCardsOfSuite = Cards
-                .GroupBy(g => CardRepository.GetSuite(g))
-                .Where(g => g.Count() == 1 && CardRepository.GetSuite(g.First()) != Suite.TRUMP)
+                .GroupBy(g => CardRepository.GetSuit(g))
+                .Where(g => g.Count() == 1 && CardRepository.GetSuit(g.First()) != Suit.TRUMP)
                 .Select(g => g.First()).ToList();
             return Cards.OrderBy(c => soloCardsOfSuite.Contains(c) ? 1 : 2).ThenByDescending(c => c.Rank).Take(2).ToList();
         }
