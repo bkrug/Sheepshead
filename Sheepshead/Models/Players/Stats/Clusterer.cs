@@ -15,7 +15,7 @@ namespace Sheepshead.Models.Players.Stats
             _rnd = rnd;
         }
 
-        public Dictionary<int, ClusterResult> Cluster(List<MoveStatUniqueKey> data)
+        public Dictionary<int, ClusterResult> Cluster(List<MoveStatUniqueKey2> data)
         {
             var dataInRooms = data.GroupBy(m => m.CentroidRoom).ToList();
             var clusterCounts = new List<int>();
@@ -27,7 +27,7 @@ namespace Sheepshead.Models.Players.Stats
             return results;
         }
 
-        private void SetClusterCounts(List<IGrouping<int, MoveStatUniqueKey>> dataInRooms, out List<int> clusterCounts)
+        private void SetClusterCounts(List<IGrouping<int, MoveStatUniqueKey2>> dataInRooms, out List<int> clusterCounts)
         {
             clusterCounts = new List<int>();
             foreach (var room in dataInRooms.OrderBy(d => d.Key))

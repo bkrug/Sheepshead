@@ -20,7 +20,7 @@ namespace Sheepshead.Models.Players.Stats
             _rnd = rnd;
         }
 
-        public ClusterResult Cluster(List<MoveStatUniqueKey> data)
+        public ClusterResult Cluster(List<MoveStatUniqueKey2> data)
         {
             if (!data.Any())
                 return new ClusterResult()
@@ -61,7 +61,7 @@ namespace Sheepshead.Models.Players.Stats
             return clusterResult;
         }
 
-        private List<MoveStatCentroid> WeighData(List<MoveStatUniqueKey> data) {
+        private List<MoveStatCentroid> WeighData(List<MoveStatUniqueKey2> data) {
             var weighedData = new List<MoveStatCentroid>();
             for (var i = 0; i < data.Count(); ++i )
             {

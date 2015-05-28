@@ -7,7 +7,7 @@ namespace Sheepshead.Models.Players.Stats
 {
     public class ClusterUtils
     {
-        public static double Distance(MoveStatUniqueKey tuple, MoveStatCentroid centroid)
+        public static double Distance(MoveStatUniqueKey2 tuple, MoveStatCentroid centroid)
         {
             double sumSquareDiffs = 0.0;
             sumSquareDiffs += Math.Pow((tuple.PointsInTrick - centroid.PointsInTrick), 2);
@@ -37,7 +37,7 @@ namespace Sheepshead.Models.Players.Stats
             return Math.Sqrt(sumSquareDiffs);
         }
 
-        public static Dictionary<int, Dictionary<MoveStatCentroid, MoveStat>> GetClusterDictionary(Dictionary<MoveStatUniqueKey, MoveStat> moveResults, Dictionary<int, ClusterResult> clusterResultRooms)
+        public static Dictionary<int, Dictionary<MoveStatCentroid, MoveStat>> GetClusterDictionary(Dictionary<MoveStatUniqueKey2, MoveStat> moveResults, Dictionary<int, ClusterResult> clusterResultRooms)
         {
             var dictByRoom = new Dictionary<int, Dictionary<MoveStatCentroid, MoveStat>>();
             for (var j = 0; j < clusterResultRooms.Count(); ++j)

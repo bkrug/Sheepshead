@@ -35,7 +35,7 @@ namespace Sheepshead.Tests.NonUnitTests
             using (var sw = new StreamWriter(@"C:\Temp\propCompare.csv"))
             {
                 sw.WriteLine("Property Name,Value,Trick,Move,Attempts,Hands Won %,Tricks Won %");
-                foreach (var experimentProp in typeof(MoveStatUniqueKey).GetFields().Where(p => !(new List<string>() {"MoveIndex", "TrickIndex"}).Contains(p.Name)))
+                foreach (var experimentProp in typeof(MoveStatUniqueKey2).GetFields().Where(p => !(new List<string>() {"MoveIndex", "TrickIndex"}).Contains(p.Name)))
                 for(var t = 0; t < 6; ++t)
                 for(var m = 0; m < 5; ++m)
                 foreach (var testValue in GetTestValues(experimentProp))

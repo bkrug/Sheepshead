@@ -8,13 +8,12 @@ namespace Sheepshead.Models.Players
 {
     public class LearningPlayer : BasicPlayer
     {
-        private Dictionary<ITrick, MoveStatUniqueKey> _keys = new Dictionary<ITrick, MoveStatUniqueKey>();
-        private IKeyGenerator _generator;
+        private IKey2Generator _generator;
         private ICentroidResultPredictor _predictor;
 
         private LearningPlayer() { }
 
-        public LearningPlayer(IKeyGenerator generator, ICentroidResultPredictor predictor)
+        public LearningPlayer(IKey2Generator generator, ICentroidResultPredictor predictor)
         {
             _generator = generator;
             _predictor = predictor;

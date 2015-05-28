@@ -9,9 +9,9 @@ namespace Sheepshead.Models.Players.Stats
     {
         public int[] ClusterIndicies;
         public List<MoveStatCentroid> Centroids;
-        public List<MoveStatUniqueKey> Data;
+        public List<MoveStatUniqueKey2> Data;
 
-        public MoveStatCentroid GetCentroid(MoveStatUniqueKey key)
+        public MoveStatCentroid GetCentroid(MoveStatUniqueKey2 key)
         {
             var keyIndex = Data.IndexOf(key);
             if (keyIndex >= 0)
@@ -27,7 +27,7 @@ namespace Sheepshead.Models.Players.Stats
             return Centroids[ClusterIndicies[keyIndex]];
         }
 
-        public List<MoveStatUniqueKey> GetDataInCluster(MoveStatCentroid centroid)
+        public List<MoveStatUniqueKey2> GetDataInCluster(MoveStatCentroid centroid)
         {
             var centroidIndex = Centroids.IndexOf(centroid);
             if (centroidIndex >= 0)
@@ -35,9 +35,9 @@ namespace Sheepshead.Models.Players.Stats
             throw new IndexOutOfRangeException("Could not find specified Centroid");
         }
 
-        public List<MoveStatUniqueKey> GetDataInCluster(int centroidIndex)
+        public List<MoveStatUniqueKey2> GetDataInCluster(int centroidIndex)
         {
-            var keys = new List<MoveStatUniqueKey>();
+            var keys = new List<MoveStatUniqueKey2>();
             for (var i = 0; i < ClusterIndicies.Count(); ++i)
                 if (ClusterIndicies[i] == centroidIndex)
                 {

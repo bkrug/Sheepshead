@@ -51,12 +51,12 @@ namespace Sheepshead.Models
             return resultPredictor;
         }
 
-        public static Dictionary<MoveStatUniqueKey, MoveStat> ReadMoves(string filePath, int skip, int numOfGames)
+        public static Dictionary<MoveStatUniqueKey2, MoveStat> ReadMoves(string filePath, int skip, int numOfGames)
         {
-            var moves = new Dictionary<MoveStatUniqueKey, MoveStat>();
+            var moves = new Dictionary<MoveStatUniqueKey2, MoveStat>();
             if (!File.Exists(filePath))
                 return moves;
-            var generator = new KeyGenerator();
+            var generator = new Key2Generator();
             using (var reader = File.OpenText(filePath))
             {
                 var i = 0;
@@ -104,7 +104,7 @@ namespace Sheepshead.Models
             return moves;
         }
 
-        private static void RecordMove(Dictionary<MoveStatUniqueKey, MoveStat> moves, List<IPlayer> handWinner, IPlayer trickWinner, IPlayer player, MoveStatUniqueKey key)
+        private static void RecordMove(Dictionary<MoveStatUniqueKey2, MoveStat> moves, List<IPlayer> handWinner, IPlayer trickWinner, IPlayer player, MoveStatUniqueKey2 key)
         {
             if (!moves.ContainsKey(key))
                 moves.Add(key, new MoveStat()

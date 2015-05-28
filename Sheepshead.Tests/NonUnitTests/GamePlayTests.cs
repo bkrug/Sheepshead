@@ -29,11 +29,11 @@ namespace Sheepshead.Tests.NonUnitTests
         public void LearningHelper_GenerateKeys()
         {
             var predictorMock = new Mock<ICentroidResultPredictor>();
-            predictorMock.Setup(m => m.GetPrediction(It.IsAny<MoveStatUniqueKey>())).Returns(null as MoveStat);
+            predictorMock.Setup(m => m.GetPrediction(It.IsAny<MoveStatUniqueKey2>())).Returns(null as MoveStat);
             using (_sw = new StreamWriter(@"C:\Temp\GeneratedKeys.csv"))
             {
                 var playerList = new List<IPlayer>();
-                var generator = new KeyGenerator();
+                var generator = new Key2Generator();
                 for (var i = 0; i < 5; ++i)
                 {
                     var player = new LearningPlayer(generator, predictorMock.Object);
@@ -81,7 +81,7 @@ namespace Sheepshead.Tests.NonUnitTests
                 _sw.WriteLine("Trick % 1,Trick % 2,Diff,Hand % 1,Hand % 2,Diff,Offense Side,Picker Done,Partner Done,Points In Trick,Highest Rank In Trick,Winning Side,This Card More Power,More Powerful Unknown Cards,Remaining Unknown Points,More Powerful Held,Points Held,Cards Held With Points,Move Index,Trick Index");
                 for (var i = 0; i < 5; ++i)
                 {
-                    var lPlayer = new LearningPlayer(new KeyGenerator(), _predictor1);
+                    var lPlayer = new LearningPlayer(new Key2Generator(), _predictor1);
                     playerList.Add(lPlayer);
                     lPlayer.OnMove += lPlayer_OnMove;
                 }
@@ -99,7 +99,7 @@ namespace Sheepshead.Tests.NonUnitTests
         void lPlayer_OnMove(object sender, LearningPlayer.OnMoveEventArgs e)
         {
             IPlayer player = (IPlayer)sender;
-            var generator = new KeyGenerator();
+            var generator = new Key2Generator();
             var key = generator.GenerateKey(e.Trick, player, e.Card);
             var moveStat1 = _predictor1.GetPrediction(key);
             var moveStat2 = _predictor2.GetPrediction(key);
@@ -143,7 +143,7 @@ namespace Sheepshead.Tests.NonUnitTests
                     var wins = new double[5];
                     for (var i = 0; i < 5; ++i)
                     {
-                        BasicPlayer lPlayer = i < noOfLearning ? new LearningPlayer(new KeyGenerator(), predictor) : new BasicPlayer();
+                        BasicPlayer lPlayer = i < noOfLearning ? new LearningPlayer(new Key2Generator(), predictor) : new BasicPlayer();
                         playerList.Add(lPlayer);
                     }
                     var handNumber = 1 * 1000 * 1000;

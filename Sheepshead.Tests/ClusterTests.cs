@@ -42,7 +42,7 @@ namespace Sheepshead.Tests
         {
             return new ClusterResult()
             {
-                Data = new List<MoveStatUniqueKey>()
+                Data = new List<MoveStatUniqueKey2>()
                 {
                     GetNearbyKey(centroid2, 2.6),
                     GetNearbyKey(centroid3, 1.6),
@@ -60,9 +60,9 @@ namespace Sheepshead.Tests
             };
         }
         
-        private Dictionary<MoveStatUniqueKey, MoveStat> GetStatList(ClusterResult clusterResult, int indexOfSecondKeyInLastCentroid)
+        private Dictionary<MoveStatUniqueKey2, MoveStat> GetStatList(ClusterResult clusterResult, int indexOfSecondKeyInLastCentroid)
         {
-            var moveList = new Dictionary<MoveStatUniqueKey, MoveStat>();
+            var moveList = new Dictionary<MoveStatUniqueKey2, MoveStat>();
             for (var i = 0; i < clusterResult.Data.Count(); ++i)
             {
                 var cluster = clusterResult.ClusterIndicies[i];
@@ -99,9 +99,9 @@ namespace Sheepshead.Tests
             Assert.AreSame(stat3, predictor.GetPrediction(GetNearbyKey(centroid3, -1.5)));
         }
 
-        private MoveStatUniqueKey GetNearbyKey(MoveStatCentroid centroid, double offset)
+        private MoveStatUniqueKey2 GetNearbyKey(MoveStatCentroid centroid, double offset)
         {
-            return new MoveStatUniqueKey()
+            return new MoveStatUniqueKey2()
             {
                 OffenseSide = false,
                 PickerDone = false,
@@ -196,7 +196,7 @@ namespace Sheepshead.Tests
         public void DoClustering()
         {
             var rnd = new RandomWrapper();
-            var keyList = new List<MoveStatUniqueKey>();
+            var keyList = new List<MoveStatUniqueKey2>();
             for (var i = 0; i < 1000; ++i)
                 keyList.Add(GenerateKey(rnd));
             var numClusters = (int)Math.Sqrt(keyList.Count());
@@ -271,11 +271,11 @@ namespace Sheepshead.Tests
             }
         }
 
-        private MoveStatUniqueKey GenerateKey(IRandomWrapper rnd)
+        private MoveStatUniqueKey2 GenerateKey(IRandomWrapper rnd)
         {
             var partner = rnd.Next(6);
             var totalpointsinprevioustricks = rnd.Next(120);
-            return new MoveStatUniqueKey()
+            return new MoveStatUniqueKey2()
             {
                 OffenseSide = rnd.Next(2) == 1,
                 PickerDone = rnd.Next(2) == 1,

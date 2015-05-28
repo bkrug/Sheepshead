@@ -9,7 +9,7 @@ namespace Sheepshead.Models.Players.Stats
 {
     public interface ICentroidResultPredictor
     {
-        MoveStat GetPrediction(MoveStatUniqueKey key);
+        MoveStat GetPrediction(MoveStatUniqueKey2 key);
     }
 
     public class CentroidResultPredictor : ICentroidResultPredictor
@@ -23,14 +23,14 @@ namespace Sheepshead.Models.Players.Stats
             _centroidAndStats = centroidAndStats;
         }
 
-        public MoveStat GetPrediction(MoveStatUniqueKey key)
+        public MoveStat GetPrediction(MoveStatUniqueKey2 key)
         {
             var roomNo = key.CentroidRoom;
             var nearestCentroid = GetNearestCentroid(key);
             return nearestCentroid.HasValue ? _centroidAndStats[roomNo][nearestCentroid.Value] : null;
         }
 
-        private MoveStatCentroid? GetNearestCentroid(MoveStatUniqueKey key)
+        private MoveStatCentroid? GetNearestCentroid(MoveStatUniqueKey2 key)
         {
             var minDistance = Double.MaxValue;
             MoveStatCentroid bestMatch = new MoveStatCentroid();
