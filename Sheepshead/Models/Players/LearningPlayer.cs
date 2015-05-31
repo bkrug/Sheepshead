@@ -8,12 +8,12 @@ namespace Sheepshead.Models.Players
 {
     public class LearningPlayer : BasicPlayer
     {
-        private IKey2Generator _generator;
-        private ICentroidResultPredictor _predictor;
+        private IKeyGenerator _generator;
+        private IStatResultPredictor _predictor;
 
         private LearningPlayer() { }
 
-        public LearningPlayer(IKey2Generator generator, ICentroidResultPredictor predictor)
+        public LearningPlayer(IKeyGenerator generator, IStatResultPredictor predictor)
         {
             _generator = generator;
             _predictor = predictor;
@@ -26,8 +26,8 @@ namespace Sheepshead.Models.Players
             foreach(var legalCard in legalCards) 
             {
                 var key = _generator.GenerateKey(trick, this, legalCard);
-                var result = _predictor.GetPrediction(key);
-                if (result != null)
+                var result = _predictor.GetWeightedStat(key);
+                if (result != null && result.HandsTried > 0 && result.TricksTried > 0)
                     results.Add(legalCard, result);
             }
             ICard selectedCard;

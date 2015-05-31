@@ -6,7 +6,12 @@ using System.Reflection;
 
 namespace Sheepshead.Models.Players.Stats
 {
-    public class StatResultPredictor
+    public interface IStatResultPredictor
+    {
+        MoveStat GetWeightedStat(MoveStatUniqueKey key);
+    }
+
+    public class StatResultPredictor : IStatResultPredictor
     {
         IMoveStatRepository _repository;
 

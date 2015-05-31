@@ -18,7 +18,7 @@ namespace Sheepshead.Models.Players.Stats
             var indexOfTrick = trick.Hand.Tricks.IndexOf(trick);
             var queueRankOfPlayer = player.QueueRankInTrick(trick);
             var previousTricks = trick.Hand.Tricks.Take(indexOfTrick).ToList();
-            var startSuit = CardRepository.GetSuit(trick.OrderedMoves.First().Value);
+            var startSuit = trick.OrderedMoves.Any() ? (Suit?)CardRepository.GetSuit(trick.OrderedMoves.First().Value) : null;
             var curWinPair = GetCurrentWinner(trick, player, legalCard, queueRankOfPlayer, startSuit);
             var isOffenseSide = trick.Hand.Picker == player || trick.Hand.Partner == player || player.Cards.Contains(trick.PartnerCard);
             var onWinningSide = OnWinningSide(trick, player, curWinPair.Key, isOffenseSide);
@@ -34,7 +34,7 @@ namespace Sheepshead.Models.Players.Stats
             };
         }
 
-        private KeyValuePair<IPlayer, ICard> GetCurrentWinner(ITrick trick, IPlayer player, ICard legalCard, int queueRankOfPlayer, Suit startSuit)
+        private KeyValuePair<IPlayer, ICard> GetCurrentWinner(ITrick trick, IPlayer player, ICard legalCard, int queueRankOfPlayer, Suit? startSuit)
         {
             var precedingMoves = trick.OrderedMoves.Take(queueRankOfPlayer - 1).ToList();
             if (!precedingMoves.Any())
@@ -53,7 +53,7 @@ namespace Sheepshead.Models.Players.Stats
             return onWinningSide;
         }
 
-        private static bool CardWillOverpower(ICard legalCard, Suit startSuit, bool onWinningSide, ICard winningCard)
+        private static bool CardWillOverpower(ICard legalCard, Suit? startSuit, bool onWinningSide, ICard winningCard)
         {
             if (onWinningSide)
                 return false;
@@ -107,8 +107,8 @@ namespace Sheepshead.Models.Players.Stats
 
         private static int StrongerCards(ICard legalCard)
         {
-            const int totalTrump = 8 + 6;
-            const int failPerSuit = 6;
+            //const int totalTrump = 8 + 6;
+            //const int failPerSuit = 6;
             var curCardSuit = CardRepository.GetSuit(legalCard);
             var morePowerfulCards = 0;
             //if (curCardSuit != Suit.TRUMP && curCardSuit != startSuit)

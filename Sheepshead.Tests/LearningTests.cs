@@ -42,11 +42,11 @@ namespace Sheepshead.Tests
         public void LearningPlayer_GetMove()
         {
             var cardList = new List<ICard>() { new Mock<ICard>().Object, new Mock<ICard>().Object, new Mock<ICard>().Object };
-            var keyList = new List<MoveStatUniqueKey2>()
+            var keyList = new List<MoveStatUniqueKey>()
             {
-                new MoveStatUniqueKey2() { PointsHeld = 11 },
-                new MoveStatUniqueKey2() { PointsHeld = 10 },
-                new MoveStatUniqueKey2() { PointsHeld = 4 }
+                new MoveStatUniqueKey() { CardPoints = 11 },
+                new MoveStatUniqueKey() { CardPoints = 10 },
+                new MoveStatUniqueKey() { CardPoints = 4 }
             };
             var statList = new List<MoveStat>() 
             {
@@ -54,14 +54,14 @@ namespace Sheepshead.Tests
                 new MoveStat() { HandsWon = 74, HandsTried = 100, TricksWon = 69, TricksTried = 100 },
                 new MoveStat() { HandsWon = 49, HandsTried = 100, TricksWon = 98, TricksTried = 100 }
             };
-            var generatorMock = new Mock<IKey2Generator>();
+            var generatorMock = new Mock<IKeyGenerator>();
             generatorMock
                 .Setup(m => m.GenerateKey(It.IsAny<ITrick>(), It.IsAny<IPlayer>(), It.IsAny<ICard>()))
                 .Returns((ITrick t, IPlayer p, ICard c) => keyList[cardList.IndexOf(c)]);
-            var predictorMock = new Mock<ICentroidResultPredictor>();
+            var predictorMock = new Mock<IStatResultPredictor>();
             predictorMock
-                .Setup(m => m.GetPrediction(It.IsAny<MoveStatUniqueKey2>()))
-                .Returns((MoveStatUniqueKey2 key) => statList[keyList.IndexOf(key)]);
+                .Setup(m => m.GetWeightedStat(It.IsAny<MoveStatUniqueKey>()))
+                .Returns((MoveStatUniqueKey key) => statList[keyList.IndexOf(key)]);
             var trickMock = new Mock<ITrick>();
             trickMock.Setup(m => m.IsLegalAddition(It.IsAny<ICard>(), It.IsAny<IPlayer>())).Returns(true);
             var player = new LearningPlayer(generatorMock.Object, predictorMock.Object);
@@ -77,8 +77,8 @@ namespace Sheepshead.Tests
                 new MoveStat() { HandsWon = 49, HandsTried = 100, TricksWon = 98, TricksTried = 100 }
             };
             predictorMock
-                .Setup(m => m.GetPrediction(It.IsAny<MoveStatUniqueKey2>()))
-                .Returns((MoveStatUniqueKey2 key) => statList[keyList.IndexOf(key)]); 
+                .Setup(m => m.GetWeightedStat(It.IsAny<MoveStatUniqueKey>()))
+                .Returns((MoveStatUniqueKey key) => statList[keyList.IndexOf(key)]); 
             actualCard = player.GetMove(trickMock.Object);
             Assert.AreSame(cardList[1], actualCard, "We should see the get the second card in the list back because the first and second move stats have similar hand results, but the trick results are better for the second hand. Actual result: " + (cardList.IndexOf(actualCard) + 1));
 

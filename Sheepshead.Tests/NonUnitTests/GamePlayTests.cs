@@ -28,12 +28,12 @@ namespace Sheepshead.Tests.NonUnitTests
         //[TestMethod]
         public void LearningHelper_GenerateKeys()
         {
-            var predictorMock = new Mock<ICentroidResultPredictor>();
-            predictorMock.Setup(m => m.GetPrediction(It.IsAny<MoveStatUniqueKey2>())).Returns(null as MoveStat);
+            var predictorMock = new Mock<IStatResultPredictor>();
+            predictorMock.Setup(m => m.GetWeightedStat(It.IsAny<MoveStatUniqueKey>())).Returns(null as MoveStat);
             using (_sw = new StreamWriter(@"C:\Temp\GeneratedKeys.csv"))
             {
                 var playerList = new List<IPlayer>();
-                var generator = new Key2Generator();
+                var generator = new KeyGenerator();
                 for (var i = 0; i < 5; ++i)
                 {
                     var player = new LearningPlayer(generator, predictorMock.Object);
@@ -44,24 +44,15 @@ namespace Sheepshead.Tests.NonUnitTests
                             args.Card.ToAbbr() + "," +
                             args.Card.Rank + "," +
                             args.Card.Points + "," +
-                            key.OffenseSide + "," +
-                            key.PickerDone + "," +
-                            key.PartnerDone + "," +
-                            key.PointsInTrick + "," +
-                            key.HighestRankInTrick + "," +
-                            key.WinningSide + "," +
-                            key.ThisCardMorePowerful + "," +
-                            key.MorePowerfulUnknownCards + "," +
-                            key.RemainingUnknownPoints + "," +
-                            key.MorePowerfulHeld + "," +
-                            key.PointsHeld + "," +
-                            key.CardsHeldWithPoints + "," +
-                            key.MoveIndex + "," +
-                            key.TrickIndex
+                            key.CardWillOverpower + "," +
+                            key.OpponentPercentDone + "," +
+                            key.CardPoints + "," +
+                            key.UnknownStrongerCards + "," +
+                            key.HeldStrongerCards
                         );
                     };
                 }
-                _sw.WriteLine("Card,Rank,Points,Offense Side,Picker Done,Partner Done,Points In Trick,Highest Rank In Trick,Winning Side,This Card More Power,More Powerful Unknown Cards,Remaining Unknown Points,More Powerful Held,Points Held,Cards Held With Points,Move Index,Trick Index");
+                _sw.WriteLine("Card,Rank,Points,Card Will Overpower,Opponent Percent Done,Card Points,Unknown Stronger Cards,Held Stronger Cards");
                 PlayGame(playerList, 1, @"c:\temp\LearningPlayerStage1.txt");
             }
         }
@@ -81,9 +72,9 @@ namespace Sheepshead.Tests.NonUnitTests
                 _sw.WriteLine("Trick % 1,Trick % 2,Diff,Hand % 1,Hand % 2,Diff,Offense Side,Picker Done,Partner Done,Points In Trick,Highest Rank In Trick,Winning Side,This Card More Power,More Powerful Unknown Cards,Remaining Unknown Points,More Powerful Held,Points Held,Cards Held With Points,Move Index,Trick Index");
                 for (var i = 0; i < 5; ++i)
                 {
-                    var lPlayer = new LearningPlayer(new Key2Generator(), _predictor1);
-                    playerList.Add(lPlayer);
-                    lPlayer.OnMove += lPlayer_OnMove;
+                    //var lPlayer = new LearningPlayer(new KeyGenerator(), _predictor1);
+                    //playerList.Add(lPlayer);
+                    //lPlayer.OnMove += lPlayer_OnMove;
                 }
                 var handNumber = loadSize * 2;
                 PlayGame(playerList, handNumber, @"c:\temp\LearningPlayerStage1.txt");
@@ -143,8 +134,8 @@ namespace Sheepshead.Tests.NonUnitTests
                     var wins = new double[5];
                     for (var i = 0; i < 5; ++i)
                     {
-                        BasicPlayer lPlayer = i < noOfLearning ? new LearningPlayer(new Key2Generator(), predictor) : new BasicPlayer();
-                        playerList.Add(lPlayer);
+                        //BasicPlayer lPlayer = i < noOfLearning ? new LearningPlayer(new Key2Generator(), predictor) : new BasicPlayer();
+                        //playerList.Add(lPlayer);
                     }
                     var handNumber = 1 * 1000 * 1000;
                     PlayGame(playerList, handNumber, "", (object sender, EventArgs args) =>
