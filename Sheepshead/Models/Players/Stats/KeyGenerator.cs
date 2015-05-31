@@ -25,7 +25,7 @@ namespace Sheepshead.Models.Players.Stats
             return new MoveStatUniqueKey()
             {
                 CardWillOverpower = CardWillOverpower(legalCard, startSuit, onWinningSide, curWinPair.Value),
-                OpponentPortionDone = OpponentPortionDone(queueRankOfPlayer, trick, isOffenseSide, indexOfTrick),
+                OpponentPercentDone = OpponentPortionDone(queueRankOfPlayer, trick, isOffenseSide, indexOfTrick),
                 CardPoints = (onWinningSide ? 1 : -1) * legalCard.Points,
                 UnknownStrongerCards = StrongerUnknownCards(trick, player, legalCard, queueRankOfPlayer, previousTricks, startSuit),
                 HeldStrongerCards = StrongerHeldCards(player, legalCard, previousTricks, startSuit)
@@ -60,7 +60,7 @@ namespace Sheepshead.Models.Players.Stats
             return cardWillOverpower;
         }
 
-        private static double OpponentPortionDone(int queueRankOfPlayer, ITrick trick, bool isOffenseSide, int indexOfTrick)
+        private static int OpponentPortionDone(int queueRankOfPlayer, ITrick trick, bool isOffenseSide, int indexOfTrick)
         {
             //Notice we don't care if the current player is partner or not.  If current player is partner, partner has not played his turn yet.
             var partnerKnown = !PartnerUnknown(trick, indexOfTrick);
@@ -72,12 +72,12 @@ namespace Sheepshead.Models.Players.Stats
             if (isOffenseSide)
             {
                 var opponentCount = trick.PartnerCard == null ? trick.PlayerCount - 1 : trick.PlayerCount - 2;
-                return (double)(queueRankOfPlayer - offenseDone) / opponentCount;
+                return (int)Math.Round((double)(queueRankOfPlayer - offenseDone) / opponentCount * 100);
             }
             else
             {
                 var opponentCount = trick.PartnerCard == null ? 1 : 2;
-                return (double)offenseDone / opponentCount;
+                return (int)Math.Round((double)offenseDone / opponentCount * 100);
             }
         }
 

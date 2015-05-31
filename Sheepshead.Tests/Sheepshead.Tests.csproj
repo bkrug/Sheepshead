@@ -105,6 +105,7 @@
     <Compile Include="GameRepositoryTests.cs" />
     <Compile Include="GameTests.cs" />
     <Compile Include="HandTest.cs" />
+    <Compile Include="MoveStatTests.cs" />
     <Compile Include="NonUnitTests\GamePlayTests.cs" />
     <Compile Include="NonUnitTests\LearningStats.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -140,7 +140,9 @@
     <Compile Include="Models\Players\Stats\KeyGenerator.cs" />
     <Compile Include="Models\Players\Stats\MoveStat.cs" />
     <Compile Include="Models\Players\Stats\MoveStatCentroid.cs" />
+    <Compile Include="Models\Players\Stats\MoveStatRepository.cs" />
     <Compile Include="Models\Players\Stats\MoveStatUniqueKey2.cs" />
+    <Compile Include="Models\Players\Stats\StatResultPredictor.cs" />
     <Compile Include="Models\SummaryLoader.cs" />
     <Compile Include="Models\SummaryReader.cs" />
     <Compile Include="Models\Trick.cs" />

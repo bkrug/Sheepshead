@@ -17,12 +17,20 @@ namespace Sheepshead.Models.Players.Stats
         public double? TrickPortionWon { get { return TricksTried == 0 ? null : (double?)TricksWon / TricksTried; } }
         [ScriptIgnore]
         public double? HandPortionWon { get { return HandsTried == 0 ? null : (double?)HandsWon / HandsTried; } }
+
+        public void AddOtherStat(MoveStat otherStat)
+        {
+            TricksWon += otherStat.TricksWon;
+            TricksTried += otherStat.TricksTried;
+            HandsWon += otherStat.HandsWon;
+            HandsTried += otherStat.HandsTried;
+        }
     }
 
     public struct MoveStatUniqueKey
     {
         public bool CardWillOverpower;   //Only true if this card changes the player's win state from loosing to winning
-        public double OpponentPortionDone;  //If partner unknown, this won't reach 1.0 unless current player is last.
+        public int OpponentPercentDone;  //If partner unknown, this won't reach 1.0 unless current player is last.
         public int CardPoints;           //Negative if given to opposing team
         public int UnknownStrongerCards;
         public int HeldStrongerCards;   //That have not been played
