@@ -123,7 +123,7 @@ namespace Sheepshead.Tests.NonUnitTests
         }
 
         //[TestMethod]
-        public void LearningVsBasicPlayer()
+        public void LearningVsBasicPlayerOld()
         {
             var predictor = CentroidResultPredictor.FromFile(@"C:\Temp\learningStatsStage1-2500hands.json");
             using (var sw = new StreamWriter(@"C:\Temp\learningVsBasicPlayer.txt"))
@@ -153,6 +153,50 @@ namespace Sheepshead.Tests.NonUnitTests
                         sw.WriteLine("Player " + i + ": " + (wins[i]/handNumber).ToString("P3"));
                     sw.WriteLine();
                 }
+            }
+        }
+
+        [TestMethod]
+        public void LearningVsBasicPlayer()
+        {
+            var repository = MoveStatRepository.Instance;
+            var predictor = new StatResultPredictor(repository);
+            using (var sw = new StreamWriter(@"C:\Temp\learningVsBasicPlayer.txt"))
+            {
+                var playerList = new List<IPlayer>() {
+                    new BasicPlayer(),
+                    new LearningPlayer(new KeyGenerator(), predictor),
+                    new BasicPlayer(),
+                    new LearningPlayer(new KeyGenerator(), predictor),
+                    new BasicPlayer()
+                };
+                var wins = new double[5];
+                var handNumber = 1 * 1000 * 1000;
+                var handsCompleted = 0;
+                var nextReport = 2;
+                sw.WriteLine("Players 1 and 3 are Learning Players");
+                sw.Flush();
+                PlayGame(playerList, handNumber, @"C:\Temp\learningVsBasicPlayerHandSummaries.txt", (object sender, EventArgs args) =>
+                {
+                    ++handsCompleted;
+                    var hand = sender as IHand;
+                    var scores = hand.Scores();
+                    for (var s = 0; s < scores.Count; ++s)
+                    {
+                        if (scores[playerList[s]] > 0)
+                            wins[s] += 1;
+                    }
+                    if (handsCompleted == nextReport)
+                    {
+                        nextReport *= 2;
+                        //nextReport *= (int)Math.Round(Math.Sqrt(10));
+                        sw.WriteLine("Games Played: " + handsCompleted);
+                        for (var i = 0; i < wins.Length; ++i)
+                            sw.WriteLine("Player " + i + ": " + (wins[i] / handsCompleted).ToString("P3"));
+                        sw.WriteLine();
+                        sw.Flush();
+                    }
+                });
             }
         }
 
