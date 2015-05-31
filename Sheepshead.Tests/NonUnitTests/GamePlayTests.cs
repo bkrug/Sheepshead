@@ -156,7 +156,7 @@ namespace Sheepshead.Tests.NonUnitTests
             }
         }
 
-        [TestMethod]
+        //[TestMethod]
         public void LearningVsBasicPlayer()
         {
             var repository = MoveStatRepository.Instance;
