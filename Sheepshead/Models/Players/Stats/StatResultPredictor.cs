@@ -17,50 +17,44 @@ namespace Sheepshead.Models.Players.Stats
 
         public MoveStat GetWeightedStat(MoveStatUniqueKey key)
         {
-            var mainStat = _repository.GetRecordedResults(key);
-            if (mainStat.HandsTried >= 1000)
-                return mainStat;
-            var requiredStats = 1000;
+            var realStat = _repository.GetRecordedResults(key);
+            var minimumnTries = 1000;
+            if (realStat.HandsTried >= minimumnTries)
+                return realStat;
             var usedKeys = new List<MoveStatUniqueKey>();
             double offset = 0;
-            var stat = new MoveStat();
-            while (stat.HandsTried < requiredStats && offset <= 0.509)
+            var generatedStat = new MoveStat();
+            while (generatedStat.HandsTried < minimumnTries && offset <= 0.509)
             {
-                var offsetKey = new MoveStatUniqueKey();
-                offsetKey.CardWillOverpower = key.CardWillOverpower;
                 var propertyNames = new List<string>();
                 var ranges = new List<RangeDetail>();
-                foreach (var rangeKey in MaxRanges.Keys)
-                {
-                    int centerValue = (int)typeof(MoveStatUniqueKey).GetField(rangeKey).GetValue(key);
-                    var extreme = (MaxRanges[rangeKey].Max - MaxRanges[rangeKey].Min) / 2;
-                    propertyNames.Add(rangeKey);
-                    ranges.Add(new RangeDetail()
-                    {
-                        Min = (int)Math.Round(centerValue - offset * extreme),
-                        Max = (int)Math.Round(centerValue + offset * extreme)
-                    });
-                }
-                var startingKey = new MoveStatUniqueKey()
-                {
-                    CardWillOverpower = key.CardWillOverpower
-                };
-                AddKeys(startingKey, usedKeys, propertyNames, ranges, ref stat);
+                CreateSearchRange(key, offset, propertyNames, ranges);
+                AddKeys(key, usedKeys, propertyNames, ranges, ref generatedStat);
                 offset = Math.Round(offset + 0.05, 5);
             }
-            var overpowers = usedKeys.Select(k => k.CardWillOverpower).Distinct().ToList();
-            var percent = usedKeys.Select(k => k.OpponentPercentDone).OrderBy(k => k).Distinct().ToList();
-            var points = usedKeys.Select(k => k.CardPoints).OrderBy(k => k).Distinct().ToList();
-            var unknowns = usedKeys.Select(k => k.UnknownStrongerCards).OrderBy(k => k).Distinct().ToList();
-            var inhands = usedKeys.Select(k => k.HeldStrongerCards).OrderBy(k => k).Distinct().ToList();
-            return stat;
+            return generatedStat;
+        }
+
+        private void CreateSearchRange(MoveStatUniqueKey key, double offset, List<string> propertyNames, List<RangeDetail> ranges)
+        {
+            foreach (var rangeKey in MaxRanges.Keys)
+            {
+                int centerValue = (int)typeof(MoveStatUniqueKey).GetField(rangeKey).GetValue(key);
+                var extreme = (MaxRanges[rangeKey].Max - MaxRanges[rangeKey].Min) / 2;
+                propertyNames.Add(rangeKey);
+                ranges.Add(new RangeDetail()
+                {
+                    Min = (int)Math.Round(centerValue - offset * extreme),
+                    Max = (int)Math.Round(centerValue + offset * extreme)
+                });
+            }
         }
 
         private void AddKeys(MoveStatUniqueKey oldKey, List<MoveStatUniqueKey> usedKeys, List<string> propertyNames, List<RangeDetail> ranges, ref MoveStat stat)
         {
             var propertyName = propertyNames.First();
             var range = ranges.First();
-            foreach (var v in GetRange(propertyName, range))
+            foreach (var v in GetSearchValues(propertyName, range))
             {
                 var newKey = oldKey;
                 newKey.GetType().GetField(propertyName).SetValueDirect(__makeref(newKey), v);
@@ -75,13 +69,13 @@ namespace Sheepshead.Models.Players.Stats
             }
         }
 
-        private IEnumerable<int> GetRange(string propertyName, RangeDetail currentRange)
+        private IEnumerable<int> GetSearchValues(string propertyName, RangeDetail limitedRange)
         {
-            var range = MaxRanges[propertyName];
-            var minVal = Math.Max(currentRange.Min, range.Min);
-            var maxVal = Math.Min(currentRange.Max, range.Max);
-            if (range.ValidValues != null && range.ValidValues.Any())
-                return range.ValidValues.Where(v => v >= minVal && v <= maxVal);
+            var maxRange = MaxRanges[propertyName];
+            var minVal = Math.Max(limitedRange.Min, maxRange.Min);
+            var maxVal = Math.Min(limitedRange.Max, maxRange.Max);
+            if (maxRange.ValidValues != null && maxRange.ValidValues.Any())
+                return maxRange.ValidValues.Where(v => v >= minVal && v <= maxVal);
             else
             {
                 var list = new List<int>();
