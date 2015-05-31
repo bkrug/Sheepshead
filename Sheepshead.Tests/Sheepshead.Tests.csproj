@@ -101,6 +101,7 @@
   <ItemGroup>
     <Compile Include="ClusterTests.cs" />
     <Compile Include="CardTests.cs" />
+    <Compile Include="NonUnitTests\KeyGeneratorTests.cs" />
     <Compile Include="LearningTests.cs" />
     <Compile Include="GameRepositoryTests.cs" />
     <Compile Include="GameTests.cs" />

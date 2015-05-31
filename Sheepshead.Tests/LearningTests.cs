@@ -18,12 +18,13 @@ namespace Sheepshead.Tests
     {
         [TestMethod]
         public void LearningHelper_FromSummary() {
-            var summary = "7HJD,2ASTC,8H7SAHJDKC,8DQS8SAD9H,KSACJH9CTH,QDKH7C7HJS,7DJC9DKDTS,9SQCTD8CQH";
+            var summary = "7HAC,2ASTC,8H7SAHJDKC,8DQS8SAD9H,KSACJH9CTH,QDKH7C7HJS,7DJC9DKDTS,9SQCTD8CQH";
             IHand hand = SummaryReader.FromSummary(summary);
             var players = hand.Players;
             Assert.AreEqual(CardRepository.Instance[StandardSuite.HEARTS, CardType.N7], hand.Deck.Blinds[0]);
-            Assert.AreEqual(CardRepository.Instance[StandardSuite.DIAMONDS, CardType.JACK], hand.Deck.Blinds[1]);
+            Assert.AreEqual(CardRepository.Instance[StandardSuite.CLUBS, CardType.ACE], hand.Deck.Blinds[1]);
             Assert.AreSame(hand.Players[2 - 1], hand.Picker, "Second player is picker.");
+            Assert.AreSame(hand.Players[4 - 1], hand.Partner, "Forth player is partner.");
             Assert.AreEqual(CardRepository.Instance[StandardSuite.CLUBS, CardType.N10], hand.Deck.Buried[1]);
             Assert.AreEqual(CardRepository.Instance[StandardSuite.HEARTS, CardType.N8], hand.Tricks[0].CardsPlayed[players[0]]);
             Assert.AreEqual(CardRepository.Instance[StandardSuite.CLUBS, CardType.KING], hand.Tricks[0].CardsPlayed[players[4]]);

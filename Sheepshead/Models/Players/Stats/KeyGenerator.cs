@@ -22,19 +22,21 @@ namespace Sheepshead.Models.Players.Stats
             var curWinPair = GetCurrentWinner(trick, player, legalCard, queueRankOfPlayer, startSuit);
             var isOffenseSide = trick.Hand.Picker == player || trick.Hand.Partner == player || player.Cards.Contains(trick.PartnerCard);
             var onWinningSide = OnWinningSide(trick, player, curWinPair.Key, isOffenseSide);
+            var cardWillOverpower = CardWillOverpower(legalCard, startSuit, onWinningSide, curWinPair.Value);
+            var willBeOnWinningSide = onWinningSide || cardWillOverpower;
             return new MoveStatUniqueKey()
             {
-                CardWillOverpower = CardWillOverpower(legalCard, startSuit, onWinningSide, curWinPair.Value),
-                OpponentPercentDone = OpponentPortionDone(queueRankOfPlayer, trick, isOffenseSide, indexOfTrick),
-                CardPoints = (onWinningSide ? 1 : -1) * legalCard.Points,
-                UnknownStrongerCards = StrongerUnknownCards(trick, player, legalCard, queueRankOfPlayer, previousTricks, startSuit),
-                HeldStrongerCards = StrongerHeldCards(player, legalCard, previousTricks, startSuit)
+                CardWillOverpower = cardWillOverpower,
+                OpponentPercentDone = OpponentPortionDone(queueRankOfPlayer, trick, player, isOffenseSide, indexOfTrick),
+                CardPoints = (willBeOnWinningSide ? 1 : -1) * legalCard.Points,
+                UnknownStrongerCards = StrongerUnknownCards(trick, player, legalCard, queueRankOfPlayer, previousTricks),
+                HeldStrongerCards = StrongerHeldCards(player, legalCard, previousTricks, trick)
             };
         }
 
         private KeyValuePair<IPlayer, ICard> GetCurrentWinner(ITrick trick, IPlayer player, ICard legalCard, int queueRankOfPlayer, Suit startSuit)
         {
-            var precedingMoves = trick.OrderedMoves.Take(queueRankOfPlayer).ToList();
+            var precedingMoves = trick.OrderedMoves.Take(queueRankOfPlayer - 1).ToList();
             if (!precedingMoves.Any())
                 return new KeyValuePair<IPlayer, ICard>(null, null);
             var curWinPair = precedingMoves
@@ -47,7 +49,7 @@ namespace Sheepshead.Models.Players.Stats
         private static bool OnWinningSide(ITrick trick, IPlayer player, IPlayer curWinner, bool isOffenseSide)
         {
             var winnerIsOffense = trick.Hand.Picker == curWinner || trick.Hand.Partner == curWinner;
-            var onWinningSide = winnerIsOffense == isOffenseSide;
+            var onWinningSide = curWinner != null && winnerIsOffense == isOffenseSide;
             return onWinningSide;
         }
 
@@ -55,28 +57,30 @@ namespace Sheepshead.Models.Players.Stats
         {
             if (onWinningSide)
                 return false;
+            if (winningCard == null)
+                return true;
             var cardSuite = CardRepository.GetSuit(legalCard);
             var cardWillOverpower = !onWinningSide && legalCard.Rank < winningCard.Rank && (cardSuite == Suit.TRUMP || cardSuite == startSuit);
             return cardWillOverpower;
         }
 
-        private static int OpponentPortionDone(int queueRankOfPlayer, ITrick trick, bool isOffenseSide, int indexOfTrick)
+        private static int OpponentPortionDone(int queueRankOfPlayer, ITrick trick, IPlayer player, bool isOffenseSide, int indexOfTrick)
         {
-            //Notice we don't care if the current player is partner or not.  If current player is partner, partner has not played his turn yet.
             var partnerKnown = !PartnerUnknown(trick, indexOfTrick);
             var pickerDone = queueRankOfPlayer > trick.QueueRankOfPicker;
             var partnerDone = partnerKnown ? queueRankOfPlayer > trick.QueueRankOfPartner : (bool?)null;
+            var isParnter = player.Cards.Contains(trick.PartnerCard) || trick.QueueRankOfPartner == queueRankOfPlayer;
             var offenseDone = (pickerDone ? 1 : 0) + (partnerDone == true ? 1 : 0);
-            if (queueRankOfPlayer == trick.PlayerCount - 1)
-                return 1;
+            if (queueRankOfPlayer == trick.PlayerCount)
+                return 100;
             if (isOffenseSide)
             {
-                var opponentCount = trick.PartnerCard == null ? trick.PlayerCount - 1 : trick.PlayerCount - 2;
-                return (int)Math.Round((double)(queueRankOfPlayer - offenseDone) / opponentCount * 100);
+                var opponentCount = partnerKnown || isParnter ? trick.PlayerCount - 2 : trick.PlayerCount - 1;
+                return (int)Math.Round((double)((queueRankOfPlayer - 1) - offenseDone) / opponentCount * 100);
             }
             else
             {
-                var opponentCount = trick.PartnerCard == null ? 1 : 2;
+                var opponentCount = partnerKnown ? 2 : 1;
                 return (int)Math.Round((double)offenseDone / opponentCount * 100);
             }
         }
@@ -93,25 +97,26 @@ namespace Sheepshead.Models.Players.Stats
             return !partnerPosition.HasValue || partnerPosition < trick.Hand.PartnerCardPlayed[1];
         }
 
-        private static int StrongerUnknownCards(ITrick trick, IPlayer player, ICard legalCard, int queueRankOfPlayer, List<ITrick> previousTricks, Suit startSuit)
+        private static int StrongerUnknownCards(ITrick trick, IPlayer player, ICard legalCard, int queueRankOfPlayer, List<ITrick> previousTricks)
         {
-            var strongerCards = StrongerCards(startSuit, legalCard);
-            var knownStrongerCards = KnownStrongerCards(startSuit, trick, player, legalCard, queueRankOfPlayer, previousTricks);
+            var strongerCards = StrongerCards(legalCard);
+            var knownStrongerCards = KnownStrongerCards(trick, player, legalCard, queueRankOfPlayer, previousTricks);
             var strongerUnknownCards = strongerCards - knownStrongerCards;
             return strongerUnknownCards;
         }
 
-        private static int StrongerCards(Suit startSuit, ICard legalCard)
+        private static int StrongerCards(ICard legalCard)
         {
             const int totalTrump = 8 + 6;
             const int failPerSuit = 6;
             var curCardSuit = CardRepository.GetSuit(legalCard);
             var morePowerfulCards = 0;
-            if (curCardSuit != Suit.TRUMP && curCardSuit != startSuit)
-                morePowerfulCards = totalTrump + failPerSuit;
+            //if (curCardSuit != Suit.TRUMP && curCardSuit != startSuit)
+            //    morePowerfulCards = totalTrump + failPerSuit;
             if (curCardSuit == Suit.TRUMP)
                 morePowerfulCards = legalCard.Rank - 1;
-            if (curCardSuit == startSuit)
+            //if (curCardSuit == startSuit)
+            else
                 morePowerfulCards = CountMorePowerOfSuit(legalCard, morePowerfulCards);
             return morePowerfulCards;
         }
@@ -144,26 +149,27 @@ namespace Sheepshead.Models.Players.Stats
             return morePowerfulCards;
         }
 
-        private static int KnownStrongerCards(Suit startSuit, ITrick trick, IPlayer player, ICard legalCard, int queueRankOfPlayer, List<ITrick> previousTricks)
+        private static int KnownStrongerCards(ITrick trick, IPlayer player, ICard legalCard, int queueRankOfPlayer, List<ITrick> previousTricks)
         {
             var knownCards = previousTricks.SelectMany(t => t.OrderedMoves.Select(m => m.Value)).ToList();
-            knownCards.AddRange(trick.OrderedMoves.Take(queueRankOfPlayer).Select(m => m.Value));
+            knownCards.AddRange(trick.OrderedMoves.Take(queueRankOfPlayer - 1).Select(m => m.Value));
             if (trick.Hand.Picker == player)
                 knownCards.AddRange(trick.Hand.Deck.Buried);
-            knownCards = knownCards.Union(player.Cards).ToList();
+            var playerCards = player.Cards.Union(trick.Hand.Tricks.SelectMany(t => t.CardsPlayed.Where(m => m.Key == player).Select(m => m.Value)));
+            knownCards = knownCards.Union(playerCards).ToList();
             var knownStrongerCards = knownCards
-                                        .Where(c => CardRepository.GetSuit(c) == startSuit || CardRepository.GetSuit(c) == Suit.TRUMP)
+                                        .Where(c => CardRepository.GetSuit(c) == CardRepository.GetSuit(legalCard) || CardRepository.GetSuit(c) == Suit.TRUMP)
                                         .Count(c => c.Rank < legalCard.Rank);
             return knownStrongerCards;
         }
 
-        private static int StrongerHeldCards(IPlayer player, ICard legalCard, List<ITrick> previousTricks, Suit startSuit)
+        private static int StrongerHeldCards(IPlayer player, ICard legalCard, List<ITrick> previousTricks, ITrick trick)
         {
-            var heldCards = player.Cards.ToList();
+            var heldCards = player.Cards.Union(trick.Hand.Tricks.SelectMany(t => t.CardsPlayed.Where(m => m.Key == player).Select(m => m.Value))).ToList();
             foreach (var card in previousTricks.Select(t => t.CardsPlayed[player]))
                 heldCards.Remove(card);
             heldCards.Remove(legalCard);
-            var morePowerfulHeld = heldCards.Where(c => CardRepository.GetSuit(c) == Suit.TRUMP || CardRepository.GetSuit(c) == startSuit)
+            var morePowerfulHeld = heldCards.Where(c => CardRepository.GetSuit(c) == Suit.TRUMP || CardRepository.GetSuit(c) == CardRepository.GetSuit(legalCard))
                                               .Count(c => c.Rank < legalCard.Rank);
             return morePowerfulHeld;
         }

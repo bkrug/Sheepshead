@@ -105,6 +105,7 @@ namespace Sheepshead.Tests
 
             var rnd = new Random(32918);
             {
+                //In this case there is enough data that the system can just look at the stat that relates to one specific key.
                 MoveStat testResult = new MoveStat()
                 {
                     TricksTried = 1000,
@@ -121,6 +122,7 @@ namespace Sheepshead.Tests
                 Assert.AreEqual(testResult.HandPortionWon.Value, results.HandPortionWon.Value, 0.01);
             }
             {
+                //In this case there is very little data so the system will look at the maximum range of similar keys.
                 MoveStat testResult = new MoveStat()
                 {
                     TricksTried = 1,
@@ -146,6 +148,7 @@ namespace Sheepshead.Tests
                 Assert.AreEqual(expectedHandsWon, results.HandPortionWon.Value, 0.01);
             }
             {
+                //In this case there is too little data for the system to look at only one key's stats, but there is much more than in the previous case.
                 var dict = new Dictionary<MoveStatUniqueKey, MoveStat>() 
                 {
                     { 

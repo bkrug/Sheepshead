@@ -45,6 +45,7 @@ namespace Sheepshead.Models
             var playerCount = trickSummaries[0].Length / 2;
 
             var playerList = GetPlayerList(playerCount);
+            GivePlayersCards(trickSummaries, playerList);
             var buriedList = String.IsNullOrEmpty(buriedSummary)
                 ? null
                 : new List<ICard>() { GetCard(buriedSummary.Substring(1, 2)), GetCard(buriedSummary.Substring(3, 2)) };
@@ -106,6 +107,19 @@ namespace Sheepshead.Models
             return hand;
         }
 
+        private static void GivePlayersCards(List<string> trickSummaries, List<IPlayer> playerList)
+        {
+            foreach (var trickSummary in trickSummaries)
+            {
+                for (var p = 0; p < playerList.Count; ++p)
+                {
+                    var card = GetCard(trickSummary.Substring(p * 2, 2));
+                    if (!playerList[p].Cards.Contains(card))
+                        playerList[p].Cards.Add(card);
+                }
+            }
+        }
+
         private static void BuildTrickList(List<string> trickSummaries, List<IPlayer> playerList, Hand hand)
         {
             foreach (var trickSummary in trickSummaries)
@@ -114,8 +128,6 @@ namespace Sheepshead.Models
                 for (var p = 0; p < hand.PlayerCount; ++p)
                 {
                     var card = GetCard(trickSummary.Substring(p * 2, 2));
-                    if (!playerList[p].Cards.Contains(card))
-                        playerList[p].Cards.Add(card);
                     trick.Add(playerList[p], card);
                 }
             }
