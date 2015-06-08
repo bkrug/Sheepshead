@@ -6,7 +6,7 @@ using Sheepshead.Models.Players;
 using Sheepshead.Models.Players.Stats;
 using System.IO;
 
-namespace Sheepshead.Models
+namespace Sheepshead.Models.Players.Stats
 {
     public class LearningHelper
     {
