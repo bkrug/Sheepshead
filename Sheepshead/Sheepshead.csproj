@@ -124,7 +124,6 @@
     </Compile>
     <Compile Include="Models\BaseRepository.cs" />
     <Compile Include="Models\Card.cs" />
-    <Compile Include="Models\Key2Generator.cs" />
     <Compile Include="Models\LearningHelper.cs" />
     <Compile Include="Models\Players\BasicPlayer.cs" />
     <Compile Include="Models\Players\ComputerPlayer.cs" />
@@ -132,18 +131,11 @@
     <Compile Include="Models\Hand.cs" />
     <Compile Include="Models\Players\LearningPlayer.cs" />
     <Compile Include="Models\Players\NewbiePlayer.cs" />
-    <Compile Include="Models\Players\Stats\CentroidResultPredictor.cs" />
-    <Compile Include="Models\Players\Stats\Clusterer.cs" />
-    <Compile Include="Models\Players\Stats\ClusterResult.cs" />
-    <Compile Include="Models\Players\Stats\ClusterUtils.cs" />
-    <Compile Include="Models\Players\Stats\InnerClusterer.cs" />
     <Compile Include="Models\Players\Stats\KeyGenerator.cs" />
     <Compile Include="Models\Players\Stats\MoveStat.cs" />
-    <Compile Include="Models\Players\Stats\MoveStatCentroid.cs" />
     <Compile Include="Models\Players\Stats\MoveStatRepository.cs" />
-    <Compile Include="Models\Players\Stats\MoveStatUniqueKey2.cs" />
     <Compile Include="Models\Players\Stats\StatResultPredictor.cs" />
-    <Compile Include="Models\SummaryLoader.cs" />
+    <Compile Include="Models\SaveLocations.cs" />
     <Compile Include="Models\SummaryReader.cs" />
     <Compile Include="Models\Trick.cs" />
     <Compile Include="Models\TurnState.cs" />

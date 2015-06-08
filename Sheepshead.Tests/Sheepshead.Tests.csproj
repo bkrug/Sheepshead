@@ -99,7 +99,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ClusterTests.cs" />
     <Compile Include="CardTests.cs" />
     <Compile Include="KeyGeneratorTests.cs" />
     <Compile Include="LearningTests.cs" />
