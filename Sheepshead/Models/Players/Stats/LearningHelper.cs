@@ -41,7 +41,7 @@ namespace Sheepshead.Models.Players.Stats
         private void UpdateMoveStats(object sender, EventArgs e)
         {
             var hand = (IHand)sender;
-            var generator = new KeyGenerator();
+            var generator = new MoveKeyGenerator();
             var handWinners = hand.Scores().Where(s => s.Value > 0).Select(s => s.Key).ToList();
             foreach (var trick in hand.Tricks)
             {
@@ -53,8 +53,8 @@ namespace Sheepshead.Models.Players.Stats
                     var card = move.Value;
                     var key = generator.GenerateKey(trick, player, card);
                     var playerIsOffense = hand.Picker == player || hand.Partner == player;
-                    MoveStatRepository.Instance.IncrementTrickResult(key, offenseWon == playerIsOffense);
-                    MoveStatRepository.Instance.IncrementHandResult(key, handWinners.Contains(player));
+                    RepositoryRepository.Instance.MoveStatRepository.IncrementTrickResult(key, offenseWon == playerIsOffense);
+                    RepositoryRepository.Instance.MoveStatRepository.IncrementHandResult(key, handWinners.Contains(player));
                 }
             }
         }

@@ -10,13 +10,9 @@ namespace Sheepshead
 {
     public class LoadMoveStatRepository
     {
-        private const string SAVE_LOCATION = @"c:\temp\game-stat.json";
-
         public static void Load()
         {
-            MoveStatRepository.SaveLocation = SAVE_LOCATION;
-            using (var reader = new StreamReaderWrapper(SAVE_LOCATION))
-                MoveStatRepository.FromFile(reader);
+            var superRepo = RepositoryRepository.Instance;
         }
     }
 }

@@ -15,7 +15,7 @@ namespace Sheepshead.Tests
         [TestMethod]
         public void MoveStat_AddStat()
         {
-            var repository = MoveStatRepository.Instance;
+            var repository = new MoveStatRepository();
             repository.UnitTestRefresh();
             var key = new MoveStatUniqueKey()
             {
@@ -48,7 +48,7 @@ namespace Sheepshead.Tests
         [TestMethod]
         public void MoveStat_GetResultWithNoEntry()
         {
-            var repository = MoveStatRepository.Instance;
+            var repository = new MoveStatRepository();
             repository.UnitTestRefresh();
             var key = new MoveStatUniqueKey()
             {
@@ -116,7 +116,7 @@ namespace Sheepshead.Tests
                 var statCount = 100;
                 var dict = GetDictionary(rnd, statCount, testKey, testResult);
                 var mockRepository = GetRepositoryMock1(dict);
-                var predictor = new StatResultPredictor(mockRepository.Object);
+                var predictor = new MoveStatResultPredictor(mockRepository.Object);
                 var results = predictor.GetWeightedStat(testKey);
                 Assert.AreEqual(testResult.TrickPortionWon.Value, results.TrickPortionWon.Value, 0.01);
                 Assert.AreEqual(testResult.HandPortionWon.Value, results.HandPortionWon.Value, 0.01);
@@ -133,7 +133,7 @@ namespace Sheepshead.Tests
                 var statCount = 100;
                 var dict = GetDictionary(rnd, statCount, testKey, testResult);
                 var mockRepository = GetRepositoryMock1(dict);
-                var predictor = new StatResultPredictor(mockRepository.Object);
+                var predictor = new MoveStatResultPredictor(mockRepository.Object);
                 var results = predictor.GetWeightedStat(testKey);
                 var items = dict.Where(kvp =>
                     kvp.Key.CardWillOverpower == false &&
@@ -173,7 +173,7 @@ namespace Sheepshead.Tests
                     },
                 };
                 var mockRepository = GetRepositoryMock1(dict);
-                var predictor = new StatResultPredictor(mockRepository.Object);
+                var predictor = new MoveStatResultPredictor(mockRepository.Object);
                 var results = predictor.GetWeightedStat(testKey);
                 var items = dict.Take(3).ToList();
                 var expectedTricksWon = (double)items.Sum(i => i.Value.TricksWon) / items.Sum(i => i.Value.TricksTried);
@@ -284,7 +284,7 @@ namespace Sheepshead.Tests
             });
 
             //Save some stats to a file
-            var repository = MoveStatRepository.Instance;
+            var repository = new MoveStatRepository();
             repository.UnitTestRefresh();
             var key1 = new MoveStatUniqueKey
             {
@@ -315,7 +315,7 @@ namespace Sheepshead.Tests
             Assert.AreEqual(0, repository.GetRecordedResults(key1).HandsTried, "There should no longer be any recorded results.");
 
             //Recover Saved Results
-            repository = MoveStatRepository.FromFile(readerWrapperMock.Object);
+            repository = MoveStatRepository.FromFile("", readerWrapperMock.Object);
             Assert.AreEqual(0, repository.GetRecordedResults(key1).TricksWon);
             Assert.AreEqual(1, repository.GetRecordedResults(key1).TricksTried);
             Assert.AreEqual(1, repository.GetRecordedResults(key1).HandsWon);

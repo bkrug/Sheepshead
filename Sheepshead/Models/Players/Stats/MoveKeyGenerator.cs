@@ -11,7 +11,7 @@ namespace Sheepshead.Models.Players.Stats
         MoveStatUniqueKey GenerateKey(ITrick trick, IPlayer player, ICard legalCard);
     }
 
-    public class KeyGenerator : IKeyGenerator
+    public class MoveKeyGenerator : IKeyGenerator
     {
         public MoveStatUniqueKey GenerateKey(ITrick trick, IPlayer player, ICard legalCard)
         {

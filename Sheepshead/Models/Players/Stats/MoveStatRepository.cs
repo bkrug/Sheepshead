@@ -17,29 +17,30 @@ namespace Sheepshead.Models.Players.Stats
         MoveStat GetRecordedResults(MoveStatUniqueKey key);
     }
 
-    public class MoveStatRepository : IMoveStatRepository
+    public class MoveStatRepository : HandRepository<MoveStatUniqueKey, MoveStat>, IMoveStatRepository
     {
-        private static MoveStatRepository _instance = new MoveStatRepository();
-
-        private Dictionary<MoveStatUniqueKey, MoveStat> _dict = new Dictionary<MoveStatUniqueKey, MoveStat>();
-        public List<MoveStatUniqueKey> Keys { get { return _dict.Keys.ToList(); } }
-
-        public static string SaveLocation { get; set; }
-
-        public static MoveStatRepository FromFile(IStreamReaderWrapper streamReader)
+        protected override MoveStat CreateDefaultStat()
         {
-            if (_instance != null && _instance._dict.Any())
-                throw new InvalidOperationException("Cannot reinitialize Repository");
+            return new MoveStat();
+        }
+
+        public MoveStatRepository() { }
+
+        public MoveStatRepository(string saveLocation) : base(saveLocation) { }
+
+        public static MoveStatRepository FromFile(string filename, IStreamReaderWrapper streamReader)
+        {
+            var instance = new MoveStatRepository(filename);
             var serializer = new JavaScriptSerializer();
             string line;
             while ((line = streamReader.ReadLine()) != null)
             {
                 var key = serializer.Deserialize<MoveStatUniqueKey>(line);
                 var value = serializer.Deserialize<MoveStat>(streamReader.ReadLine());
-                Instance._dict.Add(key, value);
+                instance._dict.Add(key, value);
             }
-            Instance.SetupTimer();
-            return Instance;
+            instance.SetupTimer();
+            return instance;
         }
 
         private void SetupTimer()
@@ -48,8 +49,6 @@ namespace Sheepshead.Models.Players.Stats
             aTimer.Elapsed += SaveToFile;
             aTimer.Enabled = true;
         }
-
-        public static MoveStatRepository Instance { get { return _instance; } }
 
         public void IncrementTrickResult(MoveStatUniqueKey key, bool wonTrick)
         {
@@ -68,40 +67,22 @@ namespace Sheepshead.Models.Players.Stats
                 ++_dict[key].HandsWon;
             ++_dict[key].HandsTried;
         }
+    }
 
-        public MoveStat GetRecordedResults(MoveStatUniqueKey key)
+    public class RepositoryRepository
+    {
+        public static string MOVE_SAVE_LOCATION = @"c:\temp\game-stat.json";
+
+        private static RepositoryRepository _instance = new RepositoryRepository();
+
+        private RepositoryRepository()
         {
-            if (_dict.ContainsKey(key))
-                return _dict[key];
-            return new MoveStat();
+            using (var reader = new StreamReaderWrapper(MOVE_SAVE_LOCATION))
+                MoveStatRepository = MoveStatRepository.FromFile(MOVE_SAVE_LOCATION, reader);
         }
 
-        /// <summary>
-        /// To be called periodically from a timer that the constructor instantiated.
-        /// </summary>
-        protected void SaveToFile(Object source, ElapsedEventArgs e)
-        {
-            using (var writer = new StreamWriterWrapper(SaveLocation))
-            {
-                SaveToFile(writer);
-            }
-        }
+        internal static RepositoryRepository Instance { get { return _instance; } }
 
-        public void SaveToFile(IStreamWriterWrapper writer)
-        {
-            var serializer = new JavaScriptSerializer();
-            foreach (var entry in _dict)
-            {
-                writer.WriteLine(serializer.Serialize(entry.Key));
-                writer.WriteLine(serializer.Serialize(entry.Value));
-            }
-        }
-
-        public void UnitTestRefresh()
-        {
-            if (!Assembly.GetCallingAssembly().FullName.Contains("Sheepshead.Tests"))
-                throw new InvalidOperationException("Method must only be called from Unit Testing assembly.");
-            _dict = new Dictionary<MoveStatUniqueKey, MoveStat>();
-        }
+        public MoveStatRepository MoveStatRepository { get; private set; }
     }
 }

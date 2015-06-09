@@ -35,7 +35,7 @@ namespace Sheepshead.Tests.NonUnitTests
             using (_sw = new StreamWriter(@"C:\Temp\GeneratedKeys.csv"))
             {
                 var playerList = new List<IPlayer>();
-                var generator = new KeyGenerator();
+                var generator = new MoveKeyGenerator();
                 for (var i = 0; i < 5; ++i)
                 {
                     var player = new LearningPlayer(generator, predictorMock.Object);
@@ -62,15 +62,15 @@ namespace Sheepshead.Tests.NonUnitTests
         //[TestMethod]
         public void LearningVsBasicPlayer()
         {
-            var repository = MoveStatRepository.Instance;
-            var predictor = new StatResultPredictor(repository);
+            var repository = new MoveStatRepository();
+            var predictor = new MoveStatResultPredictor(repository);
             using (var sw = new StreamWriter(@"C:\Temp\learningVsBasicPlayer.txt"))
             {
                 var playerList = new List<IPlayer>() {
                     new BasicPlayer(),
-                    new LearningPlayer(new KeyGenerator(), predictor),
+                    new LearningPlayer(new MoveKeyGenerator(), predictor),
                     new BasicPlayer(),
-                    new LearningPlayer(new KeyGenerator(), predictor),
+                    new LearningPlayer(new MoveKeyGenerator(), predictor),
                     new BasicPlayer()
                 };
                 var wins = new double[5];

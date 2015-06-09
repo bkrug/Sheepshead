@@ -11,11 +11,11 @@ namespace Sheepshead.Models.Players.Stats
         MoveStat GetWeightedStat(MoveStatUniqueKey key);
     }
 
-    public class StatResultPredictor : IStatResultPredictor
+    public class MoveStatResultPredictor : IStatResultPredictor
     {
         IMoveStatRepository _repository;
 
-        public StatResultPredictor(IMoveStatRepository repository)
+        public MoveStatResultPredictor(IMoveStatRepository repository)
         {
             _repository = repository;
         }

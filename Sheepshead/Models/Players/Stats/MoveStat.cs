@@ -6,7 +6,7 @@ using System.Web.Script.Serialization;
 
 namespace Sheepshead.Models.Players.Stats
 {
-    public class MoveStat
+    public class MoveStat : IHandStat
     {
         public int TricksWon {get; set; }
         public int TricksTried {get; set; }

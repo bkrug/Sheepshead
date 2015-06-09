@@ -20,7 +20,7 @@ namespace Sheepshead.Tests
         {
             var summary = "9DJH,39HAS,8H7C9CKH7H,KSKC9DTHAH,7D8DTDQDJS,TCACJD9S7S,KDQSJHQH8S,ADQCJC8CTS";
             var hand = SummaryReader.FromSummary(summary);
-            var generator = new KeyGenerator();
+            var generator = new MoveKeyGenerator();
             var sb = new StringBuilder();
             sb.AppendLine(summary);
             foreach (var trick in hand.Tricks)
