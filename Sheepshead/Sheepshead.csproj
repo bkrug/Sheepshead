@@ -124,7 +124,7 @@
     </Compile>
     <Compile Include="Models\BaseRepository.cs" />
     <Compile Include="Models\Card.cs" />
-    <Compile Include="Models\Players\Stats\HandRepository.cs" />
+    <Compile Include="Models\Players\Stats\StatRepository.cs" />
     <Compile Include="Models\Players\Stats\LearningHelper.cs" />
     <Compile Include="Models\Players\BasicPlayer.cs" />
     <Compile Include="Models\Players\ComputerPlayer.cs" />
@@ -137,6 +137,7 @@
     <Compile Include="Models\Players\Stats\MoveStatRepository.cs" />
     <Compile Include="Models\Players\Stats\PickStat.cs" />
     <Compile Include="Models\Players\Stats\MoveStatResultPredictor.cs" />
+    <Compile Include="Models\Players\Stats\RepositoryRepository.cs" />
     <Compile Include="Models\SaveLocations.cs" />
     <Compile Include="Models\SummaryReader.cs" />
     <Compile Include="Models\Trick.cs" />

@@ -8,6 +8,7 @@ namespace Sheepshead.Models.Wrappers
 {
     public interface IStreamReaderWrapper : IDisposable
     {
+        string Filename { get; }
         string ReadToEnd();
         string ReadLine();
         void Close();
@@ -17,10 +18,13 @@ namespace Sheepshead.Models.Wrappers
     {
         private StreamReader _stream;
 
+        public string Filename { get; private set; }
+
         public StreamReaderWrapper(string filename)
         {
             EnsureFileExists(filename);
             _stream = new StreamReader(filename);
+            Filename = filename;
         }
 
         private void EnsureFileExists(string filename)

@@ -315,7 +315,7 @@ namespace Sheepshead.Tests
             Assert.AreEqual(0, repository.GetRecordedResults(key1).HandsTried, "There should no longer be any recorded results.");
 
             //Recover Saved Results
-            repository = MoveStatRepository.FromFile("", readerWrapperMock.Object);
+            repository = MoveStatRepository.FromFile(readerWrapperMock.Object);
             Assert.AreEqual(0, repository.GetRecordedResults(key1).TricksWon);
             Assert.AreEqual(1, repository.GetRecordedResults(key1).TricksTried);
             Assert.AreEqual(1, repository.GetRecordedResults(key1).HandsWon);

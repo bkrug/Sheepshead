@@ -6,27 +6,25 @@ using System.Reflection;
 using Sheepshead.Models.Wrappers;
 using System.Web.Script.Serialization;
 using System.Timers;
+using System.Configuration;
 
 namespace Sheepshead.Models.Players.Stats
 {
-    public interface IHandRepository<K, V>
+    public interface IStatRepository<K, V>
     {
         List<K> Keys { get; }
         V GetRecordedResults(K key);
     }
 
-    public abstract class HandRepository<K, V> : IHandRepository<K, V>
+    public abstract class StatRepository<K, V> : IStatRepository<K, V>
     {
-        public HandRepository() {
-        }
-
-        public HandRepository(string saveLocation)
-        {
-            SaveLocation = saveLocation;
-        }
-
         protected Dictionary<K, V> _dict = new Dictionary<K, V>();
         public virtual List<K> Keys { get { return _dict.Keys.ToList(); } }
+#if DEBUG
+        private int _saveFrequency = 1;  // in minutes
+#else
+        private int _saveFrequency = Int32.Parse(ConfigurationManager.AppSettings["SaveFrequencyInMinutes"]);  // in minutes
+#endif
 
         protected abstract V CreateDefaultStat();
 
@@ -38,6 +36,29 @@ namespace Sheepshead.Models.Players.Stats
         }
 
         public virtual string SaveLocation { get; private set; }
+
+        protected static StatRepository<K, V> FromFile(StatRepository<K, V> instance, IStreamReaderWrapper streamReader)
+        {
+            instance.SaveLocation = streamReader.Filename;
+            var serializer = new JavaScriptSerializer();
+            string line;
+            while ((line = streamReader.ReadLine()) != null)
+            {
+                var key = serializer.Deserialize<K>(line);
+                var value = serializer.Deserialize<V>(streamReader.ReadLine());
+                instance._dict.Add(key, value);
+            }
+            instance.SetupTimer();
+            return instance;
+        }
+
+
+        protected void SetupTimer()
+        {
+            var aTimer = new System.Timers.Timer(_saveFrequency * 60 * 1000);
+            aTimer.Elapsed += SaveToFile;
+            aTimer.Enabled = true;
+        }
 
         /// <summary>
         /// To be called periodically from a timer that the constructor instantiated.
