@@ -41,10 +41,10 @@ namespace Sheepshead.Models.Players
                 var trickOrderedResults = closeResults
                     .OrderByDescending(r => r.Value.TrickPortionWon);
                 selectedCard = trickOrderedResults.First().Key;
+                OnMoveHandler(trick, selectedCard);
             }
             else
                 selectedCard = base.GetMove(trick);
-            OnMoveHandler(trick, selectedCard);
             return selectedCard;
         }
     }

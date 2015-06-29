@@ -6,26 +6,22 @@ using System.Web.Script.Serialization;
 
 namespace Sheepshead.Models.Players.Stats
 {
-    public interface IHandStat
+    public class PickStat
     {
-        int HandsWon { get; set; }
-        int HandsTried { get; set; }
+        public int PicksWon { get; set; }
+        public int HandsPicked { get; set; }
+        public int PassedWon { get; set; }
+        public int HandsPassed { get; set; }
 
         [ScriptIgnore]
-        double? HandPortionWon { get; }
-    }
-
-    public class PickStat : IHandStat
-    {
-        public int HandsWon { get; set; }
-        public int HandsTried { get; set; }
-
+        public double? PickPortionWon { get { return HandsPicked == 0 ? null : (double?)PicksWon / HandsPicked; } }
         [ScriptIgnore]
-        public double? HandPortionWon { get { return HandsTried == 0 ? null : (double?)HandsWon / HandsTried; } }
+        public double? PassedPortionWon { get { return HandsPassed == 0 ? null : (double?)PassedWon / HandsPassed; } }
     }
 
     public struct PickStatUniqueKey
     {
+        public int TrumpCount;
         public int AvgTrumpRank;
         public int TrumpStdDeviation;
         public int PointsInHand;

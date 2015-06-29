@@ -18,7 +18,7 @@ namespace Sheepshead.Models.Players
             var indexOfMe = trick.Players.IndexOf(this);
             var indexOfStartingPlayer = trick.Players.IndexOf(trick.StartingPlayer);
             var rank = indexOfMe - indexOfStartingPlayer;
-            if (rank < 0) rank += trick.Hand.Deck.Game.PlayerCount;
+            if (rank < 0) rank += trick.PlayerCount;
             return rank + 1;
         }
 

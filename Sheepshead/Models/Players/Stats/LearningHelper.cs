@@ -11,16 +11,26 @@ namespace Sheepshead.Models.Players.Stats
     public class LearningHelper
     {
         private string _saveLocation;
+        private IPickStatRepository _pickStatRepository;
+        private IMoveStatRepository _moveStatRepository;
 
         private LearningHelper()
         {
         }
 
-        public LearningHelper(IHand hand, string saveLocation)
+        public LearningHelper(IHand hand, string saveLocation, IPickStatRepository pickStatRepository, IMoveStatRepository moveStatRepository)
         {
             _saveLocation = saveLocation;
             hand.OnHandEnd += WriteHandSummary;
             hand.OnHandEnd += UpdateMoveStats;
+            hand.OnHandEnd += UpdatePickStats;
+            _pickStatRepository = pickStatRepository;
+            _moveStatRepository = moveStatRepository;
+        }
+
+        public LearningHelper(IHand hand, string saveLocaiton) 
+            : this(hand, saveLocaiton, RepositoryRepository.Instance.PickStatRepository, RepositoryRepository.Instance.MoveStatRepository)
+        {
         }
 
         private static object lockObject = new object();
@@ -47,15 +57,33 @@ namespace Sheepshead.Models.Players.Stats
             {
                 var trickWinner = trick.Winner();
                 var offenseWon = hand.Picker == trickWinner || hand.Partner == trickWinner;
-                foreach (var move in trick.OrderedMoves.Where(m => m.Key is LearningPlayer))
+                foreach (var move in trick.OrderedMoves.Where(m => m.Key is LearningPlayer || m.Key is RecordingPlayer))
                 {
                     var player = move.Key;
                     var card = move.Value;
                     var key = generator.GenerateKey(trick, player, card);
                     var playerIsOffense = hand.Picker == player || hand.Partner == player;
-                    RepositoryRepository.Instance.MoveStatRepository.IncrementTrickResult(key, offenseWon == playerIsOffense);
-                    RepositoryRepository.Instance.MoveStatRepository.IncrementHandResult(key, handWinners.Contains(player));
+                    _moveStatRepository.IncrementTrickResult(key, offenseWon == playerIsOffense);
+                    _moveStatRepository.IncrementHandResult(key, handWinners.Contains(player));
                 }
+            }
+        }
+
+        private void UpdatePickStats(object sender, EventArgs e)
+        {
+            var hand = (IHand)sender;
+            var generator = new PickKeyGenerator();
+            var handWinners = hand.Scores().Where(s => s.Value > 0).Select(s => s.Key).ToList();
+            var offenseWon = handWinners.Contains(hand.Picker);
+            foreach (var player in hand.Players.Where(m => m is LearningPlayer || m is RecordingPlayer))
+            {
+                var key = generator.GenerateKey(hand, player);
+                var playerIsPicker = hand.Picker == player;
+                var playerWon = handWinners.Contains(player);
+                if (playerIsPicker)
+                    _pickStatRepository.IncrementPickResult(key, playerWon);
+                else
+                    _pickStatRepository.IncrementPassResult(key, playerWon);
             }
         }
     }

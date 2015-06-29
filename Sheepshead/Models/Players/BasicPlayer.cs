@@ -16,19 +16,22 @@ namespace Sheepshead.Models.Players
 
         public override ICard GetMove(ITrick trick)
         {
+            ICard moveCard;
             if (!trick.Hand.Leasters)
             {
-                return TryToWinTrick(trick);
+                moveCard = TryToWinTrick(trick);
             }
             else
             {
                 var previousWinners = trick.Hand.Tricks.Where(t => t != trick).Select(t => t.Winner());
                 var lowestTrick = previousWinners.Any() ? previousWinners.Min(w => w.Points) : -1;
                 if (previousWinners.Any(t => t.Player == this) || trick.CardsPlayed.Sum(c => c.Value.Points) > lowestTrick)
-                    return TryToLooseTrick(trick);
+                    moveCard = TryToLooseTrick(trick);
                 else
-                    return TryToWinTrick(trick);
+                    moveCard = TryToWinTrick(trick);
             }
+            OnMoveHandler(trick, moveCard);
+            return moveCard;
         }
 
         private ICard TryToWinTrick(ITrick trick)
@@ -78,9 +81,10 @@ namespace Sheepshead.Models.Players
         {
             var middleQueueRankInTrick = (deck.Game.PlayerCount + 1) / 2;
             var trumpCount = this.Cards.Count(c => CardRepository.GetSuit(c) == Suit.TRUMP);
-            return QueueRankInDeck(deck) > middleQueueRankInTrick && trumpCount >= 2
+            var willPick = QueueRankInDeck(deck) > middleQueueRankInTrick && trumpCount >= 2
                 || QueueRankInDeck(deck) == middleQueueRankInTrick && trumpCount >= 3
                 || trumpCount >= 4;
+            return willPick;
         }
 
         protected override List<ICard> DropCardsForPickInternal(IDeck deck)

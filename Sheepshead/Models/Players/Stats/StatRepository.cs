@@ -7,6 +7,7 @@ using Sheepshead.Models.Wrappers;
 using System.Web.Script.Serialization;
 using System.Timers;
 using System.Configuration;
+using System.IO;
 
 namespace Sheepshead.Models.Players.Stats
 {
@@ -65,10 +66,14 @@ namespace Sheepshead.Models.Players.Stats
         /// </summary>
         protected virtual void SaveToFile(Object source, ElapsedEventArgs e)
         {
-            using (var writer = new StreamWriterWrapper(SaveLocation))
-            {
+            using (var writer = new StreamWriterWrapper(SaveLocation, false))
                 SaveToFile(writer);
-            }
+        }
+
+        public void Save(string saveLocation)
+        {
+            using (var writer = new StreamWriterWrapper(saveLocation, false))
+                SaveToFile(writer);
         }
 
         public virtual void SaveToFile(IStreamWriterWrapper writer)
@@ -81,6 +86,7 @@ namespace Sheepshead.Models.Players.Stats
             }
         }
 
+        //TODO: Delete this.  This class is no longer a singleton.
         public virtual void UnitTestRefresh()
         {
             if (!Assembly.GetCallingAssembly().FullName.Contains("Sheepshead.Tests"))

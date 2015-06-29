@@ -22,6 +22,11 @@ namespace Sheepshead.Models.Wrappers
             _writer = new StreamWriter(filename);
         }
 
+        public StreamWriterWrapper(string filename, bool append)
+        {
+            _writer = new StreamWriter(filename, append);
+        }
+
         public void Write(string text)
         {
             _writer.Write(text);

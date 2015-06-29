@@ -100,6 +100,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CardTests.cs" />
+    <Compile Include="PickStatTests.cs" />
+    <Compile Include="PickKeyGeneratorTests.cs" />
     <Compile Include="KeyGeneratorTests.cs" />
     <Compile Include="LearningTests.cs" />
     <Compile Include="GameRepositoryTests.cs" />

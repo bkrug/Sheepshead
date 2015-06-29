@@ -24,7 +24,12 @@ namespace Sheepshead.Tests.NonUnitTests
             var playerList = new List<IPlayer>();
             for (var i = 0; i < 5; ++i)
                 playerList.Add(new BasicPlayer());
-            PlayGame(playerList, 500, SaveLocations.FIRST_SAVE);
+            var pickStatRepository = new PickStatRepository();
+            var moveStatRepository = new MoveStatRepository();
+            InstantiateLearningHelper learningDel = (IHand hand) => { return new LearningHelper(hand, SaveLocations.FIRST_SAVE, pickStatRepository, moveStatRepository); };
+            PlayGame(playerList, 500, learningDel);
+            pickStatRepository.Save(@"c:\temp\basic-player-pick-stats.json");
+            moveStatRepository.Save(@"c:\temp\basic-player-move-stats.json");
         }
 
         //[TestMethod]
@@ -55,7 +60,10 @@ namespace Sheepshead.Tests.NonUnitTests
                     };
                 }
                 _sw.WriteLine("Card,Rank,Points,Card Will Overpower,Opponent Percent Done,Card Points,Unknown Stronger Cards,Held Stronger Cards");
-                PlayGame(playerList, 1, @"c:\temp\LearningPlayerStage1.txt");
+                var pickStatRepository = new PickStatRepository();
+                var moveStatRepository = new MoveStatRepository();
+                InstantiateLearningHelper learningDel = (IHand hand) => { return new LearningHelper(hand, @"c:\temp\LearningPlayerStage1.txt", pickStatRepository, moveStatRepository); };
+                PlayGame(playerList, 1, learningDel);
             }
         }
 
@@ -79,7 +87,10 @@ namespace Sheepshead.Tests.NonUnitTests
                 var nextReport = 2;
                 sw.WriteLine("Players 1 and 3 are Learning Players");
                 sw.Flush();
-                PlayGame(playerList, handNumber, @"C:\Temp\learningVsBasicPlayerHandSummaries.txt", (object sender, EventArgs args) =>
+                var pickStatRepository = new PickStatRepository();
+                var moveStatRepository = new MoveStatRepository();
+                InstantiateLearningHelper learningDel = (IHand hand) => { return new LearningHelper(hand, @"C:\Temp\learningVsBasicPlayerHandSummaries.txt", pickStatRepository, moveStatRepository); };
+                PlayGame(playerList, handNumber, learningDel, (object sender, EventArgs args) =>
                 {
                     ++handsCompleted;
                     var hand = sender as IHand;
@@ -103,7 +114,21 @@ namespace Sheepshead.Tests.NonUnitTests
             }
         }
 
-        private static void PlayGame(List<IPlayer> playerList, int handNumber, string saveLocation, EventHandler<EventArgs> del = null)
+        [TestMethod]
+        public void RecordingPlayerOnly()
+        {
+            var playerList = new List<IPlayer>();
+            for (var i = 0; i < 5; ++i)
+                playerList.Add(new RecordingPlayer());
+            var pickStatRepository = new PickStatRepository();
+            var moveStatRepository = new MoveStatRepository();
+            InstantiateLearningHelper learningDel = (IHand hand) => { return new LearningHelper(hand, @"c:\temp\recordingPlayerSummaries.json", pickStatRepository, moveStatRepository); };
+            PlayGame(playerList, 1000, learningDel);
+            pickStatRepository.Save(@"c:\temp\recording-pick-stats.json");
+            moveStatRepository.Save(@"c:\temp\recording-move-stats.json");
+        }
+
+        private static void PlayGame(List<IPlayer> playerList, int handNumber, InstantiateLearningHelper learningDel = null, EventHandler<EventArgs> handEndDel = null)
         {
             var repository = new GameRepository(GameDictionary.Instance.Dictionary);
             var rnd = new RandomWrapper();
@@ -115,10 +140,10 @@ namespace Sheepshead.Tests.NonUnitTests
                 var picker = game.PlayNonHumans(deck) as ComputerPlayer;
                 var buriedCards = picker != null ? picker.DropCardsForPick(deck) : new List<ICard>();
                 var hand = new Hand(deck, picker, buriedCards);
-                if (!String.IsNullOrWhiteSpace(saveLocation))
-                    new LearningHelper(hand, saveLocation);
-                if (del != null)
-                    hand.OnHandEnd += del;
+                if (learningDel != null)
+                    learningDel(hand);
+                if (handEndDel != null)
+                    hand.OnHandEnd += handEndDel;
                 while (!hand.IsComplete())
                 {
                     var trick = new Trick(hand);
@@ -126,5 +151,7 @@ namespace Sheepshead.Tests.NonUnitTests
                 }
             }
         }
+
+        delegate LearningHelper InstantiateLearningHelper(IHand hand);
     }
 }
