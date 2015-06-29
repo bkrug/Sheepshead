@@ -114,7 +114,7 @@ namespace Sheepshead.Tests.NonUnitTests
             }
         }
 
-        [TestMethod]
+        //[TestMethod]
         public void RecordingPlayerOnly()
         {
             var playerList = new List<IPlayer>();

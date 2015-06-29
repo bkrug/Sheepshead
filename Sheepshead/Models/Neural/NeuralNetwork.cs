@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 
-namespace Sheepshead.Models.Players.Stats
+namespace Sheepshead.Models.Neural
 {
     public class NeuralNetwork
     {

@@ -100,6 +100,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CardTests.cs" />
+    <Compile Include="NonUnitTests\NeuralTests.cs" />
     <Compile Include="PickStatTests.cs" />
     <Compile Include="PickKeyGeneratorTests.cs" />
     <Compile Include="KeyGeneratorTests.cs" />
