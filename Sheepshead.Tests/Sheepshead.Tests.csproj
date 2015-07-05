@@ -115,6 +115,8 @@
     <Compile Include="GameCreationTests.cs" />
     <Compile Include="LongIdTests.cs" />
     <Compile Include="PlayerTests.cs" />
+    <Compile Include="RandomNumberGame\RandomNumberPlay.cs" />
+    <Compile Include="RandomNumberGame\Turn.cs" />
     <Compile Include="TrickTests.cs" />
   </ItemGroup>
   <ItemGroup>
