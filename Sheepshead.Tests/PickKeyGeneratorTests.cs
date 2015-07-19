@@ -39,7 +39,7 @@ namespace Sheepshead.Tests
 
             Assert.AreEqual(expected.TrumpCount, actual.TrumpCount);
             Assert.AreEqual(expected.AvgTrumpRank, actual.AvgTrumpRank);
-            Assert.AreEqual(expected.TrumpStdDeviation, actual.TrumpStdDeviation);
+            //Assert.AreEqual(expected.TrumpStdDeviation, actual.TrumpStdDeviation);
             Assert.AreEqual(expected.PointsInHand, actual.PointsInHand);
             Assert.AreEqual(expected.TotalCardsWithPoints, actual.TotalCardsWithPoints);
         }
@@ -73,7 +73,7 @@ namespace Sheepshead.Tests
 
             Assert.AreEqual(expected.TrumpCount, actual.TrumpCount);
             Assert.AreEqual(expected.AvgTrumpRank, actual.AvgTrumpRank);
-            Assert.AreEqual(expected.TrumpStdDeviation, actual.TrumpStdDeviation);
+            //Assert.AreEqual(expected.TrumpStdDeviation, actual.TrumpStdDeviation);
             Assert.AreEqual(expected.PointsInHand, actual.PointsInHand);
             Assert.AreEqual(expected.TotalCardsWithPoints, actual.TotalCardsWithPoints);
         }
@@ -85,11 +85,11 @@ namespace Sheepshead.Tests
             {
                 TrumpCount = 4,
                 AvgTrumpRank = expectedAvg,
-                TrumpStdDeviation =
-                    (int)Math.Round(
-                    Math.Sqrt(
-                    (Math.Pow((4 - expectedAvg), 2) + Math.Pow((8 - expectedAvg), 2) + Math.Pow((3 - expectedAvg), 2) + Math.Pow((14 - expectedAvg), 2))
-                    / 4.0)),
+                //TrumpStdDeviation =
+                //    (int)Math.Round(
+                //    Math.Sqrt(
+                //    (Math.Pow((4 - expectedAvg), 2) + Math.Pow((8 - expectedAvg), 2) + Math.Pow((3 - expectedAvg), 2) + Math.Pow((14 - expectedAvg), 2))
+                //    / 4.0)),
                 PointsInHand = 3 + 2 + 3 + 0 + 10 + 11,
                 TotalCardsWithPoints = 5
             };

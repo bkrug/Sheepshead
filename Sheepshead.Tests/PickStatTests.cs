@@ -20,7 +20,6 @@ namespace Sheepshead.Tests
             {
                 TrumpCount = 3,
                 AvgTrumpRank = 5,
-                TrumpStdDeviation = 3,
                 PointsInHand = 15,
                 TotalCardsWithPoints = 5
             };
@@ -28,20 +27,19 @@ namespace Sheepshead.Tests
             {
                 TrumpCount = 3,
                 AvgTrumpRank = 5,
-                TrumpStdDeviation = 3,
                 PointsInHand = 15,
                 TotalCardsWithPoints = 5
             };
-            repository.IncrementPickResult(key, true);
-            repository.IncrementPassResult(key, false);
+            repository.IncrementPickResult(key, 1);
+            repository.IncrementPassResult(key, -2);
             var result = repository.GetRecordedResults(key);
             var result2 = repository.GetRecordedResults(identicalKey);
 
-            Assert.AreEqual(1, result.PicksWon);
-            Assert.AreEqual(0, result.PassedWon);
+            Assert.AreEqual(1, result.TotalPickPoints);
+            Assert.AreEqual(-2, result.TotalPassedPoints);
             Assert.IsNotNull(result2, "Using a different instance of an identical key should return the same result");
-            Assert.AreEqual(1, result2.PicksWon);
-            Assert.AreEqual(0, result2.PassedWon);
+            Assert.AreEqual(1, result2.TotalPickPoints);
+            Assert.AreEqual(-2, result2.TotalPassedPoints);
         }
 
         [TestMethod]
@@ -53,7 +51,6 @@ namespace Sheepshead.Tests
             {
                 TrumpCount = 3,
                 AvgTrumpRank = 5,
-                TrumpStdDeviation = 3,
                 PointsInHand = 15,
                 TotalCardsWithPoints = 5
             };
@@ -61,22 +58,21 @@ namespace Sheepshead.Tests
             {
                 TrumpCount = 3,
                 AvgTrumpRank = 5,
-                TrumpStdDeviation = 2,
                 PointsInHand = 10,
                 TotalCardsWithPoints = 5
             };
-            repository.IncrementPickResult(key, true);
-            repository.IncrementPassResult(key, false);
+            repository.IncrementPickResult(key, 2);
+            repository.IncrementPassResult(key, -1);
             var result = repository.GetRecordedResults(key);
             var result2 = repository.GetRecordedResults(differentKey);
 
-            Assert.AreEqual(1, result.PicksWon);
-            Assert.AreEqual(0, result.PassedWon);
+            Assert.AreEqual(2, result.TotalPickPoints);
+            Assert.AreEqual(-1, result.TotalPassedPoints);
             Assert.IsNotNull(result2, "Using a different key should let us know that there were no results.");
-            Assert.AreEqual(0, result2.PicksWon);
-            Assert.AreEqual(0, result2.PassedWon);
-            Assert.AreEqual(null, result2.PickPortionWon);
-            Assert.AreEqual(null, result2.PassedPortionWon);
+            Assert.AreEqual(0, result2.TotalPickPoints);
+            Assert.AreEqual(0, result2.TotalPassedPoints);
+            Assert.AreEqual(null, result2.AvgPickPoints);
+            Assert.AreEqual(null, result2.AvgPassedPoints);
         }
 
         const double testKeyTricks = .6;
@@ -114,7 +110,6 @@ namespace Sheepshead.Tests
             {
                 TrumpCount = 3,
                 AvgTrumpRank = 5,
-                TrumpStdDeviation = 3,
                 PointsInHand = 15,
                 TotalCardsWithPoints = 5
             };
@@ -122,14 +117,13 @@ namespace Sheepshead.Tests
             {
                 TrumpCount = 2,
                 AvgTrumpRank = 6,
-                TrumpStdDeviation = 1,
                 PointsInHand = 20,
                 TotalCardsWithPoints = 3
             };
-            repository.IncrementPickResult(key1, false);
-            repository.IncrementPassResult(key1, true);
-            repository.IncrementPickResult(key2, true);
-            repository.IncrementPassResult(key2, false);
+            repository.IncrementPickResult(key1, -2);
+            repository.IncrementPassResult(key1, 0);
+            repository.IncrementPickResult(key2, 1);
+            repository.IncrementPassResult(key2, -1);
             repository.SaveToFile(writerWrapperMock.Object);
 
             Assert.AreEqual(4, savedText.Count, "Last operation should have put something in the file");
@@ -140,14 +134,40 @@ namespace Sheepshead.Tests
 
             //Recover Saved Results
             repository = PickStatRepository.FromFile(readerWrapperMock.Object);
-            Assert.AreEqual(0, repository.GetRecordedResults(key1).PicksWon);
+            Assert.AreEqual(-2, repository.GetRecordedResults(key1).TotalPickPoints);
             Assert.AreEqual(1, repository.GetRecordedResults(key1).HandsPicked);
-            Assert.AreEqual(1, repository.GetRecordedResults(key1).PassedWon);
+            Assert.AreEqual(0, repository.GetRecordedResults(key1).TotalPassedPoints);
             Assert.AreEqual(1, repository.GetRecordedResults(key1).HandsPicked);
-            Assert.AreEqual(1, repository.GetRecordedResults(key2).PicksWon);
+            Assert.AreEqual(1, repository.GetRecordedResults(key2).TotalPickPoints);
             Assert.AreEqual(1, repository.GetRecordedResults(key2).HandsPassed);
-            Assert.AreEqual(0, repository.GetRecordedResults(key2).PassedWon);
+            Assert.AreEqual(-1, repository.GetRecordedResults(key2).TotalPassedPoints);
             Assert.AreEqual(1, repository.GetRecordedResults(key2).HandsPicked);
+        }
+
+        [TestMethod]
+        public void PickStatResultPredictor_BeforeDataAdded()
+        {
+            var repositoryMock = new Mock<PickStatRepository>();
+            var predictor = new PickStatResultPredictor(repositoryMock.Object);
+            var getStat = predictor.GetWeightedStat(new PickStatUniqueKey()
+            {
+                TrumpCount = 0,
+                AvgTrumpRank = 0,
+                PointsInHand = 0,
+                TotalCardsWithPoints = 0
+            });
+            Assert.IsTrue(getStat.AvgPassedPoints < 0, "If no actual data is available, the computer should guess that there is no chance of winning with this stat.");
+            Assert.IsTrue(getStat.AvgPassedPoints > getStat.AvgPickPoints, "If no actual data is available, the computer should guess that picking is worse than passing.");
+
+            var getStat1 = predictor.GetWeightedStat(new PickStatUniqueKey()
+            {
+                TrumpCount = 4,
+                AvgTrumpRank = 3,
+                PointsInHand = 11 + 11 + 3 + 3 + 3 + 3,
+                TotalCardsWithPoints = 6
+            });
+            Assert.IsTrue(getStat1.AvgPickPoints > 0, "If no actual data is available, the computer should guess that there is a high chance of winning with this stat.");
+            Assert.IsTrue(getStat1.AvgPassedPoints < getStat1.AvgPickPoints, "The system should guess that with this hand, passing gives few points on average than picking.");
         }
     }
 }

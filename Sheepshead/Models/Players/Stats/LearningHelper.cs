@@ -73,17 +73,11 @@ namespace Sheepshead.Models.Players.Stats
         {
             var hand = (IHand)sender;
             var generator = new PickKeyGenerator();
-            var handWinners = hand.Scores().Where(s => s.Value > 0).Select(s => s.Key).ToList();
-            var offenseWon = handWinners.Contains(hand.Picker);
+            var scores = hand.Scores();
             foreach (var player in hand.Players.Where(m => m is LearningPlayer || m is RecordingPlayer))
             {
                 var key = generator.GenerateKey(hand, player);
-                var playerIsPicker = hand.Picker == player;
-                var playerWon = handWinners.Contains(player);
-                if (playerIsPicker)
-                    _pickStatRepository.IncrementPickResult(key, playerWon);
-                else
-                    _pickStatRepository.IncrementPassResult(key, playerWon);
+                _pickStatRepository.IncrementPickResult(key, scores[player]);
             }
         }
     }

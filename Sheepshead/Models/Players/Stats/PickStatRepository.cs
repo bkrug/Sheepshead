@@ -12,8 +12,8 @@ namespace Sheepshead.Models.Players.Stats
     public interface IPickStatRepository
     {
         List<PickStatUniqueKey> Keys { get; }
-        void IncrementPickResult(PickStatUniqueKey key, bool wonHand);
-        void IncrementPassResult(PickStatUniqueKey key, bool wonHand);
+        void IncrementPickResult(PickStatUniqueKey key, int points);
+        void IncrementPassResult(PickStatUniqueKey key, int points);
         PickStat GetRecordedResults(PickStatUniqueKey key);
     }
 
@@ -30,21 +30,19 @@ namespace Sheepshead.Models.Players.Stats
             return (PickStatRepository)StatRepository<PickStatUniqueKey, PickStat>.FromFile(instance, streamReader);
         }
 
-        public void IncrementPickResult(PickStatUniqueKey key, bool wonHand)
+        public void IncrementPickResult(PickStatUniqueKey key, int points)
         {
             if (!_dict.ContainsKey(key))
                 _dict[key] = new PickStat();
-            if (wonHand)
-                ++_dict[key].PicksWon;
+            _dict[key].TotalPickPoints += points;
             ++_dict[key].HandsPicked;
         }
 
-        public void IncrementPassResult(PickStatUniqueKey key, bool wonHand)
+        public void IncrementPassResult(PickStatUniqueKey key, int points)
         {
             if (!_dict.ContainsKey(key))
                 _dict[key] = new PickStat();
-            if (wonHand)
-                ++_dict[key].PassedWon;
+            _dict[key].TotalPassedPoints += points;
             ++_dict[key].HandsPassed;
         }
     }

@@ -119,8 +119,8 @@ namespace Sheepshead.Tests.RandomNumberGame
             { 100, 101 }
         };
 
-        private new Dictionary<int, int> wins = new Dictionary<int, int>();
-        private new Dictionary<int, int> tries = new Dictionary<int,int>();
+        private Dictionary<int, int> wins = new Dictionary<int, int>();
+        private Dictionary<int, int> tries = new Dictionary<int,int>();
 
         private GamePlayer() { }
 

@@ -12,7 +12,7 @@ namespace Sheepshead.Tests.RandomNumberGame
     [TestClass]
     public class RandomNumberPlay
     {
-        [TestMethod]
+        //[TestMethod]
         public void PlayRandomNumbers()
         {
             var rnd = new Random();
