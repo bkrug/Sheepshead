@@ -43,6 +43,9 @@
     <Reference Include="Antlr3.Runtime">
       <HintPath>..\packages\Antlr.3.4.1.9004\lib\Antlr3.Runtime.dll</HintPath>
     </Reference>
+    <Reference Include="MathNet.Numerics">
+      <HintPath>..\_lib\MathNet.Numerics.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -51,6 +54,7 @@
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Numerics" />
     <Reference Include="System.Web.DynamicData" />
     <Reference Include="System.Web.Entity" />
     <Reference Include="System.Web.ApplicationServices" />
@@ -113,6 +117,9 @@
     <Reference Include="WebGrease">
       <HintPath>..\packages\WebGrease.1.5.2\lib\WebGrease.dll</HintPath>
     </Reference>
+    <Reference Include="zlib.net">
+      <HintPath>..\_lib\zlib.net.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_Start\BundleConfig.cs" />
@@ -124,6 +131,27 @@
     </Compile>
     <Compile Include="Models\BaseRepository.cs" />
     <Compile Include="Models\Card.cs" />
+    <Compile Include="Models\LeastSquares\Models\LinearModel.cs" />
+    <Compile Include="Models\LeastSquares\Models\LineModel.cs" />
+    <Compile Include="Models\LeastSquares\Models\Model.cs" />
+    <Compile Include="Models\LeastSquares\Models\ModelOptions.cs" />
+    <Compile Include="Models\LeastSquares\Models\ModelType.cs" />
+    <Compile Include="Models\LeastSquares\Models\NonlinearModel.cs" />
+    <Compile Include="Models\LeastSquares\Models\ParabolaModel.cs" />
+    <Compile Include="Models\LeastSquares\Models\PowerModel.cs" />
+    <Compile Include="Models\LeastSquares\Models\TrigonometricSumModel.cs" />
+    <Compile Include="Models\LeastSquares\Solvers\GaussNewtonSolver.cs" />
+    <Compile Include="Models\LeastSquares\Solvers\LevenbergMarquardtSolver.cs" />
+    <Compile Include="Models\LeastSquares\Solvers\LinearSolver.cs" />
+    <Compile Include="Models\LeastSquares\Solvers\NonlinearSolver.cs" />
+    <Compile Include="Models\LeastSquares\Solvers\NormalSolver.cs" />
+    <Compile Include="Models\LeastSquares\Solvers\QRSolver.cs" />
+    <Compile Include="Models\LeastSquares\Solvers\Solver.cs" />
+    <Compile Include="Models\LeastSquares\Solvers\SolverOptions.cs" />
+    <Compile Include="Models\LeastSquares\Solvers\SolverType.cs" />
+    <Compile Include="Models\LeastSquares\Solvers\SteepestDescentSolver.cs" />
+    <Compile Include="Models\LeastSquares\Solvers\SvdSolver.cs" />
+    <Compile Include="Models\Players\Stats\PickStatResultPredictor.cs" />
     <Compile Include="Models\Players\Stats\PickStatRepository.cs" />
     <Compile Include="Models\Players\Stats\PickKeyGenerator.cs" />
     <Compile Include="Models\Neural\NeuralNetwork.cs" />
@@ -159,6 +187,14 @@
     <Compile Include="Models\Wrappers\StreamWriterWrapper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Content Include="Content\playTrick.css" />
+    <Content Include="Dlls\MathNet.Numerics\lib\Net40\MathNet.Numerics.dll" />
+    <Content Include="Dlls\MathNet.Numerics\lib\Net40\MathNet.Numerics.FSharp.dll" />
+    <Content Include="Dlls\MathNet.Numerics\lib\Net40\MathNet.Numerics.FSharp.pdb" />
+    <Content Include="Dlls\MathNet.Numerics\lib\Net40\MathNet.Numerics.FSharp.XML" />
+    <Content Include="Dlls\MathNet.Numerics\lib\Net40\MathNet.Numerics.pdb" />
+    <Content Include="Dlls\MathNet.Numerics\lib\Net40\MathNet.Numerics.xml" />
+    <Content Include="Dlls\MathNet.Numerics\lib\Net40\zlib.net.dll" />
+    <Content Include="Dlls\MathNet.Numerics\License.txt" />
     <Content Include="Libraries\jquery-2.1.1.min.js" />
     <Content Include="Scripts\bury.js" />
     <Content Include="Scripts\generic.js" />

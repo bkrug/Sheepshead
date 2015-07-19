@@ -29,3 +29,7 @@ E:\Users\bjkrug\Documents\Visual Studio 2012\Projects\Sheepshead\Sheepshead.Test
 E:\Users\bjkrug\Documents\Visual Studio 2012\Projects\Sheepshead\Sheepshead.Tests\obj\Debug\Sheepshead.Tests.csprojResolveAssemblyReference.cache
 E:\Users\bjkrug\Documents\Visual Studio 2012\Projects\Sheepshead\Sheepshead.Tests\obj\Debug\Sheepshead.Tests.dll
 E:\Users\bjkrug\Documents\Visual Studio 2012\Projects\Sheepshead\Sheepshead.Tests\obj\Debug\Sheepshead.Tests.pdb
+E:\Users\bjkrug\Documents\Visual Studio 2012\Projects\Sheepshead\Sheepshead.Tests\bin\Debug\MathNet.Numerics.dll
+E:\Users\bjkrug\Documents\Visual Studio 2012\Projects\Sheepshead\Sheepshead.Tests\bin\Debug\zlib.net.dll
+E:\Users\bjkrug\Documents\Visual Studio 2012\Projects\Sheepshead\Sheepshead.Tests\bin\Debug\MathNet.Numerics.pdb
+E:\Users\bjkrug\Documents\Visual Studio 2012\Projects\Sheepshead\Sheepshead.Tests\bin\Debug\MathNet.Numerics.xml
