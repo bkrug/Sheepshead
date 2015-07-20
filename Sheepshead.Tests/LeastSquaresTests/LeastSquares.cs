@@ -14,15 +14,17 @@ namespace Sheepshead.Tests.LeastSquaresTests
     [TestClass]
     public class LeastSquares
     {
+        const int midwayPoint = 3;
+
         [TestMethod]
         public void Test1()
         {
-            var dataSetOpts = new DatasetOptions(10, 0, .5, 1.0, 0.0, 0.1);
-            var nonlinearSolver = (GaussNewtonSolver)Solver.FromType(SolverType.GaussNewton);
+            var nonlinearSolver = (LevenbergMarquardtSolver)Solver.FromType(SolverType.LevenbergMarquardt);
             List<Vector<double>> iterations = new List<Vector<double>>();
             var dataX = GetXData();
             var dataY = GetYData(dataX);
             var lineModel = new PowerModel();
+            var dataSetOpts = new DatasetOptions(dataX.Count(), 0, .5, 1.0, 0.0, 0.1);
             nonlinearSolver.Estimate(
                 lineModel,
                 new SolverOptions(true, 0.0001, 0.0001, 50, new DenseVector(new[] { 1.0, 1.0 })),
@@ -43,36 +45,11 @@ namespace Sheepshead.Tests.LeastSquaresTests
 
         private DenseVector GetXData()
         {
-            var array = new double[] {
-                0.01,
-                1,
-                2,
-                3,
-                4,
-                5,
-                5.25,
-                5.5,
-                5.75,
-                6,
-                6.25,
-                6.5,
-                6.75,
-                7,
-                7.25,
-                7.5,
-                7.75,
-                8,
-                8.25,
-                8.5,
-                8.75,
-                9,
-                9.25,
-                9.5,
-                9.75,
-                10
-            };
-            var vector = new DenseVector(array.Length);
-            for (var i = 0; i < array.Length; ++i)
+            var array = new List<double>();
+            for (double x = 0; x <= 10; x += (x < midwayPoint ? 1 : 0.1))
+                array.Add(x > 0 ? x : 0.001);
+            var vector = new DenseVector(array.Count());
+            for (var i = 0; i < array.Count(); ++i)
                 vector[i] = array[i];
             return vector;
         }
@@ -82,7 +59,7 @@ namespace Sheepshead.Tests.LeastSquaresTests
             //var array = new double[] {0.01, 4, 6, 7, 7.5, 7.75, 7.875, 7.9, 7.92, 7.93};
             var vector = new DenseVector(xVector.Count());
             for (var i = 0; i < xVector.Count; ++i)
-                vector[i] = /*xVector[i] < 5 ? xVector[i] :*/ 3.0 * Math.Pow(xVector[i], 0.5);
+                vector[i] = xVector[i] < midwayPoint ? xVector[i] : 3.0 * Math.Pow(xVector[i], 0.5);
             return vector;
         }
     }

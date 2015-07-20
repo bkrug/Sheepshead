@@ -23,7 +23,7 @@ namespace Sheepshead.Models.LeastSquares
     /// <summary>
     ///   Solves the nonlinear least squares problem using Levenberg-Marquardt iteration.
     /// </summary>
-    internal sealed class LevenbergMarquardtSolver : NonlinearSolver
+    public sealed class LevenbergMarquardtSolver : NonlinearSolver
     {
         private const double LambdaInitial = 0.001;
         private const double LambdaFactor = 10.0;

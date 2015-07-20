@@ -20,7 +20,7 @@ namespace Sheepshead.Models.LeastSquares
     /// <summary>
     ///   Solves the linear least squares problem.
     /// </summary>
-    internal abstract class LinearSolver : Solver
+    public abstract class LinearSolver : Solver
     {
         /// <summary>
         ///   Estimate parameters of the model function.

@@ -23,7 +23,7 @@ namespace Sheepshead.Models.LeastSquares
     /// <summary>
     ///   Solves the nonlinear least squares problem using steepest descent iteration.
     /// </summary>
-    internal sealed class SteepestDescentSolver : NonlinearSolver
+    public sealed class SteepestDescentSolver : NonlinearSolver
     {
         private const double MinimumStepSize = 0.000001;
 

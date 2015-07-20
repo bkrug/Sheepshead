@@ -22,7 +22,7 @@ namespace Sheepshead.Models.LeastSquares
     /// <summary>
     ///   Solves the linear least squares problem using QR decomposition.
     /// </summary>
-    internal sealed class QrSolver : LinearSolver
+    public sealed class QrSolver : LinearSolver
     {
         /// <summary>
         ///   Estimate parameters of the model function.
