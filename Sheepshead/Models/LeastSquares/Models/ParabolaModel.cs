@@ -20,7 +20,7 @@ namespace Sheepshead.Models.LeastSquares
     /// <summary>
     ///   Parabola model function.
     /// </summary>
-    internal sealed class ParabolaModel : LinearModel
+    public sealed class ParabolaModel : LinearModel
     {
         /// <summary>
         ///   Descriptive name of the model function.

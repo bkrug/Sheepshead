@@ -14,7 +14,7 @@ namespace Sheepshead.Models.LeastSquares
     /// <summary>
     ///   Type of least squares solver.
     /// </summary>
-    internal enum SolverType
+    public enum SolverType
     {
         /// <summary>
         ///   Solver based on normal equations and Cholesky decomposition.

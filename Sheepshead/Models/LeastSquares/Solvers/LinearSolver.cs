@@ -32,7 +32,7 @@ namespace Sheepshead.Models.LeastSquares
         /// <param name = "dataY">Y-coordinates of the data points.</param>
         /// <param name = "parameters">Estimated model function parameters.</param>
         public abstract void Estimate(
-            Model model,
+            XyModel model,
             SolverOptions solverOptions,
             int pointCount,
             Vector<double> dataX,

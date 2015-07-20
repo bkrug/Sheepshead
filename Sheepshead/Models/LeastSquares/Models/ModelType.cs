@@ -14,7 +14,7 @@ namespace Sheepshead.Models.LeastSquares
     /// <summary>
     ///   Model function type.
     /// </summary>
-    internal enum ModelType
+    public enum ModelType
     {
         /// <summary>
         ///   Line model.

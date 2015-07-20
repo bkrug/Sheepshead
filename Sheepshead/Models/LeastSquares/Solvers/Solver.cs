@@ -23,7 +23,7 @@ namespace Sheepshead.Models.LeastSquares
     /// <summary>
     ///   Solves the least squares problem.
     /// </summary>
-    internal abstract class Solver
+    public abstract class Solver
     {
         /// <summary>
         ///   Create a new Solver instance from type.
@@ -61,7 +61,7 @@ namespace Sheepshead.Models.LeastSquares
         /// <param name = "parameters">Model function parameters.</param>
         /// <param name = "value">Objective function value.</param>
         protected static void GetObjectiveValue(
-            Model model,
+            XyModel model,
             int pointCount,
             Vector<double> dataX,
             Vector<double> dataY,
@@ -97,7 +97,7 @@ namespace Sheepshead.Models.LeastSquares
         /// <param name = "parameters">Model function parameters.</param>
         /// <param name = "jacobian">Jacobian matrix of the objective function.</param>
         protected void GetObjectiveJacobian(
-            Model model,
+            XyModel model,
             int pointCount,
             Vector<double> dataX,
             Vector<double> dataY,

@@ -23,7 +23,7 @@ namespace Sheepshead.Models.LeastSquares
     /// <summary>
     ///   Common model function.
     /// </summary>
-    internal abstract class Model
+    public abstract class XyModel
     {
         /// <summary>
         ///   Descriptive name of the model function.
@@ -47,10 +47,10 @@ namespace Sheepshead.Models.LeastSquares
         private readonly ReadOnlyCollection<string> parameterNames;
 
         /// <summary>
-        ///   Initializes a new instance of the <see cref = "Model" /> class.
+        ///   Initializes a new instance of the <see cref = "XyModel" /> class.
         /// </summary>
         /// <param name = "parameterNames">Model function parameter names.</param>
-        protected Model(string[] parameterNames)
+        protected XyModel(string[] parameterNames)
         {
             this.parameterNames = new ReadOnlyCollection<string>(parameterNames);
         }
@@ -60,7 +60,7 @@ namespace Sheepshead.Models.LeastSquares
         /// </summary>
         /// <param name = "modelType">Model function type.</param>
         /// <returns>Model instance.</returns>
-        public static Model FromType(ModelType modelType)
+        public static XyModel FromType(ModelType modelType)
         {
             switch (modelType)
             {

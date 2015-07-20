@@ -23,7 +23,7 @@ namespace Sheepshead.Models.LeastSquares
     /// <summary>
     ///   Solves the nonlinear least squares problem.
     /// </summary>
-    internal abstract class NonlinearSolver : Solver
+    public abstract class NonlinearSolver : Solver
     {
         /// <summary>
         ///   Estimates the specified model.
@@ -35,7 +35,7 @@ namespace Sheepshead.Models.LeastSquares
         /// <param name = "dataY">Y-coordinates of the data points.</param>
         /// <param name = "iterations">Estimated model function parameters.</param>
         public abstract void Estimate(
-            Model model,
+            XyModel model,
             SolverOptions solverOptions,
             int pointCount,
             Vector<double> dataX,

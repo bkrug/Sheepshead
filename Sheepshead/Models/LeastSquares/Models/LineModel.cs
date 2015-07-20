@@ -20,7 +20,7 @@ namespace Sheepshead.Models.LeastSquares
     /// <summary>
     ///   Line model function.
     /// </summary>
-    internal sealed class LineModel : LinearModel
+    public sealed class LineModel : LinearModel
     {
         /// <summary>
         ///   Descriptive name of the model function.

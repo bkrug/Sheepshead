@@ -211,7 +211,9 @@ namespace Sheepshead.Tests.NonUnitTests
                  double testAcc = nn.Accuracy(testData);
                  Console.WriteLine("\nAccuracy on test data = " + testAcc.ToString("F4"));
                  Console.WriteLine("\nEnd neural network training demo\n");
-                 //Console.ReadLine();            }        }
+                 //Console.ReadLine();
+            }
+        }
 
          static void MakeTrainTest(double[][] allData, int seed, out double[][] trainData, out double[][] testData)
          {

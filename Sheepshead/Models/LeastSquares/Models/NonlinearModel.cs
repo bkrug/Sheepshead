@@ -14,7 +14,7 @@ namespace Sheepshead.Models.LeastSquares
     /// <summary>
     ///   Model function which is nonlinear in parameters.
     /// </summary>
-    internal abstract class NonlinearModel : Model
+    public abstract class NonlinearModel : XyModel
     {
         /// <summary>
         ///   Initializes a new instance of the <see cref = "NonlinearModel" /> class.

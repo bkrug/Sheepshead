@@ -131,9 +131,14 @@
     </Compile>
     <Compile Include="Models\BaseRepository.cs" />
     <Compile Include="Models\Card.cs" />
+    <Compile Include="Models\LeastSquares\Datasets\Dataset.cs" />
+    <Compile Include="Models\LeastSquares\Datasets\DatasetOptions.cs" />
+    <Compile Include="Models\LeastSquares\Datasets\DatasetType.cs" />
+    <Compile Include="Models\LeastSquares\Datasets\ExactDataset.cs" />
+    <Compile Include="Models\LeastSquares\Datasets\PerturbedDataset.cs" />
     <Compile Include="Models\LeastSquares\Models\LinearModel.cs" />
     <Compile Include="Models\LeastSquares\Models\LineModel.cs" />
-    <Compile Include="Models\LeastSquares\Models\Model.cs" />
+    <Compile Include="Models\LeastSquares\Models\XyModel.cs" />
     <Compile Include="Models\LeastSquares\Models\ModelOptions.cs" />
     <Compile Include="Models\LeastSquares\Models\ModelType.cs" />
     <Compile Include="Models\LeastSquares\Models\NonlinearModel.cs" />

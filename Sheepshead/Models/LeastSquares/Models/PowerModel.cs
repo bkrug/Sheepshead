@@ -22,7 +22,7 @@ namespace Sheepshead.Models.LeastSquares
     /// <summary>
     ///   Power function model.
     /// </summary>
-    internal sealed class PowerModel : NonlinearModel
+    public sealed class PowerModel : NonlinearModel
     {
         /// <summary>
         ///   Descriptive name of the model function.

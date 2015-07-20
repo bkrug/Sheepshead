@@ -20,7 +20,7 @@ namespace Sheepshead.Models.LeastSquares
     /// <summary>
     ///   Least squares solver options.
     /// </summary>
-    internal struct SolverOptions
+    public struct SolverOptions
     {
         /// <summary>
         ///   Use linear system solver provided by Math.NET.

@@ -33,6 +33,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="MathNet.Numerics, Version=2011.4.17.0, Culture=neutral, PublicKeyToken=cd8b63ad3d691a37, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\_lib\MathNet.Numerics.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
     <Reference Include="Moq">
@@ -100,6 +104,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CardTests.cs" />
+    <Compile Include="LeastSquaresTests\LeastSquares.cs" />
     <Compile Include="NonUnitTests\NeuralTests.cs" />
     <Compile Include="PickStatTests.cs" />
     <Compile Include="PickKeyGeneratorTests.cs" />

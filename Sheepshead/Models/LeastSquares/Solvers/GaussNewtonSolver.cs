@@ -23,7 +23,7 @@ namespace Sheepshead.Models.LeastSquares
     /// <summary>
     ///   Solves the nonlinear least squares problem using Gauss-Newton iteration.
     /// </summary>
-    internal sealed class GaussNewtonSolver : NonlinearSolver
+    public sealed class GaussNewtonSolver : NonlinearSolver
     {
         /// <summary>
         ///   Estimates the specified model.
@@ -35,7 +35,7 @@ namespace Sheepshead.Models.LeastSquares
         /// <param name = "dataY">Y-coordinates of the data points.</param>
         /// <param name = "iterations">Estimated model function parameters.</param>
         public override void Estimate(
-            Model model,
+            XyModel model,
             SolverOptions solverOptions,
             int pointCount,
             Vector<double> dataX,

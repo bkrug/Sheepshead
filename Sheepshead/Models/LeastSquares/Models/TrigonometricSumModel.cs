@@ -22,7 +22,7 @@ namespace Sheepshead.Models.LeastSquares
     /// <summary>
     ///   Trigonometric sum model function.
     /// </summary>
-    internal sealed class TrigonometricSumModel : NonlinearModel
+    public sealed class TrigonometricSumModel : NonlinearModel
     {
         /// <summary>
         ///   Descriptive name of the model function.
