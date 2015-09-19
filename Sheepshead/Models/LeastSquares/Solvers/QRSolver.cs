@@ -56,6 +56,31 @@ namespace Sheepshead.Models.LeastSquares
             // compute QR decomposition of the Jacobian
             QR qr = jacobian.QR();
 
+            PrivateEstimate(ref solverOptions, pointCount, dataY, ref parameters, n, qr);
+        }
+
+        public override void Estimate(XyModel model, SolverOptions solverOptions, int pointCount, System.Collections.Generic.List<Vector<double>> control, Vector<double> dataZ, ref Vector<double> parameters)
+        {
+            int n = parameters.Count;
+
+            Matrix<double> jacobian = new DenseMatrix(pointCount, n);
+
+            GetObjectiveJacobian(
+                model,
+                pointCount,
+                control,
+                dataZ,
+                parameters,
+                ref jacobian);
+
+            // compute QR decomposition of the Jacobian
+            QR qr = jacobian.QR();
+
+            PrivateEstimate(ref solverOptions, pointCount, dataZ, ref parameters, n, qr);
+        }
+
+        private static void PrivateEstimate(ref SolverOptions solverOptions, int pointCount, Vector<double> dataY, ref Vector<double> parameters, int n, QR qr)
+        {
             if (solverOptions.UseInternalSolver)
             {
                 //

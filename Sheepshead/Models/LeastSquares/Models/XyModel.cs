@@ -8,6 +8,7 @@
 // Better ListView and Better SplitButton components.
 // Check out http://www.componentowl.com
 // -----------------------------------------------------------------------
+using System.Collections.Generic;
 
 namespace Sheepshead.Models.LeastSquares
 {
@@ -89,6 +90,17 @@ namespace Sheepshead.Models.LeastSquares
             out double y);
 
         /// <summary>
+        ///   Get value of the model function for the specified parameters in multi-dimensional graph.
+        /// </summary>
+        /// <param name="control">independant coordinates of the function.</param>
+        /// <param name = "parameters">Model function parameters.</param>
+        /// <param name="z">dependant coordinate of the function point.</param>
+        public abstract void GetValue(
+            Vector<double> control,
+            Vector<double> parameters,
+            out double z);
+
+        /// <summary>
         ///   Get gradient of the model function for the specified parameters.
         /// </summary>
         /// <param name = "x">X-coordinate of the function point.</param>
@@ -96,6 +108,17 @@ namespace Sheepshead.Models.LeastSquares
         /// <param name = "gradient">Model function gradient.</param>
         public abstract void GetGradient(
             double x,
+            Vector<double> parameters,
+            ref Vector<double> gradient);
+
+        /// <summary>
+        ///   Get gradient of the model function for the specified parameters in multi-dimensional graph.
+        /// </summary>
+        /// <param name="control">independant coordinates of the function.</param>
+        /// <param name="parameters">Model function parameters.</param>
+        /// <param name="gradient">Model function gradient.</param>
+        public abstract void GetGradient(
+            Vector<double> control,
             Vector<double> parameters,
             ref Vector<double> gradient);
 
@@ -125,6 +148,27 @@ namespace Sheepshead.Models.LeastSquares
 
                 residual[j] = (y - dataY[j]);
             }
+        }
+
+        public void GetResidualVector(
+            int pointCount,
+            List<Vector<double>> dataControl,
+            Vector<double> dataDependent,
+            Vector<double> parameters,
+            ref Vector<double> residual)
+        {
+            double z;
+
+            for (int i = 0; i < dataControl.Count; i++)
+                for (int j = 0; j < pointCount; j++)
+                {
+                    GetValue(
+                        dataControl[i][j],
+                        parameters,
+                        out z);
+
+                    residual[j] = (z - dataControl[i][j]);
+                }
         }
     }
 }

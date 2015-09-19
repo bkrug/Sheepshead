@@ -52,7 +52,19 @@ namespace Sheepshead.Models.LeastSquares
             Vector<double> parameters,
             out double y)
         {
-            y = (parameters[0] * x * x + parameters[1] * x + parameters[2]);
+            y = RunEquation(x, parameters);
+        }
+
+        public override void GetValue(Vector<double> control, Vector<double> parameters, out double z)
+        {
+            z = 0;
+            for (var index = 0; index < control.Count; ++index)
+                z += RunEquation(control[index], parameters.SubVector(index * 3, 3));
+        }
+
+        private double RunEquation(double x, Vector<double> parameters)
+        {
+            return (parameters[0] * x * x + parameters[1] * x + parameters[2]);
         }
 
         /// <summary>
@@ -66,9 +78,20 @@ namespace Sheepshead.Models.LeastSquares
             Vector<double> parameters,
             ref Vector<double> gradient)
         {
-            gradient[0] = (x * x);
-            gradient[1] = x;
-            gradient[2] = 1.0;
+            GetGradient(x, ref gradient);
+        }
+
+        public override void GetGradient(Vector<double> control, Vector<double> parameters, ref Vector<double> gradient)
+        {
+            for (var cIndex = 0; cIndex < control.Count; ++cIndex)
+                GetGradient(control[cIndex], ref gradient, cIndex * 3);
+        }
+
+        private static void GetGradient(double x, ref Vector<double> gradient, int gradIndex = 0)
+        {
+            gradient[gradIndex] = (x * x);
+            gradient[gradIndex + 1] = x;
+            gradient[gradIndex + 2] = 1.0;
         }
     }
 }

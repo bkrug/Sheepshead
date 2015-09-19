@@ -56,12 +56,36 @@ namespace Sheepshead.Models.LeastSquares
 
             Svd svd = jacobian.Svd(true);
 
+            EstimatePrivate(ref solverOptions, pointCount, dataY, ref parameters, n, svd);
+        }
+
+        public override void Estimate(XyModel model, SolverOptions solverOptions, int pointCount, System.Collections.Generic.List<Vector<double>> control, Vector<double> dataZ, ref Vector<double> parameters)
+        {
+            int n = parameters.Count;
+
+            Matrix<double> jacobian = new DenseMatrix(pointCount, n);
+
+            GetObjectiveJacobian(
+                model,
+                pointCount,
+                control,
+                dataZ,
+                parameters,
+                ref jacobian);
+
+            Svd svd = jacobian.Svd(true);
+
+            EstimatePrivate(ref solverOptions, pointCount, dataZ, ref parameters, n, svd);
+        }
+
+        private static void EstimatePrivate(ref SolverOptions solverOptions, int pointCount, Vector<double> dependent, ref Vector<double> parameters, int n, Svd svd)
+        {
             if (solverOptions.UseInternalSolver)
             {
                 //
                 // solve USVx = b using internal SVD solver
                 //
-                parameters = svd.Solve(dataY);
+                parameters = svd.Solve(dependent);
             }
             else
             {
@@ -95,7 +119,7 @@ namespace Sheepshead.Models.LeastSquares
                     Matrix<double> ui = U1.SubMatrix(0, pointCount, i, 1).Transpose(); // i-th column of U1 transposed
 
                     parameters.Add(
-                        V.Column(i).Multiply(ui.Multiply(dataY)[0] / sigmai),
+                        V.Column(i).Multiply(ui.Multiply(dependent)[0] / sigmai),
                         parameters);
                 }
             }

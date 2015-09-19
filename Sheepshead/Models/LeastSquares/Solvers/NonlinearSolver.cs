@@ -42,6 +42,14 @@ namespace Sheepshead.Models.LeastSquares
             Vector<double> dataY,
             ref List<Vector<double>> iterations);
 
+        public abstract void Estimate(
+            XyModel model,
+            SolverOptions solverOptions,
+            int pointCount,
+            List<Vector<double>> control,
+            Vector<double> dataZ,
+            ref List<Vector<double>> iterations);
+
         /// <summary>
         ///   Check whether the solver should terminate computation in current iteration.
         /// </summary>
@@ -65,5 +73,7 @@ namespace Sheepshead.Models.LeastSquares
                        parametersNew.Subtract(parametersCurrent).Norm(2.0) <= solverOptions.MinimumDeltaParameters ||
                        iterationCount >= solverOptions.MaximumIterations);
         }
+
+        //TODO: Consider a multi-dimensional overload of ShouldTerminate
     }
 }

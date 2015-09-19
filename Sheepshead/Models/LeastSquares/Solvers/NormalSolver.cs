@@ -50,15 +50,35 @@ namespace Sheepshead.Models.LeastSquares
                 parameters,
                 ref jacobian);
 
+            Estimate(ref solverOptions, dataY, ref parameters, jacobian);
+        }
+
+        public override void Estimate(XyModel model, SolverOptions solverOptions, int pointCount, System.Collections.Generic.List<Vector<double>> control, Vector<double> dataZ, ref Vector<double> parameters)
+        {
+            Matrix<double> jacobian = new DenseMatrix(pointCount, parameters.Count);
+
+            GetObjectiveJacobian(
+                model,
+                pointCount,
+                control,
+                dataZ,
+                parameters,
+                ref jacobian);
+
+            Estimate(ref solverOptions, dataZ, ref parameters, jacobian);
+        }
+
+        private static void Estimate(ref SolverOptions solverOptions, Vector<double> dependant, ref Vector<double> parameters, Matrix<double> jacobian)
+        {
             if (solverOptions.UseInternalSolver)
             {
                 // solve normal equations using Cholesky decomposition
-                parameters = jacobian.Transpose().Multiply(jacobian).Cholesky().Solve(jacobian.Transpose().Multiply(dataY));
+                parameters = jacobian.Transpose().Multiply(jacobian).Cholesky().Solve(jacobian.Transpose().Multiply(dependant));
             }
             else
             {
                 // solve normal equations directly using matrix inverse
-                parameters = jacobian.Transpose().Multiply(jacobian).Inverse().Multiply(jacobian.Transpose().Multiply(dataY));
+                parameters = jacobian.Transpose().Multiply(jacobian).Inverse().Multiply(jacobian.Transpose().Multiply(dependant));
             }
         }
     }

@@ -107,5 +107,10 @@ namespace Sheepshead.Models.LeastSquares
                 valueCurrent = valueNew;
             }
         }
+
+        public override void Estimate(XyModel model, SolverOptions solverOptions, int pointCount, List<Vector<double>> control, Vector<double> dataZ, ref List<Vector<double>> iterations)
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }

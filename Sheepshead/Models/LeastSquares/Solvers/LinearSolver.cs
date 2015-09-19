@@ -8,6 +8,7 @@
 // Better ListView and Better SplitButton components.
 // Check out http://www.componentowl.com
 // -----------------------------------------------------------------------
+using System.Collections.Generic;
 
 namespace Sheepshead.Models.LeastSquares
 {
@@ -37,6 +38,23 @@ namespace Sheepshead.Models.LeastSquares
             int pointCount,
             Vector<double> dataX,
             Vector<double> dataY,
+            ref Vector<double> parameters);
+
+        /// <summary>
+        ///   Estimate parameters of the model function.
+        /// </summary>
+        /// <param name = "model">Model function.</param>
+        /// <param name = "solverOptions">Least squares solver options.</param>
+        /// <param name = "pointCount">Number of data points.</param>
+        /// <param name = "control">Control coordinates of the data points.</param>
+        /// <param name = "dataZ">Dependent coordinates of the data points.</param>
+        /// <param name = "parameters">Estimated model function parameters.</param>
+        public abstract void Estimate(
+            XyModel model,
+            SolverOptions solverOptions,
+            int pointCount,
+            List<Vector<double>> control,
+            Vector<double> dataZ,
             ref Vector<double> parameters);
     }
 }

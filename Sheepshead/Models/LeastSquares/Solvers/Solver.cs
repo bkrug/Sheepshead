@@ -8,6 +8,7 @@
 // Better ListView and Better SplitButton components.
 // Check out http://www.componentowl.com
 // -----------------------------------------------------------------------
+using System.Collections.Generic;
 
 namespace Sheepshead.Models.LeastSquares
 {
@@ -87,6 +88,34 @@ namespace Sheepshead.Models.LeastSquares
             value *= 0.5;
         }
 
+        //TODO: Call this from overload of NonlinearSolver.Estimate
+        protected static void GetObjectiveValue(
+            XyModel model,
+            int pointCount,
+            List<Vector<double>> control,
+            Vector<double> dataY,
+            Vector<double> parameters,
+            out double value)
+        {
+            value = 0.0;
+
+            double z = 0.0;
+
+            for (int j = 0; j < pointCount; j++)
+            {
+                model.GetValue(
+                    control[j],
+                    parameters,
+                    out z);
+
+                value += Math.Pow(
+                    z - dataY[j],
+                    2.0);
+            }
+
+            value *= 0.5;
+        }
+
         /// <summary>
         ///   Get Jacobian matrix of the objective function.
         /// </summary>
@@ -114,6 +143,32 @@ namespace Sheepshead.Models.LeastSquares
 
                 model.GetGradient(
                     dataX[j],
+                    parameters,
+                    ref gradient);
+
+                jacobian.SetRow(j, gradient);
+            }
+        }
+
+        //TODO: Call this from overload of NonlinearSolver.Estimate
+        protected void GetObjectiveJacobian(
+            XyModel model,
+            int pointCount,
+            List<Vector<double>> control,
+            Vector<double> dataZ,
+            Vector<double> parameters,
+            ref Matrix<double> jacobian)
+        {
+            int parameterCount = parameters.Count;
+
+            // fill rows of the Jacobian matrix
+            // j-th row of a Jacobian is the gradient of model function in j-th measurement
+            for (int j = 0; j < pointCount; j++)
+            {
+                Vector<double> gradient = new DenseVector(parameterCount);
+
+                model.GetGradient(
+                    control[j],
                     parameters,
                     ref gradient);
 

@@ -54,7 +54,19 @@ namespace Sheepshead.Models.LeastSquares
             Vector<double> parameters,
             out double y)
         {
-            y = parameters[0] * Math.Cos(parameters[1] * x) + parameters[1] * Math.Sin(parameters[0] * x);
+            y = RunEquation(x, parameters);
+        }
+
+        public override void GetValue(Vector<double> control, Vector<double> parameters, out double z)
+        {
+            z = 0;
+            for (var i = 0; i < control.Count; ++i)
+                z += RunEquation(control[i], parameters.SubVector(i * 2, 2));
+        }
+
+        private static double RunEquation(double x, Vector<double> parameters)
+        {
+            return parameters[0] * Math.Cos(parameters[1] * x) + parameters[1] * Math.Sin(parameters[0] * x);
         }
 
         /// <summary>
@@ -67,6 +79,17 @@ namespace Sheepshead.Models.LeastSquares
             double x,
             Vector<double> parameters,
             ref Vector<double> gradient)
+        {
+            GetGradient(x, parameters, ref gradient);
+        }
+
+        public override void GetGradient(Vector<double> control, Vector<double> parameters, ref Vector<double> gradient)
+        {
+            for (var i = 0; i < control.Count; ++i)
+                GetGradient(control[i], parameters.SubVector(i * 2, 2), ref gradient, i * 2);
+        }
+
+        private static void GetGradient(double x, Vector<double> parameters, ref Vector<double> gradient, int gradIndex = 0)
         {
             gradient[0] = (Math.Cos(parameters[1] * x) + parameters[1] * Math.Cos(parameters[0] * x));
             gradient[1] = (-parameters[0] * Math.Sin(parameters[1] * x) * x + Math.Sin(parameters[0] * x));
