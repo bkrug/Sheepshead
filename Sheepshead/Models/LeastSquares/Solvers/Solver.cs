@@ -9,6 +9,7 @@
 // Check out http://www.componentowl.com
 // -----------------------------------------------------------------------
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Sheepshead.Models.LeastSquares
 {
@@ -103,8 +104,9 @@ namespace Sheepshead.Models.LeastSquares
 
             for (int j = 0; j < pointCount; j++)
             {
+                var controlValues = new DenseVector(control.Select(v => v[j]).ToArray());
                 model.GetValue(
-                    control[j],
+                    controlValues,
                     parameters,
                     out z);
 
@@ -166,9 +168,9 @@ namespace Sheepshead.Models.LeastSquares
             for (int j = 0; j < pointCount; j++)
             {
                 Vector<double> gradient = new DenseVector(parameterCount);
-
+                var controlValues = new DenseVector(control.Select(v => v[j]).ToArray());
                 model.GetGradient(
-                    control[j],
+                    controlValues,
                     parameters,
                     ref gradient);
 

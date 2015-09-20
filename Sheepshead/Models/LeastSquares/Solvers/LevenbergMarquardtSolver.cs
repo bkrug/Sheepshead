@@ -133,7 +133,90 @@ namespace Sheepshead.Models.LeastSquares
 
         public override void Estimate(XyModel model, SolverOptions solverOptions, int pointCount, List<Vector<double>> control, Vector<double> dataZ, ref List<Vector<double>> iterations)
         {
-            throw new System.NotImplementedException();
+            int n = solverOptions.Guess.Count;
+            double lambda = LambdaInitial;
+
+            Vector<double> parametersCurrent = new DenseVector(solverOptions.Guess);
+            Vector<double> parametersNew = new DenseVector(n);
+
+            double valueCurrent;
+            double valueNew;
+
+            GetObjectiveValue(
+                model,
+                pointCount,
+                control,
+                dataZ,
+                parametersCurrent,
+                out valueCurrent);
+
+            while (true)
+            {
+                Matrix<double> jacobian = new DenseMatrix(pointCount, n);
+                Vector<double> residual = new DenseVector(pointCount);
+
+                GetObjectiveJacobian(
+                    model,
+                    pointCount,
+                    control,
+                    dataZ,
+                    parametersCurrent,
+                    ref jacobian);
+
+                model.GetResidualVector(
+                    pointCount,
+                    control,
+                    dataZ,
+                    parametersCurrent,
+                    ref residual);
+
+                // compute approximate Hessian
+                Matrix<double> hessian = jacobian.Transpose().Multiply(jacobian);
+
+                // create diagonal matrix for proper scaling
+                Matrix<double> diagonal = new DiagonalMatrix(n, n, hessian.Diagonal().ToArray());
+
+                // compute Levenberg-Marquardt step
+                Vector<double> step = (hessian.Add(diagonal.Multiply(lambda))).Cholesky().Solve(jacobian.Transpose().Multiply(residual));
+
+                // update estimated model parameters
+                parametersCurrent.Subtract(step, parametersNew);
+
+                GetObjectiveValue(
+                    model,
+                    pointCount,
+                    control,
+                    dataZ,
+                    parametersNew,
+                    out valueNew);
+
+                iterations.Add(new DenseVector(parametersNew));
+
+                if (ShouldTerminate(
+                    valueCurrent,
+                    valueNew,
+                    iterations.Count,
+                    parametersCurrent,
+                    parametersNew,
+                    solverOptions))
+                {
+                    break;
+                }
+
+                if (valueNew < valueCurrent)
+                {
+                    // the step have decreased objective function value - decrease lambda
+                    lambda = (lambda / LambdaFactor);
+
+                    parametersNew.CopyTo(parametersCurrent);
+                    valueCurrent = valueNew;
+                }
+                else
+                {
+                    // the step have not decreated objective function value - increase lambda
+                    lambda = (lambda * LambdaFactor);
+                }
+            }
         }
     }
 }

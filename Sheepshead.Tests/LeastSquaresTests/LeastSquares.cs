@@ -62,5 +62,71 @@ namespace Sheepshead.Tests.LeastSquaresTests
                 vector[i] = xVector[i] < midwayPoint ? xVector[i] : 3.0 * Math.Pow(xVector[i], 0.5);
             return vector;
         }
+
+        [TestMethod]
+        public void ThreeDimTest()
+        {
+            var nonlinearSolver = (LevenbergMarquardtSolver)Solver.FromType(SolverType.LevenbergMarquardt);
+            List<Vector<double>> iterations = new List<Vector<double>>();
+            List<Vector<double>> control;
+            Vector<double> dataZ;
+            GetControl(out control, out dataZ);
+            var lineModel = new PowerModel();
+            var dataSetOpts = new DatasetOptions(control.Count(), 0, .5, 1.0, 0.0, 0.1);
+            nonlinearSolver.Estimate(
+                lineModel,
+                new SolverOptions(true, 0.0001, 0.0001, 50, new DenseVector(new[] { 5, 2, 3, 3.5 })),
+                dataSetOpts.PointCount,
+                control,
+                dataZ,
+                ref iterations);
+            using (var sw = new StreamWriter(@"C:\Temp\3dGraphPoints.csv"))
+            {
+                for (var x = 0; x <= 10; ++x)
+                {
+                    for (var y = 0; y <= 10; ++y)
+                    {
+                        double realZ = RunEquation(x, y);
+                        double predictedZ;
+                        var xAndY = new DenseVector(new [] {(double) x, y});
+                        lineModel.GetValue(xAndY, iterations[iterations.Count - 1], out predictedZ);
+                        sw.Write(realZ.ToString("F1") + " : " + predictedZ.ToString("F1") + ",");
+                    }
+                    sw.WriteLine("");
+                }
+                sw.WriteLine("");
+                sw.Write("Parameters: ,");
+                foreach (var eqParam in iterations[iterations.Count - 1])
+                    sw.Write(eqParam.ToString("F3") + ",");
+                sw.WriteLine("");
+            }
+        }
+
+        public void GetControl(out List<Vector<double>> control, out Vector<double> dependant) {
+            var xList = new List<double>();
+            var yList = new List<double>();
+            var zList = new List<double>();
+            var random = new Random();
+            for (var x = 5; x <= 10; ++x)
+            {
+                for (var y = 5; y <= 10; ++y)
+                {
+                    xList.Add(x);
+                    yList.Add(y);
+                    var alteration = random.NextDouble() * 20 - 10;
+                    var z = RunEquation(x, y);
+                    zList.Add(z + alteration);
+                }
+            }
+            control = new List<Vector<double>>();
+            control.Add(new DenseVector(xList.ToArray()));
+            control.Add(new DenseVector(yList.ToArray()));
+            dependant = new DenseVector(zList.ToArray());
+        }
+
+        private static double RunEquation(int x, int y)
+        {
+            return 5.0 * Math.Pow(x, 2) + 3.0 * Math.Pow((double)y, 3.5);
+        }
     }
 }
