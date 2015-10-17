@@ -59,7 +59,7 @@ namespace Sheepshead.Tests.LeastSquaresTests
             //var array = new double[] {0.01, 4, 6, 7, 7.5, 7.75, 7.875, 7.9, 7.92, 7.93};
             var vector = new DenseVector(xVector.Count());
             for (var i = 0; i < xVector.Count; ++i)
-                vector[i] = xVector[i] < midwayPoint ? xVector[i] : 3.0 * Math.Pow(xVector[i], 0.5);
+                vector[i] = xVector[i] < midwayPoint ? xVector[i] : 3.0 * Math.Pow(xVector[i] + 37.0, 0.5) - 47.0;
             return vector;
         }
 
@@ -127,6 +127,75 @@ namespace Sheepshead.Tests.LeastSquaresTests
         private static double RunEquation(int x, int y)
         {
             return 5.0 * Math.Pow(x, 2) + 3.0 * Math.Pow((double)y, 3.5);
+        }
+
+        [TestMethod]
+        public void Test2()
+        {
+            var nonlinearSolver = (LevenbergMarquardtSolver)Solver.FromType(SolverType.LevenbergMarquardt);
+            List<Vector<double>> iterations = new List<Vector<double>>();
+            var dataX = GetXData2();
+            var dataY = GetYData2(dataX);
+            var lineModel = new PowerModel();
+            var dataSetOpts = new DatasetOptions(dataX.Count(), 0, .5, 1.0, 0.0, 0.1);
+            nonlinearSolver.Estimate(
+                lineModel,
+                new SolverOptions(true, 0.0001, 0.0001, 50, new DenseVector(new[] { 1.0, 1.0 })),
+                dataSetOpts.PointCount,
+                dataX,
+                dataY,
+                ref iterations);
+            using (var sw = new StreamWriter(@"C:\Temp\GraphPoints.csv"))
+            {
+                for (var i = 0; i < iterations.Last().Count(); ++i)
+                    sw.Write(iterations.Last()[i] + "    ");
+                sw.WriteLine();
+                for (var i = 0; i < dataX.Count(); ++i)
+                {
+                    var x = dataX[i];
+                    double y1;
+                    lineModel.GetValue(x, iterations[iterations.Count - 1], out y1);
+                    sw.WriteLine(dataX[i] + "," + dataY[i] + "," + y1);
+                }
+            }
+        }
+
+        private DenseVector GetXData2()
+        {
+            var array = new List<double>();
+            for (double x = 0; x <= 10; x += (x < midwayPoint ? 1 : 0.1))
+                array.Add(x > 0 ? x : 0.001);
+            var vector = new DenseVector(array.Count());
+            for (var i = 0; i < array.Count(); ++i)
+                vector[i] = array[i];
+            return vector;
+        }
+
+        private DenseVector GetYData2(DenseVector xVector)
+        {
+            var vector = new DenseVector(xVector.Count());
+            for (var i = 0; i < xVector.Count; ++i)
+                vector[i] = -4.0 * Math.Pow(xVector[i], 0.87) + 12;
+            return vector;
+        }
+
+        [TestMethod]
+        public void LinearEquation()
+        {
+            //var solver = (NormalSolver)Solver.FromType(SolverType.Normal);
+            //List<Vector<double>> iterations = new List<Vector<double>>();
+            //List<Vector<double>> control;
+            //Vector<double> dataZ;
+            //GetControl(out control, out dataZ);
+            //var lineModel = new PowerModel();
+            //var dataSetOpts = new DatasetOptions(control.Count(), 0, .5, 1.0, 0.0, 0.1);
+            //solver.Estimate(
+            //    lineModel,
+            //    new SolverOptions(true, 0.0001, 0.0001, 50, new DenseVector(new[] { 5, 2, 3, 3.5 })),
+            //    dataSetOpts.PointCount,
+            //    control,
+            //    dataZ,
+            //    ref iterations);
         }
     }
 }

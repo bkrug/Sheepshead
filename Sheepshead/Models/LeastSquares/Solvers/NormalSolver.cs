@@ -21,7 +21,7 @@ namespace Sheepshead.Models.LeastSquares
     /// <summary>
     ///   Solves the linear least squares problem using normal equations and Cholesky decomposition.
     /// </summary>
-    internal sealed class NormalSolver : LinearSolver
+    public sealed class NormalSolver : LinearSolver
     {
         /// <summary>
         ///   Estimate parameters of the model function.
