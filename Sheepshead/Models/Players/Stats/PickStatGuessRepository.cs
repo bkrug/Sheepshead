@@ -15,13 +15,7 @@ namespace Sheepshead.Models.Players.Stats
 
     public class PickStatGuessRepository : StatRepository<PickStatUniqueKey, PickStat>, IPickStatGuessRepository
     {
-        Dictionary<string, RangeDetail> MaxRanges = new Dictionary<string, RangeDetail>()
-            {
-                { "TrumpCount", new RangeDetail() { Min = 0, Max = 6  } },
-                { "AvgTrumpRank", new RangeDetail() { Min = 1, Max = 14 } },
-                { "PointsInHand", new RangeDetail() { Min = 0, Max = 64 } },
-                { "TotalCardsWithPoints", new RangeDetail() { Min = 0, Max = 6 } }
-            };
+        Dictionary<string, RangeDetail> MaxRanges = PickStatConst.MaxRanges;
 
         public PickStatGuessRepository() 
         {
@@ -55,6 +49,23 @@ namespace Sheepshead.Models.Players.Stats
 
         private PickStat CreateResult(PickStatUniqueKey key)
         {
+            var normalizedValues = NormalizeKeyValues(ref key);
+            double passScore;
+            double pickScore;
+            CreateImaginaryScores(normalizedValues, out passScore, out pickScore);
+            var handsTried = 5;
+            return new PickStat()
+            {
+                TotalPassedPoints = (int)Math.Round(passScore * handsTried),
+                HandsPassed = handsTried,
+                TotalPickPoints = (int)Math.Round(pickScore * handsTried),
+                HandsPicked = handsTried
+            };
+        }
+
+        //The resulting list will have values between 0 and 1 to compare how close the value is to the max and min value of the range.
+        private List<double> NormalizeKeyValues(ref PickStatUniqueKey key)
+        {
             var normalizedValues = new List<double>();
             foreach (var prop in typeof(PickStatUniqueKey).GetFields())
             {
@@ -65,21 +76,18 @@ namespace Sheepshead.Models.Players.Stats
                     normalized = 1 - normalized;
                 normalizedValues.Add(normalized);
             }
+            return normalizedValues;
+        }
+
+        private static void CreateImaginaryScores(List<double> normalizedValues, out double passScore, out double pickScore)
+        {
             var avg = normalizedValues.Average();
             var passPercent = avg;
             var pickPercent = Math.Sin(avg * Math.PI - Math.PI / 2) / 2 + 0.5;
             const double maxPossiblePassPoints = 2;
             const double maxPossiblePickPoints = 3;
-            var passScore = 2 * maxPossiblePassPoints * passPercent - maxPossiblePassPoints;
-            var pickScore = 2 * maxPossiblePickPoints * pickPercent - maxPossiblePickPoints;
-            var handsTried = 5;
-            return new PickStat()
-            {
-                TotalPassedPoints = (int)Math.Round(passScore * handsTried),
-                HandsPassed = handsTried,
-                TotalPickPoints = (int)Math.Round(pickScore * handsTried),
-                HandsPicked = handsTried
-            };
+            passScore = 2 * maxPossiblePassPoints * passPercent - maxPossiblePassPoints;
+            pickScore = 2 * maxPossiblePickPoints * pickPercent - maxPossiblePickPoints;
         }
 
         protected override PickStat CreateDefaultStat()

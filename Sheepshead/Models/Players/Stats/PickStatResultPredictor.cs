@@ -6,6 +6,17 @@ using System.Reflection;
 
 namespace Sheepshead.Models.Players.Stats
 {
+    public class PickStatConst
+    {
+        public static Dictionary<string, RangeDetail> MaxRanges = new Dictionary<string, RangeDetail>()
+            {
+                { "TrumpCount", new RangeDetail() { Min = 0, Max = 6  } },
+                { "AvgTrumpRank", new RangeDetail() { Min = 1, Max = 14 } },
+                { "PointsInHand", new RangeDetail() { Min = 0, Max = 64 } },
+                { "TotalCardsWithPoints", new RangeDetail() { Min = 0, Max = 6 } }
+            };
+    }
+
     public interface IPickResultPredictor
     {
         PickStat GetWeightedStat(PickStatUniqueKey key);
@@ -20,13 +31,7 @@ namespace Sheepshead.Models.Players.Stats
         {
             _repository = repository;
             _guessRepository = guessRepository;
-            MaxRanges = new Dictionary<string, RangeDetail>()
-            {
-                { "TrumpCount", new RangeDetail() { Min = 0, Max = 6  } },
-                { "AvgTrumpRank", new RangeDetail() { Min = 1, Max = 14 } },
-                { "PointsInHand", new RangeDetail() { Min = 0, Max = 64 } },
-                { "TotalCardsWithPoints", new RangeDetail() { Min = 0, Max = 6 } }
-            };
+            MaxRanges = PickStatConst.MaxRanges;
         }
 
         protected override List<PickStatUniqueKey> CreateKeyList()
