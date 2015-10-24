@@ -9,7 +9,7 @@ using System.Timers;
 
 namespace Sheepshead.Models.Players.Stats
 {
-    public interface IMoveStatRepository
+    public interface IMoveStatRepository : IStatRepository<MoveStatUniqueKey, MoveStat>
     {
         List<MoveStatUniqueKey> Keys { get; }
         void IncrementTrickResult(MoveStatUniqueKey key, bool wonTrick);

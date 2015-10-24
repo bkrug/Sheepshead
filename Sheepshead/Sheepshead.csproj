@@ -163,6 +163,7 @@
     <Compile Include="Models\Players\Stats\PickKeyGenerator.cs" />
     <Compile Include="Models\Neural\NeuralNetwork.cs" />
     <Compile Include="Models\Players\Stats\RecordingPlayer.cs" />
+    <Compile Include="Models\Players\Stats\ResultPredictor.cs" />
     <Compile Include="Models\Players\Stats\StatRepository.cs" />
     <Compile Include="Models\Players\Stats\LearningHelper.cs" />
     <Compile Include="Models\Players\BasicPlayer.cs" />

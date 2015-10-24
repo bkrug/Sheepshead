@@ -8,7 +8,7 @@ namespace Sheepshead.Tests.NonUnitTests
     [TestClass]
     public class NeuralTests
     {
-        [TestMethod]
+        //[TestMethod]
         public void TestFromBook()
         {
             using (var Console = new StreamWriter(@"c:\temp\neural-test.txt"))

@@ -16,7 +16,7 @@ namespace Sheepshead.Tests.LeastSquaresTests
     {
         const int midwayPoint = 3;
 
-        [TestMethod]
+        //[TestMethod]
         public void Test1()
         {
             var nonlinearSolver = (LevenbergMarquardtSolver)Solver.FromType(SolverType.LevenbergMarquardt);
@@ -63,7 +63,7 @@ namespace Sheepshead.Tests.LeastSquaresTests
             return vector;
         }
 
-        [TestMethod]
+        //[TestMethod]
         public void ThreeDimTest()
         {
             var nonlinearSolver = (LevenbergMarquardtSolver)Solver.FromType(SolverType.LevenbergMarquardt);
@@ -129,7 +129,7 @@ namespace Sheepshead.Tests.LeastSquaresTests
             return 5.0 * Math.Pow(x, 2) + 3.0 * Math.Pow((double)y, 3.5);
         }
 
-        [TestMethod]
+        //[TestMethod]
         public void Test2()
         {
             var nonlinearSolver = (LevenbergMarquardtSolver)Solver.FromType(SolverType.LevenbergMarquardt);
@@ -179,7 +179,7 @@ namespace Sheepshead.Tests.LeastSquaresTests
             return vector;
         }
 
-        [TestMethod]
+        //[TestMethod]
         public void LinearEquation()
         {
             //var solver = (NormalSolver)Solver.FromType(SolverType.Normal);
