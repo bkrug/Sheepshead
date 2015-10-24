@@ -11,10 +11,8 @@ namespace Sheepshead.Models.Players.Stats
 {
     public interface IPickStatRepository : IStatRepository<PickStatUniqueKey, PickStat>
     {
-        List<PickStatUniqueKey> Keys { get; }
         void IncrementPickResult(PickStatUniqueKey key, int points);
         void IncrementPassResult(PickStatUniqueKey key, int points);
-        PickStat GetRecordedResults(PickStatUniqueKey key);
     }
 
     public class PickStatRepository : StatRepository<PickStatUniqueKey, PickStat>, IPickStatRepository

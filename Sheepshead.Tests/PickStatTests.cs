@@ -170,19 +170,130 @@ namespace Sheepshead.Tests
         }
 
         [TestMethod]
-        public void PickStatResultPredictor_GetWeightedStat()
+        public void PickStatResultPredictor_GetWeightedStat_WithoutGuess()
         {
+            var key1 = new PickStatUniqueKey()
+            {
+                TrumpCount = 3,
+                AvgTrumpRank = 5,
+                PointsInHand = 3,
+                TotalCardsWithPoints = 1
+            };
+            var key2 = new PickStatUniqueKey()
+            {
+                TrumpCount = 3,
+                AvgTrumpRank = 5,
+                PointsInHand = 4,
+                TotalCardsWithPoints = 1
+            };
+            var stat1 = new PickStat()
+            {
+                HandsPicked = 5000,
+                HandsPassed = 5000,
+                TotalPickPoints = 1000,
+                TotalPassedPoints = 500
+            };
+            var stat2 = new PickStat()
+            {
+                HandsPicked = 500,
+                HandsPassed = 500,
+                TotalPickPoints = 182,
+                TotalPassedPoints = 234
+            }; 
+            var guessRepositoryMock = new Mock<IPickStatGuessRepository>();
+            //To simplify the test, the guess repository will always return a result that doesn't affect other results.
+            guessRepositoryMock.Setup(m => m.GetRecordedResults(It.IsAny<PickStatUniqueKey>())).Returns(new PickStat());
+            var repositoryMock = new Mock<IPickStatRepository>();
+            var predictor = new PickStatResultPredictor(repositoryMock.Object, guessRepositoryMock.Object);
+
+            repositoryMock.Setup(m => m.GetRecordedResults(It.IsAny<PickStatUniqueKey>())).Returns(new PickStat());
+            repositoryMock.Setup(m => m.GetRecordedResults(key1)).Returns(stat1);
+            repositoryMock.Setup(m => m.GetRecordedResults(key2)).Returns(stat2);
+            var gotStat = predictor.GetWeightedStat(key1);
+            Assert.AreEqual(stat1.HandsPicked, gotStat.HandsPicked, 
+                "Since there is so much data for key1 and stat1, we don't need to look at close by statistics to make a prediction.");
+            Assert.AreEqual(stat1.HandsPassed, gotStat.HandsPassed);
+            Assert.AreEqual(stat1.TotalPickPoints, gotStat.TotalPickPoints);
+            Assert.AreEqual(stat1.TotalPassedPoints, gotStat.TotalPassedPoints);
+
+            stat1 = new PickStat()
+            {
+                HandsPicked = 100,
+                HandsPassed = 100,
+                TotalPickPoints = 32,
+                TotalPassedPoints = 54
+            };
+            repositoryMock.Setup(m => m.GetRecordedResults(key1)).Returns(stat1);
+            repositoryMock.Setup(m => m.GetRecordedResults(key2)).Returns(stat2);
+            gotStat = predictor.GetWeightedStat(key1);
+            Assert.AreEqual(stat1.HandsPicked + stat2.HandsPicked, gotStat.HandsPicked,
+                "Due to limited data, we now expect the results to include data from more than one data point.");
+            Assert.AreEqual(stat1.HandsPassed + stat2.HandsPassed, gotStat.HandsPassed);
+            Assert.AreEqual(stat1.TotalPickPoints + stat2.TotalPickPoints, gotStat.TotalPickPoints);
+            Assert.AreEqual(stat1.TotalPassedPoints + stat2.TotalPassedPoints, gotStat.TotalPassedPoints);
+        }
+
+        [TestMethod]
+        public void PickStatResultPredictor_GetWeightedStat_WithGuess()
+        {
+            var key1 = new PickStatUniqueKey()
+            {
+                TrumpCount = 3,
+                AvgTrumpRank = 5,
+                PointsInHand = 3,
+                TotalCardsWithPoints = 1
+            };
+            var key2 = new PickStatUniqueKey()
+            {
+                TrumpCount = 3,
+                AvgTrumpRank = 5,
+                PointsInHand = 4,
+                TotalCardsWithPoints = 1
+            };
+            var stat1 = new PickStat()
+            {
+                HandsPicked = 100,
+                HandsPassed = 100,
+                TotalPickPoints = 32,
+                TotalPassedPoints = 54
+            };
+            var stat2 = new PickStat()
+            {
+                HandsPicked = 500,
+                HandsPassed = 500,
+                TotalPickPoints = 182,
+                TotalPassedPoints = 234
+            }; 
+            var guessStat1 = new PickStat() {
+                HandsPicked = 5,
+                HandsPassed = 5,
+                TotalPickPoints = 3,
+                TotalPassedPoints = 2
+            };
+            var guessStat2 = new PickStat()
+            {
+                HandsPicked = 57892,
+                HandsPassed = 29875,
+                TotalPickPoints = -2975893,
+                TotalPassedPoints = 2987109,
+            };
+            var guessRepositoryMock = new Mock<IPickStatGuessRepository>();
+            guessRepositoryMock.Setup(m => m.GetRecordedResults(It.IsAny<PickStatUniqueKey>())).Returns(new PickStat());
+            guessRepositoryMock.Setup(m => m.GetRecordedResults(key1)).Returns(guessStat1);
+            guessRepositoryMock.Setup(m => m.GetRecordedResults(key2)).Returns(guessStat2);
             var repositoryMock = new Mock<IPickStatRepository>();
             repositoryMock.Setup(m => m.GetRecordedResults(It.IsAny<PickStatUniqueKey>())).Returns(new PickStat());
-            var predictor = new PickStatResultPredictor(repositoryMock.Object);
-            var getStat = predictor.GetWeightedStat(new PickStatUniqueKey()
-            {
-                TrumpCount = 0,
-                AvgTrumpRank = 0,
-                PointsInHand = 0,
-                TotalCardsWithPoints = 0
-            });
+            repositoryMock.Setup(m => m.GetRecordedResults(key1)).Returns(stat1);
+            repositoryMock.Setup(m => m.GetRecordedResults(key2)).Returns(stat2);
+            var predictor = new PickStatResultPredictor(repositoryMock.Object, guessRepositoryMock.Object);
 
+            var gotStat = predictor.GetWeightedStat(key1);
+            Assert.AreEqual(stat1.HandsPicked + stat2.HandsPicked + guessStat1.HandsPicked, gotStat.HandsPicked,
+                "There is limited data, so the result should be a combination of two real stats and also of one guess.");
+            Assert.AreEqual(stat1.HandsPassed + stat2.HandsPassed + guessStat1.HandsPassed, gotStat.HandsPassed,
+                "Notice that we do not want guessStat2 to be included in the results.  The guesses should not be very influential after enough data has been collected.");
+            Assert.AreEqual(stat1.TotalPickPoints + stat2.TotalPickPoints + guessStat1.TotalPickPoints, gotStat.TotalPickPoints);
+            Assert.AreEqual(stat1.TotalPassedPoints + stat2.TotalPassedPoints + guessStat1.TotalPassedPoints, gotStat.TotalPassedPoints);
         }
     }
 }

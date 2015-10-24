@@ -11,10 +11,8 @@ namespace Sheepshead.Models.Players.Stats
 {
     public interface IMoveStatRepository : IStatRepository<MoveStatUniqueKey, MoveStat>
     {
-        List<MoveStatUniqueKey> Keys { get; }
         void IncrementTrickResult(MoveStatUniqueKey key, bool wonTrick);
         void IncrementHandResult(MoveStatUniqueKey key, bool wonGame);
-        MoveStat GetRecordedResults(MoveStatUniqueKey key);
     }
 
     public class MoveStatRepository : StatRepository<MoveStatUniqueKey, MoveStat>, IMoveStatRepository

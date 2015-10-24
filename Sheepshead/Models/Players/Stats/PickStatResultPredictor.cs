@@ -14,11 +14,12 @@ namespace Sheepshead.Models.Players.Stats
     public class PickStatResultPredictor : ResultPredictor<PickStatUniqueKey, PickStat>, IPickResultPredictor
     {
         IPickStatRepository _repository;
+        IPickStatGuessRepository _guessRepository;
 
-        //TODO: Add a second repository parameter containing guess data
-        public PickStatResultPredictor(IPickStatRepository repository) : base(repository)
+        public PickStatResultPredictor(IPickStatRepository repository, IPickStatGuessRepository guessRepository) : base(repository)
         {
             _repository = repository;
+            _guessRepository = guessRepository;
             MaxRanges = new Dictionary<string, RangeDetail>()
             {
                 { "TrumpCount", new RangeDetail() { Min = 0, Max = 6  } },
@@ -53,6 +54,14 @@ namespace Sheepshead.Models.Players.Stats
         protected override void AddOtherStat(PickStat stat, PickStat recordedStat)
         {
             stat.AddOtherStat(recordedStat);
+        }
+
+        public override PickStat GetWeightedStat(PickStatUniqueKey key)
+        {
+            var stat = base.GetWeightedStat(key);
+            var guessStat = _guessRepository.GetRecordedResults(key);
+            stat.AddOtherStat(guessStat);
+            return stat;
         }
     }
 }

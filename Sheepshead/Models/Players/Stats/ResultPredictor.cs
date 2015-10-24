@@ -19,7 +19,7 @@ namespace Sheepshead.Models.Players.Stats
         protected abstract S CreateStat();
         protected abstract bool ReachedMinimumTries(S generatedStat);
 
-        public S GetWeightedStat(K key)
+        public virtual S GetWeightedStat(K key)
         {
             var realStat = GetRecordedResults(key);
             if (ReachedMinimumTries(realStat))
