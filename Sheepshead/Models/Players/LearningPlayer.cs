@@ -10,13 +10,15 @@ namespace Sheepshead.Models.Players
     {
         private IKeyGenerator _generator;
         private IStatResultPredictor _predictor;
+        private IPickResultPredictor _pickPredictor;
 
         private LearningPlayer() { }
 
-        public LearningPlayer(IKeyGenerator generator, IStatResultPredictor predictor)
+        public LearningPlayer(IKeyGenerator generator, IStatResultPredictor predictor, IPickResultPredictor pickPredictor)
         {
             _generator = generator;
             _predictor = predictor;
+            _pickPredictor = pickPredictor;
         }
 
         public override ICard GetMove(ITrick trick)

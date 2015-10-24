@@ -37,13 +37,14 @@ namespace Sheepshead.Tests.NonUnitTests
         {
             var predictorMock = new Mock<IStatResultPredictor>();
             predictorMock.Setup(m => m.GetWeightedStat(It.IsAny<MoveStatUniqueKey>())).Returns(null as MoveStat);
+            var pickPredictorMock = new Mock<IPickResultPredictor>();
             using (_sw = new StreamWriter(@"C:\Temp\GeneratedKeys.csv"))
             {
                 var playerList = new List<IPlayer>();
                 var generator = new MoveKeyGenerator();
                 for (var i = 0; i < 5; ++i)
                 {
-                    var player = new LearningPlayer(generator, predictorMock.Object);
+                    var player = new LearningPlayer(generator, predictorMock.Object, pickPredictorMock.Object);
                     playerList.Add(player);
                     player.OnMove += (object sender, LearningPlayer.OnMoveEventArgs args) => {
                         var key = generator.GenerateKey(args.Trick, sender as IPlayer, args.Card);
@@ -72,13 +73,16 @@ namespace Sheepshead.Tests.NonUnitTests
         {
             var repository = new MoveStatRepository();
             var predictor = new MoveStatResultPredictor(repository);
+            var pickRepository = new PickStatRepository();
+            var guessPickRepository = new PickStatGuessRepository();
+            var pickPredictorMock = new PickStatResultPredictor(pickRepository, guessPickRepository);
             using (var sw = new StreamWriter(@"C:\Temp\learningVsBasicPlayer.txt"))
             {
                 var playerList = new List<IPlayer>() {
                     new BasicPlayer(),
-                    new LearningPlayer(new MoveKeyGenerator(), predictor),
+                    new LearningPlayer(new MoveKeyGenerator(), predictor, pickPredictorMock),
                     new BasicPlayer(),
-                    new LearningPlayer(new MoveKeyGenerator(), predictor),
+                    new LearningPlayer(new MoveKeyGenerator(), predictor, pickPredictorMock),
                     new BasicPlayer()
                 };
                 var wins = new double[5];

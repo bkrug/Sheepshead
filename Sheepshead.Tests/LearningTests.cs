@@ -62,9 +62,10 @@ namespace Sheepshead.Tests
             predictorMock
                 .Setup(m => m.GetWeightedStat(It.IsAny<MoveStatUniqueKey>()))
                 .Returns((MoveStatUniqueKey key) => statList[keyList.IndexOf(key)]);
+            var pickPredictorMock = new Mock<IPickResultPredictor>();
             var trickMock = new Mock<ITrick>();
             trickMock.Setup(m => m.IsLegalAddition(It.IsAny<ICard>(), It.IsAny<IPlayer>())).Returns(true);
-            var player = new LearningPlayer(generatorMock.Object, predictorMock.Object);
+            var player = new LearningPlayer(generatorMock.Object, predictorMock.Object, pickPredictorMock.Object);
             player.Cards.AddRange(cardList);
 
             var actualCard = player.GetMove(trickMock.Object);
