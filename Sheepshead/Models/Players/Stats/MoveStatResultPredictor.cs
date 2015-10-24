@@ -13,10 +13,11 @@ namespace Sheepshead.Models.Players.Stats
 
     public class MoveStatResultPredictor : ResultPredictor<MoveStatUniqueKey, MoveStat>, IStatResultPredictor
     {
-        private IMoveStatRepository _repository { get { return (IMoveStatRepository)Repository; } }
+        IMoveStatRepository _repository;
 
         public MoveStatResultPredictor(IMoveStatRepository repository) : base(repository)
         {
+            _repository = repository;
             MaxRanges = new Dictionary<string, RangeDetail>()
             {
                 { "OpponentPercentDone", new RangeDetail() { Min = 0, Max = 100, ValidValues = new List<int>() { 0, 25, 33, 50, 67, 75, 100 } } },

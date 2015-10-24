@@ -9,7 +9,7 @@ using System.Timers;
 
 namespace Sheepshead.Models.Players.Stats
 {
-    public interface IPickStatRepository
+    public interface IPickStatRepository : IStatRepository<PickStatUniqueKey, PickStat>
     {
         List<PickStatUniqueKey> Keys { get; }
         void IncrementPickResult(PickStatUniqueKey key, int points);

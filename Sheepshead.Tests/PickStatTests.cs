@@ -174,6 +174,7 @@ namespace Sheepshead.Tests
         public void PickStatResultPredictor_GetWeightedStat()
         {
             var repositoryMock = new Mock<IPickStatRepository>();
+            repositoryMock.Setup(m => m.GetRecordedResults(It.IsAny<PickStatUniqueKey>())).Returns(new PickStat());
             var predictor = new PickStatResultPredictor(repositoryMock.Object);
             var getStat = predictor.GetWeightedStat(new PickStatUniqueKey()
             {

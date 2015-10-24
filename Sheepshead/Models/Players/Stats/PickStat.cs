@@ -6,7 +6,7 @@ using System.Web.Script.Serialization;
 
 namespace Sheepshead.Models.Players.Stats
 {
-    public class PickStat
+    public class PickStat : IStat<PickStat>
     {
         public int TotalPickPoints { get; set; }
         public int HandsPicked { get; set; }
@@ -17,9 +17,17 @@ namespace Sheepshead.Models.Players.Stats
         public double? AvgPickPoints { get { return HandsPicked == 0 ? null : (double?)TotalPickPoints / HandsPicked; } }
         [ScriptIgnore]
         public double? AvgPassedPoints { get { return HandsPassed == 0 ? null : (double?)TotalPassedPoints / HandsPassed; } }
+
+        public void AddOtherStat(PickStat otherStat)
+        {
+            TotalPassedPoints += otherStat.TotalPassedPoints;
+            HandsPassed += otherStat.HandsPassed;
+            TotalPickPoints += otherStat.TotalPickPoints;
+            HandsPicked += otherStat.HandsPicked;
+        }
     }
 
-    public struct PickStatUniqueKey
+    public struct PickStatUniqueKey : IStatUniqueKey
     {
         public int TrumpCount;
         public int AvgTrumpRank;

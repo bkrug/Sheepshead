@@ -5,7 +5,7 @@ using System.Web;
 
 namespace Sheepshead.Models.Players.Stats
 {
-    public abstract class ResultPredictor<K, S>
+    public abstract class ResultPredictor<K, S> where S : IStat<S> where K : IStatUniqueKey
     {
         protected readonly IStatRepository<K, S> Repository;
         protected Dictionary<string, RangeDetail> MaxRanges;

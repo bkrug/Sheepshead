@@ -6,7 +6,7 @@ using System.Web.Script.Serialization;
 
 namespace Sheepshead.Models.Players.Stats
 {
-    public class MoveStat
+    public class MoveStat : IStat<MoveStat>
     {
         public int TricksWon {get; set; }
         public int TricksTried {get; set; }
@@ -27,7 +27,7 @@ namespace Sheepshead.Models.Players.Stats
         }
     }
 
-    public struct MoveStatUniqueKey
+    public struct MoveStatUniqueKey : IStatUniqueKey
     {
         public bool CardWillOverpower;   //Only true if this card changes the player's win state from loosing to winning
         public int OpponentPercentDone;  //If partner unknown, this won't reach 1.0 unless current player is last.
