@@ -25,12 +25,37 @@ namespace Sheepshead.Models.Players.Stats
                 { "TotalCardsWithPoints", new RangeDetail() { Min = 0, Max = 6 } }
             };
 
-        protected override PickStat CreateDefaultStat()
+        public PickStatGuessRepository() 
         {
-            throw new NotImplementedException("CreateDefaultStat() should never be called from this particular repository.");
+            PopulateGuesses(0, new List<int>());
         }
 
-        public override PickStat GetRecordedResults(PickStatUniqueKey key)
+        public void PopulateGuesses(int rangeIndex, List<int> rangeValues)
+        {
+            var rangeDetail = MaxRanges.ElementAt(rangeIndex).Value;
+            for (var newValue = rangeDetail.Min; newValue <= rangeDetail.Max; ++newValue)
+            {
+                if (rangeIndex < MaxRanges.Count() - 1)
+                {
+                    var rangeValues2 = new List<int>(rangeValues);
+                    rangeValues2.Add(newValue);
+                    PopulateGuesses(rangeIndex + 1, rangeValues2);
+                }
+                else
+                {
+                    var key = new PickStatUniqueKey()
+                    {
+                        TrumpCount = rangeValues[0],
+                        AvgTrumpRank = rangeValues[1],
+                        PointsInHand = rangeValues[2],
+                        TotalCardsWithPoints = newValue
+                    };
+                    _dict[key] = CreateResult(key);
+                }
+            }
+        }
+
+        private PickStat CreateResult(PickStatUniqueKey key)
         {
             var normalizedValues = new List<double>();
             foreach (var prop in typeof(PickStatUniqueKey).GetFields())
@@ -57,6 +82,11 @@ namespace Sheepshead.Models.Players.Stats
                 TotalPickPoints = (int)Math.Round(pickScore * handsTried),
                 HandsPicked = handsTried
             };
+        }
+
+        protected override PickStat CreateDefaultStat()
+        {
+            throw new NotImplementedException("CreateDefaultStat() should never be called from this particular repository.");
         }
     }
 }

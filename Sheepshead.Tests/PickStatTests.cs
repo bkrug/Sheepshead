@@ -151,7 +151,7 @@ namespace Sheepshead.Tests
             var getStat = repository.GetRecordedResults(new PickStatUniqueKey()
             {
                 TrumpCount = 0,
-                AvgTrumpRank = 0,
+                AvgTrumpRank = 14,
                 PointsInHand = 0,
                 TotalCardsWithPoints = 0
             });
