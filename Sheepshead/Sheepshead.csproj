@@ -158,6 +158,7 @@
     <Compile Include="Models\LeastSquares\Solvers\SolverType.cs" />
     <Compile Include="Models\LeastSquares\Solvers\SteepestDescentSolver.cs" />
     <Compile Include="Models\LeastSquares\Solvers\SvdSolver.cs" />
+    <Compile Include="Models\Players\Stats\PickStatGuessRepository.cs" />
     <Compile Include="Models\Players\Stats\PickStatResultPredictor.cs" />
     <Compile Include="Models\Players\Stats\PickStatRepository.cs" />
     <Compile Include="Models\Players\Stats\PickKeyGenerator.cs" />

@@ -144,12 +144,11 @@ namespace Sheepshead.Tests
             Assert.AreEqual(1, repository.GetRecordedResults(key2).HandsPicked);
         }
 
-        //[TestMethod]
-        public void PickStatResultPredictor_BeforeDataAdded()
+        [TestMethod]
+        public void PickStatGuessRepository_GetRecordedResult()
         {
-            var repositoryMock = new Mock<PickStatRepository>();
-            var predictor = new PickStatResultPredictor(repositoryMock.Object);
-            var getStat = predictor.GetWeightedStat(new PickStatUniqueKey()
+            var repository = new PickStatGuessRepository();
+            var getStat = repository.GetRecordedResults(new PickStatUniqueKey()
             {
                 TrumpCount = 0,
                 AvgTrumpRank = 0,
@@ -159,7 +158,7 @@ namespace Sheepshead.Tests
             Assert.IsTrue(getStat.AvgPassedPoints < 0, "If no actual data is available, the computer should guess that there is no chance of winning with this stat.");
             Assert.IsTrue(getStat.AvgPassedPoints > getStat.AvgPickPoints, "If no actual data is available, the computer should guess that picking is worse than passing.");
 
-            var getStat1 = predictor.GetWeightedStat(new PickStatUniqueKey()
+            var getStat1 = repository.GetRecordedResults(new PickStatUniqueKey()
             {
                 TrumpCount = 4,
                 AvgTrumpRank = 3,
