@@ -21,7 +21,7 @@ namespace Sheepshead.Models.Players.Stats
 
         public virtual S GetWeightedStat(K key)
         {
-            var realStat = GetRecordedResults(key);
+            var realStat = Repository.GetRecordedResults(key);
             if (ReachedMinimumTries(realStat))
                 return realStat;
             var usedKeys = CreateKeyList();
@@ -53,9 +53,6 @@ namespace Sheepshead.Models.Players.Stats
             }
         }
 
-        protected abstract S GetRecordedResults(K key);
-        protected abstract void AddOtherStat(S stat, S recordedStat);
-
         protected void AddKeys(K oldKey, List<K> usedKeys, List<string> propertyNames, List<RangeDetail> ranges, ref S stat)
         {
             var propertyName = propertyNames.First();
@@ -68,8 +65,8 @@ namespace Sheepshead.Models.Players.Stats
                     AddKeys(newKey, usedKeys, propertyNames.Skip(1).ToList(), ranges.Skip(1).ToList(), ref stat);
                 else if (!usedKeys.Contains(newKey))
                 {
-                    var recordedStat = GetRecordedResults(newKey);
-                    AddOtherStat(stat, recordedStat);
+                    var recordedStat = Repository.GetRecordedResults(newKey);
+                    stat.AddOtherStat(recordedStat);
                     usedKeys.Add(newKey);
                 }
             }

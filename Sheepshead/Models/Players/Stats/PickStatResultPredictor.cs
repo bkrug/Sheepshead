@@ -51,16 +51,6 @@ namespace Sheepshead.Models.Players.Stats
             return generatedStat.HandsPicked >= MINIMUM_TRIES && generatedStat.HandsPassed >= MINIMUM_TRIES;
         }
 
-        protected override PickStat GetRecordedResults(PickStatUniqueKey key)
-        {
-            return _repository.GetRecordedResults(key);
-        }
-
-        protected override void AddOtherStat(PickStat stat, PickStat recordedStat)
-        {
-            stat.AddOtherStat(recordedStat);
-        }
-
         public override PickStat GetWeightedStat(PickStatUniqueKey key)
         {
             var stat = base.GetWeightedStat(key);

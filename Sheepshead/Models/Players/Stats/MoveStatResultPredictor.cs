@@ -43,15 +43,5 @@ namespace Sheepshead.Models.Players.Stats
         {
             return generatedStat.HandsTried >= MINIMUM_TRIES;
         }
-
-        protected override MoveStat GetRecordedResults(MoveStatUniqueKey key)
-        {
-            return _repository.GetRecordedResults(key);
-        }
-
-        protected override void AddOtherStat(MoveStat stat, MoveStat recordedStat) 
-        {
-            stat.AddOtherStat(recordedStat);
-        }
     }
 }
