@@ -8,17 +8,19 @@ namespace Sheepshead.Models.Players
 {
     public class LearningPlayer : BasicPlayer
     {
-        private IKeyGenerator _generator;
+        private IKeyGenerator _moveKeyGenerator;
+        private IPickKeyGenerator _pickKeyGenerator;
         private IStatResultPredictor _predictor;
         private IPickResultPredictor _pickPredictor;
 
         private LearningPlayer() { }
 
-        public LearningPlayer(IKeyGenerator generator, IStatResultPredictor predictor, IPickResultPredictor pickPredictor)
+        public LearningPlayer(IKeyGenerator moveKeyGenerator, IStatResultPredictor predictor, IPickKeyGenerator pickKeyGenerator, IPickResultPredictor pickPredictor)
         {
-            _generator = generator;
+            _moveKeyGenerator = moveKeyGenerator;
             _predictor = predictor;
             _pickPredictor = pickPredictor;
+            _pickKeyGenerator = pickKeyGenerator;
         }
 
         public override ICard GetMove(ITrick trick)
@@ -27,7 +29,7 @@ namespace Sheepshead.Models.Players
             var results = new Dictionary<ICard, MoveStat>();
             foreach(var legalCard in legalCards) 
             {
-                var key = _generator.GenerateKey(trick, this, legalCard);
+                var key = _moveKeyGenerator.GenerateKey(trick, this, legalCard);
                 var result = _predictor.GetWeightedStat(key);
                 if (result != null && result.HandsTried > 0 && result.TricksTried > 0)
                     results.Add(legalCard, result);
@@ -48,6 +50,13 @@ namespace Sheepshead.Models.Players
             else
                 selectedCard = base.GetMove(trick);
             return selectedCard;
+        }
+
+        public override bool WillPick(IDeck deck)
+        {
+            var pickKey = _pickKeyGenerator.GenerateKey(deck.Hand, this);
+            var historicScores = _pickPredictor.GetWeightedStat(pickKey);
+            return historicScores.AvgPickPoints > historicScores.AvgPassedPoints;
         }
     }
 }

@@ -54,10 +54,11 @@ namespace Sheepshead.Tests
                 new MoveStat() { HandsWon = 74, HandsTried = 100, TricksWon = 69, TricksTried = 100 },
                 new MoveStat() { HandsWon = 49, HandsTried = 100, TricksWon = 98, TricksTried = 100 }
             };
-            var generatorMock = new Mock<IKeyGenerator>();
-            generatorMock
+            var moveKeyGenMock = new Mock<IKeyGenerator>();
+            moveKeyGenMock
                 .Setup(m => m.GenerateKey(It.IsAny<ITrick>(), It.IsAny<IPlayer>(), It.IsAny<ICard>()))
                 .Returns((ITrick t, IPlayer p, ICard c) => keyList[cardList.IndexOf(c)]);
+            var pickKeyGenMock = new Mock<IPickKeyGenerator>();
             var predictorMock = new Mock<IStatResultPredictor>();
             predictorMock
                 .Setup(m => m.GetWeightedStat(It.IsAny<MoveStatUniqueKey>()))
@@ -65,7 +66,7 @@ namespace Sheepshead.Tests
             var pickPredictorMock = new Mock<IPickResultPredictor>();
             var trickMock = new Mock<ITrick>();
             trickMock.Setup(m => m.IsLegalAddition(It.IsAny<ICard>(), It.IsAny<IPlayer>())).Returns(true);
-            var player = new LearningPlayer(generatorMock.Object, predictorMock.Object, pickPredictorMock.Object);
+            var player = new LearningPlayer(moveKeyGenMock.Object, predictorMock.Object, pickKeyGenMock.Object, pickPredictorMock.Object);
             player.Cards.AddRange(cardList);
 
             var actualCard = player.GetMove(trickMock.Object);
@@ -94,6 +95,56 @@ namespace Sheepshead.Tests
             trickMock.Setup(m => m.PlayerCount).Returns(5);
             actualCard = player.GetMove(trickMock.Object);
             Assert.IsTrue(actualCard is ICard, "If the predictor returns null for all of the moves, just guess.");
+        }
+
+        [TestMethod]
+        public void LearningPlayer_WillPick()
+        {
+            var keyGeneratorMock = new Mock<IKeyGenerator>();
+            var pickKeyGeneratorMock = new Mock<IPickKeyGenerator>();
+            var movePredictorMock = new Mock<IStatResultPredictor>();
+            var pickPredictorMock = new Mock<IPickResultPredictor>();
+            var player = new LearningPlayer(keyGeneratorMock.Object, movePredictorMock.Object, pickKeyGeneratorMock.Object, pickPredictorMock.Object);
+
+            var deckMock = new Mock<IDeck>();
+            var handMock = new Mock<IHand>();
+            deckMock.Setup(m => m.Hand).Returns(handMock.Object);
+
+            var key = new PickStatUniqueKey() { TotalCardsWithPoints = 4 };
+            pickKeyGeneratorMock.Setup(m => m.GenerateKey(It.IsAny<IHand>(), It.IsAny<IPlayer>())).Returns(key);
+
+            var stat = new PickStat()
+            {
+                TotalPickPoints = 10,
+                HandsPicked = 30,
+                TotalPassedPoints = -20,
+                HandsPassed = 50
+            };
+            pickPredictorMock.Setup(m => m.GetWeightedStat(It.IsAny<PickStatUniqueKey>())).Returns(stat);
+            var willPick = player.WillPick(deckMock.Object);
+            Assert.IsTrue(willPick, "If the (average) pick points are higher than the passed points, the player should pick.");
+
+            stat = new PickStat()
+            {
+                TotalPickPoints = 10,
+                HandsPicked = 30,
+                TotalPassedPoints = 20,
+                HandsPassed = 200
+            };
+            pickPredictorMock.Setup(m => m.GetWeightedStat(It.IsAny<PickStatUniqueKey>())).Returns(stat);
+            willPick = player.WillPick(deckMock.Object);
+            Assert.IsTrue(willPick, "If the (average) pick points are higher than the passed points, the player should pick.");
+
+            stat = new PickStat()
+            {
+                TotalPickPoints = 10,
+                HandsPicked = 30,
+                TotalPassedPoints = 100,
+                HandsPassed = 200
+            };
+            pickPredictorMock.Setup(m => m.GetWeightedStat(It.IsAny<PickStatUniqueKey>())).Returns(stat);
+            willPick = player.WillPick(deckMock.Object);
+            Assert.IsFalse(willPick, "If the (average) pick points are lower than the passed points, the player should pass.");
         }
     }
 }

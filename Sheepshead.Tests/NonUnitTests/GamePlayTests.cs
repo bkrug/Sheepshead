@@ -42,9 +42,10 @@ namespace Sheepshead.Tests.NonUnitTests
             {
                 var playerList = new List<IPlayer>();
                 var generator = new MoveKeyGenerator();
+                var pickGenerator = new PickKeyGenerator();
                 for (var i = 0; i < 5; ++i)
                 {
-                    var player = new LearningPlayer(generator, predictorMock.Object, pickPredictorMock.Object);
+                    var player = new LearningPlayer(generator, predictorMock.Object, pickGenerator, pickPredictorMock.Object);
                     playerList.Add(player);
                     player.OnMove += (object sender, LearningPlayer.OnMoveEventArgs args) => {
                         var key = generator.GenerateKey(args.Trick, sender as IPlayer, args.Card);
@@ -80,9 +81,9 @@ namespace Sheepshead.Tests.NonUnitTests
             {
                 var playerList = new List<IPlayer>() {
                     new BasicPlayer(),
-                    new LearningPlayer(new MoveKeyGenerator(), predictor, pickPredictorMock),
+                    new LearningPlayer(new MoveKeyGenerator(), predictor, new PickKeyGenerator(), pickPredictorMock),
                     new BasicPlayer(),
-                    new LearningPlayer(new MoveKeyGenerator(), predictor, pickPredictorMock),
+                    new LearningPlayer(new MoveKeyGenerator(), predictor, new PickKeyGenerator(), pickPredictorMock),
                     new BasicPlayer()
                 };
                 var wins = new double[5];

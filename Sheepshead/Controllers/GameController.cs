@@ -48,6 +48,7 @@ namespace Sheepshead.Controllers
                 playerList.Add(new LearningPlayer(
                     new MoveKeyGenerator(), 
                     new MoveStatResultPredictor(RepositoryRepository.Instance.MoveStatRepository),
+                    new PickKeyGenerator(),
                     new PickStatResultPredictor(RepositoryRepository.Instance.PickStatRepository, new PickStatGuessRepository())
                 ));
             }
