@@ -69,7 +69,7 @@ namespace Sheepshead.Tests.NonUnitTests
             }
         }
 
-        [TestMethod]
+        //[TestMethod]
         public void LearningVsBasicPlayer()
         {
             var moveRepository = new MoveStatRepository();
