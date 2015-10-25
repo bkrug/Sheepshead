@@ -15,11 +15,11 @@ namespace Sheepshead.Models.Players.Stats
     {
         public PickStatUniqueKey GenerateKey(IHand hand, IPlayer player)
         {
-            var cardsPlayed = hand.Tricks == null
+            var cardsPlayed = hand == null || hand.Tricks == null
                 ? new List<ICard>()
                 : hand.Tricks.Select(t => t.CardsPlayed[player]).Where(c => c != null);
-            var cardsBuried = hand.Deck.Buried == null ? new List<ICard>() : hand.Deck.Buried;
-            var blinds = hand.Deck.Blinds == null ? new List<ICard>() : hand.Deck.Blinds;
+            var cardsBuried = hand == null || hand.Deck.Buried == null ? new List<ICard>() : hand.Deck.Buried;
+            var blinds = hand == null || hand.Deck.Blinds == null ? new List<ICard>() : hand.Deck.Blinds;
             var cards = player.Cards
                 .Union(cardsPlayed)
                 .Union(cardsBuried)

@@ -69,21 +69,21 @@ namespace Sheepshead.Tests.NonUnitTests
             }
         }
 
-        //[TestMethod]
+        [TestMethod]
         public void LearningVsBasicPlayer()
         {
-            var repository = new MoveStatRepository();
-            var predictor = new MoveStatResultPredictor(repository);
+            var moveRepository = new MoveStatRepository();
+            var movePredictor = new MoveStatResultPredictor(moveRepository);
             var pickRepository = new PickStatRepository();
             var guessPickRepository = new PickStatGuessRepository();
-            var pickPredictorMock = new PickStatResultPredictor(pickRepository, guessPickRepository);
+            var pickPredictor = new PickStatResultPredictor(pickRepository, guessPickRepository);
             using (var sw = new StreamWriter(@"C:\Temp\learningVsBasicPlayer.txt"))
             {
                 var playerList = new List<IPlayer>() {
                     new BasicPlayer(),
-                    new LearningPlayer(new MoveKeyGenerator(), predictor, new PickKeyGenerator(), pickPredictorMock),
+                    new LearningPlayer(new MoveKeyGenerator(), movePredictor, new PickKeyGenerator(), pickPredictor),
                     new BasicPlayer(),
-                    new LearningPlayer(new MoveKeyGenerator(), predictor, new PickKeyGenerator(), pickPredictorMock),
+                    new LearningPlayer(new MoveKeyGenerator(), movePredictor, new PickKeyGenerator(), pickPredictor),
                     new BasicPlayer()
                 };
                 var wins = new double[5];
@@ -92,6 +92,7 @@ namespace Sheepshead.Tests.NonUnitTests
                 var nextReport = 2;
                 sw.WriteLine("Players 1 and 3 are Learning Players");
                 sw.Flush();
+                var gameStartTime = DateTime.Now;
                 var pickStatRepository = new PickStatRepository();
                 var moveStatRepository = new MoveStatRepository();
                 InstantiateLearningHelper learningDel = (IHand hand) => { return new LearningHelper(hand, @"C:\Temp\learningVsBasicPlayerHandSummaries.txt", pickStatRepository, moveStatRepository); };
@@ -112,6 +113,7 @@ namespace Sheepshead.Tests.NonUnitTests
                         sw.WriteLine("Games Played: " + handsCompleted);
                         for (var i = 0; i < wins.Length; ++i)
                             sw.WriteLine("Player " + i + ": " + (wins[i] / handsCompleted).ToString("P3"));
+                        sw.WriteLine("Average game time: " + ((DateTime.Now - gameStartTime).TotalSeconds / handsCompleted));
                         sw.WriteLine();
                         sw.Flush();
                     }

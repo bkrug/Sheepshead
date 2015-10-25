@@ -25,7 +25,7 @@ namespace Sheepshead.Tests
         };
 
         [TestMethod]
-        public void GenerateKey()
+        public void GenerateKey_AtStartOfHand()
         {
             var generator = new PickKeyGenerator();
             var deckMock = new Mock<IDeck>();
