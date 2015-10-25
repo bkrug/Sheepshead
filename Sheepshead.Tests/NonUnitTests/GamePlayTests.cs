@@ -145,6 +145,9 @@ namespace Sheepshead.Tests.NonUnitTests
                 game.RearrangePlayers();
                 var deck = new Deck(game, rnd);
                 var picker = game.PlayNonHumans(deck) as ComputerPlayer;
+                //TODO: remove this if when you have implemented leasters
+                if (picker == null)
+                    continue;
                 var buriedCards = picker != null ? picker.DropCardsForPick(deck) : new List<ICard>();
                 var hand = new Hand(deck, picker, buriedCards);
                 if (learningDel != null)

@@ -33,7 +33,7 @@ namespace Sheepshead.Models.Players.Stats
                 var ranges = new List<RangeDetail>();
                 CreateSearchRange(key, offset, propertyNames, ranges);
                 AddKeys(key, usedKeys, propertyNames, ranges, ref generatedStat);
-                offset = Math.Round(offset + 0.05, 5);
+                offset = Math.Round(offset + 0.15, 5);
             }
             return generatedStat;
         }
