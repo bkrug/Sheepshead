@@ -19,8 +19,8 @@ namespace Sheepshead.Models.Players.Stats
             {
                 BuriedPoints = buried.Sum(c => c.Points),
                 AvgRankInHand = (int)Math.Round(cardsHeld.Average(c => c.Rank)),
-                PointsInHand = cardsHeld.Sum(c => c.Points) //,
-                //SuitsInHand = 0
+                PointsInHand = cardsHeld.Sum(c => c.Points),
+                SuitsInHand = cardsHeld.GroupBy(c => c.StandardSuite).Count()
             };
         }
 
