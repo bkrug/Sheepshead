@@ -13,7 +13,7 @@ using Sheepshead.Models.Players.Stats;
 namespace Sheepshead.Tests
 {
     [TestClass]
-    public class BuryKeyGeneratorTests
+    public class BuryTests
     {
         private List<ICard> _cardsHeld = new List<ICard> { 
             CardRepository.Instance[StandardSuite.DIAMONDS, CardType.QUEEN], //Rank = 4
@@ -30,7 +30,7 @@ namespace Sheepshead.Tests
         };
 
         [TestMethod]
-        public void GenerateKey_AtStartOfHand()
+        public void GenerateBuryKey_AtStartOfHand()
         {
             var generator = new BuryKeyGenerator();
             var deckMock = new Mock<IDeck>();
@@ -39,17 +39,17 @@ namespace Sheepshead.Tests
 
             var expected = new BuryStatUniqueKey()
             {
-                AvgBuriedRank = (21 + 29) / 2,
                 BuriedPoints = 11 + 4,
                 AvgRankInHand = (4 + 8 + 3 + 14 + 22 + 15) / 6,
-                PointsInHand = 3 + 2 + 3 + 0 + 10 + 11
+                PointsInHand = 3 + 2 + 3 + 0 + 10 + 11,
+                SuitsInHand = -400
             };
             var actual = generator.GenerateKey(_cardsHeld, _buried);
 
-            Assert.AreEqual(expected.AvgBuriedRank, actual.AvgBuriedRank);
             Assert.AreEqual(expected.BuriedPoints, actual.BuriedPoints);
             Assert.AreEqual(expected.AvgRankInHand, actual.AvgRankInHand);
             Assert.AreEqual(expected.PointsInHand, actual.PointsInHand);
+            Assert.AreEqual(expected.SuitsInHand, actual.SuitsInHand);
         }
 
         [TestMethod]
@@ -57,19 +57,19 @@ namespace Sheepshead.Tests
         {
             var key1 = new BuryStatUniqueKey()
             {
-                AvgBuriedRank = 11,
                 BuriedPoints = 20,
                 AvgRankInHand = 5,
-                PointsInHand = 30
+                PointsInHand = 30,
+                SuitsInHand = 2
             };
             var key2 = new BuryStatUniqueKey()
             {
-                AvgBuriedRank = 3,
                 BuriedPoints = 5,
                 AvgRankInHand = 18,
-                PointsInHand = 9
+                PointsInHand = 9,
+                SuitsInHand = 2
             };
-            var repository = new BuryStatGuessRepository();
+            var repository = new BuryStatGuesser();
             var stat1 = repository.GetRecordedResults(key1);
             var stat2 = repository.GetRecordedResults(key2);
             Assert.IsTrue(stat1.AvgPickPoints > stat2.AvgPickPoints, "key1 is more likely to render positive points than key2.");

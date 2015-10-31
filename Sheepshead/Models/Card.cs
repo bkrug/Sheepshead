@@ -53,19 +53,26 @@ namespace Sheepshead.Models
         private void SetRanks()
         {
             int ct, ss;
-            var rank = 1;
 
+            var rank = 1;
             for (ct = (int)CardType.QUEEN; ct <= (int)CardType.JACK; ++ct)
                 for (ss = (int)StandardSuite.CLUBS; ss <= (int)StandardSuite.DIAMONDS; ++ss)
                     _cs[ss, ct].Rank = rank++;
 
+            rank = 9; //Should already be 9 by this point. Setting it to 9 to make the next loop more clear.
             ss = (int)StandardSuite.DIAMONDS;
             for (ct = (int)CardType.ACE; ct <= (int)CardType.N7; ++ct)
                 _cs[ss, ct].Rank = rank++;
 
             for (ss = (int)StandardSuite.CLUBS; ss <= (int)StandardSuite.HEARTS; ++ss)
-                for (ct = (int)CardType.ACE; ct <= (int)CardType.N7; ++ct)
-                    _cs[ss, ct].Rank = rank++;
+            {
+                _cs[ss, (int)CardType.ACE].Rank = 15;
+                _cs[ss, (int)CardType.N10].Rank = 16;
+                _cs[ss, (int)CardType.KING].Rank = 17;
+                _cs[ss, (int)CardType.N9].Rank = 18;
+                _cs[ss, (int)CardType.N8].Rank = 19;
+                _cs[ss, (int)CardType.N7].Rank = 20;
+            }
         }
 
         private void Copy()

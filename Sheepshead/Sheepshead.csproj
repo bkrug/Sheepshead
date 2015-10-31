@@ -161,8 +161,9 @@
     <Compile Include="Models\Players\Stats\BuryStat.cs" />
     <Compile Include="Models\Players\Stats\BuryKeyGenerator.cs" />
     <Compile Include="Models\Players\Stats\BuryStatRepository.cs" />
-    <Compile Include="Models\Players\Stats\BuryStatGuessRepository.cs" />
-    <Compile Include="Models\Players\Stats\PickStatGuessRepository.cs" />
+    <Compile Include="Models\Players\Stats\BuryStatGuesser.cs" />
+    <Compile Include="Models\Players\Stats\Guesser.cs" />
+    <Compile Include="Models\Players\Stats\PickStatGuesser.cs" />
     <Compile Include="Models\Players\Stats\PickStatResultPredictor.cs" />
     <Compile Include="Models\Players\Stats\PickStatRepository.cs" />
     <Compile Include="Models\Players\Stats\PickKeyGenerator.cs" />

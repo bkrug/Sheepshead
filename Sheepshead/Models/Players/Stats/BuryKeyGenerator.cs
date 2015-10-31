@@ -17,10 +17,10 @@ namespace Sheepshead.Models.Players.Stats
         {
             return new BuryStatUniqueKey()
             {
-                AvgBuriedRank = (int)Math.Round(buried.Average(c => c.Rank)),
                 BuriedPoints = buried.Sum(c => c.Points),
                 AvgRankInHand = (int)Math.Round(cardsHeld.Average(c => c.Rank)),
-                PointsInHand = cardsHeld.Sum(c => c.Points)
+                PointsInHand = cardsHeld.Sum(c => c.Points) //,
+                //SuitsInHand = 0
             };
         }
 

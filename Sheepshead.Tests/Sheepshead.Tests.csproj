@@ -104,7 +104,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CardTests.cs" />
-    <Compile Include="BuryKeyGeneratorTests.cs" />
+    <Compile Include="BuryTests.cs" />
     <Compile Include="LeastSquaresTests\LeastSquares.cs" />
     <Compile Include="NonUnitTests\NeuralTests.cs" />
     <Compile Include="PickStatTests.cs" />
