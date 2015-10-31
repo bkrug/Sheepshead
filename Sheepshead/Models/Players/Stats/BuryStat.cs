@@ -28,4 +28,15 @@ namespace Sheepshead.Models.Players.Stats
         public int AvgRankInHand;
         public int SuitsInHand;
     }
+
+    public class BuryStatConst
+    {
+        public static Dictionary<string, RangeDetail> MaxRanges = new Dictionary<string, RangeDetail>()
+            {
+                { "BuriedPoints", new RangeDetail() { Min = 0, Max = 22 } },
+                { "AvgPointsInHand", new RangeDetail() { Min = 0, Max = 11 } },
+                { "AvgRankInHand", new RangeDetail() { Min = 1, Max = 20 } },
+                { "SuitsInHand", new RangeDetail() { Min = 1, Max = 4 } }
+            };
+    }
 }

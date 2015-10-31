@@ -148,7 +148,7 @@ namespace Sheepshead.Tests
         public void PickStatGuesser_GetRecordedResult()
         {
             var guesser = new PickStatGuesser();
-            var getStat = guesser.MakeGuess(new PickStatUniqueKey()
+            var getStat = guesser.GetGuess(new PickStatUniqueKey()
             {
                 TrumpCount = 0,
                 AvgTrumpRank = 14,
@@ -158,7 +158,7 @@ namespace Sheepshead.Tests
             Assert.IsTrue(getStat.AvgPassedPoints < 0, "If no actual data is available, the computer should guess that there is no chance of winning with this stat.");
             Assert.IsTrue(getStat.AvgPassedPoints > getStat.AvgPickPoints, "If no actual data is available, the computer should guess that picking is worse than passing.");
 
-            var getStat1 = guesser.MakeGuess(new PickStatUniqueKey()
+            var getStat1 = guesser.GetGuess(new PickStatUniqueKey()
             {
                 TrumpCount = 4,
                 AvgTrumpRank = 3,
@@ -202,7 +202,7 @@ namespace Sheepshead.Tests
             }; 
             var guessRepositoryMock = new Mock<IPickStatGuesser>();
             //To simplify the test, the guess repository will always return a result that doesn't affect other results.
-            guessRepositoryMock.Setup(m => m.MakeGuess(It.IsAny<PickStatUniqueKey>())).Returns(new PickStat());
+            guessRepositoryMock.Setup(m => m.GetGuess(It.IsAny<PickStatUniqueKey>())).Returns(new PickStat());
             var repositoryMock = new Mock<IPickStatRepository>();
             var predictor = new PickStatResultPredictor(repositoryMock.Object, guessRepositoryMock.Object);
 
@@ -278,9 +278,9 @@ namespace Sheepshead.Tests
                 TotalPassedPoints = 2987109,
             };
             var guessRepositoryMock = new Mock<IPickStatGuesser>();
-            guessRepositoryMock.Setup(m => m.MakeGuess(It.IsAny<PickStatUniqueKey>())).Returns(new PickStat());
-            guessRepositoryMock.Setup(m => m.MakeGuess(key1)).Returns(guessStat1);
-            guessRepositoryMock.Setup(m => m.MakeGuess(key2)).Returns(guessStat2);
+            guessRepositoryMock.Setup(m => m.GetGuess(It.IsAny<PickStatUniqueKey>())).Returns(new PickStat());
+            guessRepositoryMock.Setup(m => m.GetGuess(key1)).Returns(guessStat1);
+            guessRepositoryMock.Setup(m => m.GetGuess(key2)).Returns(guessStat2);
             var repositoryMock = new Mock<IPickStatRepository>();
             repositoryMock.Setup(m => m.GetRecordedResults(It.IsAny<PickStatUniqueKey>())).Returns(new PickStat());
             repositoryMock.Setup(m => m.GetRecordedResults(key1)).Returns(stat1);

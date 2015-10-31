@@ -34,4 +34,15 @@ namespace Sheepshead.Models.Players.Stats
         public int PointsInHand;
         public int TotalCardsWithPoints;
     }
+
+    public class PickStatConst
+    {
+        public static Dictionary<string, RangeDetail> MaxRanges = new Dictionary<string, RangeDetail>()
+            {
+                { "TrumpCount", new RangeDetail() { Min = 0, Max = 6  } },
+                { "AvgTrumpRank", new RangeDetail() { Min = 0, Max = 14 } },
+                { "PointsInHand", new RangeDetail() { Min = 0, Max = 64 } },
+                { "TotalCardsWithPoints", new RangeDetail() { Min = 0, Max = 6 } }
+            };
+    }
 }

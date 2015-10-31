@@ -70,8 +70,8 @@ namespace Sheepshead.Tests
                 SuitsInHand = 2
             };
             var repository = new BuryStatGuesser();
-            var stat1 = repository.MakeGuess(key1);
-            var stat2 = repository.MakeGuess(key2);
+            var stat1 = repository.GetGuess(key1);
+            var stat2 = repository.GetGuess(key2);
             Assert.IsTrue(stat1.AvgPickPoints > stat2.AvgPickPoints, "key1 is more likely to render positive points than key2.");
         }
     }
