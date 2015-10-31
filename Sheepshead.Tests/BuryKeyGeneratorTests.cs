@@ -52,50 +52,27 @@ namespace Sheepshead.Tests
             Assert.AreEqual(expected.PointsInHand, actual.PointsInHand);
         }
 
-        //[TestMethod]
-        //public void GenerateKey_AtEndOfHand()
-        //{
-        //    var generator = new PickKeyGenerator();
-        //    var deckMock = new Mock<IDeck>();
-        //    var handMock = new Mock<IHand>();
-        //    var trickList = new List<Mock<ITrick>>();
-        //    var playerMock = new Mock<IPlayer>();
-        //    playerMock.Setup(m => m.Cards).Returns(new List<ICard> ());
-        //    var blinds = new List<ICard> {
-        //        CardRepository.Instance[StandardSuite.HEARTS, CardType.N8],
-        //        CardRepository.Instance[StandardSuite.CLUBS, CardType.KING]
-        //    };
-        //    for (var i = 0; i < _cardsDealt.Count; ++i)
-        //        trickList.Add(new Mock<ITrick>());
-        //    trickList[0].Setup(m => m.CardsPlayed).Returns(new Dictionary<IPlayer, ICard>() { { playerMock.Object, blinds.First() } });
-        //    for (var i = 1; i < _cardsDealt.Count; ++i)
-        //        trickList[i].Setup(m => m.CardsPlayed).Returns(new Dictionary<IPlayer, ICard>() { { playerMock.Object, _cardsDealt[i] } });
-        //    deckMock.Setup(m => m.Buried).Returns(blinds.Skip(1).Union(_cardsDealt.Take(1)).ToList());
-        //    deckMock.Setup(m => m.Blinds).Returns(blinds);
-        //    handMock.Setup(m => m.Picker).Returns(playerMock.Object);
-        //    handMock.Setup(m => m.Tricks).Returns(trickList.Select(m => m.Object).ToList());
-        //    handMock.Setup(m => m.Deck).Returns(deckMock.Object);
-            
-        //    var expected = GetExpected();
-        //    var actual = generator.GenerateKey(handMock.Object, playerMock.Object);
-
-        //    Assert.AreEqual(expected.TrumpCount, actual.TrumpCount);
-        //    Assert.AreEqual(expected.AvgTrumpRank, actual.AvgTrumpRank);
-        //    //Assert.AreEqual(expected.TrumpStdDeviation, actual.TrumpStdDeviation);
-        //    Assert.AreEqual(expected.PointsInHand, actual.PointsInHand);
-        //    Assert.AreEqual(expected.TotalCardsWithPoints, actual.TotalCardsWithPoints);
-        //}
-
-        private static BuryStatUniqueKey GetExpected()
+        [TestMethod]
+        public void BuryStatGuessRepository_GetGuessStat()
         {
-            var expected = new BuryStatUniqueKey()
+            var key1 = new BuryStatUniqueKey()
             {
-                AvgBuriedRank = 0,
-                BuriedPoints = 0,
-                AvgRankInHand = 0,
-                PointsInHand = 0
+                AvgBuriedRank = 11,
+                BuriedPoints = 20,
+                AvgRankInHand = 5,
+                PointsInHand = 30
             };
-            return expected;
+            var key2 = new BuryStatUniqueKey()
+            {
+                AvgBuriedRank = 3,
+                BuriedPoints = 5,
+                AvgRankInHand = 18,
+                PointsInHand = 9
+            };
+            var repository = new BuryStatGuessRepository();
+            var stat1 = repository.GetRecordedResults(key1);
+            var stat2 = repository.GetRecordedResults(key2);
+            Assert.IsTrue(stat1.AvgPickPoints > stat2.AvgPickPoints, "key1 is more likely to render positive points than key2.");
         }
     }
 }

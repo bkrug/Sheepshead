@@ -25,9 +25,9 @@ namespace Sheepshead.Models.Players.Stats
     public class PickStatResultPredictor : ResultPredictor<PickStatUniqueKey, PickStat>, IPickResultPredictor
     {
         IPickStatRepository _repository;
-        IPickStatGuessRepository _guessRepository;
+        IPickStatGuesser _guessRepository;
 
-        public PickStatResultPredictor(IPickStatRepository repository, IPickStatGuessRepository guessRepository) : base(repository)
+        public PickStatResultPredictor(IPickStatRepository repository, IPickStatGuesser guessRepository) : base(repository)
         {
             _repository = repository;
             _guessRepository = guessRepository;

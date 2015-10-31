@@ -9,20 +9,18 @@ using System.Timers;
 
 namespace Sheepshead.Models.Players.Stats
 {
-    public interface IPickStatGuessRepository : IStatRepository<PickStatUniqueKey, PickStat>
+    public interface IGuesser<K, V>
     {
+        V GetRecordedResults(K key);
     }
 
-    public class PickStatGuessRepository : StatRepository<PickStatUniqueKey, PickStat>, IPickStatGuessRepository
+    public abstract class Guesser<K, V> : IGuesser<K, V>
     {
-        Dictionary<string, RangeDetail> MaxRanges = PickStatConst.MaxRanges;
+        protected Dictionary<K, V> _dict = new Dictionary<K, V>();
+        protected Dictionary<string, RangeDetail> MaxRanges;
+        protected List<string> ReverseValue;
 
-        public PickStatGuessRepository() 
-        {
-            PopulateGuesses(0, new List<int>());
-        }
-
-        public void PopulateGuesses(int rangeIndex, List<int> rangeValues)
+        protected void PopulateGuesses(int rangeIndex, List<int> rangeValues)
         {
             var rangeDetail = MaxRanges.ElementAt(rangeIndex).Value;
             for (var newValue = rangeDetail.Min; newValue <= rangeDetail.Max; ++newValue)
@@ -35,19 +33,79 @@ namespace Sheepshead.Models.Players.Stats
                 }
                 else
                 {
-                    var key = new PickStatUniqueKey()
-                    {
-                        TrumpCount = rangeValues[0],
-                        AvgTrumpRank = rangeValues[1],
-                        PointsInHand = rangeValues[2],
-                        TotalCardsWithPoints = newValue
-                    };
+                    var rangeValues2 = new List<int>(rangeValues);
+                    rangeValues2.Add(newValue);
+                    var key = CreateKey(rangeValues2);
                     _dict[key] = CreateResult(key);
                 }
             }
         }
 
-        private PickStat CreateResult(PickStatUniqueKey key)
+        protected abstract K CreateKeyInstance();
+        protected abstract V CreateStatInstance();
+
+        protected K CreateKey(List<int> rangeValues)
+        {
+            var newKey = CreateKeyInstance();
+            var type = newKey.GetType();
+            for (var i = 0; i < MaxRanges.Count; ++i)
+            {
+                var fieldInfo = type.GetField(MaxRanges.ElementAt(i).Key);
+                fieldInfo.SetValueDirect(__makeref(newKey), rangeValues[i]);
+            }
+            return newKey;
+        }
+
+        protected abstract V CreateResult(K key);
+
+        //The resulting list will have values between 0 and 1 to compare how close the value is to the max and min value of the range.
+        protected List<double> NormalizeKeyValues(ref PickStatUniqueKey key)
+        {
+            var normalizedValues = new List<double>();
+            foreach (var prop in typeof(PickStatUniqueKey).GetFields())
+            {
+                var value = (int)prop.GetValue(key);
+                var range = MaxRanges[prop.Name];
+                var normalized = ((double)value - range.Min) / (range.Max - range.Min);
+                if (ReverseValue.Contains(prop.Name))
+                    normalized = 1 - normalized;
+                normalizedValues.Add(normalized);
+            }
+            return normalizedValues;
+        }
+
+        public virtual V GetRecordedResults(K key)
+        {
+            if (_dict.ContainsKey(key))
+                return _dict[key];
+            return CreateStatInstance();
+        }
+    }
+
+    public interface IPickStatGuesser : IGuesser<PickStatUniqueKey, PickStat>
+    {
+    }
+
+    public class PickStatGuesser : Guesser<PickStatUniqueKey, PickStat>, IPickStatGuesser
+    {
+        public PickStatGuesser() 
+        {
+            MaxRanges = PickStatConst.MaxRanges;
+            ReverseValue = new List<string>() {"AvgTrumpRank"};
+            PopulateGuesses(0, new List<int>());
+        }
+
+        protected override PickStatUniqueKey CreateKeyInstance()
+        {
+            return new PickStatUniqueKey();
+        }
+
+        protected override PickStat CreateStatInstance()
+        {
+            return new PickStat();
+        }
+
+        protected override PickStat CreateResult(PickStatUniqueKey key)
         {
             var normalizedValues = NormalizeKeyValues(ref key);
             double passScore;
@@ -63,22 +121,6 @@ namespace Sheepshead.Models.Players.Stats
             };
         }
 
-        //The resulting list will have values between 0 and 1 to compare how close the value is to the max and min value of the range.
-        private List<double> NormalizeKeyValues(ref PickStatUniqueKey key)
-        {
-            var normalizedValues = new List<double>();
-            foreach (var prop in typeof(PickStatUniqueKey).GetFields())
-            {
-                var value = (int)prop.GetValue(key);
-                var range = MaxRanges[prop.Name];
-                var normalized = ((double)value - range.Min) / (range.Max - range.Min);
-                if (prop.Name == "AvgTrumpRank")
-                    normalized = 1 - normalized;
-                normalizedValues.Add(normalized);
-            }
-            return normalizedValues;
-        }
-
         private static void CreateImaginaryScores(List<double> normalizedValues, out double passScore, out double pickScore)
         {
             var avg = normalizedValues.Average();
@@ -88,11 +130,6 @@ namespace Sheepshead.Models.Players.Stats
             const double maxPossiblePickPoints = 3;
             passScore = 2 * maxPossiblePassPoints * passPercent - maxPossiblePassPoints;
             pickScore = 2 * maxPossiblePickPoints * pickPercent - maxPossiblePickPoints;
-        }
-
-        protected override PickStat CreateDefaultStat()
-        {
-            throw new NotImplementedException("CreateDefaultStat() should never be called from this particular repository.");
         }
     }
 }

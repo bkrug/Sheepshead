@@ -75,7 +75,7 @@ namespace Sheepshead.Tests.NonUnitTests
             var moveRepository = new MoveStatRepository();
             var movePredictor = new MoveStatResultPredictor(moveRepository);
             var pickRepository = new PickStatRepository();
-            var guessPickRepository = new PickStatGuessRepository();
+            var guessPickRepository = new PickStatGuesser();
             var pickPredictor = new PickStatResultPredictor(pickRepository, guessPickRepository);
             using (var sw = new StreamWriter(@"C:\Temp\learningVsBasicPlayer.txt"))
             {

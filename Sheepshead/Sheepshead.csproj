@@ -160,6 +160,8 @@
     <Compile Include="Models\LeastSquares\Solvers\SvdSolver.cs" />
     <Compile Include="Models\Players\Stats\BuryStat.cs" />
     <Compile Include="Models\Players\Stats\BuryKeyGenerator.cs" />
+    <Compile Include="Models\Players\Stats\BuryStatRepository.cs" />
+    <Compile Include="Models\Players\Stats\BuryStatGuessRepository.cs" />
     <Compile Include="Models\Players\Stats\PickStatGuessRepository.cs" />
     <Compile Include="Models\Players\Stats\PickStatResultPredictor.cs" />
     <Compile Include="Models\Players\Stats\PickStatRepository.cs" />
