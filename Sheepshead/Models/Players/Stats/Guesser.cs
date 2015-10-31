@@ -7,7 +7,7 @@ namespace Sheepshead.Models.Players.Stats
 {
     public interface IGuesser<K, V>
     {
-        V GetRecordedResults(K key);
+        V MakeGuess(K key);
     }
 
     public abstract class Guesser<K, V> : IGuesser<K, V>
@@ -26,11 +26,11 @@ namespace Sheepshead.Models.Players.Stats
         protected abstract K CreateKeyInstance();
         protected abstract V CreateStatInstance();
 
-        public virtual V GetRecordedResults(K key)
+        public virtual V MakeGuess(K key)
         {
             if (_dict.ContainsKey(key))
                 return _dict[key];
-            return CreateStatInstance();
+            throw new KeyNotFoundException("This guess has not been made.");
         }
 
         protected void PopulateGuesses(int rangeIndex, List<int> rangeValues)

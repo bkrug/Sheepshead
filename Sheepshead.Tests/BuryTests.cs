@@ -41,37 +41,37 @@ namespace Sheepshead.Tests
             {
                 BuriedPoints = 11 + 4,
                 AvgRankInHand = (int)Math.Round((4 + 8 + 3 + 14 + 16 + 15) / (double)6),
-                PointsInHand = 3 + 2 + 3 + 0 + 10 + 11,
+                AvgPointsInHand = (int)Math.Round((3 + 2 + 3 + 0 + 10 + 11) / (double)6),
                 SuitsInHand = 4
             };
             var actual = generator.GenerateKey(_cardsHeld, _buried);
 
             Assert.AreEqual(expected.BuriedPoints, actual.BuriedPoints);
             Assert.AreEqual(expected.AvgRankInHand, actual.AvgRankInHand);
-            Assert.AreEqual(expected.PointsInHand, actual.PointsInHand);
+            Assert.AreEqual(expected.AvgPointsInHand, actual.AvgPointsInHand);
             Assert.AreEqual(expected.SuitsInHand, actual.SuitsInHand);
         }
 
         [TestMethod]
-        public void BuryStatGuessRepository_GetGuessStat()
+        public void BuryStatGuesser_MakeGuess()
         {
             var key1 = new BuryStatUniqueKey()
             {
                 BuriedPoints = 20,
                 AvgRankInHand = 5,
-                PointsInHand = 30,
+                AvgPointsInHand = 9,
                 SuitsInHand = 2
             };
             var key2 = new BuryStatUniqueKey()
             {
                 BuriedPoints = 5,
                 AvgRankInHand = 18,
-                PointsInHand = 9,
+                AvgPointsInHand = 3,
                 SuitsInHand = 2
             };
             var repository = new BuryStatGuesser();
-            var stat1 = repository.GetRecordedResults(key1);
-            var stat2 = repository.GetRecordedResults(key2);
+            var stat1 = repository.MakeGuess(key1);
+            var stat2 = repository.MakeGuess(key2);
             Assert.IsTrue(stat1.AvgPickPoints > stat2.AvgPickPoints, "key1 is more likely to render positive points than key2.");
         }
     }

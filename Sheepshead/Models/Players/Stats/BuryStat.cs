@@ -24,7 +24,7 @@ namespace Sheepshead.Models.Players.Stats
     public struct BuryStatUniqueKey : IStatUniqueKey
     {
         public int BuriedPoints;
-        public int PointsInHand;
+        public int AvgPointsInHand;
         public int AvgRankInHand;
         public int SuitsInHand;
     }

@@ -10,8 +10,8 @@ namespace Sheepshead.Models.Players.Stats
     {
         public static Dictionary<string, RangeDetail> MaxRanges = new Dictionary<string, RangeDetail>()
             {
-                { "BuriedPoints", new RangeDetail() { Min = 0, Max = 11 } },
-                { "PointsInHand", new RangeDetail() { Min = 0, Max = 11 } },
+                { "BuriedPoints", new RangeDetail() { Min = 0, Max = 22 } },
+                { "AvgPointsInHand", new RangeDetail() { Min = 0, Max = 11 } },
                 { "AvgRankInHand", new RangeDetail() { Min = 1, Max = 20 } },
                 { "SuitsInHand", new RangeDetail() { Min = 1, Max = 4 } }
             };
@@ -59,7 +59,7 @@ namespace Sheepshead.Models.Players.Stats
             double weightSuitsInHand = 3;
             var normalScore = 
                     (normalized["BuriedPoints"] * weightBuriedPoints
-                        + normalized["PointsInHand"] * weightPointsInHand
+                        + normalized["AvgPointsInHand"] * weightPointsInHand
                         + normalized["AvgRankInHand"] * weightAvgRankInHand
                         + normalized["SuitsInHand"] * weightSuitsInHand)
                     / (weightBuriedPoints + weightPointsInHand + weightAvgRankInHand + weightSuitsInHand);

@@ -54,7 +54,7 @@ namespace Sheepshead.Models.Players.Stats
         public override PickStat GetWeightedStat(PickStatUniqueKey key)
         {
             var stat = base.GetWeightedStat(key);
-            var guessStat = _guessRepository.GetRecordedResults(key);
+            var guessStat = _guessRepository.MakeGuess(key);
             stat.AddOtherStat(guessStat);
             return stat;
         }
