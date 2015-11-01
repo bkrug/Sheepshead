@@ -105,8 +105,8 @@
   <ItemGroup>
     <Compile Include="CardTests.cs" />
     <Compile Include="BuryTests.cs" />
-    <Compile Include="LeastSquaresTests\LeastSquares.cs" />
-    <Compile Include="NonUnitTests\NeuralTests.cs" />
+    <Compile Include="Neural\NeuralNetwork.cs" />
+    <Compile Include="Neural\NeuralTests.cs" />
     <Compile Include="PickStatTests.cs" />
     <Compile Include="PickKeyGeneratorTests.cs" />
     <Compile Include="KeyGeneratorTests.cs" />
@@ -116,13 +116,10 @@
     <Compile Include="HandTest.cs" />
     <Compile Include="MoveStatTests.cs" />
     <Compile Include="NonUnitTests\GamePlayTests.cs" />
-    <Compile Include="NonUnitTests\LearningStats.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="GameCreationTests.cs" />
     <Compile Include="LongIdTests.cs" />
     <Compile Include="PlayerTests.cs" />
-    <Compile Include="RandomNumberGame\RandomNumberPlay.cs" />
-    <Compile Include="RandomNumberGame\Turn.cs" />
     <Compile Include="TrickTests.cs" />
   </ItemGroup>
   <ItemGroup>

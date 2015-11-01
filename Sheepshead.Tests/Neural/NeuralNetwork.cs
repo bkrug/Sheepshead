@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 
-namespace Sheepshead.Models.Neural
+namespace Sheepshead.Tests.Neural
 {
     public class NeuralNetwork
     {
