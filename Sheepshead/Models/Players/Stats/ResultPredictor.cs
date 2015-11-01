@@ -32,6 +32,7 @@ namespace Sheepshead.Models.Players.Stats
                 var propertyNames = new List<string>();
                 var ranges = new List<RangeDetail>();
                 CreateSearchRange(key, offset, propertyNames, ranges);
+                _validSearchValues = new Dictionary<string, IEnumerable<int>>();
                 AddKeys(key, usedKeys, propertyNames, ranges, ref generatedStat);
                 offset = Math.Round(offset + 0.05, 5);
             }
@@ -72,20 +73,26 @@ namespace Sheepshead.Models.Players.Stats
             }
         }
 
+        protected Dictionary<string, IEnumerable<int>> _validSearchValues;
         protected IEnumerable<int> GetSearchValues(string propertyName, RangeDetail limitedRange)
         {
-            var maxRange = MaxRanges[propertyName];
-            var minVal = Math.Max(limitedRange.Min, maxRange.Min);
-            var maxVal = Math.Min(limitedRange.Max, maxRange.Max);
-            if (maxRange.ValidValues != null && maxRange.ValidValues.Any())
-                return maxRange.ValidValues.Where(v => v >= minVal && v <= maxVal);
-            else
+            if (!_validSearchValues.ContainsKey(propertyName))
             {
-                var list = new List<int>();
-                for (var v = minVal; v <= maxVal; ++v)
-                    list.Add(v);
-                return list;
+                List<int> list;
+                var maxRange = MaxRanges[propertyName];
+                var minVal = Math.Max(limitedRange.Min, maxRange.Min);
+                var maxVal = Math.Min(limitedRange.Max, maxRange.Max);
+                if (maxRange.ValidValues != null && maxRange.ValidValues.Any())
+                    list = maxRange.ValidValues.Where(v => v >= minVal && v <= maxVal).ToList();
+                else
+                {
+                    list = new List<int>();
+                    for (var v = minVal; v <= maxVal; ++v)
+                        list.Add(v);
+                }
+                _validSearchValues[propertyName] = list;
             }
+            return _validSearchValues[propertyName];
         }
     }
 
