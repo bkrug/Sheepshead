@@ -33,7 +33,8 @@ namespace Sheepshead.Models.Players.Stats
                 var ranges = new List<RangeDetail>();
                 CreateSearchRange(key, offset, propertyNames, ranges);
                 _validSearchValues = new Dictionary<string, IEnumerable<int>>();
-                AddKeys(key, usedKeys, propertyNames, ranges, ref generatedStat);
+                var keyValues = new Stack<int>();
+                AddKeys(key, keyValues, usedKeys, propertyNames, ranges, ref generatedStat);
                 offset = Math.Round(offset + 0.05, 5);
             }
             return generatedStat;
@@ -54,25 +55,32 @@ namespace Sheepshead.Models.Players.Stats
             }
         }
 
-        protected void AddKeys(K oldKey, List<K> usedKeys, List<string> propertyNames, List<RangeDetail> ranges, ref S stat)
+        protected void AddKeys(K originalKey, Stack<int> keyValues, List<K> usedKeys, List<string> propertyNames, List<RangeDetail> ranges, ref S stat)
         {
             var propertyName = propertyNames.First();
             var range = ranges.First();
             foreach (var v in GetSearchValues(propertyName, range))
             {
-                var newKey = oldKey;
-                newKey.GetType().GetField(propertyName).SetValueDirect(__makeref(newKey), v);
+                //var newKey = oldKey;
+                //newKey.GetType().GetField(propertyName).SetValueDirect(__makeref(newKey), v);
+                keyValues.Push(v);
                 if (ranges.Count() > 1)
-                    AddKeys(newKey, usedKeys, propertyNames.Skip(1).ToList(), ranges.Skip(1).ToList(), ref stat);
-                else if (!usedKeys.Contains(newKey))
+                    AddKeys(originalKey, keyValues, usedKeys, propertyNames.Skip(1).ToList(), ranges.Skip(1).ToList(), ref stat);
+                else
                 {
-                    var recordedStat = Repository.GetRecordedResults(newKey);
-                    stat.AddOtherStat(recordedStat);
-                    usedKeys.Add(newKey);
+                    var newKey = CreateKey(originalKey, keyValues);
+                    if (!usedKeys.Contains(newKey))
+                    {
+                        var recordedStat = Repository.GetRecordedResults(newKey);
+                        stat.AddOtherStat(recordedStat);
+                        usedKeys.Add(newKey);
+                    }
                 }
+                keyValues.Pop();
             }
         }
 
+        protected abstract K CreateKey(K originalKey, Stack<int> keyValues);
         protected Dictionary<string, IEnumerable<int>> _validSearchValues;
         protected IEnumerable<int> GetSearchValues(string propertyName, RangeDetail limitedRange)
         {

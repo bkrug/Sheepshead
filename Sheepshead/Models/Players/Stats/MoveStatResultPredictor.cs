@@ -37,6 +37,19 @@ namespace Sheepshead.Models.Players.Stats
             return new MoveStat();
         }
 
+        protected override MoveStatUniqueKey CreateKey(MoveStatUniqueKey originalKey, Stack<int> keyValues)
+        {
+            var list = keyValues.ToList();
+            return new MoveStatUniqueKey()
+            {
+                OpponentPercentDone = list[3],
+                CardPoints = list[2],
+                UnknownStrongerCards = list[1],
+                HeldStrongerCards = list[0],
+                CardWillOverpower = originalKey.CardWillOverpower
+            };
+        }
+
         private const int MINIMUM_TRIES = 1000;
 
         protected override bool ReachedMinimumTries(MoveStat generatedStat)

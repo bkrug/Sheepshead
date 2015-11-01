@@ -33,6 +33,18 @@ namespace Sheepshead.Models.Players.Stats
             return new BuryStat();
         }
 
+        protected override BuryStatUniqueKey CreateKey(BuryStatUniqueKey originalKey, Stack<int> keyValues)
+        {
+            var list = keyValues.ToList();
+            return new BuryStatUniqueKey()
+            {
+                BuriedPoints = list[3],
+                AvgPointsInHand = list[2],
+                AvgRankInHand = list[1],
+                SuitsInHand = list[0]
+            };
+        }
+
         private const int MINIMUM_TRIES = 1000;
 
         protected override bool ReachedMinimumTries(BuryStat generatedStat)

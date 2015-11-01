@@ -33,6 +33,18 @@ namespace Sheepshead.Models.Players.Stats
             return new PickStat();
         }
 
+        protected override PickStatUniqueKey CreateKey(PickStatUniqueKey originalKey, Stack<int> keyValues)
+        {
+            var list = keyValues.ToList();
+            return new PickStatUniqueKey()
+            {
+                TrumpCount = list[3],
+                AvgTrumpRank = list[2],
+                PointsInHand = list[1],
+                TotalCardsWithPoints = list[0]
+            };
+        }
+
         private const int MINIMUM_TRIES = 1000;
 
         protected override bool ReachedMinimumTries(PickStat generatedStat)
