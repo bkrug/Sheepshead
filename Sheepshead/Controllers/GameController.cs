@@ -43,13 +43,16 @@ namespace Sheepshead.Controllers
                 playerList.Add(new NewbiePlayer());
             for (var i = 0; i < model.BasicCount; ++i)
                 playerList.Add(new BasicPlayer());
+            //TODO: Guessers can be turned into Singletons
             for (var i = 0; i < model.LearningCount; ++i)
             {
                 playerList.Add(new LearningPlayer(
                     new MoveKeyGenerator(), 
                     new MoveStatResultPredictor(RepositoryRepository.Instance.MoveStatRepository),
                     new PickKeyGenerator(),
-                    new PickStatResultPredictor(RepositoryRepository.Instance.PickStatRepository, new PickStatGuesser())
+                    new PickStatResultPredictor(RepositoryRepository.Instance.PickStatRepository, new PickStatGuesser()),
+                    new BuryKeyGenerator(),
+                    new BuryStatResultPredictor(RepositoryRepository.Instance.BuryStatRepository, new BuryStatGuesser())
                 ));
             }
             var newGame = repository.CreateGame(model.Name, playerList, _rnd);

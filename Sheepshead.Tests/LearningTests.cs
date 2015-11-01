@@ -54,19 +54,21 @@ namespace Sheepshead.Tests
                 new MoveStat() { HandsWon = 74, HandsTried = 100, TricksWon = 69, TricksTried = 100 },
                 new MoveStat() { HandsWon = 49, HandsTried = 100, TricksWon = 98, TricksTried = 100 }
             };
-            var moveKeyGenMock = new Mock<IKeyGenerator>();
+            var moveKeyGenMock = new Mock<IMoveKeyGenerator>();
             moveKeyGenMock
                 .Setup(m => m.GenerateKey(It.IsAny<ITrick>(), It.IsAny<IPlayer>(), It.IsAny<ICard>()))
                 .Returns((ITrick t, IPlayer p, ICard c) => keyList[cardList.IndexOf(c)]);
             var pickKeyGenMock = new Mock<IPickKeyGenerator>();
+            var buryKeyGenMock = new Mock<IBuryKeyGenerator>();
             var predictorMock = new Mock<IStatResultPredictor>();
             predictorMock
                 .Setup(m => m.GetWeightedStat(It.IsAny<MoveStatUniqueKey>()))
                 .Returns((MoveStatUniqueKey key) => statList[keyList.IndexOf(key)]);
             var pickPredictorMock = new Mock<IPickResultPredictor>();
+            var buryPredictorMock = new Mock<IBuryResultPredictor>();
             var trickMock = new Mock<ITrick>();
             trickMock.Setup(m => m.IsLegalAddition(It.IsAny<ICard>(), It.IsAny<IPlayer>())).Returns(true);
-            var player = new LearningPlayer(moveKeyGenMock.Object, predictorMock.Object, pickKeyGenMock.Object, pickPredictorMock.Object);
+            var player = new LearningPlayer(moveKeyGenMock.Object, predictorMock.Object, pickKeyGenMock.Object, pickPredictorMock.Object, buryKeyGenMock.Object, buryPredictorMock.Object);
             player.Cards.AddRange(cardList);
 
             var actualCard = player.GetMove(trickMock.Object);
@@ -100,11 +102,13 @@ namespace Sheepshead.Tests
         [TestMethod]
         public void LearningPlayer_WillPick()
         {
-            var keyGeneratorMock = new Mock<IKeyGenerator>();
+            var keyGeneratorMock = new Mock<IMoveKeyGenerator>();
             var pickKeyGeneratorMock = new Mock<IPickKeyGenerator>();
+            var buryKeyGeneratorMock = new Mock<IBuryKeyGenerator>();
             var movePredictorMock = new Mock<IStatResultPredictor>();
             var pickPredictorMock = new Mock<IPickResultPredictor>();
-            var player = new LearningPlayer(keyGeneratorMock.Object, movePredictorMock.Object, pickKeyGeneratorMock.Object, pickPredictorMock.Object);
+            var buryPredictorMock = new Mock<IBuryResultPredictor>();
+            var player = new LearningPlayer(keyGeneratorMock.Object, movePredictorMock.Object, pickKeyGeneratorMock.Object, pickPredictorMock.Object, buryKeyGeneratorMock.Object, buryPredictorMock.Object);
 
             var deckMock = new Mock<IDeck>();
             var handMock = new Mock<IHand>();
@@ -145,6 +149,61 @@ namespace Sheepshead.Tests
             pickPredictorMock.Setup(m => m.GetWeightedStat(It.IsAny<PickStatUniqueKey>())).Returns(stat);
             willPick = player.WillPick(deckMock.Object);
             Assert.IsFalse(willPick, "If the (average) pick points are lower than the passed points, the player should pass.");
+        }
+
+        [TestMethod]
+        public void LearningPlayer_BuryCards()
+        {
+            var keyGeneratorMock = new Mock<IMoveKeyGenerator>();
+            var pickKeyGeneratorMock = new Mock<IPickKeyGenerator>();
+            var buryKeyGeneratorMock = new Mock<IBuryKeyGenerator>();
+            var movePredictorMock = new Mock<IStatResultPredictor>();
+            var pickPredictorMock = new Mock<IPickResultPredictor>();
+            var buryPredictorMock = new Mock<IBuryResultPredictor>();
+            var player = new LearningPlayer(keyGeneratorMock.Object, movePredictorMock.Object, pickKeyGeneratorMock.Object, pickPredictorMock.Object, buryKeyGeneratorMock.Object, buryPredictorMock.Object);
+            var deckMock = new Mock<IDeck>();
+
+            var buried1 = CardRepository.Instance[StandardSuite.HEARTS, CardType.N10];
+            var buried2 = CardRepository.Instance[StandardSuite.HEARTS, CardType.ACE];
+            deckMock.Setup(m => m.Blinds).Returns(new List<ICard>() {
+                CardRepository.Instance[StandardSuite.DIAMONDS, CardType.JACK], //Rank: 8
+                buried1
+            });
+            player.Cards.AddRange(new List<ICard>() {
+                buried2,
+                CardRepository.Instance[StandardSuite.DIAMONDS, CardType.N9], //Rank: 18
+                CardRepository.Instance[StandardSuite.HEARTS, CardType.QUEEN], //Rank: 3
+                CardRepository.Instance[StandardSuite.SPADES, CardType.QUEEN], //Rank: 2
+                CardRepository.Instance[StandardSuite.CLUBS, CardType.KING], //Rank: 17
+                CardRepository.Instance[StandardSuite.CLUBS, CardType.JACK] //Rank: 5
+            });
+            var bestKey = new BuryStatUniqueKey()
+            {
+                BuriedPoints = 10 + 11,
+                AvgPointsInHand = (int)(Math.Round((4 + 3 + 3 + 2 + 2 + 0) / (double)6)),
+                AvgRankInHand = (int)(Math.Round((8 + 18 + 3 + 2 + 17 + 5) / (double)6)),
+                SuitsInHand = 2
+            };
+            buryKeyGeneratorMock
+                .Setup(m => m.GenerateKey(It.IsAny<List<ICard>>(), It.IsAny<List<ICard>>()))
+                .Returns((List<ICard> held, List<ICard> buried) =>
+                    buried.Any(c => CardRepository.Equals(c, buried1)) && buried.Any(c => CardRepository.Equals(c, buried2)) ? bestKey : new BuryStatUniqueKey());
+            var expectedResult = new BuryStat() { TotalPoints = -300, HandsPicked = 300 };
+            var combosTested = 0;
+            buryPredictorMock
+                .Setup(m => m.GetWeightedStat(It.IsAny<BuryStatUniqueKey>()))
+                .Callback(() => { ++combosTested; })
+                .Returns(new BuryStat() { TotalPoints = -200, HandsPicked = 100 });
+            buryPredictorMock
+                .Setup(m => m.GetWeightedStat(bestKey))
+                .Callback(() => { ++combosTested; })
+                .Returns(expectedResult);
+
+            var actualCards = player.DropCardsForPick(deckMock.Object);
+            //28 because that is the total number of combinations of 2 that you can pull from a list of 8 cards.
+            Assert.AreEqual(28, combosTested, "Should test every possible combination of cards");
+            Assert.IsTrue(actualCards.Any(c => CardRepository.Equals(c, buried1)));
+            Assert.IsTrue(actualCards.Any(c => CardRepository.Equals(c, buried2)));
         }
     }
 }

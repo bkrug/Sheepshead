@@ -8,6 +8,7 @@ namespace Sheepshead.Models.Players.Stats
 {
     public interface IBuryKeyGenerator
     {
+        BuryStatUniqueKey GenerateKey(List<ICard> cardsHeld, List<ICard> buried);
         BuryStatUniqueKey GenerateKey(IDeck deck);
     }
 

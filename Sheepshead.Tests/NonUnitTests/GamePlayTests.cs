@@ -35,20 +35,22 @@ namespace Sheepshead.Tests.NonUnitTests
         //[TestMethod]
         public void LearningHelper_GenerateKeys()
         {
-            var predictorMock = new Mock<IStatResultPredictor>();
-            predictorMock.Setup(m => m.GetWeightedStat(It.IsAny<MoveStatUniqueKey>())).Returns(null as MoveStat);
+            var movePredictorMock = new Mock<IStatResultPredictor>();
+            movePredictorMock.Setup(m => m.GetWeightedStat(It.IsAny<MoveStatUniqueKey>())).Returns(null as MoveStat);
             var pickPredictorMock = new Mock<IPickResultPredictor>();
+            var buryPredictorMock = new Mock<IBuryResultPredictor>();
             using (_sw = new StreamWriter(@"C:\Temp\GeneratedKeys.csv"))
             {
                 var playerList = new List<IPlayer>();
-                var generator = new MoveKeyGenerator();
-                var pickGenerator = new PickKeyGenerator();
+                var moveKeyGenerator = new MoveKeyGenerator();
+                var pickKeyGenerator = new Mock<IPickKeyGenerator>();
+                var buryKeyGenerator = new Mock<IBuryKeyGenerator>();
                 for (var i = 0; i < 5; ++i)
                 {
-                    var player = new LearningPlayer(generator, predictorMock.Object, pickGenerator, pickPredictorMock.Object);
+                    var player = new LearningPlayer(moveKeyGenerator, movePredictorMock.Object, pickKeyGenerator.Object, pickPredictorMock.Object, buryKeyGenerator.Object, buryPredictorMock.Object);
                     playerList.Add(player);
                     player.OnMove += (object sender, LearningPlayer.OnMoveEventArgs args) => {
-                        var key = generator.GenerateKey(args.Trick, sender as IPlayer, args.Card);
+                        var key = moveKeyGenerator.GenerateKey(args.Trick, sender as IPlayer, args.Card);
                         _sw.WriteLine(
                             args.Card.ToAbbr() + "," +
                             args.Card.Rank + "," +
@@ -77,13 +79,16 @@ namespace Sheepshead.Tests.NonUnitTests
             var pickRepository = new PickStatRepository();
             var guessPickRepository = new PickStatGuesser();
             var pickPredictor = new PickStatResultPredictor(pickRepository, guessPickRepository);
+            var buryRepository = new BuryStatRepository();
+            var guessBuryRepository = new BuryStatGuesser();
+            var buryPredictor = new BuryStatResultPredictor(buryRepository, guessBuryRepository);
             using (var sw = new StreamWriter(@"C:\Temp\learningVsBasicPlayer.txt"))
             {
                 var playerList = new List<IPlayer>() {
                     new BasicPlayer(),
-                    new LearningPlayer(new MoveKeyGenerator(), movePredictor, new PickKeyGenerator(), pickPredictor),
+                    new LearningPlayer(new MoveKeyGenerator(), movePredictor, new PickKeyGenerator(), pickPredictor, new BuryKeyGenerator(), buryPredictor),
                     new BasicPlayer(),
-                    new LearningPlayer(new MoveKeyGenerator(), movePredictor, new PickKeyGenerator(), pickPredictor),
+                    new LearningPlayer(new MoveKeyGenerator(), movePredictor, new PickKeyGenerator(), pickPredictor, new BuryKeyGenerator(), buryPredictor),
                     new BasicPlayer()
                 };
                 var wins = new double[5];

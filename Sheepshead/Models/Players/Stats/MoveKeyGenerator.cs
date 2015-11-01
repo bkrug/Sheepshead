@@ -6,12 +6,12 @@ using Sheepshead.Models.Players;
 
 namespace Sheepshead.Models.Players.Stats
 {
-    public interface IKeyGenerator
+    public interface IMoveKeyGenerator
     {
         MoveStatUniqueKey GenerateKey(ITrick trick, IPlayer player, ICard legalCard);
     }
 
-    public class MoveKeyGenerator : IKeyGenerator
+    public class MoveKeyGenerator : IMoveKeyGenerator
     {
         public MoveStatUniqueKey GenerateKey(ITrick trick, IPlayer player, ICard legalCard)
         {

@@ -28,9 +28,9 @@ namespace Sheepshead.Models.Players.Stats
             return new List<BuryStatUniqueKey>();
         }
 
-        protected override BuryStatUniqueKey CreateStat()
+        protected override BuryStat CreateStat()
         {
-            return new BuryStatUniqueKey();
+            return new BuryStat();
         }
 
         private const int MINIMUM_TRIES = 1000;

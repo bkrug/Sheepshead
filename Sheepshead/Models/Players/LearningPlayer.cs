@@ -8,19 +8,24 @@ namespace Sheepshead.Models.Players
 {
     public class LearningPlayer : BasicPlayer
     {
-        private IKeyGenerator _moveKeyGenerator;
+        private IMoveKeyGenerator _moveKeyGenerator;
         private IPickKeyGenerator _pickKeyGenerator;
-        private IStatResultPredictor _predictor;
+        private IStatResultPredictor _movePredictor;
         private IPickResultPredictor _pickPredictor;
+        private IBuryKeyGenerator _buryKeyGenerator;
+        private IBuryResultPredictor _buryPredictor;
 
         private LearningPlayer() { }
 
-        public LearningPlayer(IKeyGenerator moveKeyGenerator, IStatResultPredictor predictor, IPickKeyGenerator pickKeyGenerator, IPickResultPredictor pickPredictor)
+        public LearningPlayer(IMoveKeyGenerator moveKeyGenerator, IStatResultPredictor movePredictor, IPickKeyGenerator pickKeyGenerator, IPickResultPredictor pickPredictor,
+            IBuryKeyGenerator buryKeyGenerator, IBuryResultPredictor buryPredictor)
         {
             _moveKeyGenerator = moveKeyGenerator;
-            _predictor = predictor;
-            _pickPredictor = pickPredictor;
+            _movePredictor = movePredictor;
             _pickKeyGenerator = pickKeyGenerator;
+            _pickPredictor = pickPredictor;
+            _buryKeyGenerator = buryKeyGenerator;
+            _buryPredictor = buryPredictor;
         }
 
         public override ICard GetMove(ITrick trick)
@@ -30,7 +35,7 @@ namespace Sheepshead.Models.Players
             foreach(var legalCard in legalCards) 
             {
                 var key = _moveKeyGenerator.GenerateKey(trick, this, legalCard);
-                var result = _predictor.GetWeightedStat(key);
+                var result = _movePredictor.GetWeightedStat(key);
                 if (result != null && result.HandsTried > 0 && result.TricksTried > 0)
                     results.Add(legalCard, result);
             }
@@ -57,6 +62,29 @@ namespace Sheepshead.Models.Players
             var pickKey = _pickKeyGenerator.GenerateKey(deck.Hand, this);
             var historicScores = _pickPredictor.GetWeightedStat(pickKey);
             return historicScores.AvgPickPoints > historicScores.AvgPassedPoints;
+        }
+
+        protected override List<ICard> DropCardsForPickInternal(IDeck deck)
+        {
+            List<ICard> buriedList = null;
+            BuryStat bestStat = new BuryStat() { HandsPicked = 1, TotalPoints = -4 }; //Returns AvgPoints of -4.  Lower than possible.
+            var cards = deck.Blinds.Union(Cards).ToList();
+            for (int i = 0; i <= cards.Count - 2; i++)
+                for (int j = i + 1; j <= cards.Count - 1; j++)
+                {
+                    var testBuried = new List<ICard>() { cards[i], cards[j] };
+                    var testHand = Cards.ToList();
+                    testHand.Remove(cards[i]);
+                    testHand.Remove(cards[j]);
+                    var newKey = _buryKeyGenerator.GenerateKey(testHand, testBuried);
+                    var newStat = _buryPredictor.GetWeightedStat(newKey);
+                    if (newStat.AvgPickPoints > bestStat.AvgPickPoints)
+                    {
+                        buriedList = testBuried;
+                        bestStat = newStat;
+                    }
+                }
+            return buriedList;
         }
     }
 }
