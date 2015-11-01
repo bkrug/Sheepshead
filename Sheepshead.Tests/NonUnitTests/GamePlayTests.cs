@@ -71,7 +71,7 @@ namespace Sheepshead.Tests.NonUnitTests
             }
         }
 
-        //[TestMethod]
+        [TestMethod]
         public void LearningVsBasicPlayer()
         {
             var moveRepository = new MoveStatRepository();
@@ -100,7 +100,9 @@ namespace Sheepshead.Tests.NonUnitTests
                 var gameStartTime = DateTime.Now;
                 var pickStatRepository = new PickStatRepository();
                 var moveStatRepository = new MoveStatRepository();
-                InstantiateLearningHelper learningDel = (IHand hand) => { return new LearningHelper(hand, @"C:\Temp\learningVsBasicPlayerHandSummaries.txt", pickStatRepository, moveStatRepository); };
+                var handSummaries = @"C:\Temp\learningVsBasicPlayerHandSummaries.txt";
+                File.Delete(handSummaries);
+                InstantiateLearningHelper learningDel = (IHand hand) => { return new LearningHelper(hand, handSummaries, pickStatRepository, moveStatRepository); };
                 PlayGame(playerList, handNumber, learningDel, (object sender, EventArgs args) =>
                 {
                     ++handsCompleted;
