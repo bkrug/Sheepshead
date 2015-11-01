@@ -61,8 +61,6 @@ namespace Sheepshead.Models.Players.Stats
             var range = ranges.First();
             foreach (var v in GetSearchValues(propertyName, range))
             {
-                //var newKey = oldKey;
-                //newKey.GetType().GetField(propertyName).SetValueDirect(__makeref(newKey), v);
                 keyValues.Push(v);
                 if (ranges.Count() > 1)
                     AddKeys(originalKey, keyValues, usedKeys, propertyNames.Skip(1).ToList(), ranges.Skip(1).ToList(), ref stat);
