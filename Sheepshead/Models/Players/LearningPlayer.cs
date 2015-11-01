@@ -64,6 +64,7 @@ namespace Sheepshead.Models.Players
             return historicScores.AvgPickPoints > historicScores.AvgPassedPoints;
         }
 
+        //TODO: Yikes this looks slow.  Calls you GetWeightedStat are almost always slow and we are doing it 28 times here.
         protected override List<ICard> DropCardsForPickInternal(IDeck deck)
         {
             List<ICard> buriedList = null;
