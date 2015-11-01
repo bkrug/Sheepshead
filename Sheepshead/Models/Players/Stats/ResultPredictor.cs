@@ -15,7 +15,7 @@ namespace Sheepshead.Models.Players.Stats
             Repository = repository;
         }
 
-        protected abstract List<K> CreateKeyList();
+        protected abstract Dictionary<K, bool> CreateKeyList();
         protected abstract S CreateStat();
         protected abstract bool ReachedMinimumTries(S generatedStat);
 
@@ -31,10 +31,9 @@ namespace Sheepshead.Models.Players.Stats
             {
                 var propertyNames = new List<string>();
                 var ranges = new List<RangeDetail>();
-                CreateSearchRange(key, offset, propertyNames, ranges);
                 _validSearchValues = new Dictionary<string, IEnumerable<int>>();
-                var keyValues = new Stack<int>();
-                AddKeys(key, keyValues, usedKeys, propertyNames, ranges, 0, ref generatedStat);
+                CreateSearchRange(key, offset, propertyNames, ranges);
+                AddKeys(key, new Stack<int>(), usedKeys, propertyNames, ranges, 0, ref generatedStat);
                 offset = Math.Round(offset + 0.05, 5);
             }
             return generatedStat;
@@ -55,7 +54,7 @@ namespace Sheepshead.Models.Players.Stats
             }
         }
 
-        protected void AddKeys(K originalKey, Stack<int> keyValues, List<K> usedKeys, List<string> propertyNames, List<RangeDetail> ranges, int depth, ref S stat)
+        protected void AddKeys(K originalKey, Stack<int> keyValues, Dictionary<K, bool> usedKeys, List<string> propertyNames, List<RangeDetail> ranges, int depth, ref S stat)
         {
             var propertyName = propertyNames[depth];
             var range = ranges[depth];
@@ -68,11 +67,11 @@ namespace Sheepshead.Models.Players.Stats
                 else
                 {
                     var newKey = CreateKey(originalKey, keyValues);
-                    if (!usedKeys.Contains(newKey))
+                    if (!usedKeys.ContainsKey(newKey))
                     {
                         var recordedStat = Repository.GetRecordedResults(newKey);
                         stat.AddOtherStat(recordedStat);
-                        usedKeys.Add(newKey);
+                        usedKeys.Add(newKey, false);
                     }
                 }
                 keyValues.Pop();
