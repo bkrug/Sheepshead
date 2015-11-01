@@ -34,7 +34,7 @@ namespace Sheepshead.Models.Players.Stats
                 CreateSearchRange(key, offset, propertyNames, ranges);
                 _validSearchValues = new Dictionary<string, IEnumerable<int>>();
                 var keyValues = new Stack<int>();
-                AddKeys(key, keyValues, usedKeys, propertyNames, ranges, ref generatedStat);
+                AddKeys(key, keyValues, usedKeys, propertyNames, ranges, 0, ref generatedStat);
                 offset = Math.Round(offset + 0.05, 5);
             }
             return generatedStat;
@@ -55,17 +55,16 @@ namespace Sheepshead.Models.Players.Stats
             }
         }
 
-        protected void AddKeys(K originalKey, Stack<int> keyValues, List<K> usedKeys, List<string> propertyNames, List<RangeDetail> ranges, ref S stat)
+        protected void AddKeys(K originalKey, Stack<int> keyValues, List<K> usedKeys, List<string> propertyNames, List<RangeDetail> ranges, int depth, ref S stat)
         {
-            var propertyName = propertyNames.First();
-            var fewerNames = propertyNames.Skip(1).ToList();
-            var fewerRanges = ranges.Skip(1).ToList();
-            var range = ranges.First();
+            var propertyName = propertyNames[depth];
+            var range = ranges[depth];
+            var maxDepth = propertyNames.Count() - 1;
             foreach (var v in GetSearchValues(propertyName, range))
             {
                 keyValues.Push(v);
-                if (ranges.Count() > 1)
-                    AddKeys(originalKey, keyValues, usedKeys, fewerNames, fewerRanges, ref stat);
+                if (depth < maxDepth)
+                    AddKeys(originalKey, keyValues, usedKeys, propertyNames, ranges, depth+1, ref stat);
                 else
                 {
                     var newKey = CreateKey(originalKey, keyValues);
