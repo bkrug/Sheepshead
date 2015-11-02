@@ -20,7 +20,7 @@ namespace Sheepshead.Models.Players.Stats
             Repository = repository;
         }
 
-        protected abstract Dictionary<K, bool> CreateKeyList();
+        protected abstract K CreateKey(K originalKey, List<int> keyValues);
         protected abstract S CreateStat();
         protected abstract bool ReachedMinimumTries(S generatedStat);
 
@@ -39,8 +39,8 @@ namespace Sheepshead.Models.Players.Stats
             _midPoints = GetStartingPoint(key);
             _nextLayerOfKeys = new List<List<double>>();
             var generatedStat = CreateStat();
-            SetPoint(_midPoints.Select(p => (double)p).ToList(), key, ref generatedStat);
-            SetNextGen(0, key, ref generatedStat);
+            EditStat(_midPoints.Select(p => (double)p).ToList(), key, ref generatedStat);
+            ExpandStatRange(0, key, ref generatedStat);
             return generatedStat;
         }
 
@@ -53,13 +53,29 @@ namespace Sheepshead.Models.Players.Stats
             return startingPoint;
         }
 
-        private void SetPoint(List<double> point, K originalKey, ref S generatedStat)
+        private void EditStat(List<double> point, K originalKey, ref S generatedStat)
         {
-            var skipRecording = false;
-            var recordKey = point.Select(p => (int)Math.Round(p)).ToList();
-            for (var i = 0; i < point.Count() && !skipRecording; ++i) {
+            bool skipRecording;
+            List<int> recordKey;
+            GetClosestValidKey(point, out skipRecording, out recordKey);
+            if (!skipRecording)
+            {
+                var newKey = CreateKey(originalKey, recordKey);
+                var recordedStat = Repository.GetRecordedResults(newKey);
+                generatedStat.AddOtherStat(recordedStat);
+            }
+            _nextLayerOfKeys.Add(point);
+        }
+
+        private void GetClosestValidKey(List<double> point, out bool skipRecording, out List<int> recordKey)
+        {
+            skipRecording = false;
+            recordKey = point.Select(p => (int)Math.Round(p)).ToList();
+            for (var i = 0; i < point.Count() && !skipRecording; ++i)
+            {
                 var range = MaxRanges.ElementAt(i);
                 var halfOfValidRange = _steps[i] / 2;
+                //Skip anything that is outside the range of valid values.
                 if (_midPoints[i] - _tolerance > range.Value.Max || _midPoints[i] + _tolerance < range.Value.Min)
                     skipRecording = true;
                 else if (range.Value.ValidValues != null && range.Value.ValidValues.Any())
@@ -79,16 +95,9 @@ namespace Sheepshead.Models.Players.Stats
                                  || roundedValue - point[i] >= halfOfValidRange;
                 }
             }
-            if (!skipRecording)
-            {
-                var newKey = CreateKey(originalKey, recordKey);
-                var recordedStat = Repository.GetRecordedResults(newKey);
-                generatedStat.AddOtherStat(recordedStat);
-            }
-            _nextLayerOfKeys.Add(point);
         }
 
-        private void SetNextGen(int depth, K originalKey, ref S generatedStat)
+        private void ExpandStatRange(int depth, K originalKey, ref S generatedStat)
         {
             if (ReachedMinimumTries(generatedStat) || depth + _tolerance >= _maxRange / 2)
                 return;
@@ -96,12 +105,13 @@ namespace Sheepshead.Models.Players.Stats
             _nextLayerOfKeys = new List<List<double>>();
             foreach (var point in curLayer)
             {
-                SetChildren(point, originalKey, ref generatedStat);
+                EditChildStats(point, originalKey, ref generatedStat);
             }
-            SetNextGen(depth + 1, originalKey, ref generatedStat);
+            ExpandStatRange(depth + 1, originalKey, ref generatedStat);
         }
 
-        private void SetChildren(List<double> point, K originalKey, ref S generatedStat)
+        //Expands stats in n-dimensional space.  If stats could be graphed, they would resemble an n-dimensional diamond.
+        private void EditChildStats(List<double> point, K originalKey, ref S generatedStat)
         {
             var a = point[0];
             var b = point[1];
@@ -112,45 +122,49 @@ namespace Sheepshead.Models.Players.Stats
             var stepA = _steps[0];
             var stepB = _steps[1];
             var stepC = _steps[2];
+            //Regarding c axis as up and down, expand explored stats upward.
             if (c + _tolerance >= midPointC)
             {
                 var newPoint = new List<double>(point);
                 newPoint[2] = c + stepC;
-                SetPoint(newPoint, originalKey, ref generatedStat);
+                EditStat(newPoint, originalKey, ref generatedStat);
             }
+            //Regarding c axis as up and down, expand explored stats downward.
             if (c - _tolerance <= midPointC)
             {
                 var newPoint = new List<double>(point);
                 newPoint[2] = c - stepC;
-                SetPoint(newPoint, originalKey, ref generatedStat);
+                EditStat(newPoint, originalKey, ref generatedStat);
             }
+            //Expand explored stats along the A and B axes here.
             if (Math.Abs(c - midPointC) < _tolerance)
             {
                 if (a + _tolerance >= midPointA && b + _tolerance >= midPointB)
                 {
                     var newPoint = new List<double>(point);
                     newPoint[0] = a + stepA;
-                    SetPoint(newPoint, originalKey, ref generatedStat);
+                    EditStat(newPoint, originalKey, ref generatedStat);
                 }
                 if (a + _tolerance >= midPointA && b - _tolerance <= midPointB)
                 {
                     var newPoint = new List<double>(point);
                     newPoint[1] = b - stepB;
-                    SetPoint(newPoint, originalKey, ref generatedStat);
+                    EditStat(newPoint, originalKey, ref generatedStat);
                 }
                 if (a - _tolerance <= midPointA && b - _tolerance <= midPointB)
                 {
                     var newPoint = new List<double>(point);
                     newPoint[0] = a - stepA;
-                    SetPoint(newPoint, originalKey, ref generatedStat);
+                    EditStat(newPoint, originalKey, ref generatedStat);
                 }
                 if (a - _tolerance <= midPointA && b + _tolerance >= midPointB)
                 {
                     var newPoint = new List<double>(point);
                     newPoint[1] = b + stepB;
-                    SetPoint(newPoint, originalKey, ref generatedStat);
+                    EditStat(newPoint, originalKey, ref generatedStat);
                 }
             }
+            //If there are at least four dimensions of stat data, expand along those other axes when a, b, and c coordinates are all at mid-point.
             for (var d = 3; d < point.Count(); ++d)
             {
                 var allEarlierParmsEqual = true;
@@ -162,19 +176,17 @@ namespace Sheepshead.Models.Players.Stats
                     {
                         var newPoint = new List<double>(point);
                         newPoint[d] = point[d] - _steps[d];
-                        SetPoint(newPoint, originalKey, ref generatedStat);
+                        EditStat(newPoint, originalKey, ref generatedStat);
                     }
                     if (point[d] + _tolerance >= _midPoints[d])
                     {
                         var newPoint = new List<double>(point);
                         newPoint[d] = point[d] + _steps[d];
-                        SetPoint(newPoint, originalKey, ref generatedStat);
+                        EditStat(newPoint, originalKey, ref generatedStat);
                     }
                 }
             }
         }
-
-        protected abstract K CreateKey(K originalKey, List<int> keyValues);
     }
 
     public struct RangeDetail

@@ -145,7 +145,7 @@ namespace Sheepshead.Tests
         }
 
         [TestMethod]
-        public void PickStatGuesser_GetRecordedResult()
+        public void PickStatGuesser_GetGuess()
         {
             var guesser = new PickStatGuesser();
             var getStat = guesser.GetGuess(new PickStatUniqueKey()

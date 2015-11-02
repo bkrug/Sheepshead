@@ -8,7 +8,7 @@ using System.IO;
 
 namespace Sheepshead.Tests.NonUnitTests
 {
-    [TestClass]
+    //[TestClass]
     public class OctahedronBlocks
     {
         private bool[,,,] _blocks = new bool[21, 21, 21, 21];

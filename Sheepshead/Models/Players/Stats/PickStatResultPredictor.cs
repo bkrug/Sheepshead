@@ -23,11 +23,6 @@ namespace Sheepshead.Models.Players.Stats
             MaxRanges = PickStatConst.MaxRanges;
         }
 
-        protected override Dictionary<PickStatUniqueKey, bool> CreateKeyList()
-        {
-            return new Dictionary<PickStatUniqueKey, bool>();
-        }
-
         protected override PickStat CreateStat()
         {
             return new PickStat();

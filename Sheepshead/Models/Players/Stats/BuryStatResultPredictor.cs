@@ -23,11 +23,6 @@ namespace Sheepshead.Models.Players.Stats
             MaxRanges = BuryStatConst.MaxRanges;
         }
 
-        protected override Dictionary<BuryStatUniqueKey, bool> CreateKeyList()
-        {
-            return new Dictionary<BuryStatUniqueKey, bool>();
-        }
-
         protected override BuryStat CreateStat()
         {
             return new BuryStat();

@@ -30,11 +30,6 @@ namespace Sheepshead.Models.Players.Stats
             };
         }
 
-        protected override Dictionary<MoveStatUniqueKey, bool> CreateKeyList()
-        {
-            return new Dictionary<MoveStatUniqueKey, bool>();
-        }
-
         protected override MoveStat CreateStat()
         {
             return new MoveStat();
