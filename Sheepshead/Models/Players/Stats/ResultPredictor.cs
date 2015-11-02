@@ -9,6 +9,11 @@ namespace Sheepshead.Models.Players.Stats
     {
         protected readonly IStatRepository<K, S> Repository;
         protected Dictionary<string, RangeDetail> MaxRanges;
+        protected List<List<double>> _nextLayerOfKeys;
+        protected List<double> _steps;
+        protected List<int> _midPoints;
+        protected double _maxRange;
+        private const double _tolerance = 0.0001;
 
         public ResultPredictor(IStatRepository<K, S> repository)
         {
@@ -24,82 +29,152 @@ namespace Sheepshead.Models.Players.Stats
             var realStat = Repository.GetRecordedResults(key);
             if (ReachedMinimumTries(realStat))
                 return realStat;
-            var usedKeys = CreateKeyList();
+            return GenerateStat(key);
+        }
+
+        private S GenerateStat(K key)
+        {
+            _maxRange = MaxRanges.Max(r => (r.Value.Max - r.Value.Min) / (r.Value.Precision ?? 1));
+            _steps = MaxRanges.Select(r => (r.Value.Max - r.Value.Min) / _maxRange).ToList();
+            _midPoints = GetStartingPoint(key);
+            _nextLayerOfKeys = new List<List<double>>();
             var generatedStat = CreateStat();
-            double offset = 0;
-            while (!ReachedMinimumTries(generatedStat) && offset <= 0.509)
-            {
-                var propertyNames = new List<string>();
-                var ranges = new List<RangeDetail>();
-                _validSearchValues = new Dictionary<string, IEnumerable<int>>();
-                CreateSearchRange(key, offset, propertyNames, ranges);
-                AddKeys(key, new Stack<int>(), usedKeys, propertyNames, ranges, 0, ref generatedStat);
-                offset = Math.Round(offset + 0.05, 5);
-            }
+            SetPoint(_midPoints.Select(p => (double)p).ToList(), key, ref generatedStat);
+            SetNextGen(0, key, ref generatedStat);
             return generatedStat;
         }
 
-        protected void CreateSearchRange<T>(T key, double offset, List<string> propertyNames, List<RangeDetail> ranges)
+        private List<int> GetStartingPoint(K originalKey)
         {
-            foreach (var rangeKey in MaxRanges.Keys)
-            {
-                int centerValue = (int)typeof(T).GetField(rangeKey).GetValue(key);
-                var extreme = (MaxRanges[rangeKey].Max - MaxRanges[rangeKey].Min) / 2;
-                propertyNames.Add(rangeKey);
-                ranges.Add(new RangeDetail()
-                {
-                    Min = (int)Math.Round(centerValue - offset * extreme),
-                    Max = (int)Math.Round(centerValue + offset * extreme)
-                });
-            }
+            var type = originalKey.GetType();
+            var startingPoint = new List<int>();
+            foreach (var range in MaxRanges)
+                startingPoint.Add((int)type.GetField(range.Key).GetValue(originalKey));
+            return startingPoint;
         }
 
-        protected void AddKeys(K originalKey, Stack<int> keyValues, Dictionary<K, bool> usedKeys, List<string> propertyNames, List<RangeDetail> ranges, int depth, ref S stat)
+        private void SetPoint(List<double> point, K originalKey, ref S generatedStat)
         {
-            var propertyName = propertyNames[depth];
-            var range = ranges[depth];
-            var maxDepth = propertyNames.Count() - 1;
-            foreach (var v in GetSearchValues(propertyName, range))
-            {
-                keyValues.Push(v);
-                if (depth < maxDepth)
-                    AddKeys(originalKey, keyValues, usedKeys, propertyNames, ranges, depth+1, ref stat);
+            var skipRecording = false;
+            var recordKey = point.Select(p => (int)Math.Round(p)).ToList();
+            for (var i = 0; i < point.Count() && !skipRecording; ++i) {
+                var range = MaxRanges.ElementAt(i);
+                var halfOfValidRange = _steps[i] / 2;
+                if (_midPoints[i] - _tolerance > range.Value.Max || _midPoints[i] + _tolerance < range.Value.Min)
+                    skipRecording = true;
+                else if (range.Value.ValidValues != null && range.Value.ValidValues.Any())
+                {
+                    int? newValue = null;
+                    foreach (var match in range.Value.ValidValues.Where(v => v + halfOfValidRange >= point[i] && point[i] > v - halfOfValidRange))
+                        newValue = match;
+                    //If the current value is not within half a step of one valid value, skip recording this.
+                    skipRecording = newValue == null;
+                    recordKey[i] = newValue ?? 0;
+                }
                 else
                 {
-                    var newKey = CreateKey(originalKey, keyValues);
-                    if (!usedKeys.ContainsKey(newKey))
+                    //If the current value is not within half a step of an integer, skip recording this.
+                    var roundedValue = (int)Math.Round(point[i]);
+                    skipRecording = point[i] - roundedValue > halfOfValidRange
+                                 || roundedValue - point[i] >= halfOfValidRange;
+                }
+            }
+            if (!skipRecording)
+            {
+                var newKey = CreateKey(originalKey, recordKey);
+                var recordedStat = Repository.GetRecordedResults(newKey);
+                generatedStat.AddOtherStat(recordedStat);
+            }
+            _nextLayerOfKeys.Add(point);
+        }
+
+        private void SetNextGen(int depth, K originalKey, ref S generatedStat)
+        {
+            if (ReachedMinimumTries(generatedStat) || depth + _tolerance >= _maxRange / 2)
+                return;
+            var curLayer = _nextLayerOfKeys;
+            _nextLayerOfKeys = new List<List<double>>();
+            foreach (var point in curLayer)
+            {
+                SetChildren(point, originalKey, ref generatedStat);
+            }
+            SetNextGen(depth + 1, originalKey, ref generatedStat);
+        }
+
+        private void SetChildren(List<double> point, K originalKey, ref S generatedStat)
+        {
+            var a = point[0];
+            var b = point[1];
+            var c = point[2];
+            var midPointA = _midPoints[0];
+            var midPointB = _midPoints[1];
+            var midPointC = _midPoints[2];
+            var stepA = _steps[0];
+            var stepB = _steps[1];
+            var stepC = _steps[2];
+            if (c + _tolerance >= midPointC)
+            {
+                var newPoint = new List<double>(point);
+                newPoint[2] = c + stepC;
+                SetPoint(newPoint, originalKey, ref generatedStat);
+            }
+            if (c - _tolerance <= midPointC)
+            {
+                var newPoint = new List<double>(point);
+                newPoint[2] = c - stepC;
+                SetPoint(newPoint, originalKey, ref generatedStat);
+            }
+            if (Math.Abs(c - midPointC) < _tolerance)
+            {
+                if (a + _tolerance >= midPointA && b + _tolerance >= midPointB)
+                {
+                    var newPoint = new List<double>(point);
+                    newPoint[0] = a + stepA;
+                    SetPoint(newPoint, originalKey, ref generatedStat);
+                }
+                if (a + _tolerance >= midPointA && b - _tolerance <= midPointB)
+                {
+                    var newPoint = new List<double>(point);
+                    newPoint[1] = b - stepB;
+                    SetPoint(newPoint, originalKey, ref generatedStat);
+                }
+                if (a - _tolerance <= midPointA && b - _tolerance <= midPointB)
+                {
+                    var newPoint = new List<double>(point);
+                    newPoint[0] = a - stepA;
+                    SetPoint(newPoint, originalKey, ref generatedStat);
+                }
+                if (a - _tolerance <= midPointA && b + _tolerance >= midPointB)
+                {
+                    var newPoint = new List<double>(point);
+                    newPoint[1] = b + stepB;
+                    SetPoint(newPoint, originalKey, ref generatedStat);
+                }
+            }
+            for (var d = 3; d < point.Count(); ++d)
+            {
+                var allEarlierParmsEqual = true;
+                for (var i = 0; i < d && allEarlierParmsEqual; ++i)
+                    allEarlierParmsEqual = Math.Abs(point[i] - _midPoints[i]) < _tolerance;
+                if (allEarlierParmsEqual)
+                {
+                    if (point[d] - _tolerance <= _midPoints[d])
                     {
-                        var recordedStat = Repository.GetRecordedResults(newKey);
-                        stat.AddOtherStat(recordedStat);
-                        usedKeys.Add(newKey, false);
+                        var newPoint = new List<double>(point);
+                        newPoint[d] = point[d] - _steps[d];
+                        SetPoint(newPoint, originalKey, ref generatedStat);
+                    }
+                    if (point[d] + _tolerance >= _midPoints[d])
+                    {
+                        var newPoint = new List<double>(point);
+                        newPoint[d] = point[d] + _steps[d];
+                        SetPoint(newPoint, originalKey, ref generatedStat);
                     }
                 }
-                keyValues.Pop();
             }
         }
 
-        protected abstract K CreateKey(K originalKey, Stack<int> keyValues);
-        protected Dictionary<string, IEnumerable<int>> _validSearchValues;
-        protected IEnumerable<int> GetSearchValues(string propertyName, RangeDetail limitedRange)
-        {
-            if (!_validSearchValues.ContainsKey(propertyName))
-            {
-                List<int> list;
-                var maxRange = MaxRanges[propertyName];
-                var minVal = Math.Max(limitedRange.Min, maxRange.Min);
-                var maxVal = Math.Min(limitedRange.Max, maxRange.Max);
-                if (maxRange.ValidValues != null && maxRange.ValidValues.Any())
-                    list = maxRange.ValidValues.Where(v => v >= minVal && v <= maxVal).ToList();
-                else
-                {
-                    list = new List<int>();
-                    for (var v = minVal; v <= maxVal; ++v)
-                        list.Add(v);
-                }
-                _validSearchValues[propertyName] = list;
-            }
-            return _validSearchValues[propertyName];
-        }
+        protected abstract K CreateKey(K originalKey, List<int> keyValues);
     }
 
     public struct RangeDetail
@@ -107,5 +182,6 @@ namespace Sheepshead.Models.Players.Stats
         public int Min;
         public int Max;
         public List<int> ValidValues;
+        public int? Precision;
     }
 }

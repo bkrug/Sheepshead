@@ -122,62 +122,65 @@ namespace Sheepshead.Tests
                 Assert.AreEqual(testResult.HandPortionWon.Value, results.HandPortionWon.Value, 0.01);
             }
             {
-                //In this case there is very little data so the system will look at the maximum range of similar keys.
-                MoveStat testResult = new MoveStat()
+                //In this case there is too little data to look at one stat.  It will keep combining stats until there have been 1000 tries.
+                var testKey1 = new MoveStatUniqueKey()
                 {
-                    TricksTried = 1,
-                    TricksWon = 1,
-                    HandsTried = 1,
-                    HandsWon = 1
+                    CardWillOverpower = false,
+                    OpponentPercentDone = 50,
+                    CardPoints = 10,
+                    UnknownStrongerCards = 8,
+                    HeldStrongerCards = 1
                 };
-                var statCount = 100;
-                var dict = GetDictionary(rnd, statCount, testKey, testResult);
-                var mockRepository = GetRepositoryMock1(dict);
-                var predictor = new MoveStatResultPredictor(mockRepository.Object);
-                var results = predictor.GetWeightedStat(testKey);
-                var items = dict.Where(kvp =>
-                    kvp.Key.CardWillOverpower == false &&
-                    kvp.Key.OpponentPercentDone >= 25 && kvp.Key.OpponentPercentDone <= 75 &&
-                    kvp.Key.CardPoints >= 4 &&
-                    kvp.Key.UnknownStrongerCards >= 3 && kvp.Key.UnknownStrongerCards <= 13 &&
-                    kvp.Key.HeldStrongerCards <= 2
-                    );
-                var expectedTricksWon = (double)items.Sum(i => i.Value.TricksWon) / items.Sum(i => i.Value.TricksTried);
-                var expectedHandsWon = (double)items.Sum(i => i.Value.HandsWon) / items.Sum(i => i.Value.HandsTried);
-                Assert.AreEqual(expectedTricksWon, results.TrickPortionWon.Value, 0.01);
-                Assert.AreEqual(expectedHandsWon, results.HandPortionWon.Value, 0.01);
-            }
-            {
-                //In this case there is too little data for the system to look at only one key's stats, but there is much more than in the previous case.
-                var dict = new Dictionary<MoveStatUniqueKey, MoveStat>() 
+                var testKey2 = new MoveStatUniqueKey()
                 {
-                    { 
-                      testKey,
-                      new MoveStat() { TricksWon = 345, TricksTried = 500, HandsWon = 281, HandsTried = 500 }
-                    },
-                    { 
-                      new MoveStatUniqueKey() { CardWillOverpower = false, OpponentPercentDone = 50, CardPoints = 11, UnknownStrongerCards = 8, HeldStrongerCards = 1 },
-                      new MoveStat() { TricksWon = 35, TricksTried = 250, HandsWon = 111, HandsTried = 250 }
-                    },
-                    { 
-                      new MoveStatUniqueKey() { CardWillOverpower = false, OpponentPercentDone = 50, CardPoints = 11, UnknownStrongerCards = 6, HeldStrongerCards = 1 },
-                      new MoveStat() { TricksWon = 37, TricksTried = 250, HandsWon = 97, HandsTried = 250 }
-                    },
-                    { 
-                      new MoveStatUniqueKey() { CardWillOverpower = false, OpponentPercentDone = 25, CardPoints = 10, UnknownStrongerCards = 8, HeldStrongerCards = 1 },
-                      new MoveStat() { TricksWon = 35, TricksTried = 2000, HandsWon = 111, HandsTried = 2000 }
-                    },
-                    { 
-                      new MoveStatUniqueKey() { CardWillOverpower = true, OpponentPercentDone = 0, CardPoints = 1, UnknownStrongerCards = 1, HeldStrongerCards = 5 },
-                      new MoveStat() { TricksWon = 35, TricksTried = 3000, HandsWon = 111, HandsTried = 3000 }
-                    },
+                    CardWillOverpower = false,
+                    OpponentPercentDone = 50,
+                    CardPoints = 10,
+                    UnknownStrongerCards = 9,
+                    HeldStrongerCards = 1
                 };
-                var mockRepository = GetRepositoryMock1(dict);
+                var veryDiffKey = new MoveStatUniqueKey()
+                {
+                    CardWillOverpower = false,
+                    OpponentPercentDone = 100,
+                    CardPoints = -3,
+                    UnknownStrongerCards = 1,
+                    HeldStrongerCards = 3
+                };
+                var testResult1 = new MoveStat()
+                {
+                    TricksTried = 601,
+                    TricksWon = 43,
+                    HandsTried = 602,
+                    HandsWon = 97
+                };
+                var testResult2 = new MoveStat()
+                {
+                    TricksTried = 703,
+                    TricksWon = 174,
+                    HandsTried = 704,
+                    HandsWon = 82
+                };
+                var veryDiffResult = new MoveStat()
+                {
+                    TricksTried = 405,
+                    TricksWon = 371,
+                    HandsTried = 406,
+                    HandsWon = 324
+                };
+                var dict = new Dictionary<MoveStatUniqueKey, MoveStat>()
+                {
+                    { testKey1, testResult1 },
+                    { testKey2, testResult2 },
+                    { veryDiffKey, veryDiffResult }
+                };
+                var mockRepository = new Mock<IMoveStatRepository>();
+                mockRepository.Setup(m => m.GetRecordedResults(It.IsAny<MoveStatUniqueKey>()))
+                    .Returns((MoveStatUniqueKey givenKey) => dict.ContainsKey(givenKey) ? dict[givenKey] : new MoveStat());
                 var predictor = new MoveStatResultPredictor(mockRepository.Object);
-                var results = predictor.GetWeightedStat(testKey);
-                var items = dict.Take(3).ToList();
-                var expectedTricksWon = (double)items.Sum(i => i.Value.TricksWon) / items.Sum(i => i.Value.TricksTried);
-                var expectedHandsWon = (double)items.Sum(i => i.Value.HandsWon) / items.Sum(i => i.Value.HandsTried);
+                var results = predictor.GetWeightedStat(testKey1);
+                var expectedTricksWon = (testResult1.TricksWon + testResult2.TricksWon) / (double)(testResult1.TricksTried + testResult2.TricksTried);
+                var expectedHandsWon = (testResult1.HandsWon + testResult2.HandsWon) / (double)(testResult1.HandsTried + testResult2.HandsTried);
                 Assert.AreEqual(expectedTricksWon, results.TrickPortionWon.Value, 0.01);
                 Assert.AreEqual(expectedHandsWon, results.HandPortionWon.Value, 0.01);
             }

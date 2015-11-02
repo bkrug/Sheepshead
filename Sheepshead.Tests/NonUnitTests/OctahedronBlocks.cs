@@ -33,6 +33,19 @@ namespace Sheepshead.Tests.NonUnitTests
             _nextGen.Add(new List<int>() { a, b, c, d });
         }
 
+        private void SetNextGen(int depth)
+        {
+            if (depth >= mid)
+                return;
+            var _curGen = _nextGen;
+            _nextGen = new List<List<int>>();
+            foreach (var point in _curGen)
+            {
+                SetChildren(point[0], point[1], point[2], point[3]);
+            }
+            SetNextGen(depth + 1);
+        }
+
         private void SetChildren(int a, int b, int c, int d)
         {
             if (c >= mid)
@@ -61,19 +74,6 @@ namespace Sheepshead.Tests.NonUnitTests
                 if (d >= mid)
                     SetPoint(mid, mid, mid, d + 1);
             }
-        }
-
-        private void SetNextGen(int depth)
-        {
-            if (depth >= mid)
-                return;
-            var _curGen = _nextGen;
-            _nextGen = new List<List<int>>();
-            foreach (var point in _curGen)
-            {
-                SetChildren(point[0], point[1], point[2], point[3]);
-            }
-            SetNextGen(depth + 1);
         }
 
         private void DisplayOctahedron()

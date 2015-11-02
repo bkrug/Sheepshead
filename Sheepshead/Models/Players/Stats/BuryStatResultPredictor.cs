@@ -33,15 +33,15 @@ namespace Sheepshead.Models.Players.Stats
             return new BuryStat();
         }
 
-        protected override BuryStatUniqueKey CreateKey(BuryStatUniqueKey originalKey, Stack<int> keyValues)
+        protected override BuryStatUniqueKey CreateKey(BuryStatUniqueKey originalKey, List<int> keyValues)
         {
             var list = keyValues.ToList();
             return new BuryStatUniqueKey()
             {
-                BuriedPoints = list[3],
-                AvgPointsInHand = list[2],
-                AvgRankInHand = list[1],
-                SuitsInHand = list[0]
+                BuriedPoints = list[0],
+                AvgPointsInHand = list[1],
+                AvgRankInHand = list[2],
+                SuitsInHand = list[3]
             };
         }
 

@@ -33,15 +33,15 @@ namespace Sheepshead.Models.Players.Stats
             return new PickStat();
         }
 
-        protected override PickStatUniqueKey CreateKey(PickStatUniqueKey originalKey, Stack<int> keyValues)
+        protected override PickStatUniqueKey CreateKey(PickStatUniqueKey originalKey, List<int> keyValues)
         {
             var list = keyValues.ToList();
             return new PickStatUniqueKey()
             {
-                TrumpCount = list[3],
-                AvgTrumpRank = list[2],
-                PointsInHand = list[1],
-                TotalCardsWithPoints = list[0]
+                TrumpCount = list[0],
+                AvgTrumpRank = list[1],
+                PointsInHand = list[2],
+                TotalCardsWithPoints = list[3]
             };
         }
 
