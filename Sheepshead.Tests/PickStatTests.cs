@@ -20,14 +20,14 @@ namespace Sheepshead.Tests
             {
                 TrumpCount = 3,
                 AvgTrumpRank = 5,
-                PointsInHand = 15,
+                AvgPointsInHand = 15,
                 TotalCardsWithPoints = 5
             };
             var identicalKey = new PickStatUniqueKey()
             {
                 TrumpCount = 3,
                 AvgTrumpRank = 5,
-                PointsInHand = 15,
+                AvgPointsInHand = 15,
                 TotalCardsWithPoints = 5
             };
             repository.IncrementPickResult(key, 1);
@@ -51,14 +51,14 @@ namespace Sheepshead.Tests
             {
                 TrumpCount = 3,
                 AvgTrumpRank = 5,
-                PointsInHand = 15,
+                AvgPointsInHand = 15,
                 TotalCardsWithPoints = 5
             };
             var differentKey = new PickStatUniqueKey()
             {
                 TrumpCount = 3,
                 AvgTrumpRank = 5,
-                PointsInHand = 10,
+                AvgPointsInHand = 10,
                 TotalCardsWithPoints = 5
             };
             repository.IncrementPickResult(key, 2);
@@ -110,14 +110,14 @@ namespace Sheepshead.Tests
             {
                 TrumpCount = 3,
                 AvgTrumpRank = 5,
-                PointsInHand = 15,
+                AvgPointsInHand = 15,
                 TotalCardsWithPoints = 5
             };
             var key2 = new PickStatUniqueKey()
             {
                 TrumpCount = 2,
                 AvgTrumpRank = 6,
-                PointsInHand = 20,
+                AvgPointsInHand = 20,
                 TotalCardsWithPoints = 3
             };
             repository.IncrementPickResult(key1, -2);
@@ -152,7 +152,7 @@ namespace Sheepshead.Tests
             {
                 TrumpCount = 0,
                 AvgTrumpRank = 14,
-                PointsInHand = 0,
+                AvgPointsInHand = 0,
                 TotalCardsWithPoints = 0
             });
             Assert.IsTrue(getStat.AvgPassedPoints < 0, "If no actual data is available, the computer should guess that there is no chance of winning with this stat.");
@@ -162,7 +162,7 @@ namespace Sheepshead.Tests
             {
                 TrumpCount = 4,
                 AvgTrumpRank = 3,
-                PointsInHand = 11 + 11 + 3 + 3 + 3 + 3,
+                AvgPointsInHand = (int)Math.Round((11 + 11 + 3 + 3 + 3 + 3) / (double)6),
                 TotalCardsWithPoints = 6
             });
             Assert.IsTrue(getStat1.AvgPickPoints > 0, "If no actual data is available, the computer should guess that there is a high chance of winning with this stat.");
@@ -176,14 +176,14 @@ namespace Sheepshead.Tests
             {
                 TrumpCount = 3,
                 AvgTrumpRank = 5,
-                PointsInHand = 3,
+                AvgPointsInHand = 3,
                 TotalCardsWithPoints = 1
             };
             var key2 = new PickStatUniqueKey()
             {
                 TrumpCount = 3,
                 AvgTrumpRank = 5,
-                PointsInHand = 4,
+                AvgPointsInHand = 4,
                 TotalCardsWithPoints = 1
             };
             var stat1 = new PickStat()
@@ -240,14 +240,14 @@ namespace Sheepshead.Tests
             {
                 TrumpCount = 3,
                 AvgTrumpRank = 5,
-                PointsInHand = 3,
+                AvgPointsInHand = 3,
                 TotalCardsWithPoints = 1
             };
             var key2 = new PickStatUniqueKey()
             {
                 TrumpCount = 3,
                 AvgTrumpRank = 5,
-                PointsInHand = 4,
+                AvgPointsInHand = 4,
                 TotalCardsWithPoints = 1
             };
             var stat1 = new PickStat()

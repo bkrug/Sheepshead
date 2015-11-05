@@ -32,8 +32,7 @@ namespace Sheepshead.Models.Players.Stats
             {
                 TrumpCount = trumpCount,
                 AvgTrumpRank = (int)Math.Round(trumpRankAvg),
-                //TrumpStdDeviation = trumpCards.Any() ? (int)Math.Round(Math.Sqrt(trumpCards.Sum(c => Math.Pow(c.Rank - trumpRankAvg, 2)) / trumpCount)) : 0,
-                PointsInHand = cards.Sum(c => c.Points),
+                AvgPointsInHand = (int)Math.Round(cards.Average(c => c.Points)),
                 TotalCardsWithPoints = cards.Count(c => c.Points > 0)
             };
         }

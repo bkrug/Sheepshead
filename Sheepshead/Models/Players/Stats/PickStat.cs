@@ -31,7 +31,7 @@ namespace Sheepshead.Models.Players.Stats
     {
         public int TrumpCount;
         public int AvgTrumpRank;
-        public int PointsInHand;
+        public int AvgPointsInHand;
         public int TotalCardsWithPoints;
     }
 
@@ -41,7 +41,7 @@ namespace Sheepshead.Models.Players.Stats
             {
                 { "TrumpCount", new RangeDetail() { Min = 0, Max = 6  } },
                 { "AvgTrumpRank", new RangeDetail() { Min = 0, Max = 14 } },
-                { "PointsInHand", new RangeDetail() { Min = 0, Max = 64 } },
+                { "AvgPointsInHand", new RangeDetail() { Min = 0, Max = 11 } },
                 { "TotalCardsWithPoints", new RangeDetail() { Min = 0, Max = 6 } }
             };
     }

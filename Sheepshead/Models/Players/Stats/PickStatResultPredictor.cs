@@ -35,7 +35,7 @@ namespace Sheepshead.Models.Players.Stats
             {
                 TrumpCount = list[0],
                 AvgTrumpRank = list[1],
-                PointsInHand = list[2],
+                AvgPointsInHand = list[2],
                 TotalCardsWithPoints = list[3]
             };
         }
