@@ -26,7 +26,8 @@ namespace Sheepshead.Tests.NonUnitTests
                 playerList.Add(new BasicPlayer());
             var pickStatRepository = new PickStatRepository();
             var moveStatRepository = new MoveStatRepository();
-            InstantiateLearningHelper learningDel = (IHand hand) => { return new LearningHelper(hand, SaveLocations.FIRST_SAVE, pickStatRepository, moveStatRepository); };
+            var buryStatRepository = new BuryStatRepository();
+            InstantiateLearningHelper learningDel = (IHand hand) => { return new LearningHelper(hand, SaveLocations.FIRST_SAVE, pickStatRepository, moveStatRepository, buryStatRepository); };
             PlayGame(playerList, 500, learningDel);
             pickStatRepository.Save(@"c:\temp\basic-player-pick-stats.json");
             moveStatRepository.Save(@"c:\temp\basic-player-move-stats.json");
@@ -66,7 +67,8 @@ namespace Sheepshead.Tests.NonUnitTests
                 _sw.WriteLine("Card,Rank,Points,Card Will Overpower,Opponent Percent Done,Card Points,Unknown Stronger Cards,Held Stronger Cards");
                 var pickStatRepository = new PickStatRepository();
                 var moveStatRepository = new MoveStatRepository();
-                InstantiateLearningHelper learningDel = (IHand hand) => { return new LearningHelper(hand, @"c:\temp\LearningPlayerStage1.txt", pickStatRepository, moveStatRepository); };
+                var buryStatRepository = new BuryStatRepository();
+                InstantiateLearningHelper learningDel = (IHand hand) => { return new LearningHelper(hand, @"c:\temp\LearningPlayerStage1.txt", pickStatRepository, moveStatRepository, buryStatRepository); };
                 PlayGame(playerList, 1, learningDel);
             }
         }
@@ -100,9 +102,10 @@ namespace Sheepshead.Tests.NonUnitTests
                 var gameStartTime = DateTime.Now;
                 var pickStatRepository = new PickStatRepository();
                 var moveStatRepository = new MoveStatRepository();
+                var buryStatRepository = new BuryStatRepository();
                 var handSummaries = @"C:\Temp\learningVsBasicPlayerHandSummaries.txt";
                 File.Delete(handSummaries);
-                InstantiateLearningHelper learningDel = (IHand hand) => { return new LearningHelper(hand, handSummaries, pickStatRepository, moveStatRepository); };
+                InstantiateLearningHelper learningDel = (IHand hand) => { return new LearningHelper(hand, handSummaries, pickStatRepository, moveStatRepository, buryStatRepository); };
                 PlayGame(playerList, handNumber, learningDel, (object sender, EventArgs args) =>
                 {
                     ++handsCompleted;
@@ -136,7 +139,8 @@ namespace Sheepshead.Tests.NonUnitTests
                 playerList.Add(new RecordingPlayer());
             var pickStatRepository = new PickStatRepository();
             var moveStatRepository = new MoveStatRepository();
-            InstantiateLearningHelper learningDel = (IHand hand) => { return new LearningHelper(hand, @"c:\temp\recordingPlayerSummaries.json", pickStatRepository, moveStatRepository); };
+            var buryStatRepository = new BuryStatRepository();
+            InstantiateLearningHelper learningDel = (IHand hand) => { return new LearningHelper(hand, @"c:\temp\recordingPlayerSummaries.json", pickStatRepository, moveStatRepository, buryStatRepository); };
             PlayGame(playerList, 1000, learningDel);
             pickStatRepository.Save(@"c:\temp\recording-pick-stats.json");
             moveStatRepository.Save(@"c:\temp\recording-move-stats.json");

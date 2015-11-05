@@ -13,23 +13,26 @@ namespace Sheepshead.Models.Players.Stats
         private string _saveLocation;
         private IPickStatRepository _pickStatRepository;
         private IMoveStatRepository _moveStatRepository;
+        private IBuryStatRepository _buryStatRepository;
 
         private LearningHelper()
         {
         }
 
-        public LearningHelper(IHand hand, string saveLocation, IPickStatRepository pickStatRepository, IMoveStatRepository moveStatRepository)
+        public LearningHelper(IHand hand, string saveLocation, IPickStatRepository pickStatRepository, IMoveStatRepository moveStatRepository, IBuryStatRepository buryStatRepository)
         {
             _saveLocation = saveLocation;
             hand.OnHandEnd += WriteHandSummary;
             hand.OnHandEnd += UpdateMoveStats;
             hand.OnHandEnd += UpdatePickStats;
+            hand.OnHandEnd += UpdateBuryStats;
             _pickStatRepository = pickStatRepository;
             _moveStatRepository = moveStatRepository;
+            _buryStatRepository = buryStatRepository;
         }
 
         public LearningHelper(IHand hand, string saveLocaiton) 
-            : this(hand, saveLocaiton, RepositoryRepository.Instance.PickStatRepository, RepositoryRepository.Instance.MoveStatRepository)
+            : this(hand, saveLocaiton, RepositoryRepository.Instance.PickStatRepository, RepositoryRepository.Instance.MoveStatRepository, RepositoryRepository.Instance.BuryStatRepository)
         {
         }
 
@@ -78,6 +81,18 @@ namespace Sheepshead.Models.Players.Stats
             {
                 var key = generator.GenerateKey(hand, player);
                 _pickStatRepository.IncrementPickResult(key, scores[player]);
+            }
+        }
+
+        private void UpdateBuryStats(object sender, EventArgs e)
+        {
+            var hand = (IHand)sender;
+            var generator = new BuryKeyGenerator();
+            var scores = hand.Scores();
+            if(hand.Picker is LearningPlayer || hand.Picker is RecordingPlayer)
+            {
+                var key = generator.GenerateKey(hand.Deck);
+                _buryStatRepository.IncrementResult(key, scores[hand.Picker]);
             }
         }
     }
