@@ -76,12 +76,12 @@ namespace Sheepshead.Tests.NonUnitTests
         [TestMethod]
         public void LearningVsBasicPlayer()
         {
-            var moveRepository = new MoveStatRepository();
+            MoveStatRepository moveRepository = RepositoryRepository.Instance.MoveStatRepository;
+            PickStatRepository pickRepository = RepositoryRepository.Instance.PickStatRepository;
+            BuryStatRepository buryRepository = RepositoryRepository.Instance.BuryStatRepository;
             var movePredictor = new MoveStatResultPredictor(moveRepository);
-            var pickRepository = new PickStatRepository();
             var guessPickRepository = new PickStatGuesser();
             var pickPredictor = new PickStatResultPredictor(pickRepository, guessPickRepository);
-            var buryRepository = new BuryStatRepository();
             var guessBuryRepository = new BuryStatGuesser();
             var buryPredictor = new BuryStatResultPredictor(buryRepository, guessBuryRepository);
             using (var sw = new StreamWriter(@"C:\Temp\learningVsBasicPlayer.txt"))
@@ -100,12 +100,9 @@ namespace Sheepshead.Tests.NonUnitTests
                 sw.WriteLine("Players 1 and 3 are Learning Players");
                 sw.Flush();
                 var gameStartTime = DateTime.Now;
-                var pickStatRepository = new PickStatRepository();
-                var moveStatRepository = new MoveStatRepository();
-                var buryStatRepository = new BuryStatRepository();
                 var handSummaries = @"C:\Temp\learningVsBasicPlayerHandSummaries.txt";
                 File.Delete(handSummaries);
-                InstantiateLearningHelper learningDel = (IHand hand) => { return new LearningHelper(hand, handSummaries, pickStatRepository, moveStatRepository, buryStatRepository); };
+                InstantiateLearningHelper learningDel = (IHand hand) => { return new LearningHelper(hand, handSummaries, pickRepository, moveRepository, buryRepository); };
                 PlayGame(playerList, handNumber, learningDel, (object sender, EventArgs args) =>
                 {
                     ++handsCompleted;

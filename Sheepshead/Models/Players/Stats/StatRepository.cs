@@ -84,6 +84,7 @@ namespace Sheepshead.Models.Players.Stats
                 writer.WriteLine(serializer.Serialize(entry.Key));
                 writer.WriteLine(serializer.Serialize(entry.Value));
             }
+            writer.Flush();
         }
 
         //TODO: Delete this.  This class is no longer a singleton.

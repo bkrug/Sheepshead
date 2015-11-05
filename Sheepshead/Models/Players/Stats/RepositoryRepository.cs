@@ -8,7 +8,7 @@ namespace Sheepshead.Models.Players.Stats
 {
     public class RepositoryRepository
     {
-        public static string MOVE_SAVE_LOCATION = @"c:\temp\game-stat.json";
+        public static string MOVE_SAVE_LOCATION = @"c:\temp\move-stat.json";
         public static string PICK_SAVE_LOCATION = @"c:\temp\pick-stat.json";
         public static string BURY_SAVE_LOCATION = @"c:\temp\bury-stat.json";
 

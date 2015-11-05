@@ -11,6 +11,7 @@ namespace Sheepshead.Models.Wrappers
         void Write(string text);
         void WriteLine(string text);
         void Close();
+        void Flush();
     }
 
     public class StreamWriterWrapper : IStreamWriterWrapper
@@ -40,6 +41,11 @@ namespace Sheepshead.Models.Wrappers
         public void Close()
         {
             _writer.Close();
+        }
+
+        public void Flush()
+        {
+            _writer.Flush();
         }
 
         public void Dispose()
