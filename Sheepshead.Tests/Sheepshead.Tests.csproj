@@ -107,6 +107,7 @@
     <Compile Include="BuryTests.cs" />
     <Compile Include="Neural\NeuralNetwork.cs" />
     <Compile Include="Neural\NeuralTests.cs" />
+    <Compile Include="NonUnitTests\MoveStatTests.cs" />
     <Compile Include="NonUnitTests\OctahedronBlocks.cs" />
     <Compile Include="PickStatTests.cs" />
     <Compile Include="PickKeyGeneratorTests.cs" />

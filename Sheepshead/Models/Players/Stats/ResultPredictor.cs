@@ -14,6 +14,7 @@ namespace Sheepshead.Models.Players.Stats
         protected List<int> _midPoints;
         protected double _maxRange;
         private const double _tolerance = 0.0001;
+        protected int _dimCount;
 
         public ResultPredictor(IStatRepository<K, S> repository)
         {
@@ -38,6 +39,7 @@ namespace Sheepshead.Models.Players.Stats
             _steps = MaxRanges.Select(r => (r.Value.Max - r.Value.Min) / _maxRange).ToList();
             _midPoints = GetStartingPoint(key);
             _nextLayerOfKeys = new List<List<double>>();
+            _dimCount = MaxRanges.Count();
             var generatedStat = CreateStat();
             EditStat(_midPoints.Select(p => (double)p).ToList(), key, ref generatedStat);
             ExpandStatRange(0, key, ref generatedStat);
@@ -110,81 +112,25 @@ namespace Sheepshead.Models.Players.Stats
             ExpandStatRange(depth + 1, originalKey, ref generatedStat);
         }
 
-        //Expands stats in n-dimensional space.  If stats could be graphed, they would resemble an n-dimensional diamond.
+        //Expands stat range in n-dimensional space.  If stats could be graphed, they would resemble an n-dimensional diamond or octahedron.
         private void EditChildStats(List<double> point, K originalKey, ref S generatedStat)
         {
-            var a = point[0];
-            var b = point[1];
-            var c = point[2];
-            var midPointA = _midPoints[0];
-            var midPointB = _midPoints[1];
-            var midPointC = _midPoints[2];
-            var stepA = _steps[0];
-            var stepB = _steps[1];
-            var stepC = _steps[2];
-            //Regarding c axis as up and down, expand explored stats upward.
-            if (c + _tolerance >= midPointC)
+            var d = 0;
+            while (d == 0 || d < _dimCount && point[d] == _midPoints[d]) 
             {
-                var newPoint = new List<double>(point);
-                newPoint[2] = c + stepC;
-                EditStat(newPoint, originalKey, ref generatedStat);
-            }
-            //Regarding c axis as up and down, expand explored stats downward.
-            if (c - _tolerance <= midPointC)
-            {
-                var newPoint = new List<double>(point);
-                newPoint[2] = c - stepC;
-                EditStat(newPoint, originalKey, ref generatedStat);
-            }
-            //Expand explored stats along the A and B axes here.
-            if (Math.Abs(c - midPointC) < _tolerance)
-            {
-                if (a + _tolerance >= midPointA && b + _tolerance >= midPointB)
+                if (point[d] - _tolerance <= _midPoints[d])
                 {
                     var newPoint = new List<double>(point);
-                    newPoint[0] = a + stepA;
+                    newPoint[d] = point[d] - _steps[d];
                     EditStat(newPoint, originalKey, ref generatedStat);
                 }
-                if (a + _tolerance >= midPointA && b - _tolerance <= midPointB)
+                if (point[d] + _tolerance >= _midPoints[d])
                 {
                     var newPoint = new List<double>(point);
-                    newPoint[1] = b - stepB;
+                    newPoint[d] = point[d] + _steps[d];
                     EditStat(newPoint, originalKey, ref generatedStat);
                 }
-                if (a - _tolerance <= midPointA && b - _tolerance <= midPointB)
-                {
-                    var newPoint = new List<double>(point);
-                    newPoint[0] = a - stepA;
-                    EditStat(newPoint, originalKey, ref generatedStat);
-                }
-                if (a - _tolerance <= midPointA && b + _tolerance >= midPointB)
-                {
-                    var newPoint = new List<double>(point);
-                    newPoint[1] = b + stepB;
-                    EditStat(newPoint, originalKey, ref generatedStat);
-                }
-            }
-            //If there are at least four dimensions of stat data, expand along those other axes when a, b, and c coordinates are all at mid-point.
-            for (var d = 3; d < point.Count(); ++d)
-            {
-                var allEarlierParmsEqual = true;
-                for (var i = 0; i < d && allEarlierParmsEqual; ++i)
-                    allEarlierParmsEqual = Math.Abs(point[i] - _midPoints[i]) < _tolerance;
-                if (allEarlierParmsEqual)
-                {
-                    if (point[d] - _tolerance <= _midPoints[d])
-                    {
-                        var newPoint = new List<double>(point);
-                        newPoint[d] = point[d] - _steps[d];
-                        EditStat(newPoint, originalKey, ref generatedStat);
-                    }
-                    if (point[d] + _tolerance >= _midPoints[d])
-                    {
-                        var newPoint = new List<double>(point);
-                        newPoint[d] = point[d] + _steps[d];
-                        EditStat(newPoint, originalKey, ref generatedStat);
-                    }
-                }
+                ++d;
             }
         }
     }
