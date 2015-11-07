@@ -80,7 +80,10 @@ namespace Sheepshead.Models.Players.Stats
             foreach (var player in hand.Players.Where(m => m is LearningPlayer || m is RecordingPlayer))
             {
                 var key = generator.GenerateKey(hand, player);
-                _pickStatRepository.IncrementPickResult(key, scores[player]);
+                if (hand.Picker == player)
+                    _pickStatRepository.IncrementPickResult(key, scores[player]);
+                else
+                    _pickStatRepository.IncrementPassResult(key, scores[player]);
             }
         }
 
