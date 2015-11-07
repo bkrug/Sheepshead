@@ -32,7 +32,7 @@ namespace Sheepshead.Models.Players
         {
             var legalCards = this.Cards.Where(c => trick.IsLegalAddition(c, this)).ToList();
             var results = new Dictionary<ICard, MoveStat>();
-            foreach(var legalCard in legalCards) 
+            foreach (var legalCard in legalCards)
             {
                 var key = _moveKeyGenerator.GenerateKey(trick, this, legalCard);
                 var result = _movePredictor.GetWeightedStat(key);
@@ -44,12 +44,8 @@ namespace Sheepshead.Models.Players
             {
                 var handOrderedResults = results
                     .OrderByDescending(r => r.Value.HandPortionWon);
-                var firstResult = handOrderedResults.First();
-                var closeResults = results
-                    .Where(r => Math.Abs((double)(r.Value.HandPortionWon - firstResult.Value.HandPortionWon)) < 0.1);
-                var trickOrderedResults = closeResults
-                    .OrderByDescending(r => r.Value.TrickPortionWon);
-                selectedCard = trickOrderedResults.First().Key;
+                var firstResult = handOrderedResults.OrderByDescending(r => r.Value.HandPortionWon + r.Value.TrickPortionWon).First();
+                selectedCard = firstResult.Key;
                 OnMoveHandler(trick, selectedCard);
             }
             else
