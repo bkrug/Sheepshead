@@ -101,7 +101,7 @@ namespace Sheepshead.Models.Players.Stats
 
         private void ExpandStatRange(int depth, K originalKey, ref S generatedStat)
         {
-            if (ReachedMinimumTries(generatedStat) || depth + _tolerance >= _maxRange / 2)
+            if (ReachedMinimumTries(generatedStat) || depth + _tolerance >= _maxRange / 4)
                 return;
             var curLayer = _nextLayerOfKeys;
             _nextLayerOfKeys = new List<List<double>>();
