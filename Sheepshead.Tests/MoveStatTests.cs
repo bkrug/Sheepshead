@@ -16,7 +16,6 @@ namespace Sheepshead.Tests
         public void MoveStat_AddStat()
         {
             var repository = new MoveStatRepository();
-            repository.UnitTestRefresh();
             var key = new MoveStatUniqueKey()
             {
                 CardWillOverpower = false,
@@ -49,7 +48,6 @@ namespace Sheepshead.Tests
         public void MoveStat_GetResultWithNoEntry()
         {
             var repository = new MoveStatRepository();
-            repository.UnitTestRefresh();
             var key = new MoveStatUniqueKey()
             {
                 CardWillOverpower = false,
@@ -288,7 +286,6 @@ namespace Sheepshead.Tests
 
             //Save some stats to a file
             var repository = new MoveStatRepository();
-            repository.UnitTestRefresh();
             var key1 = new MoveStatUniqueKey
             {
                 CardWillOverpower = true,
@@ -314,7 +311,7 @@ namespace Sheepshead.Tests
             Assert.AreEqual(4, savedText.Count, "Last operation should have put something in the file");
 
             //Pretend to restart program
-            repository.UnitTestRefresh();
+            repository = new MoveStatRepository();
             Assert.AreEqual(0, repository.GetRecordedResults(key1).HandsTried, "There should no longer be any recorded results.");
 
             //Recover Saved Results

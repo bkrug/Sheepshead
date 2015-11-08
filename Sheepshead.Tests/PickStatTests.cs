@@ -46,7 +46,6 @@ namespace Sheepshead.Tests
         public void PickStat_GetResultWithNoEntry()
         {
             var repository = new PickStatRepository();
-            repository.UnitTestRefresh();
             var key = new PickStatUniqueKey()
             {
                 TrumpCount = 3,
@@ -105,7 +104,6 @@ namespace Sheepshead.Tests
 
             //Save some stats to a file
             var repository = new PickStatRepository();
-            repository.UnitTestRefresh();
             var key1 = new PickStatUniqueKey()
             {
                 TrumpCount = 3,
@@ -129,7 +127,7 @@ namespace Sheepshead.Tests
             Assert.AreEqual(4, savedText.Count, "Last operation should have put something in the file");
 
             //Pretend to restart program
-            repository.UnitTestRefresh();
+            repository = new PickStatRepository();
             Assert.AreEqual(0, repository.GetRecordedResults(key1).HandsPicked, "There should no longer be any recorded results.");
 
             //Recover Saved Results

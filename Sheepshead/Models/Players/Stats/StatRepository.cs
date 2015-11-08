@@ -86,13 +86,5 @@ namespace Sheepshead.Models.Players.Stats
             }
             writer.Flush();
         }
-
-        //TODO: Delete this.  This class is no longer a singleton.
-        public virtual void UnitTestRefresh()
-        {
-            if (!Assembly.GetCallingAssembly().FullName.Contains("Sheepshead.Tests"))
-                throw new InvalidOperationException("Method must only be called from Unit Testing assembly.");
-            _dict = new Dictionary<K, V>();
-        }
     }
 }
