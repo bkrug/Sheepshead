@@ -11,7 +11,7 @@ namespace Sheepshead.Models.Players.Stats
         MoveStatUniqueKey GenerateKey(ITrick trick, IPlayer player, ICard legalCard);
     }
 
-    public class MoveKeyGenerator : IMoveKeyGenerator
+    public class MoveKeyGenerator : BaseMoveKeyGenerator, IMoveKeyGenerator
     {
         public MoveStatUniqueKey GenerateKey(ITrick trick, IPlayer player, ICard legalCard)
         {
@@ -96,8 +96,11 @@ namespace Sheepshead.Models.Players.Stats
             var partnerPosition = trick.QueueRankOfPartner;
             return !partnerPosition.HasValue || partnerPosition < trick.Hand.PartnerCardPlayed[1];
         }
+    }
 
-        private static int StrongerUnknownCards(ITrick trick, IPlayer player, ICard legalCard, int queueRankOfPlayer, List<ITrick> previousTricks)
+    public abstract class BaseMoveKeyGenerator
+    {
+        protected static int StrongerUnknownCards(ITrick trick, IPlayer player, ICard legalCard, int queueRankOfPlayer, List<ITrick> previousTricks)
         {
             var strongerCards = StrongerCards(legalCard);
             var knownStrongerCards = KnownStrongerCards(trick, player, legalCard, queueRankOfPlayer, previousTricks);
@@ -107,15 +110,10 @@ namespace Sheepshead.Models.Players.Stats
 
         private static int StrongerCards(ICard legalCard)
         {
-            //const int totalTrump = 8 + 6;
-            //const int failPerSuit = 6;
             var curCardSuit = CardRepository.GetSuit(legalCard);
             var morePowerfulCards = 0;
-            //if (curCardSuit != Suit.TRUMP && curCardSuit != startSuit)
-            //    morePowerfulCards = totalTrump + failPerSuit;
             if (curCardSuit == Suit.TRUMP)
                 morePowerfulCards = legalCard.Rank - 1;
-            //if (curCardSuit == startSuit)
             else
                 morePowerfulCards = CountMorePowerOfSuit(legalCard, morePowerfulCards);
             return morePowerfulCards;
@@ -163,7 +161,7 @@ namespace Sheepshead.Models.Players.Stats
             return knownStrongerCards;
         }
 
-        private static int StrongerHeldCards(IPlayer player, ICard legalCard, List<ITrick> previousTricks, ITrick trick)
+        protected static int StrongerHeldCards(IPlayer player, ICard legalCard, List<ITrick> previousTricks, ITrick trick)
         {
             var heldCards = player.Cards.Union(trick.Hand.Tricks.SelectMany(t => t.CardsPlayed.Where(m => m.Key == player).Select(m => m.Value))).ToList();
             foreach (var card in previousTricks.Select(t => t.CardsPlayed[player]))

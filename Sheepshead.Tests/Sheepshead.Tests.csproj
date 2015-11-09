@@ -105,6 +105,7 @@
   <ItemGroup>
     <Compile Include="CardTests.cs" />
     <Compile Include="BuryTests.cs" />
+    <Compile Include="LeasterTests.cs" />
     <Compile Include="Neural\NeuralNetwork.cs" />
     <Compile Include="Neural\NeuralTests.cs" />
     <Compile Include="NonUnitTests\MoveStatTests.cs" />

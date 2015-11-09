@@ -12,7 +12,7 @@ namespace Sheepshead.Models.Players.Stats
     public interface IMoveStatRepository : IStatRepository<MoveStatUniqueKey, MoveStat>
     {
         void IncrementTrickResult(MoveStatUniqueKey key, bool wonTrick);
-        void IncrementHandResult(MoveStatUniqueKey key, bool wonGame);
+        void IncrementHandResult(MoveStatUniqueKey key, bool wonHand);
     }
 
     public class MoveStatRepository : StatRepository<MoveStatUniqueKey, MoveStat>, IMoveStatRepository
@@ -37,11 +37,11 @@ namespace Sheepshead.Models.Players.Stats
             ++_dict[key].TricksTried;
         }
 
-        public void IncrementHandResult(MoveStatUniqueKey key, bool wonGame)
+        public void IncrementHandResult(MoveStatUniqueKey key, bool wonHand)
         {
             if (!_dict.ContainsKey(key))
                 _dict[key] = new MoveStat();
-            if (wonGame)
+            if (wonHand)
                 ++_dict[key].HandsWon;
             ++_dict[key].HandsTried;
         }
