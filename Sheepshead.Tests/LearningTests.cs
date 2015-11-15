@@ -69,6 +69,7 @@ namespace Sheepshead.Tests
             var buryPredictorMock = new Mock<IBuryResultPredictor>();
             var leasterPredictorMock = new Mock<ILeasterResultPredictor>();
             var trickMock = new Mock<ITrick>();
+            trickMock.Setup(m => m.Hand.Leasters).Returns(false);
             trickMock.Setup(m => m.IsLegalAddition(It.IsAny<ICard>(), It.IsAny<IPlayer>())).Returns(true);
             var player = new LearningPlayer(moveKeyGenMock.Object, predictorMock.Object, pickKeyGenMock.Object, pickPredictorMock.Object, buryKeyGenMock.Object, buryPredictorMock.Object, 
                 leasterKeyGenMock.Object, leasterPredictorMock.Object);
@@ -96,6 +97,7 @@ namespace Sheepshead.Tests
             statList[0] = null;
             statList[2] = null;
             trickMock.Setup(m => m.Hand).Returns(new Mock<IHand>().Object);
+            trickMock.Setup(m => m.Hand.Leasters).Returns(false);
             trickMock.Setup(m => m.Players).Returns(new List<IPlayer>() { player, new Mock<IPlayer>().Object });
             trickMock.Setup(m => m.PlayerCount).Returns(5);
             actualCard = player.GetMove(trickMock.Object);
@@ -213,6 +215,39 @@ namespace Sheepshead.Tests
             Assert.AreEqual(28, combosTested, "Should test every possible combination of cards");
             Assert.IsTrue(actualCards.Any(c => CardRepository.Equals(c, buried1)));
             Assert.IsTrue(actualCards.Any(c => CardRepository.Equals(c, buried2)));
+        }
+
+        [TestMethod]
+        public void LearningPlayer_LeasterMove()
+        {
+            var keyGeneratorMock = new Mock<IMoveKeyGenerator>();
+            var pickKeyGeneratorMock = new Mock<IPickKeyGenerator>();
+            var buryKeyGeneratorMock = new Mock<IBuryKeyGenerator>();
+            var leasterKeyGeneratorMock = new Mock<ILeasterKeyGenerator>();
+            var movePredictorMock = new Mock<IStatResultPredictor>();
+            var pickPredictorMock = new Mock<IPickResultPredictor>();
+            var buryPredictorMock = new Mock<IBuryResultPredictor>();
+            var leasterPredictorMock = new Mock<ILeasterResultPredictor>();
+            var player = new LearningPlayer(keyGeneratorMock.Object, movePredictorMock.Object, pickKeyGeneratorMock.Object, pickPredictorMock.Object, buryKeyGeneratorMock.Object, buryPredictorMock.Object,
+                leasterKeyGeneratorMock.Object, leasterPredictorMock.Object);
+            var expectedMove = CardRepository.Instance[StandardSuite.SPADES, CardType.QUEEN]; //Rank: 2
+            var expectedKey = new LeasterStatUniqueKey() { HeldStrongerCards = 4, CardMatchesSuit = true, AvgVisibleCardPoints = 14 };
+            player.Cards.AddRange(new List<ICard>() {
+                CardRepository.Instance[StandardSuite.DIAMONDS, CardType.N9], //Rank: 18
+                CardRepository.Instance[StandardSuite.HEARTS, CardType.QUEEN], //Rank: 3
+                expectedMove,
+                CardRepository.Instance[StandardSuite.CLUBS, CardType.JACK] //Rank: 5
+            });
+            var trickMock = new Mock<ITrick>();
+            trickMock.Setup(m => m.Hand.Leasters).Returns(true);
+            trickMock.Setup(m => m.IsLegalAddition(It.IsAny<ICard>(), player)).Returns(true);
+            leasterKeyGeneratorMock.Setup(m => m.GenerateKey(trickMock.Object, player, expectedMove)).Returns(expectedKey);
+            leasterPredictorMock.Setup(m => m.GetWeightedStat(It.IsAny<LeasterStatUniqueKey>())).Returns(new LeasterStat() { HandsTried = 10, HandsWon = 1 });
+            leasterPredictorMock.Setup(m => m.GetWeightedStat(expectedKey)).Returns(new LeasterStat() { HandsTried = 10, HandsWon = 9 });
+
+            var actualMove = player.GetMove(trickMock.Object);
+
+            Assert.AreEqual(expectedMove, actualMove);
         }
     }
 }

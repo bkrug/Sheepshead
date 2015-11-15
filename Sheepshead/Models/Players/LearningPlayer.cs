@@ -35,6 +35,14 @@ namespace Sheepshead.Models.Players
         public override ICard GetMove(ITrick trick)
         {
             var legalCards = this.Cards.Where(c => trick.IsLegalAddition(c, this)).ToList();
+            if (!trick.Hand.Leasters)
+                return GetNormalMove(trick, legalCards);
+            else
+                return GetLeasterMove(trick, legalCards);
+        }
+
+        private ICard GetNormalMove(ITrick trick, List<ICard> legalCards)
+        {
             var results = new Dictionary<ICard, MoveStat>();
             foreach (var legalCard in legalCards)
             {
@@ -53,6 +61,27 @@ namespace Sheepshead.Models.Players
                 var trickOrderedResults = closeResults
                     .OrderByDescending(r => r.Value.HandPortionWon + r.Value.TrickPortionWon);
                 selectedCard = trickOrderedResults.First().Key;
+                OnMoveHandler(trick, selectedCard);
+            }
+            else
+                selectedCard = base.GetMove(trick);
+            return selectedCard;
+        }
+
+        private ICard GetLeasterMove(ITrick trick, List<ICard> legalCards)
+        {
+            var results = new Dictionary<ICard, LeasterStat>();
+            foreach (var legalCard in legalCards)
+            {
+                var key = _leasterKeyGenerator.GenerateKey(trick, this, legalCard);
+                var result = _leasterPredictor.GetWeightedStat(key);
+                if (result != null && result.HandsTried > 0)
+                    results.Add(legalCard, result);
+            }
+            ICard selectedCard;
+            if (results.Any())
+            {
+                selectedCard = results.OrderByDescending(r => r.Value.HandPortionWon).First().Key;
                 OnMoveHandler(trick, selectedCard);
             }
             else
