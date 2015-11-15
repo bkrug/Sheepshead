@@ -11,6 +11,7 @@ namespace Sheepshead.Models.Players.Stats
         public static string MOVE_SAVE_LOCATION = @"c:\temp\move-stat.json";
         public static string PICK_SAVE_LOCATION = @"c:\temp\pick-stat.json";
         public static string BURY_SAVE_LOCATION = @"c:\temp\bury-stat.json";
+        public static string LEASTER_SAVE_LOCATION = @"c:\temp\lester-stat.json";
 
         private static RepositoryRepository _instance = new RepositoryRepository();
 
@@ -22,6 +23,8 @@ namespace Sheepshead.Models.Players.Stats
                 PickStatRepository = PickStatRepository.FromFile(reader);
             using (var reader = new StreamReaderWrapper(BURY_SAVE_LOCATION))
                 BuryStatRepository = BuryStatRepository.FromFile(reader);
+            using (var reader = new StreamReaderWrapper(LEASTER_SAVE_LOCATION))
+                LeasterStatRepository = LeasterStatRepository.FromFile(reader);
         }
 
         public static RepositoryRepository Instance { get { return _instance; } }
@@ -29,5 +32,6 @@ namespace Sheepshead.Models.Players.Stats
         public MoveStatRepository MoveStatRepository { get; private set; }
         public PickStatRepository PickStatRepository { get; private set; }
         public BuryStatRepository BuryStatRepository { get; private set; }
+        public LeasterStatRepository LeasterStatRepository { get; private set; }
     }
 }

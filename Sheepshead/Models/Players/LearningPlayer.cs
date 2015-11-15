@@ -14,11 +14,13 @@ namespace Sheepshead.Models.Players
         private IPickResultPredictor _pickPredictor;
         private IBuryKeyGenerator _buryKeyGenerator;
         private IBuryResultPredictor _buryPredictor;
+        private ILeasterKeyGenerator _leasterKeyGenerator;
+        private ILeasterResultPredictor _leasterPredictor;
 
         private LearningPlayer() { }
 
         public LearningPlayer(IMoveKeyGenerator moveKeyGenerator, IStatResultPredictor movePredictor, IPickKeyGenerator pickKeyGenerator, IPickResultPredictor pickPredictor,
-            IBuryKeyGenerator buryKeyGenerator, IBuryResultPredictor buryPredictor)
+            IBuryKeyGenerator buryKeyGenerator, IBuryResultPredictor buryPredictor, ILeasterKeyGenerator leasterKeyGenerator, ILeasterResultPredictor leasterPredictor)
         {
             _moveKeyGenerator = moveKeyGenerator;
             _movePredictor = movePredictor;
@@ -26,6 +28,8 @@ namespace Sheepshead.Models.Players
             _pickPredictor = pickPredictor;
             _buryKeyGenerator = buryKeyGenerator;
             _buryPredictor = buryPredictor;
+            _leasterKeyGenerator = leasterKeyGenerator;
+            _leasterPredictor = leasterPredictor;
         }
 
         public override ICard GetMove(ITrick trick)

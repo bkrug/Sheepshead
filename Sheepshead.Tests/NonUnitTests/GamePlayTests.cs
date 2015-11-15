@@ -40,15 +40,18 @@ namespace Sheepshead.Tests.NonUnitTests
             movePredictorMock.Setup(m => m.GetWeightedStat(It.IsAny<MoveStatUniqueKey>())).Returns(null as MoveStat);
             var pickPredictorMock = new Mock<IPickResultPredictor>();
             var buryPredictorMock = new Mock<IBuryResultPredictor>();
+            var leasterPredictorMock = new Mock<ILeasterResultPredictor>();
             using (_sw = new StreamWriter(@"C:\Temp\GeneratedKeys.csv"))
             {
                 var playerList = new List<IPlayer>();
                 var moveKeyGenerator = new MoveKeyGenerator();
                 var pickKeyGenerator = new Mock<IPickKeyGenerator>();
                 var buryKeyGenerator = new Mock<IBuryKeyGenerator>();
+                var leasterKeyGenerator = new Mock<ILeasterKeyGenerator>();
                 for (var i = 0; i < 5; ++i)
                 {
-                    var player = new LearningPlayer(moveKeyGenerator, movePredictorMock.Object, pickKeyGenerator.Object, pickPredictorMock.Object, buryKeyGenerator.Object, buryPredictorMock.Object);
+                    var player = new LearningPlayer(moveKeyGenerator, movePredictorMock.Object, pickKeyGenerator.Object, pickPredictorMock.Object, buryKeyGenerator.Object, buryPredictorMock.Object, 
+                        leasterKeyGenerator.Object, leasterPredictorMock.Object);
                     playerList.Add(player);
                     player.OnMove += (object sender, LearningPlayer.OnMoveEventArgs args) => {
                         var key = moveKeyGenerator.GenerateKey(args.Trick, sender as IPlayer, args.Card);
@@ -79,18 +82,20 @@ namespace Sheepshead.Tests.NonUnitTests
             MoveStatRepository moveRepository = RepositoryRepository.Instance.MoveStatRepository;
             PickStatRepository pickRepository = RepositoryRepository.Instance.PickStatRepository;
             BuryStatRepository buryRepository = RepositoryRepository.Instance.BuryStatRepository;
+            LeasterStatRepository leasterRepository = RepositoryRepository.Instance.LeasterStatRepository;
             var movePredictor = new MoveStatResultPredictor(moveRepository);
             var guessPickRepository = new PickStatGuesser();
             var pickPredictor = new PickStatResultPredictor(pickRepository, guessPickRepository);
             var guessBuryRepository = new BuryStatGuesser();
             var buryPredictor = new BuryStatResultPredictor(buryRepository, guessBuryRepository);
+            var leasterPredictor = new LeasterStatResultPredictor(leasterRepository);
             using (var sw = new StreamWriter(@"C:\Temp\learningVsBasicPlayer.txt"))
             {
                 var playerList = new List<IPlayer>() {
                     new BasicPlayer(),
-                    new LearningPlayer(new MoveKeyGenerator(), movePredictor, new PickKeyGenerator(), pickPredictor, new BuryKeyGenerator(), buryPredictor),
+                    new LearningPlayer(new MoveKeyGenerator(), movePredictor, new PickKeyGenerator(), pickPredictor, new BuryKeyGenerator(), buryPredictor, new LeasterKeyGenerator(), leasterPredictor),
                     new BasicPlayer(),
-                    new LearningPlayer(new MoveKeyGenerator(), movePredictor, new PickKeyGenerator(), pickPredictor, new BuryKeyGenerator(), buryPredictor),
+                    new LearningPlayer(new MoveKeyGenerator(), movePredictor, new PickKeyGenerator(), pickPredictor, new BuryKeyGenerator(), buryPredictor, new LeasterKeyGenerator(), leasterPredictor),
                     new BasicPlayer()
                 };
                 var wins = new double[5];

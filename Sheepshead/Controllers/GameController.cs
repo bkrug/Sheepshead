@@ -52,7 +52,9 @@ namespace Sheepshead.Controllers
                     new PickKeyGenerator(),
                     new PickStatResultPredictor(RepositoryRepository.Instance.PickStatRepository, new PickStatGuesser()),
                     new BuryKeyGenerator(),
-                    new BuryStatResultPredictor(RepositoryRepository.Instance.BuryStatRepository, new BuryStatGuesser())
+                    new BuryStatResultPredictor(RepositoryRepository.Instance.BuryStatRepository, new BuryStatGuesser()),
+                    new LeasterKeyGenerator(),
+                    new LeasterStatResultPredictor(RepositoryRepository.Instance.LeasterStatRepository)
                 ));
             }
             var newGame = repository.CreateGame(model.Name, playerList, _rnd);

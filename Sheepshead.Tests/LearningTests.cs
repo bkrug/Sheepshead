@@ -60,15 +60,18 @@ namespace Sheepshead.Tests
                 .Returns((ITrick t, IPlayer p, ICard c) => keyList[cardList.IndexOf(c)]);
             var pickKeyGenMock = new Mock<IPickKeyGenerator>();
             var buryKeyGenMock = new Mock<IBuryKeyGenerator>();
+            var leasterKeyGenMock = new Mock<ILeasterKeyGenerator>();
             var predictorMock = new Mock<IStatResultPredictor>();
             predictorMock
                 .Setup(m => m.GetWeightedStat(It.IsAny<MoveStatUniqueKey>()))
                 .Returns((MoveStatUniqueKey key) => statList[keyList.IndexOf(key)]);
             var pickPredictorMock = new Mock<IPickResultPredictor>();
             var buryPredictorMock = new Mock<IBuryResultPredictor>();
+            var leasterPredictorMock = new Mock<ILeasterResultPredictor>();
             var trickMock = new Mock<ITrick>();
             trickMock.Setup(m => m.IsLegalAddition(It.IsAny<ICard>(), It.IsAny<IPlayer>())).Returns(true);
-            var player = new LearningPlayer(moveKeyGenMock.Object, predictorMock.Object, pickKeyGenMock.Object, pickPredictorMock.Object, buryKeyGenMock.Object, buryPredictorMock.Object);
+            var player = new LearningPlayer(moveKeyGenMock.Object, predictorMock.Object, pickKeyGenMock.Object, pickPredictorMock.Object, buryKeyGenMock.Object, buryPredictorMock.Object, 
+                leasterKeyGenMock.Object, leasterPredictorMock.Object);
             player.Cards.AddRange(cardList);
 
             var actualCard = player.GetMove(trickMock.Object);
@@ -105,10 +108,13 @@ namespace Sheepshead.Tests
             var keyGeneratorMock = new Mock<IMoveKeyGenerator>();
             var pickKeyGeneratorMock = new Mock<IPickKeyGenerator>();
             var buryKeyGeneratorMock = new Mock<IBuryKeyGenerator>();
+            var leasterKeyGeneratorMock = new Mock<ILeasterKeyGenerator>();
             var movePredictorMock = new Mock<IStatResultPredictor>();
             var pickPredictorMock = new Mock<IPickResultPredictor>();
             var buryPredictorMock = new Mock<IBuryResultPredictor>();
-            var player = new LearningPlayer(keyGeneratorMock.Object, movePredictorMock.Object, pickKeyGeneratorMock.Object, pickPredictorMock.Object, buryKeyGeneratorMock.Object, buryPredictorMock.Object);
+            var leasterPredictorMock = new Mock<ILeasterResultPredictor>();
+            var player = new LearningPlayer(keyGeneratorMock.Object, movePredictorMock.Object, pickKeyGeneratorMock.Object, pickPredictorMock.Object, buryKeyGeneratorMock.Object, buryPredictorMock.Object,
+                leasterKeyGeneratorMock.Object, leasterPredictorMock.Object);
 
             var deckMock = new Mock<IDeck>();
             var handMock = new Mock<IHand>();
@@ -157,10 +163,13 @@ namespace Sheepshead.Tests
             var keyGeneratorMock = new Mock<IMoveKeyGenerator>();
             var pickKeyGeneratorMock = new Mock<IPickKeyGenerator>();
             var buryKeyGeneratorMock = new Mock<IBuryKeyGenerator>();
+            var leasterKeyGeneratorMock = new Mock<ILeasterKeyGenerator>();
             var movePredictorMock = new Mock<IStatResultPredictor>();
             var pickPredictorMock = new Mock<IPickResultPredictor>();
             var buryPredictorMock = new Mock<IBuryResultPredictor>();
-            var player = new LearningPlayer(keyGeneratorMock.Object, movePredictorMock.Object, pickKeyGeneratorMock.Object, pickPredictorMock.Object, buryKeyGeneratorMock.Object, buryPredictorMock.Object);
+            var leasterPredictorMock = new Mock<ILeasterResultPredictor>();
+            var player = new LearningPlayer(keyGeneratorMock.Object, movePredictorMock.Object, pickKeyGeneratorMock.Object, pickPredictorMock.Object, buryKeyGeneratorMock.Object, buryPredictorMock.Object,
+                leasterKeyGeneratorMock.Object, leasterPredictorMock.Object);
             var deckMock = new Mock<IDeck>();
 
             var buried1 = CardRepository.Instance[StandardSuite.HEARTS, CardType.N10];
