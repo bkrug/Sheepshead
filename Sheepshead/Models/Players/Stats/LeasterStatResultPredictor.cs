@@ -18,7 +18,7 @@ namespace Sheepshead.Models.Players.Stats
         public LeasterStatResultPredictor(ILeasterStatRepository repository) : base(repository)
         {
             _repository = repository;
-            MaxRanges = MoveStatConsts.MaxRanges;
+            MaxRanges = LeasterStatConsts.MaxRanges;
         }
 
         protected override LeasterStat CreateStat()
