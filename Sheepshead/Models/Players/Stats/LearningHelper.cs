@@ -14,12 +14,14 @@ namespace Sheepshead.Models.Players.Stats
         private IPickStatRepository _pickStatRepository;
         private IMoveStatRepository _moveStatRepository;
         private IBuryStatRepository _buryStatRepository;
+        private ILeasterStatRepository _leasterStatRepository;
 
         private LearningHelper()
         {
         }
 
-        public LearningHelper(IHand hand, string saveLocation, IPickStatRepository pickStatRepository, IMoveStatRepository moveStatRepository, IBuryStatRepository buryStatRepository)
+        public LearningHelper(IHand hand, string saveLocation, IPickStatRepository pickStatRepository, IMoveStatRepository moveStatRepository, IBuryStatRepository buryStatRepository, 
+            ILeasterStatRepository leasterStatRepository)
         {
             _saveLocation = saveLocation;
             hand.OnHandEnd += WriteHandSummary;
@@ -29,10 +31,12 @@ namespace Sheepshead.Models.Players.Stats
             _pickStatRepository = pickStatRepository;
             _moveStatRepository = moveStatRepository;
             _buryStatRepository = buryStatRepository;
+            _leasterStatRepository = leasterStatRepository;
         }
 
         public LearningHelper(IHand hand, string saveLocaiton) 
-            : this(hand, saveLocaiton, RepositoryRepository.Instance.PickStatRepository, RepositoryRepository.Instance.MoveStatRepository, RepositoryRepository.Instance.BuryStatRepository)
+            : this(hand, saveLocaiton, RepositoryRepository.Instance.PickStatRepository, RepositoryRepository.Instance.MoveStatRepository, RepositoryRepository.Instance.BuryStatRepository, 
+                        RepositoryRepository.Instance.LeasterStatRepository)
         {
         }
 
@@ -55,6 +59,7 @@ namespace Sheepshead.Models.Players.Stats
         {
             var hand = (IHand)sender;
             var generator = new MoveKeyGenerator();
+            var leasterGenerator = new LeasterKeyGenerator();
             var handWinners = hand.Scores().Where(s => s.Value > 0).Select(s => s.Key).ToList();
             foreach (var trick in hand.Tricks)
             {
@@ -64,10 +69,18 @@ namespace Sheepshead.Models.Players.Stats
                 {
                     var player = move.Key;
                     var card = move.Value;
-                    var key = generator.GenerateKey(trick, player, card);
-                    var playerIsOffense = hand.Picker == player || hand.Partner == player;
-                    _moveStatRepository.IncrementTrickResult(key, offenseWon == playerIsOffense);
-                    _moveStatRepository.IncrementHandResult(key, handWinners.Contains(player));
+                    if (!hand.Leasters)
+                    {
+                        var key = generator.GenerateKey(trick, player, card);
+                        var playerIsOffense = hand.Picker == player || hand.Partner == player;
+                        _moveStatRepository.IncrementTrickResult(key, offenseWon == playerIsOffense);
+                        _moveStatRepository.IncrementHandResult(key, handWinners.Contains(player));
+                    }
+                    else
+                    {
+                        var key = leasterGenerator.GenerateKey(trick, player, card);
+                        _leasterStatRepository.IncrementHandResult(key, trickWinner == player);
+                    }
                 }
             }
         }
