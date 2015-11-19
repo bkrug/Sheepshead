@@ -26,7 +26,7 @@ namespace Sheepshead.Models.Players.Stats
                 WonOneTrick = trick.Hand.Tricks.Take(indexOfTrick).Any(t => t.Winner().Player == player),
                 LostOneTrick = trick.Hand.Tricks.Take(indexOfTrick).Any(t => t.Winner().Player != player),
                 CardMatchesSuit = cardMatchesSuit,
-                MostPowerfulInTrick = !trick.OrderedMoves.Any() || cardMatchesSuit && legalCard.Rank <= previousMoves.Min(c => c.Value.Rank),
+                MostPowerfulInTrick = !previousMoves.Any() || cardMatchesSuit && legalCard.Rank <= previousMoves.Min(c => c.Value.Rank),
                 OpponentPercentDone = (queueRankOfPlayer - 1) * 100 / (trick.PlayerCount - 1),
                 AvgVisibleCardPoints = (int)Math.Round((previousMoves.Sum(m => m.Value.Points) + legalCard.Points) / (double)queueRankOfPlayer),
                 UnknownStrongerCards = StrongerUnknownCards(trick, player, legalCard, queueRankOfPlayer, previousTricks),
