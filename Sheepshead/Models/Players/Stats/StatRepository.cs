@@ -86,5 +86,11 @@ namespace Sheepshead.Models.Players.Stats
             }
             writer.Flush();
         }
+
+        public void Close()
+        {
+            using (var writer = new StreamWriterWrapper(SaveLocation, false))
+                SaveToFile(writer);
+        }
     }
 }

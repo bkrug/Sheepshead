@@ -106,10 +106,6 @@
     <Compile Include="CardTests.cs" />
     <Compile Include="BuryTests.cs" />
     <Compile Include="LeasterTests.cs" />
-    <Compile Include="Neural\NeuralNetwork.cs" />
-    <Compile Include="Neural\NeuralTests.cs" />
-    <Compile Include="NonUnitTests\MoveStatTests.cs" />
-    <Compile Include="NonUnitTests\OctahedronBlocks.cs" />
     <Compile Include="PickStatTests.cs" />
     <Compile Include="PickKeyGeneratorTests.cs" />
     <Compile Include="KeyGeneratorTests.cs" />
@@ -118,7 +114,6 @@
     <Compile Include="GameTests.cs" />
     <Compile Include="HandTest.cs" />
     <Compile Include="MoveStatTests.cs" />
-    <Compile Include="NonUnitTests\GamePlayTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="GameCreationTests.cs" />
     <Compile Include="LongIdTests.cs" />
