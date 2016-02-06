@@ -13,7 +13,6 @@ namespace Sheepshead.Models.Players.Stats
 
     public class LeasterKeyGenerator : BaseMoveKeyGenerator, ILeasterKeyGenerator
     {
-        //TODO: Write a test for what happens when previousMoves is an empty list and cardMatchesSuit is true.
         public LeasterStatUniqueKey GenerateKey(ITrick trick, IPlayer player, ICard legalCard)
         {
             var cardMatchesSuit = !trick.OrderedMoves.Any() || CardRepository.GetSuit(trick.OrderedMoves.First().Value) == CardRepository.GetSuit(legalCard);

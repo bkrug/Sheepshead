@@ -408,5 +408,72 @@ namespace Sheepshead.Tests
 
             Assert.AreEqual(expectedKey, actualKey);
         }
+
+        [TestMethod]
+        public void LeasterKeyGenerator_GetKey_FirstMoveOfGame()
+        {
+            var playedCard = CardRepository.Instance[StandardSuite.HEARTS, CardType.QUEEN];
+            var curPlayerMock = new Mock<IPlayer>();
+            var prevTrickMock = new Mock<ITrick>();
+            prevTrickMock.Setup(m => m.OrderedMoves).Returns(new List<KeyValuePair<IPlayer, ICard>>() {
+                new KeyValuePair<IPlayer, ICard>(curPlayerMock.Object, playedCard),
+                new KeyValuePair<IPlayer, ICard>(new Mock<IPlayer>().Object, CardRepository.Instance[StandardSuite.SPADES, CardType.N7]),
+                new KeyValuePair<IPlayer, ICard>(new Mock<IPlayer>().Object, CardRepository.Instance[StandardSuite.SPADES, CardType.N8]),
+                new KeyValuePair<IPlayer, ICard>(new Mock<IPlayer>().Object, CardRepository.Instance[StandardSuite.SPADES, CardType.N9]),
+                new KeyValuePair<IPlayer, ICard>(new Mock<IPlayer>().Object, CardRepository.Instance[StandardSuite.SPADES, CardType.N10]),
+                new KeyValuePair<IPlayer, ICard>(new Mock<IPlayer>().Object, CardRepository.Instance[StandardSuite.SPADES, CardType.ACE])
+            });
+            prevTrickMock.Setup(m => m.CardsPlayed).Returns(prevTrickMock.Object.OrderedMoves.ToDictionary(kvp => kvp.Key, kvp => kvp.Value));
+            prevTrickMock.Setup(m => m.Winner()).Returns(new TrickWinner()
+            {
+                Player = curPlayerMock.Object,
+                Points = 23
+            });
+            var nextTrickMock = new Mock<ITrick>();
+            nextTrickMock.Setup(m => m.OrderedMoves).Returns(new List<KeyValuePair<IPlayer, ICard>>() {
+                new KeyValuePair<IPlayer, ICard>(curPlayerMock.Object, CardRepository.Instance[StandardSuite.CLUBS, CardType.ACE])
+            });
+            nextTrickMock.Setup(m => m.CardsPlayed).Returns(nextTrickMock.Object.OrderedMoves.ToDictionary(kvp => kvp.Key, kvp => kvp.Value));
+            var nextTrickMock1 = new Mock<ITrick>();
+            nextTrickMock1.Setup(m => m.OrderedMoves).Returns(new List<KeyValuePair<IPlayer, ICard>>() {
+                new KeyValuePair<IPlayer, ICard>(curPlayerMock.Object, CardRepository.Instance[StandardSuite.HEARTS, CardType.KING])
+            });
+            nextTrickMock1.Setup(m => m.CardsPlayed).Returns(nextTrickMock1.Object.OrderedMoves.ToDictionary(kvp => kvp.Key, kvp => kvp.Value));
+            var nextTrickMock2 = new Mock<ITrick>();
+            nextTrickMock2.Setup(m => m.OrderedMoves).Returns(new List<KeyValuePair<IPlayer, ICard>>() {
+                new KeyValuePair<IPlayer, ICard>(curPlayerMock.Object, CardRepository.Instance[StandardSuite.DIAMONDS, CardType.N7])
+            });
+            nextTrickMock2.Setup(m => m.CardsPlayed).Returns(nextTrickMock2.Object.OrderedMoves.ToDictionary(kvp => kvp.Key, kvp => kvp.Value));
+            var nextTrickMock3 = new Mock<ITrick>();
+            nextTrickMock3.Setup(m => m.OrderedMoves).Returns(new List<KeyValuePair<IPlayer, ICard>>() {
+                new KeyValuePair<IPlayer, ICard>(curPlayerMock.Object, CardRepository.Instance[StandardSuite.CLUBS, CardType.N10])
+            });
+            nextTrickMock3.Setup(m => m.CardsPlayed).Returns(nextTrickMock3.Object.OrderedMoves.ToDictionary(kvp => kvp.Key, kvp => kvp.Value));
+            var nextTrickMock4 = new Mock<ITrick>();
+            nextTrickMock4.Setup(m => m.OrderedMoves).Returns(new List<KeyValuePair<IPlayer, ICard>>() {
+                new KeyValuePair<IPlayer, ICard>(curPlayerMock.Object, CardRepository.Instance[StandardSuite.CLUBS, CardType.N10])
+            });
+            nextTrickMock4.Setup(m => m.CardsPlayed).Returns(nextTrickMock4.Object.OrderedMoves.ToDictionary(kvp => kvp.Key, kvp => kvp.Value));
+            prevTrickMock.Setup(m => m.Hand.Tricks).Returns(new List<ITrick>() { prevTrickMock.Object, nextTrickMock.Object, nextTrickMock1.Object, nextTrickMock2.Object, nextTrickMock3.Object, nextTrickMock4.Object });
+            curPlayerMock.Setup(m => m.Cards).Returns(new List<ICard>() { });
+            curPlayerMock.Setup(m => m.QueueRankInTrick(prevTrickMock.Object)).Returns(1);
+            var expectedKey = new LeasterStatUniqueKey()
+            {
+                WonOneTrick = false,
+                LostOneTrick = false,
+                CardMatchesSuit = true,
+                MostPowerfulInTrick = true,
+                OpponentPercentDone = 0,
+                AvgVisibleCardPoints = 3,  //Card played plus previously played cards
+                UnknownStrongerCards = 2, //There are 2 stronger cards.
+                HeldStrongerCards = 0
+            };
+
+            var generator = new LeasterKeyGenerator();
+            var actualKey = generator.GenerateKey(prevTrickMock.Object, curPlayerMock.Object, playedCard);
+
+            Assert.AreEqual(expectedKey, actualKey);
+        }
+
     }
 }
