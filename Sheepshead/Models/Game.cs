@@ -47,7 +47,7 @@ namespace Sheepshead.Models
         {
             var playersMissed = PlayerCount;
             var playerIndex = Players.IndexOf(deck.StartingPlayer);
-            while (deck.PlayersRefusingPick.Contains(Players[playerIndex]))
+            while (deck.PlayersRefusingPick.Contains(Players[playerIndex]) && playersMissed > 0)
             {
                 IncrementPlayerIndex(ref playerIndex);
                 --playersMissed;

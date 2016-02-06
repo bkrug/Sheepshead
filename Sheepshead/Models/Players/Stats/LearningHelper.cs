@@ -78,8 +78,9 @@ namespace Sheepshead.Models.Players.Stats
                     }
                     else
                     {
+                        var handWinner = handWinners.Count == 1 ? handWinners.Single() : null;
                         var key = leasterGenerator.GenerateKey(trick, player, card);
-                        _leasterStatRepository.IncrementHandResult(key, trickWinner == player);
+                        _leasterStatRepository.IncrementHandResult(key, handWinner == player);
                     }
                 }
             }

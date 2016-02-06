@@ -12,7 +12,7 @@ namespace Sheepshead.Tests.NonUnitTests
     [TestClass]
     public class TimeTests
     {
-        [TestMethod]
+        //[TestMethod]
         public void MoveStat_RunTimeOf_GetWeightedResult()
         {
             {

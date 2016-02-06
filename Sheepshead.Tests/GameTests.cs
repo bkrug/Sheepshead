@@ -218,6 +218,26 @@ namespace Sheepshead.Tests
         }
 
         [TestMethod]
+        public void Game_PlayNonHuman_FindPicker_EveryoneHasPassed()
+        {
+            var player1 = new Mock<IComputerPlayer>();
+            var player2 = new Mock<IComputerPlayer>();
+            var player3 = new Mock<IComputerPlayer>();
+            var player4 = new Mock<IComputerPlayer>();
+            var player5 = new Mock<IHumanPlayer>();
+            var players = new List<IPlayer>() { player1.Object, player2.Object, player3.Object, player4.Object, player5.Object };
+            var deckMock = new Mock<IDeck>();
+            deckMock.Setup(m => m.PlayersRefusingPick).Returns(players.ToList());
+            deckMock.Setup(m => m.StartingPlayer).Returns(player1.Object);
+            player1.Setup(m => m.QueueRankInDeck(It.IsAny<IDeck>())).Returns(1);
+
+            var game = new Game(1, players, new RandomWrapper());
+            var picker = game.PlayNonHumans(deckMock.Object);
+
+            Assert.AreEqual(null, picker, "There is no picker if everyone has already passed.");
+        }
+
+        [TestMethod]
         public void Deck_MakeDeck()
         {
             var playerList = new List<IPlayer>();
