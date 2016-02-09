@@ -72,23 +72,17 @@ namespace Sheepshead.Controllers
             var turnState = new TurnState();
             turnState.HumanPlayer = (IHumanPlayer)game.Players.First(p => p is IHumanPlayer);
             turnState.Deck = game.Decks.LastOrDefault();
-            if (!game.Decks.Any() || game.LastDeckIsComplete())
+            turnState.TurnType = game.TurnType;
+            if (turnState.TurnType == TurnType.BeginDeck)
             {
-                turnState.TurnType = TurnType.BeginDeck;
                 turnState.Deck = new Deck(game, _rnd);
             }
-            else if (game.Decks.Last().Hand == null)
+            else if (turnState.TurnType == TurnType.Pick)
             {
-                turnState.TurnType = TurnType.Pick;
                 Pick(game);
             }
-            else if (!turnState.Deck.Buried.Any() && !turnState.Deck.Hand.Leasters)
-            {
-                turnState.TurnType = TurnType.Bury;
-            }
-            else
-            {
-                turnState.TurnType = TurnType.PlayTrick;
+            else if (turnState.TurnType == TurnType.PlayTrick)
+            { 
                 PlayTrick(game);
             }
             return View(turnState);
@@ -97,16 +91,12 @@ namespace Sheepshead.Controllers
         private void Pick(IGame game)
         {
             var deck = game.Decks.Last();
-            var picker = game.PlayNonHumans(deck);
-            if (picker != null)
-            {
-                var hand = ProcessPick(deck, (IComputerPlayer)picker);
-                new LearningHelper(hand, SaveLocations.FIRST_SAVE);
-            }
+            game.PlayNonHumanPickTurns(deck);
         }
 
         private void PlayTrick(IGame game)
         {
+            //TODO: Move all of this into PlayNonHumans.
             var hand = game.Decks.Last().Hand;
             if (hand.IsComplete())
                 throw new ApplicationException("Hand is already complete.");
@@ -121,68 +111,44 @@ namespace Sheepshead.Controllers
         {
             var repository = new GameRepository(GameDictionary.Instance.Dictionary);
             var game = repository.GetById(id);
-            if (!game.Decks.Any() || game.LastDeckIsComplete())
+            switch (game.TurnType)
             {
-                return RedirectToAction("Play", new { id = game.Id });
-            }
-            else if (game.Decks.Last().Hand == null)
-            {
-                Pick(game, willPick.Value, buriedCardIndicies);
-            }
-            else if (!game.Decks.Last().Buried.Any() && !game.Decks.Last().Hand.Leasters)
-            {
-                Bury(game, buriedCardIndicies);
-            }
-            else if (indexOfCard.HasValue)
-            {
-                PlayTrick(game, indexOfCard.Value);
+                case TurnType.BeginDeck:
+                    break;
+                case TurnType.Pick:
+                    Pick(game, willPick.Value, buriedCardIndicies);
+                    break;
+                case TurnType.Bury:
+                    Bury(game, buriedCardIndicies);
+                    break;
+                case TurnType.PlayTrick:
+                    if (indexOfCard.HasValue)
+                        PlayTrick(game, indexOfCard.Value);
+                    break;
             }
             return RedirectToAction("Play", new { id = game.Id });
         }
 
         private void Pick(IGame game, bool willPick, string buriedCardIndicies)
         {
-            var deck = game.Decks.Last();
-            IHand hand;
-            IPlayer human = game.Players.First(p => p is HumanPlayer);
-            if (willPick)
-            {
-                human.Cards.AddRange(deck.Blinds);
-                hand = new Hand(deck, human, new List<ICard>());
-            }
-            else
-            {
-                deck.PlayerWontPick(human);
-                var picker = game.PlayNonHumans(game.Decks.Last());
-                hand = ProcessPick(deck, (IComputerPlayer)picker);
-            }
-            new LearningHelper(hand, SaveLocations.FIRST_SAVE);
+            var human = game.Players.OfType<IHumanPlayer>().First();
+            var hand = game.ContinueFromHumanPickTurn(human, willPick);
         }
 
         private void Bury(IGame game, string buriedCardsIndicies)
         {
-            var deck = game.Decks.Last();
-            IPlayer human = game.Players.First(p => p is HumanPlayer);
+            var human = game.Players.OfType<IHumanPlayer>().First();
             var buriedCardsIndex = buriedCardsIndicies.Split(';').Select(c => Int16.Parse(c)).ToArray();
             var buriedCards = buriedCardsIndex.Select(i => human.Cards[i]).ToList();
-            buriedCards.ForEach(c => human.Cards.Remove(c));
-            buriedCards.ForEach(c => deck.Buried.Add(c));
+            game.BuryCards(human, buriedCards);
         }
 
         private void PlayTrick(IGame game, int indexOfCard)
         {
-            var hand = game.Decks.Last().Hand;
-            ITrick trick = hand.Tricks.Last();
-            var player = game.Players.First(p => p is HumanPlayer);
+            var player = game.Players.OfType<IHumanPlayer>().First();
             var card = player.Cards[indexOfCard];
-            trick.Add(player, card);
-            game.PlayNonHumans(trick);
-        }
-
-        private IHand ProcessPick(IDeck deck, IComputerPlayer picker)
-        {
-            var buriedCards = picker != null ? picker.DropCardsForPick(deck) : new List<ICard>();
-            return new Hand(deck, picker, buriedCards);
+            game.RecordTurn(player, card);
+            game.PlayNonHumans(game.Decks.Last().Hand.Tricks.Last());
         }
     }
 }

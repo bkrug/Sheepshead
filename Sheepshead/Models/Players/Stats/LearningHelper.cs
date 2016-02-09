@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Web;
-using Sheepshead.Models.Players;
-using Sheepshead.Models.Players.Stats;
 using System.IO;
 
 namespace Sheepshead.Models.Players.Stats

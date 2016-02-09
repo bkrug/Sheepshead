@@ -105,7 +105,7 @@ namespace Utilities.GuessGeneration
             for (var g = 0; g < handsToPlay; ++g)
             {
                 var deck = new Deck(game, rnd);
-                var picker = game.PlayNonHumans(deck) as ComputerPlayer;
+                var picker = game.PlayNonHumanPickTurns(deck) as ComputerPlayer;
                 var buriedCards = picker != null ? picker.DropCardsForPick(deck) : new List<ICard>();
                 var hand = new Hand(deck, picker, buriedCards);
                 learningDel(hand);

@@ -113,7 +113,7 @@ namespace Sheepshead.Tests
             var refusingPick = new List<IPlayer>();
             deckMock.Setup(m => m.PlayersRefusingPick).Returns(refusingPick);
             deckMock.Setup(m => m.PlayerWontPick(It.IsAny<IPlayer>())).Callback((IPlayer givenPlyaer) => { refusingPick.Add(givenPlyaer); });
-            var picker = game.PlayNonHumans(deckMock.Object);
+            var picker = game.PlayNonHumanPickTurns(deckMock.Object);
             Assert.IsTrue(player1Moved, "All players from the starting player to the first human should have been played.");
             Assert.IsFalse(player3Moved, "Player 3 should not have been played yet.");
             Assert.IsFalse(player4Moved, "Player 4 should not have been played yet.");
@@ -121,7 +121,7 @@ namespace Sheepshead.Tests
             Assert.AreEqual(null, picker, "No one picked");
             refusingPick.Add(player1.Object);
             refusingPick.Add(player2);
-            game.PlayNonHumans(deckMock.Object);
+            game.PlayNonHumanPickTurns(deckMock.Object);
             player1Moved = false;
             Assert.IsFalse(player1Moved, "Player 1 should not have been played a second time.");
             Assert.IsTrue(player3Moved, "Player 3 should have been played when a second call was made to PlayNonHumans()");
@@ -130,7 +130,7 @@ namespace Sheepshead.Tests
             refusingPick.Add(player3.Object);
             refusingPick.Add(player4.Object);
             refusingPick.Add(player5);
-            game.PlayNonHumans(deckMock.Object);
+            game.PlayNonHumanPickTurns(deckMock.Object);
             Assert.IsTrue(true, "Did not enter an infinite loop.");
         }
 
@@ -153,7 +153,7 @@ namespace Sheepshead.Tests
             deckMock.Setup(m => m.Game).Returns(game);
             deckMock.Setup(m => m.StartingPlayer).Returns(player1.Object);
             deckMock.Setup(m => m.Buried).Returns(discards);
-            var picker = game.PlayNonHumans(deckMock.Object);
+            var picker = game.PlayNonHumanPickTurns(deckMock.Object);
             Assert.AreEqual(player3.Object, picker, "Player 3 is picker");
             Assert.AreEqual(2, discards.Count(), "There are two discards");
         }
@@ -173,7 +173,7 @@ namespace Sheepshead.Tests
             deckMock.Setup(m => m.PlayersRefusingPick).Returns(refusingPick);
             deckMock.Setup(m => m.Game).Returns(game);
             deckMock.Setup(m => m.StartingPlayer).Returns(player1.Object);
-            game.PlayNonHumans(deckMock.Object);
+            game.PlayNonHumanPickTurns(deckMock.Object);
             Assert.IsTrue(true, "Didn't end up in an infinite loop.");
         }
 
@@ -199,7 +199,7 @@ namespace Sheepshead.Tests
             deckMock.Setup(m => m.Game).Returns(game);
             deckMock.Setup(m => m.StartingPlayer).Returns(player1.Object);
             deckMock.Setup(m => m.Buried).Returns(discards);
-            game.PlayNonHumans(deckMock.Object);
+            game.PlayNonHumanPickTurns(deckMock.Object);
             Assert.IsTrue(playerBuriedCards, "Player 2 buried cards after picking.");
             Assert.AreEqual(2, discards.Count(), "There are two buried cards.");
         }
@@ -232,7 +232,7 @@ namespace Sheepshead.Tests
             player1.Setup(m => m.QueueRankInDeck(It.IsAny<IDeck>())).Returns(1);
 
             var game = new Game(1, players, new RandomWrapper());
-            var picker = game.PlayNonHumans(deckMock.Object);
+            var picker = game.PlayNonHumanPickTurns(deckMock.Object);
 
             Assert.AreEqual(null, picker, "There is no picker if everyone has already passed.");
         }

@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web;
 using Sheepshead.Models.Players;
 using Sheepshead.Models.Wrappers;
+using Sheepshead.Models.Players.Stats;
 
 namespace Sheepshead.Models
 {
@@ -19,6 +19,22 @@ namespace Sheepshead.Models
         private List<IDeck> _decks = new List<IDeck>();
         public List<IDeck> Decks { get { return _decks; } }
         public IRandomWrapper _random { get; private set; }
+        public IPlayer CurrentTurn { get { throw new NotImplementedException(); } }
+        public TurnType TurnType
+        {
+            get
+            {
+                var deck = Decks.LastOrDefault();
+                if (!Decks.Any() || LastDeckIsComplete())
+                    return TurnType.BeginDeck;
+                else if (deck.Hand == null)
+                    return TurnType.Pick;
+                else if (!deck.Buried.Any() && !deck.Hand.Leasters)
+                    return TurnType.Bury;
+                else
+                    return TurnType.PlayTrick;
+            }
+        } 
 
         public Game(long id, List<IPlayer> players, IRandomWrapper random)
         {
@@ -27,23 +43,46 @@ namespace Sheepshead.Models
             _random = random;
         }
 
-        public void PlayNonHumans(ITrick trick)
+        public void RearrangePlayers()
         {
-            var playersMissed = PlayerCount;
-            var playerIndex = Players.IndexOf(trick.StartingPlayer);
-            while (trick.CardsPlayed.Keys.Contains(Players[playerIndex]) && playersMissed > 0)
+            for (var i = PlayerCount - 1; i > 0; --i)
             {
-                IncrementPlayerIndex(ref playerIndex);
-                --playersMissed;
-            }
-            for (; !(Players[playerIndex] is HumanPlayer) && playersMissed > 0; IncrementPlayerIndex(ref playerIndex))
-            {
-                --playersMissed;
-                trick.Add(Players[playerIndex], ((ComputerPlayer)Players[playerIndex]).GetMove(trick));
+                var j = _random.Next(i);
+                var swap = Players[i];
+                Players[i] = Players[j];
+                Players[j] = swap;
             }
         }
 
-        public IPlayer PlayNonHumans(IDeck deck)
+        public bool LastDeckIsComplete()
+        {
+            var lastDeck = Decks.LastOrDefault();
+            return lastDeck == null || lastDeck.Hand != null && lastDeck.Hand.IsComplete();
+        }
+
+        //TODO: Unit Test this
+        public IHand ContinueFromHumanPickTurn(IHumanPlayer human, bool willPick)
+        {
+            var deck = Decks.Last();
+            IHand hand;
+            if (willPick)
+            {
+                human.Cards.AddRange(deck.Blinds);
+                hand = new Hand(deck, human, new List<ICard>());
+            }
+            else
+            {
+                deck.PlayerWontPick(human);
+                var picker = PlayNonHumanPickTurns(deck);
+                hand = AcceptComputerPicker((IComputerPlayer)picker);
+            }
+            new LearningHelper(hand, SaveLocations.FIRST_SAVE);
+            return hand;
+        }
+
+        //TEST: Throw error if not run in pick phase
+        //Stop requiring the deck be passed in.
+        public IPlayer PlayNonHumanPickTurns(IDeck deck)
         {
             var playersMissed = PlayerCount;
             var playerIndex = Players.IndexOf(deck.StartingPlayer);
@@ -65,7 +104,46 @@ namespace Sheepshead.Models
                 else
                     deck.PlayerWontPick(curPlayer);
             }
+            if (picker != null)
+            {
+                var hand = AcceptComputerPicker(picker);
+                new LearningHelper(hand, SaveLocations.FIRST_SAVE);
+            }
             return picker;
+        }
+
+        //TEST: Throw an error if this is not the pick phase
+        public IHand AcceptComputerPicker(IComputerPlayer picker)
+        {
+            var buriedCards = picker != null ? picker.DropCardsForPick(Decks.Last()) : new List<ICard>();
+            return new Hand(Decks.Last(), picker, buriedCards);
+        }
+
+        //TEST: That the cards have been moved.
+        //TEST: Throw an error if this is not the picker
+        //TEST: Throw an error if this is not the bury phase
+        public void BuryCards(IHumanPlayer player, List<ICard> cards)
+        {
+            cards.ForEach(c => player.Cards.Remove(c));
+            cards.ForEach(c => Decks.Last().Buried.Add(c));
+        }
+
+        //TEST: Throw error if not in PlayTrick phase.
+        //Stop requiring the trick be passed in.
+        public void PlayNonHumans(ITrick trick)
+        {
+            var playersMissed = PlayerCount;
+            var playerIndex = Players.IndexOf(trick.StartingPlayer);
+            while (trick.CardsPlayed.Keys.Contains(Players[playerIndex]) && playersMissed > 0)
+            {
+                IncrementPlayerIndex(ref playerIndex);
+                --playersMissed;
+            }
+            for (; !(Players[playerIndex] is HumanPlayer) && playersMissed > 0; IncrementPlayerIndex(ref playerIndex))
+            {
+                --playersMissed;
+                trick.Add(Players[playerIndex], ((ComputerPlayer)Players[playerIndex]).GetMove(trick));
+            }
         }
 
         private void IncrementPlayerIndex(ref int playerIndex)
@@ -75,21 +153,14 @@ namespace Sheepshead.Models
                 playerIndex = 0;
         }
 
-        public void RearrangePlayers()
+        //TEST: That the move is recorded.
+        //TEST: Throw an error if it is not this player's turn yet.
+        //TEST: Throw an error if this is not the play trick phase.
+        //TEST: Throw an error if the player doesn't have this card.
+        public void RecordTurn(IHumanPlayer player, ICard card)
         {
-            for (var i = PlayerCount - 1; i > 0; --i)
-            {
-                var j = _random.Next(i);
-                var swap = Players[i];
-                Players[i] = Players[j];
-                Players[j] = swap;
-            }
-        }
-
-        public bool LastDeckIsComplete()
-        {
-            var lastDeck = Decks.LastOrDefault();
-            return lastDeck == null || lastDeck.Hand != null && lastDeck.Hand.IsComplete();
+            ITrick trick = Decks.Last().Hand.Tricks.Last();
+            trick.Add(player, card);
         }
     }
 
@@ -115,9 +186,15 @@ namespace Sheepshead.Models
         int PlayerCount { get; }
         List<IPlayer> Players { get; }
         List<IDeck> Decks { get; }
-        void PlayNonHumans(ITrick trick);
-        IPlayer PlayNonHumans(IDeck deck);
+        IPlayer CurrentTurn { get; }
+        TurnType TurnType { get; }
         void RearrangePlayers();
         bool LastDeckIsComplete();
+        IHand ContinueFromHumanPickTurn(IHumanPlayer human, bool willPick);
+        IPlayer PlayNonHumanPickTurns(IDeck deck);
+        IHand AcceptComputerPicker(IComputerPlayer picker);
+        void BuryCards(IHumanPlayer player, List<ICard> cards);
+        void PlayNonHumans(ITrick trick);
+        void RecordTurn(IHumanPlayer player, ICard card);
     }
 }
