@@ -100,7 +100,7 @@ namespace Utilities.GuessGeneration
         {
             var repository = new GameRepository(GameDictionary.Instance.Dictionary);
             var rnd = new RandomWrapper();
-            var game = repository.CreateGame("Poker", playerList, rnd);
+            var game = repository.CreateGame("Poker", playerList, rnd, new LearningHelperFactory());
             game.RearrangePlayers();
             for (var g = 0; g < handsToPlay; ++g)
             {

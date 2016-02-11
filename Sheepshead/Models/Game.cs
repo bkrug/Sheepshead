@@ -20,6 +20,7 @@ namespace Sheepshead.Models
         public List<IDeck> Decks { get { return _decks; } }
         public IRandomWrapper _random { get; private set; }
         public IPlayer CurrentTurn { get { throw new NotImplementedException(); } }
+        private ILearningHelperFactory _learningHelperFactory;
         public TurnType TurnType
         {
             get
@@ -36,11 +37,12 @@ namespace Sheepshead.Models
             }
         } 
 
-        public Game(long id, List<IPlayer> players, IRandomWrapper random)
+        public Game(long id, List<IPlayer> players, IRandomWrapper random, ILearningHelperFactory factory)
         {
             _players = players;
             _id = id;
             _random = random;
+            _learningHelperFactory = factory;
         }
 
         public void RearrangePlayers()
@@ -60,11 +62,14 @@ namespace Sheepshead.Models
             return lastDeck == null || lastDeck.Hand != null && lastDeck.Hand.IsComplete();
         }
 
-        //TODO: Unit Test this
         public IHand ContinueFromHumanPickTurn(IHumanPlayer human, bool willPick)
         {
+            if (TurnType != TurnType.Pick)
+                throw new WrongGamePhaseExcpetion("Game must be in the Pick phase.");
             var deck = Decks.Last();
-            IHand hand;
+            if (human.QueueRankInDeck(deck) - 1 != deck.PlayersRefusingPick.Count()) //QueueRankInDeck is base 1 not base 0.
+                throw new NotPlayersTurnException("This is not the player's turn to pick.");
+            IHand hand = null;
             if (willPick)
             {
                 human.Cards.AddRange(deck.Blinds);
@@ -74,9 +79,11 @@ namespace Sheepshead.Models
             {
                 deck.PlayerWontPick(human);
                 var picker = PlayNonHumanPickTurns(deck);
-                hand = AcceptComputerPicker((IComputerPlayer)picker);
+                if (picker != null || deck.PlayersRefusingPick.Count == Players.Count)
+                    hand = AcceptComputerPicker((IComputerPlayer)picker);
             }
-            new LearningHelper(hand, SaveLocations.FIRST_SAVE);
+            if (hand != null)
+                _learningHelperFactory.GetLearningHelper(hand, SaveLocations.FIRST_SAVE);
             return hand;
         }
 
@@ -92,7 +99,7 @@ namespace Sheepshead.Models
                 --playersMissed;
             }
             IComputerPlayer picker = null;
-            for (; picker == null && !(Players[playerIndex] is HumanPlayer) && playersMissed > 0; IncrementPlayerIndex(ref playerIndex))
+            for (; picker == null && !(Players[playerIndex] is IHumanPlayer) && playersMissed > 0; IncrementPlayerIndex(ref playerIndex))
             {
                 --playersMissed;
                 var curPlayer = (IComputerPlayer)Players[playerIndex];
@@ -107,7 +114,7 @@ namespace Sheepshead.Models
             if (picker != null)
             {
                 var hand = AcceptComputerPicker(picker);
-                new LearningHelper(hand, SaveLocations.FIRST_SAVE);
+                _learningHelperFactory.GetLearningHelper(hand, SaveLocations.FIRST_SAVE);
             }
             return picker;
         }
@@ -177,6 +184,16 @@ namespace Sheepshead.Models
     public class ObjectInListException : ApplicationException
     {
         public ObjectInListException(string message) : base(message) { }
+    }
+
+    public class WrongGamePhaseExcpetion : ApplicationException
+    {
+        public WrongGamePhaseExcpetion(string message) : base(message) { }
+    }
+
+    public class NotPlayersTurnException : ApplicationException
+    {
+        public NotPlayersTurnException(string message) : base(message) { }
     }
 
     public interface IGame : ILongId

@@ -157,7 +157,8 @@ namespace Sheepshead.Tests.NonUnitTests
             var rnd = new RandomWrapper();
             for (var g = 0; g < handNumber; ++g)
             {
-                var game = repository.CreateGame("Poker", playerList, rnd);
+                var learningHelperFactory = new Mock<ILearningHelperFactory>();
+                var game = repository.CreateGame("Poker", playerList, rnd, learningHelperFactory.Object);
                 game.RearrangePlayers();
                 var deck = new Deck(game, rnd);
                 var picker = game.PlayNonHumanPickTurns(deck) as ComputerPlayer;

@@ -57,9 +57,8 @@ namespace Sheepshead.Controllers
                     new LeasterStatResultPredictor(RepositoryRepository.Instance.LeasterStatRepository)
                 ));
             }
-            var newGame = repository.CreateGame(model.Name, playerList, _rnd);
+            var newGame = repository.CreateGame(model.Name, playerList, _rnd, new LearningHelperFactory());
             repository.Save(newGame);
-            Session["gameId"] = newGame.Id;
             newGame.RearrangePlayers();
             return RedirectToAction("Play", new { id = newGame.Id });
         }

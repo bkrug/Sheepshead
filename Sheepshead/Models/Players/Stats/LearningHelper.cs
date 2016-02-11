@@ -4,7 +4,11 @@ using System.IO;
 
 namespace Sheepshead.Models.Players.Stats
 {
-    public class LearningHelper
+    public interface ILearningHelper
+    {
+    }
+
+    public class LearningHelper : ILearningHelper
     {
         private string _saveLocation;
         private IPickStatRepository _pickStatRepository;
@@ -16,7 +20,7 @@ namespace Sheepshead.Models.Players.Stats
         {
         }
 
-        public LearningHelper(IHand hand, string saveLocation, IPickStatRepository pickStatRepository, IMoveStatRepository moveStatRepository, IBuryStatRepository buryStatRepository, 
+        public LearningHelper(IHand hand, string saveLocation, IPickStatRepository pickStatRepository, IMoveStatRepository moveStatRepository, IBuryStatRepository buryStatRepository,
             ILeasterStatRepository leasterStatRepository)
         {
             _saveLocation = saveLocation;
@@ -30,8 +34,8 @@ namespace Sheepshead.Models.Players.Stats
             _leasterStatRepository = leasterStatRepository;
         }
 
-        public LearningHelper(IHand hand, string saveLocaiton) 
-            : this(hand, saveLocaiton, RepositoryRepository.Instance.PickStatRepository, RepositoryRepository.Instance.MoveStatRepository, RepositoryRepository.Instance.BuryStatRepository, 
+        public LearningHelper(IHand hand, string saveLocaiton)
+            : this(hand, saveLocaiton, RepositoryRepository.Instance.PickStatRepository, RepositoryRepository.Instance.MoveStatRepository, RepositoryRepository.Instance.BuryStatRepository,
                         RepositoryRepository.Instance.LeasterStatRepository)
         {
         }
@@ -102,11 +106,23 @@ namespace Sheepshead.Models.Players.Stats
             var hand = (IHand)sender;
             var generator = new BuryKeyGenerator();
             var scores = hand.Scores();
-            if(hand.Picker is LearningPlayer || hand.Picker is RecordingPlayer)
+            if (hand.Picker is LearningPlayer || hand.Picker is RecordingPlayer)
             {
                 var key = generator.GenerateKey(hand.Deck);
                 _buryStatRepository.IncrementResult(key, scores[hand.Picker]);
             }
+        }
+    }
+
+    public interface ILearningHelperFactory
+    {
+        ILearningHelper GetLearningHelper(IHand hand, string saveLocaiton);
+    }
+
+    public class LearningHelperFactory : ILearningHelperFactory {
+        public ILearningHelper GetLearningHelper(IHand hand, string saveLocaiton)
+        {
+            return new LearningHelper(hand, saveLocaiton);
         }
     }
 }

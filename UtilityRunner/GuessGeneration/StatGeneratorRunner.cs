@@ -7,7 +7,7 @@ namespace UtilityRunner.GuessGeneration
     [TestClass]
     public class GussGenerationRunner
     {
-        [TestMethod]
+        //[TestMethod]
         public void Generate()
         {
             string statPath = @"C:\generator\foundStats\";
