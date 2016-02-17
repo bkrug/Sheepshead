@@ -95,7 +95,7 @@ namespace Sheepshead.Tests
         }
 
         [TestMethod]
-        public void Game_PlayNonHuman_FindPicker()
+        public void Game_PlayNonHumanPickTurns_FindPicker()
         {
             var player1 = new Mock<IComputerPlayer>();
             var player2 = new HumanPlayer(new User());
@@ -139,7 +139,7 @@ namespace Sheepshead.Tests
         }
 
         [TestMethod]
-        public void Game_PlayNonHuman_FindPicker_OnePlayerPicked()
+        public void Game_PlayNonHumanPickTurns_FindPicker_OnePlayerPicked()
         {
             var player1 = new Mock<IComputerPlayer>();
             var player2 = new Mock<IComputerPlayer>();
@@ -164,7 +164,7 @@ namespace Sheepshead.Tests
         }
 
         [TestMethod]
-        public void Game_PlayNonHuman_FindPicker_LastPlayerIsntHuman()
+        public void Game_PlayNonHumanPickTurns_FindPicker_LastPlayerIsntHuman()
         {
             var player1 = new Mock<IComputerPlayer>();
             var player2 = new Mock<IComputerPlayer>();
@@ -184,7 +184,7 @@ namespace Sheepshead.Tests
         }
 
         [TestMethod]
-        public void Game_PlayNonHuman_FindPicker_AlsoBurriedCards()
+        public void Game_PlayNonHumanPickTurns_FindPicker_AlsoBurriedCards()
         {
             var player1 = new Mock<IComputerPlayer>();
             var player2 = new Mock<IComputerPlayer>();
@@ -210,6 +210,7 @@ namespace Sheepshead.Tests
             Assert.IsTrue(playerBuriedCards, "Player 2 buried cards after picking.");
             Assert.AreEqual(2, discards.Count(), "There are two buried cards.");
         }
+
         private bool PlayerListsMatch(List<IPlayer> list1, List<IPlayer> list2)
         {
             var match = true;
@@ -225,7 +226,7 @@ namespace Sheepshead.Tests
         }
 
         [TestMethod]
-        public void Game_PlayNonHuman_FindPicker_EveryoneHasPassed()
+        public void Game_PlayNonHumanPickTurns_FindPicker_EveryoneHasPassed()
         {
             var player1 = new Mock<IComputerPlayer>();
             var player2 = new Mock<IComputerPlayer>();
@@ -243,6 +244,38 @@ namespace Sheepshead.Tests
             var picker = game.PlayNonHumanPickTurns(deckMock.Object);
 
             Assert.AreEqual(null, picker, "There is no picker if everyone has already passed.");
+        }
+
+
+        [TestMethod]
+        public void Game_PlayNonHumanPickTurns_PlayToHuman()
+        {
+            var playerMocks = new List<Mock>() {
+                new Mock<IComputerPlayer>(), new Mock<IHumanPlayer>(), new Mock<IComputerPlayer>(), new Mock<IComputerPlayer>(), new Mock<IComputerPlayer>()
+            };
+            playerMocks.OfType<Mock<IComputerPlayer>>().ToList().ForEach(m => m.Setup(p => p.Cards).Returns(new List<ICard>()));
+            List<IPlayer> players = playerMocks.Select(p => p.Object).OfType<IPlayer>().ToList();
+            var deckMock = new Mock<IDeck>();
+            deckMock.Setup(m => m.StartingPlayer).Returns(players[3]);
+            deckMock.Setup(m => m.Buried).Returns(new List<ICard>());
+            var refusing = new List<IPlayer>();
+            deckMock.Setup(m => m.PlayersRefusingPick).Returns(refusing);
+            deckMock.Setup(m => m.PlayerWontPick(It.IsAny<IPlayer>())).Callback((IPlayer p) => refusing.Add(p));
+            var computerPlayerTurns = 0;
+            playerMocks.OfType<Mock<IComputerPlayer>>().ToList()
+                       .ForEach(m => m.Setup(p => p.WillPick(deckMock.Object))
+                                      .Callback((IDeck deck) => { ++computerPlayerTurns; })
+                                      .Returns(false));
+
+            var randomWrapper = new Mock<IRandomWrapper>();
+            var learningHelperFactory = new Mock<ILearningHelperFactory>();
+            var game = new Game(0, players, randomWrapper.Object, learningHelperFactory.Object);
+
+            game.PlayNonHumanPickTurns(deckMock.Object);
+            Assert.AreEqual(3, computerPlayerTurns, "Three computer players should have played, since human player has second from laster turn.");
+            Assert.AreEqual(3, refusing.Count());
+            Assert.IsFalse(refusing.Contains(players[1]), "Human player should not have played.");
+            Assert.IsFalse(refusing.Contains(players[2]), "Last computer player should not have played.");
         }
 
         [TestMethod]
