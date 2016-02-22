@@ -93,7 +93,19 @@ namespace Sheepshead.Models
 
         public List<IPlayer> PlayersWithoutPickTurn
         {
-            get { throw new NotImplementedException(); }
+            get { return PickPlayerOrderer.PlayersWithoutPickTurn; }
+        }
+
+        private IPickPlayerOrderer _pickPlayerOrderer;
+        public IPickPlayerOrderer PickPlayerOrderer
+        {
+            get { return _pickPlayerOrderer ?? (_pickPlayerOrderer = new PickPlayerOrderer(new PickPlayerOrdererInner(this))); }
+        }
+
+        private IPickProcessor _pickProcessor;
+        public IPickProcessor PickProcessor
+        {
+            get { return _pickProcessor ?? (_pickProcessor = new PickProcessor(this, new HandFactory())); }
         }
     }
 
@@ -109,6 +121,8 @@ namespace Sheepshead.Models
         int PlayerCount { get; }
         List<IPlayer> Players { get; }
         List<IPlayer> PlayersWithoutPickTurn { get; }
+        IPickPlayerOrderer PickPlayerOrderer { get; }
+        IPickProcessor PickProcessor { get; }
     }
 
     public class PreviousDeckIncompleteException : Exception

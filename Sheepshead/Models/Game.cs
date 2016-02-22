@@ -21,6 +21,7 @@ namespace Sheepshead.Models
         public IRandomWrapper _random { get; private set; }
         public IPlayer CurrentTurn { get { throw new NotImplementedException(); } }
         private ILearningHelperFactory _learningHelperFactory;
+        private IHandFactory _handFactory;
         public TurnType TurnType
         {
             get
@@ -37,12 +38,13 @@ namespace Sheepshead.Models
             }
         } 
 
-        public Game(long id, List<IPlayer> players, IRandomWrapper random, ILearningHelperFactory factory)
+        public Game(long id, List<IPlayer> players, IRandomWrapper random, ILearningHelperFactory factory, IHandFactory handFactory)
         {
             _players = players;
             _id = id;
             _random = random;
             _learningHelperFactory = factory;
+            _handFactory = handFactory;
         }
 
         public void RearrangePlayers()
@@ -74,48 +76,29 @@ namespace Sheepshead.Models
             {
                 human.Cards.AddRange(deck.Blinds);
                 hand = new Hand(deck, human, new List<ICard>());
+                if (hand != null)
+                    _learningHelperFactory.GetLearningHelper(hand, SaveLocations.FIRST_SAVE);
             }
             else
             {
                 deck.PlayerWontPick(human);
-                var picker = PlayNonHumanPickTurns(deck);
-                if (picker != null || deck.PlayersRefusingPick.Count == Players.Count)
-                    hand = AcceptComputerPicker((IComputerPlayer)picker);
+                var picker = PlayNonHumanPickTurns();
+                hand = deck.Hand;
             }
-            if (hand != null)
-                _learningHelperFactory.GetLearningHelper(hand, SaveLocations.FIRST_SAVE);
             return hand;
         }
 
-        //TEST: Throw error if not run in pick phase
-        //Stop requiring the deck be passed in.
-        public IPlayer PlayNonHumanPickTurns(IDeck deck)
+        public IComputerPlayer PlayNonHumanPickTurns()
         {
-            var playersMissed = PlayerCount;
-            var playerIndex = Players.IndexOf(deck.StartingPlayer);
-            while (deck.PlayersRefusingPick.Contains(Players[playerIndex]) && playersMissed > 0)
-            {
-                IncrementPlayerIndex(ref playerIndex);
-                --playersMissed;
-            }
-            IComputerPlayer picker = null;
-            for (; picker == null && !(Players[playerIndex] is IHumanPlayer) && playersMissed > 0; IncrementPlayerIndex(ref playerIndex))
-            {
-                --playersMissed;
-                var curPlayer = (IComputerPlayer)Players[playerIndex];
-                if (curPlayer.WillPick(deck))
-                {
-                    picker = curPlayer;
-                    deck.Buried.AddRange(picker.DropCardsForPick(deck));
-                }
-                else
-                    deck.PlayerWontPick(curPlayer);
-            }
+            var curDeck = _decks.Last();
+            var picker = curDeck.PickProcessor.PlayNonHumanPickTurns();
+            IHand hand = null;
             if (picker != null)
-            {
-                var hand = AcceptComputerPicker(picker);
+                hand = curDeck.PickProcessor.AcceptComputerPicker(picker);
+            else if (picker == null && !curDeck.PlayersWithoutPickTurn.Any())
+                hand = _handFactory.GetHand(curDeck, picker, new List<ICard>());
+            if (hand != null)
                 _learningHelperFactory.GetLearningHelper(hand, SaveLocations.FIRST_SAVE);
-            }
             return picker;
         }
 
@@ -208,7 +191,7 @@ namespace Sheepshead.Models
         void RearrangePlayers();
         bool LastDeckIsComplete();
         IHand ContinueFromHumanPickTurn(IHumanPlayer human, bool willPick);
-        IPlayer PlayNonHumanPickTurns(IDeck deck);
+        IComputerPlayer PlayNonHumanPickTurns();
         IHand AcceptComputerPicker(IComputerPlayer picker);
         void BuryCards(IHumanPlayer player, List<ICard> cards);
         void PlayNonHumans(ITrick trick);

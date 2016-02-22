@@ -17,7 +17,7 @@ namespace Sheepshead.Models
             public List<IPlayer> Players { get; set; }
             public List<IDeck> Decks { get; set; }
             public void PlayNonHumans(ITrick trick) { throw new NotImplementedException(); }
-            public IPlayer PlayNonHumanPickTurns(IDeck deck) { throw new NotImplementedException(); }
+            public IComputerPlayer PlayNonHumanPickTurns() { throw new NotImplementedException(); }
             public void RearrangePlayers() { throw new NotImplementedException(); }
             public bool LastDeckIsComplete() { throw new NotImplementedException(); }
             public TurnType TurnType { get { throw new NotImplementedException(); } }
@@ -41,6 +41,8 @@ namespace Sheepshead.Models
             public int PlayerCount { get { return Game.PlayerCount; } }
             public List<IPlayer> Players { get { return Game.Players; } }
             public List<IPlayer> PlayersWithoutPickTurn { get { return Game.Players; } }
+            public IPickPlayerOrderer PickPlayerOrderer => null;
+            public IPickProcessor PickProcessor => null;
         }
 
         public static IHand FromSummary(string summary)

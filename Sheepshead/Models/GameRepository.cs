@@ -31,7 +31,7 @@ namespace Sheepshead.Models
 
         public IGame CreateGame(string name, List<IPlayer> players, IRandomWrapper rnd, ILearningHelperFactory factory)
         {
-            var game = new Game(0, players, rnd, factory);
+            var game = new Game(0, players, rnd, factory, new HandFactory());
             game.Name = name;
             return game;
         }

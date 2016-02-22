@@ -14,7 +14,7 @@ namespace Sheepshead.Tests
     public class GameTests
     {
         private class ExposeGame : Game {
-            public ExposeGame() : base (0, new List<IPlayer>(), new RandomWrapper(), new Mock<ILearningHelperFactory>().Object)
+            public ExposeGame() : base (0, new List<IPlayer>(), new RandomWrapper(), new Mock<ILearningHelperFactory>().Object, null)
             {
 
             }
@@ -51,7 +51,7 @@ namespace Sheepshead.Tests
             var trickMock = new Mock<ITrick>();
             trickMock.Setup(m => m.Hand).Returns(handMock.Object);
             var learningHelperFactory = new Mock<ILearningHelperFactory>();
-            var game = new Game(42340, playerList, new RandomWrapper(), learningHelperFactory.Object);
+            var game = new Game(42340, playerList, new RandomWrapper(), learningHelperFactory.Object, null);
             trickMock.Setup(m => m.StartingPlayer).Returns(player1.Object);
             bool player1Moved = false;
             bool player3Moved = false;
@@ -86,7 +86,7 @@ namespace Sheepshead.Tests
             var playerList = new List<IPlayer>() { player3.Object, player4.Object, player5.Object, player1.Object, player2.Object };
             var trickMock = new Mock<ITrick>();
             var learningHelperFactory = new Mock<ILearningHelperFactory>();
-            var game = new Game(42340, playerList, new RandomWrapper(), learningHelperFactory.Object);
+            var game = new Game(42340, playerList, new RandomWrapper(), learningHelperFactory.Object, null);
             trickMock.Setup(m => m.Game).Returns(game);
             trickMock.Setup(m => m.StartingPlayer).Returns(player1.Object);
             trickMock.Setup(m => m.CardsPlayed).Returns(new Dictionary<IPlayer, ICard>());
@@ -95,126 +95,102 @@ namespace Sheepshead.Tests
         }
 
         [TestMethod]
-        public void Game_PlayNonHumanPickTurns_FindPicker()
+        public void Game_PlayNonHumanPickTurns_StopAtHuman()
         {
-            var player1 = new Mock<IComputerPlayer>();
-            var player2 = new HumanPlayer(new User());
-            var player3 = new Mock<IComputerPlayer>();
-            var player4 = new Mock<IComputerPlayer>();
-            var player5 = new HumanPlayer(new User());
-            var playerList = new List<IPlayer>() { player3.Object, player4.Object, player5, player1.Object, player2 };
+            var playerMocks = new List<Mock>() { new Mock<IHumanPlayer>(), new Mock<IComputerPlayer>(), new Mock<IComputerPlayer>(), new Mock<IHumanPlayer>(), new Mock<IComputerPlayer>() };
+            var playerList = playerMocks.Select(m => m.Object as IPlayer).ToList();
+            var unplayedPlayers = playerList.Skip(1).ToList();
+            var refusingPick = playerList.Take(1).ToList();
             var deckMock = new Mock<IDeck>();
-            var learningHelperFactory = new Mock<ILearningHelperFactory>();
-            var game = new Game(42340, playerList, new RandomWrapper(), learningHelperFactory.Object);
-            deckMock.Setup(m => m.Game).Returns(game);
-            deckMock.Setup(m => m.StartingPlayer).Returns(player1.Object);
-            bool player1Moved = false;
-            bool player3Moved = false;
-            bool player4Moved = false;
-            player1.Setup(m => m.WillPick(It.IsAny<IDeck>())).Callback(() => player1Moved = true);
-            player3.Setup(m => m.WillPick(It.IsAny<IDeck>())).Callback(() => player3Moved = true);
-            player4.Setup(m => m.WillPick(It.IsAny<IDeck>())).Callback(() => player4Moved = true);
-            var refusingPick = new List<IPlayer>();
+            deckMock.Setup(m => m.PlayersWithoutPickTurn).Returns(unplayedPlayers);
             deckMock.Setup(m => m.PlayersRefusingPick).Returns(refusingPick);
-            deckMock.Setup(m => m.PlayerWontPick(It.IsAny<IPlayer>())).Callback((IPlayer givenPlyaer) => { refusingPick.Add(givenPlyaer); });
-            var picker = game.PlayNonHumanPickTurns(deckMock.Object);
-            Assert.IsTrue(player1Moved, "All players from the starting player to the first human should have been played.");
-            Assert.IsFalse(player3Moved, "Player 3 should not have been played yet.");
-            Assert.IsFalse(player4Moved, "Player 4 should not have been played yet.");
-            Assert.IsTrue(PlayerListsMatch(refusingPick, new List<IPlayer>() {player1.Object}), "Player1 is on the refused list.");
-            Assert.AreEqual(null, picker, "No one picked");
-            refusingPick.Add(player1.Object);
-            refusingPick.Add(player2);
-            game.PlayNonHumanPickTurns(deckMock.Object);
-            player1Moved = false;
-            Assert.IsFalse(player1Moved, "Player 1 should not have been played a second time.");
-            Assert.IsTrue(player3Moved, "Player 3 should have been played when a second call was made to PlayNonHumans()");
-            Assert.IsTrue(player4Moved, "Player 4 should have been played when a second call was made to PlayNonHumans()");
-            Assert.IsTrue(PlayerListsMatch(refusingPick, new List<IPlayer>() { player1.Object, player2, player3.Object, player4.Object }), "Player1, 3, and 4 is on the refused list.");
-            refusingPick.Add(player3.Object);
-            refusingPick.Add(player4.Object);
-            refusingPick.Add(player5);
-            game.PlayNonHumanPickTurns(deckMock.Object);
-            Assert.IsTrue(true, "Did not enter an infinite loop.");
-        }
+            deckMock.Setup(m => m.PickProcessor.PlayNonHumanPickTurns())
+                .Callback(() => {
+                    refusingPick.AddRange(playerList.Skip(1).Take(2));
+                    unplayedPlayers.RemoveRange(0, 2);
+                    })
+                .Returns(() => null);
+            deckMock.Setup(m => m.PickProcessor.AcceptComputerPicker(It.IsAny<IComputerPlayer>()))
+                .Callback((IComputerPlayer p) =>
+                    Assert.IsFalse(true, "Should not have called AcceptComputerPicker().  Should have given human a chance to pick."));
+            var handFactoryMock = new Mock<IHandFactory>();
+            handFactoryMock.Setup(m => m.GetHand(It.IsAny<IDeck>(), It.IsAny<IPlayer>(), It.IsAny<List<ICard>>()))
+                .Callback(() =>
+                    Assert.IsFalse(true, "Should not have called AcceptComputerPicker().  Should have given human a chance to pick."));
 
-        [TestMethod]
-        public void Game_PlayNonHumanPickTurns_FindPicker_OnePlayerPicked()
-        {
-            var player1 = new Mock<IComputerPlayer>();
-            var player2 = new Mock<IComputerPlayer>();
-            var picker = new Mock<IComputerPlayer>();
-            var player4 = new Mock<IComputerPlayer>();
-            var player5 = new Mock<IComputerPlayer>();
-            var playerList = new List<IPlayer>() { picker.Object, player4.Object, player5.Object, player1.Object, player2.Object };
-            picker.Setup(m => m.WillPick(It.IsAny<IDeck>())).Returns(true);
-            picker.Setup(m => m.DropCardsForPick(It.IsAny<IDeck>())).Returns(new List<ICard>() { new Mock<ICard>().Object, new Mock<ICard>().Object });
-            picker.Setup(m => m.Cards).Returns(new List<ICard>());
-            var learningHelperFactory = new Mock<ILearningHelperFactory>();
-            var game = new Game(42340, playerList, new RandomWrapper(), learningHelperFactory.Object);
-            var deckMock = new Mock<IDeck>();
+            var game = new Game(42340, playerList, null, null, handFactoryMock.Object);
             game.Decks.Add(deckMock.Object);
-            var refusingPick = new List<IPlayer>();
-            var discards = new List<ICard>();
-            deckMock.Setup(m => m.PlayersRefusingPick).Returns(refusingPick);
-            deckMock.Setup(m => m.Game).Returns(game);
-            deckMock.Setup(m => m.StartingPlayer).Returns(player1.Object);
-            deckMock.Setup(m => m.Buried).Returns(discards);
-            deckMock.Setup(m => m.Blinds).Returns(new List<ICard>());
-            var actualPicker = game.PlayNonHumanPickTurns(deckMock.Object);
-            Assert.AreEqual(picker.Object, actualPicker, "Player 3 is picker");
-            Assert.AreEqual(2, discards.Count(), "There are two discards");
+            var picker = game.PlayNonHumanPickTurns();
+
+            Assert.IsNull(picker, "Picker should be null because the computer players didn't pick.  " + 
+                "No hand should have been created since not everyone has had a turn.");
         }
 
         [TestMethod]
-        public void Game_PlayNonHumanPickTurns_FindPicker_LastPlayerIsntHuman()
+        public void Game_PlayNonHumanPickTurns_FindAPicker()
         {
-            var player1 = new Mock<IComputerPlayer>();
-            var player2 = new Mock<IComputerPlayer>();
-            var player3 = new Mock<IComputerPlayer>();
-            var player4 = new Mock<IComputerPlayer>();
-            var player5 = new Mock<IComputerPlayer>();
-            var playerList = new List<IPlayer>() { player3.Object, player4.Object, player5.Object, player1.Object, player2.Object };
-            var learningHelperFactory = new Mock<ILearningHelperFactory>();
-            var game = new Game(42340, playerList, new RandomWrapper(), learningHelperFactory.Object);
+            var playerMocks = new List<Mock>() { new Mock<IHumanPlayer>(), new Mock<IComputerPlayer>(), new Mock<IComputerPlayer>(), new Mock<IHumanPlayer>(), new Mock<IComputerPlayer>() };
+            var playerList = playerMocks.Select(m => m.Object as IPlayer).ToList();
+            var unplayedPlayers = playerList.Skip(1).ToList();
+            var expectedPicker = playerList[2] as IComputerPlayer;
+            var refusingPick = playerList.Take(1).ToList();
+            var handCreated = false;
             var deckMock = new Mock<IDeck>();
-            var refusingPick = new List<IPlayer>();
+            deckMock.Setup(m => m.PlayersWithoutPickTurn).Returns(unplayedPlayers);
             deckMock.Setup(m => m.PlayersRefusingPick).Returns(refusingPick);
-            deckMock.Setup(m => m.Game).Returns(game);
-            deckMock.Setup(m => m.StartingPlayer).Returns(player1.Object);
-            game.PlayNonHumanPickTurns(deckMock.Object);
-            Assert.IsTrue(true, "Didn't end up in an infinite loop.");
-        }
+            deckMock.Setup(m => m.PickProcessor.PlayNonHumanPickTurns())
+                .Callback(() => {
+                    refusingPick.AddRange(playerList.Skip(1).Take(1));
+                    unplayedPlayers.RemoveRange(0, 1);
+                })
+                .Returns(expectedPicker);
+            deckMock.Setup(m => m.PickProcessor.AcceptComputerPicker(expectedPicker))
+                .Callback(() => handCreated = true)
+                .Returns(new Mock<IHand>().Object);
+            var handFactoryMock = new Mock<IHandFactory>();
+            handFactoryMock.Setup(m => m.GetHand(It.IsAny<IDeck>(), It.IsAny<IPlayer>(), It.IsAny<List<ICard>>()))
+                .Callback(() =>
+                    Assert.IsFalse(true, "Should have instantiated hand through AcceptComputerPicker() instead."));
 
-        [TestMethod]
-        public void Game_PlayNonHumanPickTurns_FindPicker_AlsoBurriedCards()
-        {
-            var player1 = new Mock<IComputerPlayer>();
-            var picker = new Mock<IComputerPlayer>();
-            var player3 = new Mock<IComputerPlayer>();
-            var player4 = new Mock<IComputerPlayer>();
-            var player5 = new Mock<IComputerPlayer>();
-            var playerList = new List<IPlayer>() { player3.Object, player4.Object, player5.Object, player1.Object, picker.Object };
-            var playerBuriedCards = false;
-            picker.Setup(m => m.WillPick(It.IsAny<IDeck>())).Returns(true);
-            picker.Setup(m => m.DropCardsForPick(It.IsAny<IDeck>()))
-                .Callback((IDeck givenDeck) => { playerBuriedCards = true; })
-                .Returns(new List<ICard>() { new Mock<ICard>().Object, new Mock<ICard>().Object });
-            picker.Setup(m => m.Cards).Returns(new List<ICard>());
-            var learningHelperFactory = new Mock<ILearningHelperFactory>();
-            var game = new Game(42340, playerList, new RandomWrapper(), learningHelperFactory.Object);
-            var deckMock = new Mock<IDeck>();
+            var game = new Game(42340, playerList, null, new Mock<ILearningHelperFactory>().Object, handFactoryMock.Object);
             game.Decks.Add(deckMock.Object);
-            var refusingPick = new List<IPlayer>();
-            var discards = new List<ICard>();
+            var picker = game.PlayNonHumanPickTurns();
+
+            Assert.IsTrue(handCreated);
+            Assert.AreEqual(expectedPicker, picker);
+        }
+
+        [TestMethod]
+        public void Game_PlayNonHumanPickTurns_LeastersGame()
+        {
+            var playerMocks = new List<Mock>() { new Mock<IHumanPlayer>(), new Mock<IComputerPlayer>(), new Mock<IComputerPlayer>(), new Mock<IComputerPlayer>(), new Mock<IComputerPlayer>() };
+            var playerList = playerMocks.Select(m => m.Object as IPlayer).ToList();
+            var unplayedPlayers = playerList.Skip(1).ToList();
+            var refusingPick = playerList.Take(1).ToList();
+            var handCreated = false;
+            var deckMock = new Mock<IDeck>();
+            deckMock.Setup(m => m.PlayersWithoutPickTurn).Returns(unplayedPlayers);
             deckMock.Setup(m => m.PlayersRefusingPick).Returns(refusingPick);
-            deckMock.Setup(m => m.Game).Returns(game);
-            deckMock.Setup(m => m.StartingPlayer).Returns(player1.Object);
-            deckMock.Setup(m => m.Buried).Returns(discards);
-            deckMock.Setup(m => m.Blinds).Returns(new List<ICard>());
-            game.PlayNonHumanPickTurns(deckMock.Object);
-            Assert.IsTrue(playerBuriedCards, "Player 2 buried cards after picking.");
-            Assert.AreEqual(2, discards.Count(), "There are two buried cards.");
+            deckMock.Setup(m => m.PickProcessor.PlayNonHumanPickTurns())
+                .Callback(() => {
+                    refusingPick.AddRange(playerList.Skip(1).Take(4));
+                    unplayedPlayers.RemoveRange(0, 4);
+                })
+                .Returns(() => null);
+            deckMock.Setup(m => m.PickProcessor.AcceptComputerPicker(It.IsAny<IComputerPlayer>()))
+                .Callback((IComputerPlayer p) =>
+                    Assert.IsFalse(true, "Should have instantiated hand through HandFactory.  Should be a leasters hand."));
+            var handFactoryMock = new Mock<IHandFactory>();
+            handFactoryMock.Setup(m => m.GetHand(deckMock.Object, null, It.IsAny<List<ICard>>()))
+                .Callback(() => handCreated = true)
+                .Returns(() => new Mock<IHand>().Object);
+
+            var game = new Game(42340, playerList, null, new Mock<ILearningHelperFactory>().Object, handFactoryMock.Object);
+            game.Decks.Add(deckMock.Object);
+            var picker = game.PlayNonHumanPickTurns();
+
+            Assert.IsTrue(handCreated);
+            Assert.IsNull(picker);
         }
 
         private bool PlayerListsMatch(List<IPlayer> list1, List<IPlayer> list2)
@@ -229,59 +205,6 @@ namespace Sheepshead.Tests
                     match = false;
             }
             return match && !tempList.Any();
-        }
-
-        [TestMethod]
-        public void Game_PlayNonHumanPickTurns_FindPicker_EveryoneHasPassed()
-        {
-            var player1 = new Mock<IComputerPlayer>();
-            var player2 = new Mock<IComputerPlayer>();
-            var player3 = new Mock<IComputerPlayer>();
-            var player4 = new Mock<IComputerPlayer>();
-            var player5 = new Mock<IHumanPlayer>();
-            var players = new List<IPlayer>() { player1.Object, player2.Object, player3.Object, player4.Object, player5.Object };
-            var deckMock = new Mock<IDeck>();
-            deckMock.Setup(m => m.PlayersRefusingPick).Returns(players.ToList());
-            deckMock.Setup(m => m.StartingPlayer).Returns(player1.Object);
-            player1.Setup(m => m.QueueRankInDeck(It.IsAny<IDeck>())).Returns(1);
-            var learningHelperFactory = new Mock<ILearningHelperFactory>();
-
-            var game = new Game(1, players, new RandomWrapper(), learningHelperFactory.Object);
-            var picker = game.PlayNonHumanPickTurns(deckMock.Object);
-
-            Assert.AreEqual(null, picker, "There is no picker if everyone has already passed.");
-        }
-
-
-        [TestMethod]
-        public void Game_PlayNonHumanPickTurns_PlayToHuman()
-        {
-            var playerMocks = new List<Mock>() {
-                new Mock<IComputerPlayer>(), new Mock<IHumanPlayer>(), new Mock<IComputerPlayer>(), new Mock<IComputerPlayer>(), new Mock<IComputerPlayer>()
-            };
-            playerMocks.OfType<Mock<IComputerPlayer>>().ToList().ForEach(m => m.Setup(p => p.Cards).Returns(new List<ICard>()));
-            List<IPlayer> players = playerMocks.Select(p => p.Object).OfType<IPlayer>().ToList();
-            var deckMock = new Mock<IDeck>();
-            deckMock.Setup(m => m.StartingPlayer).Returns(players[3]);
-            deckMock.Setup(m => m.Buried).Returns(new List<ICard>());
-            var refusing = new List<IPlayer>();
-            deckMock.Setup(m => m.PlayersRefusingPick).Returns(refusing);
-            deckMock.Setup(m => m.PlayerWontPick(It.IsAny<IPlayer>())).Callback((IPlayer p) => refusing.Add(p));
-            var computerPlayerTurns = 0;
-            playerMocks.OfType<Mock<IComputerPlayer>>().ToList()
-                       .ForEach(m => m.Setup(p => p.WillPick(deckMock.Object))
-                                      .Callback((IDeck deck) => { ++computerPlayerTurns; })
-                                      .Returns(false));
-
-            var randomWrapper = new Mock<IRandomWrapper>();
-            var learningHelperFactory = new Mock<ILearningHelperFactory>();
-            var game = new Game(0, players, randomWrapper.Object, learningHelperFactory.Object);
-
-            game.PlayNonHumanPickTurns(deckMock.Object);
-            Assert.AreEqual(3, computerPlayerTurns, "Three computer players should have played, since human player has second from laster turn.");
-            Assert.AreEqual(3, refusing.Count());
-            Assert.IsFalse(refusing.Contains(players[1]), "Human player should not have played.");
-            Assert.IsFalse(refusing.Contains(players[2]), "Last computer player should not have played.");
         }
 
         [TestMethod]
@@ -304,7 +227,7 @@ namespace Sheepshead.Tests
 
             var randomWrapper = new Mock<IRandomWrapper>();
             var learningHelperFactory = new Mock<ILearningHelperFactory>();
-            var game = new Game(0, players, randomWrapper.Object, learningHelperFactory.Object);
+            var game = new Game(0, players, randomWrapper.Object, learningHelperFactory.Object, null);
             game.Decks.Add(new Mock<IDeck>().Object);
             game.Decks.Add(deckMock.Object);
             deckMock.Setup(m => m.Blinds).Returns(blindMocks.Select(m => m.Object).ToList());
@@ -342,7 +265,7 @@ namespace Sheepshead.Tests
 
             var randomWrapper = new Mock<IRandomWrapper>();
             var learningHelperFactory = new Mock<ILearningHelperFactory>();
-            var game = new Game(0, players, randomWrapper.Object, learningHelperFactory.Object);
+            var game = new Game(0, players, randomWrapper.Object, learningHelperFactory.Object, null);
             game.Decks.Add(new Mock<IDeck>().Object);
             game.Decks.Add(deckMock.Object);
             var refusalRecorded = false;
@@ -353,11 +276,12 @@ namespace Sheepshead.Tests
                 refusalRecorded = true;
                 deckMock.Setup(m => m.PlayersRefusingPick).Returns(players.Take(2).ToList());
             });
+            deckMock.Setup(m => m.PickProcessor.PlayNonHumanPickTurns()).Returns(() => null);
+            deckMock.Setup(m => m.PlayersWithoutPickTurn).Returns(players.Skip(2).ToList());
 
             var willPick = false;
             var hand = game.ContinueFromHumanPickTurn(firstHumanMock.Object, willPick);
 
-            Assert.AreEqual(2, computerPlayersPicking, "The human didn't pick so two computers got the chance to pick.");
             Assert.IsTrue(hand == null, "None of the computer players picked, but more players have a turn.");
             Assert.IsTrue(refusalRecorded);
         }
@@ -386,7 +310,7 @@ namespace Sheepshead.Tests
 
             var randomWrapper = new Mock<IRandomWrapper>();
             var learningHelperFactory = new Mock<ILearningHelperFactory>();
-            var game = new Game(0, players, randomWrapper.Object, learningHelperFactory.Object);
+            var game = new Game(0, players, randomWrapper.Object, learningHelperFactory.Object, null);
             game.Decks.Add(new Mock<IDeck>().Object);
             game.Decks.Add(deckMock.Object);
             var refusalRecorded = false;
@@ -398,15 +322,16 @@ namespace Sheepshead.Tests
                 refusalRecorded = true;
                 deckMock.Setup(m => m.PlayersRefusingPick).Returns(players.Take(2).ToList());
             });
+            deckMock.Setup(m => m.PickProcessor.PlayNonHumanPickTurns()).Returns(players[3] as IComputerPlayer);
+            deckMock.Setup(m => m.PlayersWithoutPickTurn).Returns(players.Skip(2).ToList());
+            IHand _hand = null;
+            deckMock.Setup(m => m.PickProcessor.AcceptComputerPicker(players[3] as IComputerPlayer))
+                .Callback(() => _hand = new Mock<IHand>().Object);
+            deckMock.Setup(m => m.Hand).Returns(_hand);
 
             var willPick = false;
             var hand = game.ContinueFromHumanPickTurn(firstHumanMock.Object, willPick);
 
-            Assert.IsTrue(hand != null);
-            Assert.AreEqual(2, computerPlayersPicking, "The human didn't pick so two computers got the chance to pick.");
-            Assert.AreSame(deckMock.Object, hand.Deck);
-            Assert.AreSame(players[3], hand.Picker);
-            Assert.IsFalse(hand.Leasters);
             Assert.IsTrue(refusalRecorded);
         }
 
@@ -425,7 +350,7 @@ namespace Sheepshead.Tests
 
             var randomWrapper = new Mock<IRandomWrapper>();
             var learningHelperFactory = new Mock<ILearningHelperFactory>();
-            var game = new Game(0, players, randomWrapper.Object, learningHelperFactory.Object);
+            var game = new Game(0, players, randomWrapper.Object, learningHelperFactory.Object, null);
             game.Decks.Add(new Mock<IDeck>().Object);
             game.Decks.Add(deckMock.Object);
             deckMock.Setup(m => m.StartingPlayer).Returns(players.First());
@@ -460,7 +385,7 @@ namespace Sheepshead.Tests
 
             var randomWrapper = new Mock<IRandomWrapper>();
             var learningHelperFactory = new Mock<ILearningHelperFactory>();
-            var game = new Game(0, players, randomWrapper.Object, learningHelperFactory.Object);
+            var game = new Game(0, players, randomWrapper.Object, learningHelperFactory.Object, null);
             game.Decks.Add(new Mock<IDeck>().Object);
             game.Decks.Add(deckMock.Object);
             deckMock.Setup(m => m.StartingPlayer).Returns(players.First());
@@ -499,7 +424,7 @@ namespace Sheepshead.Tests
             for (var i = 0; i < 5; ++i)
                 playerList.Add(new Player());
             var learningHelperFactory = new Mock<ILearningHelperFactory>();
-            var game = new Game(4982, playerList, new RandomWrapper(), learningHelperFactory.Object);
+            var game = new Game(4982, playerList, new RandomWrapper(), learningHelperFactory.Object, null);
             var deck = new Deck(game, new RandomWrapper());
             Assert.AreEqual(2, deck.Blinds.Count(), "There should be two blinds after dealing");
             Assert.AreEqual(5, game.Players.Count(), "There should be five doctores");

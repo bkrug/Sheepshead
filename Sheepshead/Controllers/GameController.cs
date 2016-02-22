@@ -89,8 +89,7 @@ namespace Sheepshead.Controllers
 
         private void Pick(IGame game)
         {
-            var deck = game.Decks.Last();
-            game.PlayNonHumanPickTurns(deck);
+            game.PlayNonHumanPickTurns();
         }
 
         private void PlayTrick(IGame game)

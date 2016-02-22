@@ -11,7 +11,7 @@ namespace Sheepshead.Models
     {
         IHand AcceptComputerPicker(IComputerPlayer picker);
         void LetHumanPick(IHumanPlayer human, bool willPick);
-        IPlayer PlayNonHumanPickTurns();
+        IComputerPlayer PlayNonHumanPickTurns();
     }
 
     public class PickProcessor : IPickProcessor
@@ -35,7 +35,7 @@ namespace Sheepshead.Models
                 _deck.PlayersRefusingPick.Add(human);
         }
 
-        public IPlayer PlayNonHumanPickTurns()
+        public IComputerPlayer PlayNonHumanPickTurns()
         {
             if (!(_deck.PlayersWithoutPickTurn.FirstOrDefault() is IComputerPlayer))
                 throw new NotPlayersTurnException("Next player must be a computer player.");

@@ -161,7 +161,7 @@ namespace Sheepshead.Tests.NonUnitTests
                 var game = repository.CreateGame("Poker", playerList, rnd, learningHelperFactory.Object);
                 game.RearrangePlayers();
                 var deck = new Deck(game, rnd);
-                var picker = game.PlayNonHumanPickTurns(deck) as ComputerPlayer;
+                var picker = game.PlayNonHumanPickTurns();
                 var buriedCards = picker != null ? picker.DropCardsForPick(deck) : new List<ICard>();
                 var hand = new Hand(deck, picker, buriedCards);
                 if (learningDel != null)
