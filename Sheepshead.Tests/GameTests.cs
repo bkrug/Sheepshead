@@ -438,7 +438,7 @@ namespace Sheepshead.Tests
             try {
                 var hand = game.ContinueFromHumanPickTurn(firstHumanMock.Object, willPick);
             }
-            catch (WrongGamePhaseExcpetion ex)
+            catch (WrongGamePhaseExcpetion)
             {
                 exceptionThrown = true;
             }
@@ -473,7 +473,7 @@ namespace Sheepshead.Tests
                 deckMock.Setup(m => m.PlayersRefusingPick).Returns(players.Take(1).ToList());
                 var hand = game.ContinueFromHumanPickTurn(firstHumanMock.Object, willPick);
             }
-            catch (NotPlayersTurnException ex)
+            catch (NotPlayersTurnException)
             {
                 exceptionThrown = true;
             }
@@ -485,7 +485,7 @@ namespace Sheepshead.Tests
                 deckMock.Setup(m => m.PlayersRefusingPick).Returns(players.Take(4).ToList());
                 var hand = game.ContinueFromHumanPickTurn(firstHumanMock.Object, willPick);
             }
-            catch (NotPlayersTurnException ex)
+            catch (NotPlayersTurnException)
             {
                 exceptionThrown = true;
             }

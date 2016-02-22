@@ -90,6 +90,11 @@ namespace Sheepshead.Models
         {
             get { return Game.Players; }
         }
+
+        public List<IPlayer> PlayersWithoutPickTurn
+        {
+            get { throw new NotImplementedException(); }
+        }
     }
 
     public interface IDeck
@@ -103,6 +108,7 @@ namespace Sheepshead.Models
         IPlayer StartingPlayer { get; }
         int PlayerCount { get; }
         List<IPlayer> Players { get; }
+        List<IPlayer> PlayersWithoutPickTurn { get; }
     }
 
     public class PreviousDeckIncompleteException : Exception

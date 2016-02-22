@@ -40,6 +40,7 @@ namespace Sheepshead.Models
             public IPlayer StartingPlayer { get; set; }
             public int PlayerCount { get { return Game.PlayerCount; } }
             public List<IPlayer> Players { get { return Game.Players; } }
+            public List<IPlayer> PlayersWithoutPickTurn { get { return Game.Players; } }
         }
 
         public static IHand FromSummary(string summary)

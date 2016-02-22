@@ -106,6 +106,8 @@
     <Compile Include="CardTests.cs" />
     <Compile Include="BuryTests.cs" />
     <Compile Include="LeasterTests.cs" />
+    <Compile Include="PickProcessorTests.cs" />
+    <Compile Include="PickOrderTests.cs" />
     <Compile Include="PickStatTests.cs" />
     <Compile Include="PickKeyGeneratorTests.cs" />
     <Compile Include="KeyGeneratorTests.cs" />

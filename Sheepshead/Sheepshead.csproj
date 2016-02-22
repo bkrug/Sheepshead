@@ -21,6 +21,7 @@
     <IISExpressWindowsAuthentication />
     <IISExpressUseClassicPipelineMode />
     <WebGreaseLibPath>..\packages\WebGrease.1.5.2\lib</WebGreaseLibPath>
+    <UseGlobalApplicationHostFile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -131,6 +132,9 @@
     </Compile>
     <Compile Include="Models\BaseRepository.cs" />
     <Compile Include="Models\Card.cs" />
+    <Compile Include="Models\HandFactory.cs" />
+    <Compile Include="Models\PickPlayerOrderer.cs" />
+    <Compile Include="Models\PickProcessor.cs" />
     <Compile Include="Models\Players\Stats\BuryStat.cs" />
     <Compile Include="Models\Players\Stats\BuryKeyGenerator.cs" />
     <Compile Include="Models\Players\Stats\BuryStatRepository.cs" />
