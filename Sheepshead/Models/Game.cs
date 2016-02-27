@@ -90,16 +90,7 @@ namespace Sheepshead.Models
 
         public IComputerPlayer PlayNonHumanPickTurns()
         {
-            var curDeck = _decks.Last();
-            var picker = curDeck.PickProcessor.PlayNonHumanPickTurns();
-            IHand hand = null;
-            if (picker != null)
-                hand = curDeck.PickProcessor.AcceptComputerPicker(picker);
-            else if (picker == null && !curDeck.PlayersWithoutPickTurn.Any())
-                hand = _handFactory.GetHand(curDeck, picker, new List<ICard>());
-            if (hand != null)
-                _learningHelperFactory.GetLearningHelper(hand, SaveLocations.FIRST_SAVE);
-            return picker;
+            return new PickProcessorOuter().PlayNonHumanPickTurns(_decks.Last(), _handFactory, _learningHelperFactory);
         }
 
         //TEST: Throw an error if this is not the pick phase

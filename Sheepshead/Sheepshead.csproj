@@ -135,6 +135,7 @@
     <Compile Include="Models\HandFactory.cs" />
     <Compile Include="Models\PickPlayerOrderer.cs" />
     <Compile Include="Models\PickProcessor.cs" />
+    <Compile Include="Models\PickProcessorOuter.cs" />
     <Compile Include="Models\Players\Stats\BuryStat.cs" />
     <Compile Include="Models\Players\Stats\BuryKeyGenerator.cs" />
     <Compile Include="Models\Players\Stats\BuryStatRepository.cs" />
