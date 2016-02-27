@@ -93,13 +93,13 @@ namespace Sheepshead.Models
 
         public List<IPlayer> PlayersWithoutPickTurn
         {
-            get { return PickPlayerOrderer.PlayersWithoutPickTurn; }
+            get { return PickPlayerOrderer.PlayersWithoutPickTurn(PickPlayerOrderer.PlayersInPickOrder(Players, StartingPlayer), PlayersRefusingPick); }
         }
 
         private IPickPlayerOrderer _pickPlayerOrderer;
         public IPickPlayerOrderer PickPlayerOrderer
         {
-            get { return _pickPlayerOrderer ?? (_pickPlayerOrderer = new PickPlayerOrderer(new PickPlayerOrdererInner(this))); }
+            get { return _pickPlayerOrderer ?? (_pickPlayerOrderer = new PickPlayerOrderer()); }
         }
 
         private IPickProcessor _pickProcessor;

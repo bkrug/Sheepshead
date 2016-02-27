@@ -6,62 +6,24 @@ using System.Web;
 
 namespace Sheepshead.Models
 {
-    public interface IPickPlayerOrdererInner
-    {
-        List<IPlayer> PlayersInPickOrder { get; }
-        List<IPlayer> PlayersRefusingPick { get; }
-    }
-
     public interface IPickPlayerOrderer
     {
-        List<IPlayer> PlayersInPickOrder { get; }
-        List<IPlayer> PlayersWithoutPickTurn { get; }
-    }
-
-    public class PickPlayerOrdererInner : IPickPlayerOrdererInner
-    {
-        private IDeck _deck;
-
-        public PickPlayerOrdererInner(IDeck deck)
-        {
-            _deck = deck;
-        }
-
-        public List<IPlayer> PlayersInPickOrder
-        {
-            get {
-                var startIndex = _deck.Players.IndexOf(_deck.StartingPlayer);
-                return _deck.Players.Skip(startIndex).Union(_deck.Players.Take(startIndex)).ToList();
-            }
-        }
-
-        public List<IPlayer> PlayersRefusingPick
-        {
-            get { return _deck.PlayersRefusingPick;  }
-        }
+        List<IPlayer> PlayersInPickOrder(List<IPlayer> players, IPlayer startingPlayer);
+        List<IPlayer> PlayersWithoutPickTurn(List<IPlayer> playersInPickOrder, List<IPlayer> playersRefusingPick);
     }
 
     public class PickPlayerOrderer : IPickPlayerOrderer
     {
-        private IPickPlayerOrdererInner _pickPlayerOrderer;
-
-        public PickPlayerOrderer(IPickPlayerOrdererInner pickPlayerOrderer)
+        public List<IPlayer> PlayersInPickOrder(List<IPlayer> players, IPlayer startingPlayer)
         {
-            _pickPlayerOrderer = pickPlayerOrderer;
+            var startIndex = players.IndexOf(startingPlayer);
+            return players.Skip(startIndex).Union(players.Take(startIndex)).ToList();
         }
 
-        public List<IPlayer> PlayersInPickOrder
+        public List<IPlayer> PlayersWithoutPickTurn(List<IPlayer> playersInPickOrder, List<IPlayer> playersRefusingPick)
         {
-            get { return _pickPlayerOrderer.PlayersInPickOrder; }
-        }
-
-        public List<IPlayer> PlayersWithoutPickTurn
-        {
-            get
-            {
-                var finishedCount = _pickPlayerOrderer.PlayersRefusingPick.Count();
-                return _pickPlayerOrderer.PlayersInPickOrder.Skip(finishedCount).ToList();
-            }
+            var finishedCount = playersRefusingPick.Count();
+            return playersInPickOrder.Skip(finishedCount).ToList();
         }
     }
 }
