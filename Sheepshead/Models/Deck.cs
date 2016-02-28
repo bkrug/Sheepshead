@@ -10,12 +10,11 @@ namespace Sheepshead.Models
     public class Deck : IDeck
     {
         private List<IPlayer> _playersRefusingPick = new List<IPlayer>();
-
         public IGame Game { get; private set; }
         public List<ICard> Blinds { get; private set; }
         public List<ICard> Buried { get; set; }
         public IHand Hand { get; set; }
-        public List<IPlayer> PlayersRefusingPick { get { return _playersRefusingPick.ToList(); } }
+        public List<IPlayer> PlayersRefusingPick { get { return _playersRefusingPick; } }
         public IPlayer StartingPlayer { get; private set; }
         public IRandomWrapper _random { get; private set; }
 

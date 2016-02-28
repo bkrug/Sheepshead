@@ -78,11 +78,11 @@ namespace Sheepshead.Controllers
             }
             else if (turnState.TurnType == TurnType.Pick)
             {
-                game.PlayNonHumanPickTurns();
+                game.PlayUpToHumanPickTurn();
             }
             else if (turnState.TurnType == TurnType.PlayTrick)
             {
-                game.PlayNonHumanPickTurns();
+                game.PlayNonHumansInTrick();
             }
             return View(turnState);
         }
@@ -129,7 +129,7 @@ namespace Sheepshead.Controllers
             var player = game.Players.OfType<IHumanPlayer>().First();
             var card = player.Cards[indexOfCard];
             game.RecordTurn(player, card);
-            game.PlayNonHumanPickTurns();
+            game.PlayNonHumansInTrick();
         }
     }
 }

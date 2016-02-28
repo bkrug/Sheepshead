@@ -54,6 +54,7 @@ namespace Sheepshead.Models
         public IHand AcceptComputerPicker(IComputerPlayer picker)
         {
             var buriedCards = picker.DropCardsForPick(_deck);
+            _deck.Buried = buriedCards;
             return _handFactory.GetHand(_deck, picker, buriedCards);
         }
     }

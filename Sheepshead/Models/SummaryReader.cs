@@ -18,6 +18,7 @@ namespace Sheepshead.Models
             public List<IDeck> Decks { get; set; }
             public void PlayNonHumansInTrick() { throw new NotImplementedException(); }
             public IComputerPlayer PlayNonHumanPickTurns() { throw new NotImplementedException(); }
+            public IComputerPlayer PlayUpToHumanPickTurn() { throw new NotImplementedException(); }
             public void RearrangePlayers() { throw new NotImplementedException(); }
             public bool LastDeckIsComplete() { throw new NotImplementedException(); }
             public TurnType TurnType { get { throw new NotImplementedException(); } }

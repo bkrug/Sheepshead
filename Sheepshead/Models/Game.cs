@@ -72,6 +72,13 @@ namespace Sheepshead.Models
             return new PickProcessorOuter2().ContinueFromHumanPickTurn(human, willPick, deck, _handFactory, _learningHelperFactory, new PickProcessorOuter());
         }
 
+        public IComputerPlayer PlayUpToHumanPickTurn()
+        {
+            if (Decks.Last().PlayersWithoutPickTurn.FirstOrDefault() is IComputerPlayer)
+                return PlayNonHumanPickTurns();
+            return null;
+        }
+
         public IComputerPlayer PlayNonHumanPickTurns()
         {
             if (TurnType != TurnType.Pick)
@@ -89,10 +96,8 @@ namespace Sheepshead.Models
         public void PlayNonHumansInTrick()
         {
             var trick = Decks.LastOrDefault()?.Hand.Tricks.LastOrDefault();
-            if (trick == null)
-                throw new NullReferenceException("No trick could be found in this deck or no deck in this game.");
-            if (!(trick.PlayersWithoutTurn.FirstOrDefault() is IComputerPlayer))
-                throw new NotPlayersTurnException("The next turn is not a computer player's turn.");
+            if (trick == null || trick.IsComplete() && !Decks.LastOrDefault().Hand.IsComplete())
+                trick = new Trick(Decks.LastOrDefault().Hand);
             foreach (var player in trick.PlayersWithoutTurn)
             {
                 var computerPlayer = player as IComputerPlayer;
@@ -152,6 +157,7 @@ namespace Sheepshead.Models
         bool LastDeckIsComplete();
         IHand ContinueFromHumanPickTurn(IHumanPlayer human, bool willPick);
         IComputerPlayer PlayNonHumanPickTurns();
+        IComputerPlayer PlayUpToHumanPickTurn();
         void BuryCards(IHumanPlayer player, List<ICard> cards);
         void PlayNonHumansInTrick();
         void RecordTurn(IHumanPlayer player, ICard card);

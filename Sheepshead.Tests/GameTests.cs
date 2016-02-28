@@ -133,20 +133,16 @@ namespace Sheepshead.Tests
             var deckMock = new Mock<IDeck>();
             deckMock.Setup(m => m.Hand.Tricks).Returns(new List<ITrick>() { trickMock.Object });
             trickMock.Setup(m => m.PlayersWithoutTurn).Returns(players);
+            playerList.OfType<Mock<IComputerPlayer>>().ToList()
+                .ForEach(m => m
+                    .Setup(p => p.GetMove(It.IsAny<ITrick>()))
+                    .Callback(() => Assert.Fail("Since it is not a computer's turn, the method should just not play any turns.")));
 
             var game = new Game(75291, playersDifferentOrder, new RandomWrapper(), null, null);
             game.Decks.Add(deckMock.Object);
+            game.PlayNonHumansInTrick();
 
-            var threwException = false;
-            try
-            {
-                game.PlayNonHumansInTrick();
-            }
-            catch(NotPlayersTurnException)
-            {
-                threwException = true;
-            }
-            Assert.IsTrue(threwException);
+            Assert.IsTrue(true, "Got this far without playing a computer player's turn.");
         }
 
         [TestMethod]
