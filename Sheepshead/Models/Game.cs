@@ -77,13 +77,6 @@ namespace Sheepshead.Models
             return new PickProcessorOuter().PlayNonHumanPickTurns(_decks.Last(), _handFactory, _learningHelperFactory);
         }
 
-        //TEST: Throw an error if this is not the pick phase
-        public IHand AcceptComputerPicker(IComputerPlayer picker)
-        {
-            var buriedCards = picker != null ? picker.DropCardsForPick(Decks.Last()) : new List<ICard>();
-            return new Hand(Decks.Last(), picker, buriedCards);
-        }
-
         //TEST: That the cards have been moved.
         //TEST: Throw an error if this is not the picker
         //TEST: Throw an error if this is not the bury phase
@@ -167,7 +160,6 @@ namespace Sheepshead.Models
         bool LastDeckIsComplete();
         IHand ContinueFromHumanPickTurn(IHumanPlayer human, bool willPick);
         IComputerPlayer PlayNonHumanPickTurns();
-        IHand AcceptComputerPicker(IComputerPlayer picker);
         void BuryCards(IHumanPlayer player, List<ICard> cards);
         void PlayNonHumans(ITrick trick);
         void RecordTurn(IHumanPlayer player, ICard card);

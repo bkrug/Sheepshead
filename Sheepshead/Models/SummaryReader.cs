@@ -23,7 +23,6 @@ namespace Sheepshead.Models
             public TurnType TurnType { get { throw new NotImplementedException(); } }
             public IPlayer CurrentTurn { get { throw new NotImplementedException(); } }
             public IHand ContinueFromHumanPickTurn(IHumanPlayer player, bool willPick) { throw new NotImplementedException(); }
-            public IHand AcceptComputerPicker(IComputerPlayer player) { throw new NotImplementedException(); }
             public void BuryCards(IHumanPlayer player, List<ICard> cards) { throw new NotImplementedException(); }
             public void RecordTurn(IHumanPlayer player, ICard card) { throw new NotImplementedException(); }
         }
