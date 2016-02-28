@@ -119,7 +119,7 @@ namespace Sheepshead.Tests
         }
 
         [TestMethod]
-        public void Game_PlayNonHuman_WrongTurn()
+        public void Game_PlayNonHuman_HumanHasNextTurn()
         {
             var playerList = new List<Mock>() {
                 new Mock<IHumanPlayer>(),
