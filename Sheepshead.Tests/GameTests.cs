@@ -39,59 +39,114 @@ namespace Sheepshead.Tests
         }
 
         [TestMethod]
-        public void Game_PlayNonHuman_PlayCard()
+        public void Game_PlayNonHuman_PlayCard1()
         {
-            var player1 = new Mock<BasicPlayer>();
-            var player2 = new HumanPlayer(new User());
-            var player3 = new Mock<NewbiePlayer>();
-            var player4 = new Mock<BasicPlayer>();
-            var player5 = new HumanPlayer(new User());
-            var playerList = new List<IPlayer>() { player3.Object, player4.Object, player5, player1.Object, player2 };
-            var handMock = new Mock<IHand>();
+            var playerList = new List<Mock>() {
+                new Mock<IComputerPlayer>(),
+                new Mock<IComputerPlayer>(),
+                new Mock<IComputerPlayer>(),
+                new Mock<IHumanPlayer>(),
+                new Mock<IComputerPlayer>()
+            };
+            var players = playerList.Select(m => m.Object as IPlayer).ToList();
+            var playersDifferentOrder = players.Skip(2).Union(players.Take(2)).ToList();
+            var hasPlayed = new List<IPlayer>();
             var trickMock = new Mock<ITrick>();
-            trickMock.Setup(m => m.Hand).Returns(handMock.Object);
-            var learningHelperFactory = new Mock<ILearningHelperFactory>();
-            var game = new Game(42340, playerList, new RandomWrapper(), learningHelperFactory.Object, null);
-            trickMock.Setup(m => m.StartingPlayer).Returns(player1.Object);
-            bool player1Moved = false;
-            bool player3Moved = false;
-            bool player4Moved = false;
-            player1.Setup(m => m.GetMove(It.IsAny<ITrick>())).Callback(() => player1Moved = true);
-            player3.Setup(m => m.GetMove(It.IsAny<ITrick>())).Callback(() => player3Moved = true);
-            player4.Setup(m => m.GetMove(It.IsAny<ITrick>())).Callback(() => player4Moved = true);
-            trickMock.Setup(m => m.CardsPlayed).Returns(new Dictionary<IPlayer, ICard>());
-            game.PlayNonHumans(trickMock.Object);
-            Assert.IsTrue(player1Moved, "All players from the starting player to the first human should have been played.");
-            Assert.IsFalse(player3Moved, "Plyaer 3 should not have been played yet.");
-            Assert.IsFalse(player4Moved, "Player 4 should not have been played yet.");
-            trickMock.Setup(m => m.CardsPlayed).Returns(new Dictionary<IPlayer, ICard>() { { player1.Object, new Card() }, { player2, new Card() } });
-            game.PlayNonHumans(trickMock.Object);
-            player1Moved = false;
-            Assert.IsFalse(player1Moved, "PLayer 1 should not have been played a second time.");
-            Assert.IsTrue(player3Moved, "Player 3 should have been played when a second call was made to PlayNonHumans()");
-            Assert.IsTrue(player4Moved, "Player 4 should have been played when a second call was made to PlayNonHumans()");
-            trickMock.Setup(m => m.CardsPlayed).Returns(new Dictionary<IPlayer, ICard>() { { player1.Object, new Card() }, { player2, new Card() }, { player3.Object, new Card() }, { player4.Object, new Card() }, { player5, new Card() } } );
-            game.PlayNonHumans(trickMock.Object);
-            Assert.IsTrue(true, "Did not end up in infinite loop, when last player was human.");
+            var deckMock = new Mock<IDeck>();
+            deckMock.Setup(m => m.Hand.Tricks).Returns(new List<ITrick>() { new Mock<ITrick>().Object, trickMock.Object });
+            trickMock.Setup(m => m.PlayersWithoutTurn).Returns(players);
+            trickMock
+                .Setup(m => m.Add(It.IsAny<IPlayer>(), It.IsAny<ICard>()))
+                .Callback((IPlayer player, ICard card) => {
+                    hasPlayed.Add(player);
+                    Assert.IsNotNull(card);
+                });
+            playerList
+                .OfType<Mock<IComputerPlayer>>().ToList()
+                .ForEach(m => m
+                    .Setup(p => p.GetMove(It.IsAny<ITrick>()))
+                    .Returns(new Mock<ICard>().Object)
+                );
+
+            var game = new Game(75291, playersDifferentOrder, new RandomWrapper(), null, null);
+            game.Decks.Add(new Mock<IDeck>().Object);
+            game.Decks.Add(deckMock.Object);
+            game.PlayNonHumansInTrick();
+
+            Assert.AreEqual(3, hasPlayed.Count(), "Should not reach human player.");
+            Assert.AreSame(hasPlayed[0], players[0]);
+            Assert.AreSame(hasPlayed[1], players[1]);
+            Assert.AreSame(hasPlayed[2], players[2]);
         }
 
         [TestMethod]
-        public void Game_PlayNonHuman_LastPlayerIsNonhuman()
+        public void Game_PlayNonHuman_LastPlayerIsNotHuman1()
         {
-            var player1 = new Mock<BasicPlayer>();
-            var player2 = new Mock<BasicPlayer>();
-            var player3 = new Mock<NewbiePlayer>();
-            var player4 = new Mock<BasicPlayer>();
-            var player5 = new Mock<BasicPlayer>();
-            var playerList = new List<IPlayer>() { player3.Object, player4.Object, player5.Object, player1.Object, player2.Object };
+            var playerList = new List<Mock>() {
+                new Mock<IComputerPlayer>(),
+                new Mock<IComputerPlayer>(),
+                new Mock<IComputerPlayer>(),
+                new Mock<IComputerPlayer>()
+            };
+            var players = playerList.Select(m => m.Object as IPlayer).ToList();
+            var playersDifferentOrder = players.Skip(2).Union(players.Take(2)).ToList();
+            var hasPlayed = new List<IPlayer>();
             var trickMock = new Mock<ITrick>();
-            var learningHelperFactory = new Mock<ILearningHelperFactory>();
-            var game = new Game(42340, playerList, new RandomWrapper(), learningHelperFactory.Object, null);
-            trickMock.Setup(m => m.Game).Returns(game);
-            trickMock.Setup(m => m.StartingPlayer).Returns(player1.Object);
-            trickMock.Setup(m => m.CardsPlayed).Returns(new Dictionary<IPlayer, ICard>());
-            game.PlayNonHumans(trickMock.Object);
-            Assert.IsTrue(true, "Did not enter infinite loop");
+            var deckMock = new Mock<IDeck>();
+            deckMock.Setup(m => m.Hand.Tricks).Returns(new List<ITrick>() { trickMock.Object });
+            trickMock.Setup(m => m.PlayersWithoutTurn).Returns(players);
+            trickMock
+                .Setup(m => m.Add(It.IsAny<IPlayer>(), It.IsAny<ICard>()))
+                .Callback((IPlayer player, ICard card) => {
+                    hasPlayed.Add(player);
+                });
+            playerList
+                .OfType<Mock<IComputerPlayer>>().ToList()
+                .ForEach(m => m
+                    .Setup(p => p.GetMove(It.IsAny<ITrick>()))
+                    .Returns(new Mock<ICard>().Object)
+                );
+
+            var game = new Game(75291, playersDifferentOrder, new RandomWrapper(), null, null);
+            game.Decks.Add(deckMock.Object);
+            game.PlayNonHumansInTrick();
+
+            Assert.AreEqual(4, hasPlayed.Count(), "All players have played.");
+            Assert.AreSame(hasPlayed[0], players[0]);
+            Assert.AreSame(hasPlayed[1], players[1]);
+            Assert.AreSame(hasPlayed[2], players[2]);
+            Assert.AreSame(hasPlayed[3], players[3]);
+        }
+
+        [TestMethod]
+        public void Game_PlayNonHuman_WrongTurn()
+        {
+            var playerList = new List<Mock>() {
+                new Mock<IHumanPlayer>(),
+                new Mock<IComputerPlayer>(),
+                new Mock<IComputerPlayer>(),
+                new Mock<IComputerPlayer>()
+            };
+            var players = playerList.Select(m => m.Object as IPlayer).ToList();
+            var playersDifferentOrder = players.Skip(2).Union(players.Take(2)).ToList();
+            var trickMock = new Mock<ITrick>();
+            var deckMock = new Mock<IDeck>();
+            deckMock.Setup(m => m.Hand.Tricks).Returns(new List<ITrick>() { trickMock.Object });
+            trickMock.Setup(m => m.PlayersWithoutTurn).Returns(players);
+
+            var game = new Game(75291, playersDifferentOrder, new RandomWrapper(), null, null);
+            game.Decks.Add(deckMock.Object);
+
+            var threwException = false;
+            try
+            {
+                game.PlayNonHumansInTrick();
+            }
+            catch(NotPlayersTurnException)
+            {
+                threwException = true;
+            }
+            Assert.IsTrue(threwException);
         }
 
         [TestMethod]

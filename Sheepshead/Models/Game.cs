@@ -79,38 +79,28 @@ namespace Sheepshead.Models
             return new PickProcessorOuter().PlayNonHumanPickTurns(_decks.Last(), _handFactory, _learningHelperFactory);
         }
 
-        //TEST: That the cards have been moved.
-        //TEST: Throw an error if this is not the picker
-        //TEST: Throw an error if this is not the bury phase
         public void BuryCards(IHumanPlayer player, List<ICard> cards)
         {
-            cards.ForEach(c => player.Cards.Remove(c));
-            cards.ForEach(c => Decks.Last().Buried.Add(c));
+            if (TurnType != TurnType.Bury)
+                throw new WrongGamePhaseExcpetion("Game must be in the Bury phase.");
+            new PickProcessorOuter().BuryCards(Decks.Last(), player, cards);
         }
 
-        //TEST: Throw error if not in PlayTrick phase.
-        //Stop requiring the trick be passed in.
-        public void PlayNonHumans(ITrick trick)
+        public void PlayNonHumansInTrick()
         {
-            var playersMissed = PlayerCount;
-            var playerIndex = Players.IndexOf(trick.StartingPlayer);
-            while (trick.CardsPlayed.Keys.Contains(Players[playerIndex]) && playersMissed > 0)
+            var trick = Decks.LastOrDefault()?.Hand.Tricks.LastOrDefault();
+            if (trick == null)
+                throw new NullReferenceException("No trick could be found in this deck or no deck in this game.");
+            if (!(trick.PlayersWithoutTurn.FirstOrDefault() is IComputerPlayer))
+                throw new NotPlayersTurnException("The next turn is not a computer player's turn.");
+            foreach (var player in trick.PlayersWithoutTurn)
             {
-                IncrementPlayerIndex(ref playerIndex);
-                --playersMissed;
+                var computerPlayer = player as IComputerPlayer;
+                if (computerPlayer == null)
+                    return;
+                var card = computerPlayer.GetMove(trick);
+                trick.Add(computerPlayer, card);
             }
-            for (; !(Players[playerIndex] is HumanPlayer) && playersMissed > 0; IncrementPlayerIndex(ref playerIndex))
-            {
-                --playersMissed;
-                trick.Add(Players[playerIndex], ((ComputerPlayer)Players[playerIndex]).GetMove(trick));
-            }
-        }
-
-        private void IncrementPlayerIndex(ref int playerIndex)
-        {
-            ++playerIndex;
-            if (playerIndex >= PlayerCount)
-                playerIndex = 0;
         }
 
         //TEST: That the move is recorded.
@@ -163,7 +153,7 @@ namespace Sheepshead.Models
         IHand ContinueFromHumanPickTurn(IHumanPlayer human, bool willPick);
         IComputerPlayer PlayNonHumanPickTurns();
         void BuryCards(IHumanPlayer player, List<ICard> cards);
-        void PlayNonHumans(ITrick trick);
+        void PlayNonHumansInTrick();
         void RecordTurn(IHumanPlayer player, ICard card);
     }
 }

@@ -16,7 +16,7 @@ namespace Sheepshead.Models
             public int PlayerCount { get; set; }
             public List<IPlayer> Players { get; set; }
             public List<IDeck> Decks { get; set; }
-            public void PlayNonHumans(ITrick trick) { throw new NotImplementedException(); }
+            public void PlayNonHumansInTrick() { throw new NotImplementedException(); }
             public IComputerPlayer PlayNonHumanPickTurns() { throw new NotImplementedException(); }
             public void RearrangePlayers() { throw new NotImplementedException(); }
             public bool LastDeckIsComplete() { throw new NotImplementedException(); }

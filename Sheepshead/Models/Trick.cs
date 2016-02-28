@@ -146,6 +146,15 @@ namespace Sheepshead.Models
         }
 
         public ICard PartnerCard { get { return Hand.PartnerCard; } }
+
+        public List<IPlayer> PlayersInTurnOrder => PickPlayerOrderer.PlayersInTurnOrder(Players, StartingPlayer);
+        public List<IPlayer> PlayersWithoutTurn => PickPlayerOrderer.PlayersWithoutTurn(PlayersInTurnOrder, CardsPlayed.Keys.ToList());
+
+        private IPlayerOrderer _pickPlayerOrderer;
+        public IPlayerOrderer PickPlayerOrderer
+        {
+            get { return _pickPlayerOrderer ?? (_pickPlayerOrderer = new PlayerOrderer()); }
+        }
     }
 
     public class TrickWinner {
@@ -171,5 +180,7 @@ namespace Sheepshead.Models
         ICard PartnerCard { get; }
         List<KeyValuePair<IPlayer, ICard>> OrderedMoves { get; }
         event EventHandler<EventArgs> OnTrickEnd;
+        List<IPlayer> PlayersWithoutTurn { get; }
+        IPlayerOrderer PickPlayerOrderer { get; }
     }
 }

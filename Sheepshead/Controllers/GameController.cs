@@ -101,7 +101,7 @@ namespace Sheepshead.Controllers
             ITrick trick = hand.Tricks.LastOrDefault();
             if (trick == null || trick.IsComplete())
                 trick = new Trick(hand);
-            game.PlayNonHumans(trick);
+            game.PlayNonHumanPickTurns();
         }
 
         [HttpPost]
@@ -146,7 +146,7 @@ namespace Sheepshead.Controllers
             var player = game.Players.OfType<IHumanPlayer>().First();
             var card = player.Cards[indexOfCard];
             game.RecordTurn(player, card);
-            game.PlayNonHumans(game.Decks.Last().Hand.Tricks.Last());
+            game.PlayNonHumanPickTurns();
         }
     }
 }

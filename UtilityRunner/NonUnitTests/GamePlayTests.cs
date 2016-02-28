@@ -171,7 +171,7 @@ namespace Sheepshead.Tests.NonUnitTests
                 while (!hand.IsComplete())
                 {
                     var trick = new Trick(hand);
-                    game.PlayNonHumans(trick);
+                    game.PlayNonHumanPickTurns();
                 }
             }
         }

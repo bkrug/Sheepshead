@@ -283,5 +283,44 @@ namespace Sheepshead.Tests
             }
             Assert.IsTrue(threwException);
         }
+
+        [TestMethod]
+        public void PickProcessorOuter_BuryCards()
+        {
+            var toBury = new List<ICard>() { new Mock<ICard>().Object, new Mock<ICard>().Object };
+            var playerCards = toBury.ToList();
+            var buried = new List<ICard>();
+            var humanMock = new Mock<IHumanPlayer>();
+            humanMock.Setup(m => m.Cards).Returns(playerCards);
+            var deckMock = new Mock<IDeck>();
+            deckMock.Setup(m => m.Buried).Returns(buried);
+            deckMock.Setup(m => m.Hand.Picker).Returns(humanMock.Object);
+
+            new PickProcessorOuter().BuryCards(deckMock.Object, humanMock.Object, toBury);
+
+            Assert.AreEqual(0, playerCards.Count(), "The buried cards were removed from the picker's hand.");
+            Assert.IsTrue(buried.Contains(toBury[0]));
+            Assert.IsTrue(buried.Contains(toBury[1]));
+        }
+
+        [TestMethod]
+        public void PickProcessorOuter_BuryCards_NotPicker()
+        {
+            var humanMock = new Mock<IHumanPlayer>();
+            humanMock.Setup(m => m.Cards).Returns(new List<ICard>());
+            var deckMock = new Mock<IDeck>();
+            deckMock.Setup(m => m.Buried).Returns(new List<ICard>());
+            deckMock.Setup(m => m.Hand.Picker).Returns(new Mock<IComputerPlayer>().Object);
+
+            var threwException = false;
+            try {
+                new PickProcessorOuter().BuryCards(deckMock.Object, humanMock.Object, new List<ICard>());
+            }
+            catch(NotPlayersTurnException)
+            {
+                threwException = true;
+            }
+            Assert.IsTrue(threwException);
+        }
     }
 }
