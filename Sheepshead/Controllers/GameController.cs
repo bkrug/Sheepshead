@@ -78,30 +78,13 @@ namespace Sheepshead.Controllers
             }
             else if (turnState.TurnType == TurnType.Pick)
             {
-                Pick(game);
+                game.PlayNonHumanPickTurns();
             }
             else if (turnState.TurnType == TurnType.PlayTrick)
-            { 
-                PlayTrick(game);
+            {
+                game.PlayNonHumanPickTurns();
             }
             return View(turnState);
-        }
-
-        private void Pick(IGame game)
-        {
-            game.PlayNonHumanPickTurns();
-        }
-
-        private void PlayTrick(IGame game)
-        {
-            //TODO: Move all of this into PlayNonHumans.
-            var hand = game.Decks.Last().Hand;
-            if (hand.IsComplete())
-                throw new ApplicationException("Hand is already complete.");
-            ITrick trick = hand.Tricks.LastOrDefault();
-            if (trick == null || trick.IsComplete())
-                trick = new Trick(hand);
-            game.PlayNonHumanPickTurns();
         }
 
         [HttpPost]
