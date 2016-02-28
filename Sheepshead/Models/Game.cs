@@ -69,23 +69,7 @@ namespace Sheepshead.Models
             if (TurnType != TurnType.Pick)
                 throw new WrongGamePhaseExcpetion("Game must be in the Pick phase.");
             var deck = Decks.Last();
-            if (human.QueueRankInDeck(deck) - 1 != deck.PlayersRefusingPick.Count()) //QueueRankInDeck is base 1 not base 0.
-                throw new NotPlayersTurnException("This is not the player's turn to pick.");
-            IHand hand = null;
-            if (willPick)
-            {
-                human.Cards.AddRange(deck.Blinds);
-                hand = new Hand(deck, human, new List<ICard>());
-                if (hand != null)
-                    _learningHelperFactory.GetLearningHelper(hand, SaveLocations.FIRST_SAVE);
-            }
-            else
-            {
-                deck.PlayerWontPick(human);
-                var picker = PlayNonHumanPickTurns();
-                hand = deck.Hand;
-            }
-            return hand;
+            return new PickProcessorOuter2().ContinueFromHumanPickTurn(human, willPick, deck, _handFactory, _learningHelperFactory, new PickProcessorOuter());
         }
 
         public IComputerPlayer PlayNonHumanPickTurns()

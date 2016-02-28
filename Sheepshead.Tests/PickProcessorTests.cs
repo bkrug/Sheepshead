@@ -5,6 +5,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using Sheepshead.Models;
 using Sheepshead.Models.Players;
+using Sheepshead.Models.Players.Stats;
 
 namespace Sheepshead.Tests
 {
@@ -195,6 +196,92 @@ namespace Sheepshead.Tests
             var hand = pickProcessor.AcceptComputerPicker(computerPlayerMock.Object);
 
             Assert.AreSame(expectedHand, hand);
+        }
+
+        [TestMethod]
+        public void PickProcessorOuter2_ContinueFromHumanPickTurn_HumanPicks()
+        {
+            var humanCards = new List<ICard>();
+            var humanMock = new Mock<IHumanPlayer>();
+            humanMock.Setup(m => m.Cards).Returns(humanCards);
+            var pickProcessorMock = new Mock<IPickProcessorOuter>();
+            pickProcessorMock
+                .Setup(m => m.PlayNonHumanPickTurns(It.IsAny<IDeck>(), It.IsAny<IHandFactory>(), It.IsAny<ILearningHelperFactory>()))
+                .Callback(() => Assert.Fail("Should not have let non humans pick."));
+            var handMock = new Mock<IHand>();
+            var handFactoryMock = new Mock<IHandFactory>();
+            handFactoryMock
+                .Setup(m => m.GetHand(It.IsAny<IDeck>(), It.IsAny<IPlayer>(), It.IsAny<List<ICard>>()))
+                .Callback((IDeck deck, IPlayer player, List<ICard> cards) => handMock.Setup(m => m.Picker).Returns(humanMock.Object))
+                .Returns(() => handMock.Object);
+            var blinds = new List<ICard>() { new Mock<ICard>().Object, new Mock<ICard>().Object };
+            var deckMock = new Mock<IDeck>();
+            deckMock.Setup(m => m.Blinds).Returns(blinds);
+            deckMock.Setup(m => m.PlayersWithoutPickTurn).Returns(new List<IPlayer>() { humanMock.Object, new Mock<IComputerPlayer>().Object });
+            var learningHelperMock = new Mock<ILearningHelperFactory>();
+
+            var pickProcessor = new PickProcessorOuter2();
+            var hand = pickProcessor.ContinueFromHumanPickTurn(humanMock.Object, true, deckMock.Object, handFactoryMock.Object, learningHelperMock.Object, pickProcessorMock.Object);
+
+            Assert.AreSame(humanMock.Object, hand.Picker);
+            Assert.IsTrue(humanCards.Contains(blinds[0]));
+            Assert.IsTrue(humanCards.Contains(blinds[1]));
+        }
+
+        [TestMethod]
+        public void PickProcessorOuter2_ContinueFromHumanPickTurn_HumanDeclinesButCompterPicks()
+        {
+            var humanMock = new Mock<IHumanPlayer>();
+            var expectedPicker = new Mock<IComputerPlayer>().Object;
+            var pickProcessorMock = new Mock<IPickProcessorOuter>();
+            var handMock = new Mock<IHand>();
+            pickProcessorMock
+                .Setup(m => m.PlayNonHumanPickTurns(It.IsAny<IDeck>(), It.IsAny<IHandFactory>(), It.IsAny<ILearningHelperFactory>()))
+                .Callback(() => handMock.Setup(m => m.Picker).Returns(expectedPicker))
+                .Returns(expectedPicker);
+            var handFactoryMock = new Mock<IHandFactory>();
+            handFactoryMock
+                .Setup(m => m.GetHand(It.IsAny<IDeck>(), It.IsAny<IPlayer>(), It.IsAny<List<ICard>>()))
+                .Callback((IDeck deck, IPlayer player, List<ICard> cards) => Assert.Fail("Hand should not be created by ContinueFromHumanPick() method."));
+            var refusingPlayers = new List<IPlayer>();
+            var deckMock = new Mock<IDeck>();
+            deckMock.Setup(m => m.Hand).Returns(handMock.Object);
+            deckMock.Setup(m => m.PlayersRefusingPick).Returns(refusingPlayers);
+            deckMock.Setup(m => m.PlayersWithoutPickTurn).Returns(new List<IPlayer>() { humanMock.Object, expectedPicker });
+            var learningHelperMock = new Mock<ILearningHelperFactory>();
+
+            var pickProcessor = new PickProcessorOuter2();
+            var hand = pickProcessor.ContinueFromHumanPickTurn(humanMock.Object, false, deckMock.Object, handFactoryMock.Object, learningHelperMock.Object, pickProcessorMock.Object);
+
+            Assert.IsTrue(hand.Picker is IComputerPlayer);
+            Assert.AreSame(deckMock.Object.Hand, hand);
+            Assert.IsTrue(refusingPlayers.Contains(humanMock.Object));
+        }
+
+        [TestMethod]
+        public void PickProcessorOuter2_ContinueFromHumanPickTurn_WrongTurn()
+        {
+            var humanMock = new Mock<IHumanPlayer>();
+            humanMock.Setup(m => m.Cards).Returns(new List<ICard>());
+            var computerPlayer = new Mock<IComputerPlayer>().Object;
+            var pickProcessorMock = new Mock<IPickProcessorOuter>();
+            var handFactoryMock = new Mock<IHandFactory>();
+            var deckMock = new Mock<IDeck>();
+            deckMock.Setup(m => m.Blinds).Returns(new List<ICard>());
+            deckMock.Setup(m => m.PlayersWithoutPickTurn).Returns(new List<IPlayer>() { computerPlayer, humanMock.Object });
+            var learningHelperMock = new Mock<ILearningHelperFactory>();
+
+            var pickProcessor = new PickProcessorOuter2();
+            var threwException = false;
+            try
+            {
+                var hand = pickProcessor.ContinueFromHumanPickTurn(humanMock.Object, true, deckMock.Object, handFactoryMock.Object, learningHelperMock.Object, pickProcessorMock.Object);
+            }
+            catch (NotPlayersTurnException)
+            {
+                threwException = true;
+            }
+            Assert.IsTrue(threwException);
         }
     }
 }

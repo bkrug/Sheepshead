@@ -28,7 +28,7 @@ namespace Sheepshead.Tests.NonUnitTests
             var moveStatRepository = new MoveStatRepository();
             var buryStatRepository = new BuryStatRepository();
             var leasterStatRepository = new LeasterStatRepository();
-            InstantiateLearningHelper learningDel = (IHand hand) => { return new LearningHelper(hand, SaveLocations.FIRST_SAVE, pickStatRepository, moveStatRepository, buryStatRepository, leasterStatRepository); };
+            InstantiateLearningHelper learningDel = (IHand hand) => { return new LearningHelper(hand, SaveLocations.HAND_SUMMARY, pickStatRepository, moveStatRepository, buryStatRepository, leasterStatRepository); };
             PlayGame(playerList, 500, learningDel);
             pickStatRepository.Save(@"c:\temp\basic-player-pick-stats.json");
             moveStatRepository.Save(@"c:\temp\basic-player-move-stats.json");

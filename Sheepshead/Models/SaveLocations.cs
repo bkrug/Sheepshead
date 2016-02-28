@@ -7,6 +7,6 @@ namespace Sheepshead.Models
 {
     public class SaveLocations
     {
-        public static string FIRST_SAVE { get { return @"c:\temp\HandSummaries.txt"; } }
+        public static string HAND_SUMMARY { get { return @"c:\temp\HandSummaries.txt"; } }
     }
 }
