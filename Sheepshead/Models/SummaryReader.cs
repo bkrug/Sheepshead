@@ -40,7 +40,7 @@ namespace Sheepshead.Models
             public int PlayerCount { get { return Game.PlayerCount; } }
             public List<IPlayer> Players { get { return Game.Players; } }
             public List<IPlayer> PlayersWithoutPickTurn { get { return Game.Players; } }
-            public IPickPlayerOrderer PickPlayerOrderer => null;
+            public IPlayerOrderer PickPlayerOrderer => null;
             public IPickProcessor PickProcessor => null;
         }
 

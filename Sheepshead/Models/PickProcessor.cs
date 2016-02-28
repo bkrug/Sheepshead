@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using Sheepshead.Models.Players;
-using Sheepshead.Models.Wrappers;
-using Sheepshead.Models.Players.Stats;
 
 namespace Sheepshead.Models
 {
@@ -25,6 +23,7 @@ namespace Sheepshead.Models
             _handFactory = handFactory;
         }
 
+        //TODO: Either star calling this from the PicProcessorOuter2.ContinueFromHumanPickTurn() or delete it.
         public void LetHumanPick(IHumanPlayer human, bool willPick)
         {
             if (_deck.PlayersWithoutPickTurn.FirstOrDefault() != human)

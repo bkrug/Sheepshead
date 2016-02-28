@@ -74,6 +74,8 @@ namespace Sheepshead.Models
 
         public IComputerPlayer PlayNonHumanPickTurns()
         {
+            if (TurnType != TurnType.Pick)
+                throw new WrongGamePhaseExcpetion("Game must be in the Pick phase.");
             return new PickProcessorOuter().PlayNonHumanPickTurns(_decks.Last(), _handFactory, _learningHelperFactory);
         }
 

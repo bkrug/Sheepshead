@@ -91,15 +91,13 @@ namespace Sheepshead.Models
             get { return Game.Players; }
         }
 
-        public List<IPlayer> PlayersWithoutPickTurn
-        {
-            get { return PickPlayerOrderer.PlayersWithoutPickTurn(PickPlayerOrderer.PlayersInPickOrder(Players, StartingPlayer), PlayersRefusingPick); }
-        }
+        public List<IPlayer> PlayersInTurnOrder => PickPlayerOrderer.PlayersInTurnOrder(Players, StartingPlayer);
+        public List<IPlayer> PlayersWithoutPickTurn => PickPlayerOrderer.PlayersWithoutTurn(PlayersInTurnOrder, PlayersRefusingPick);
 
-        private IPickPlayerOrderer _pickPlayerOrderer;
-        public IPickPlayerOrderer PickPlayerOrderer
+        private IPlayerOrderer _pickPlayerOrderer;
+        public IPlayerOrderer PickPlayerOrderer
         {
-            get { return _pickPlayerOrderer ?? (_pickPlayerOrderer = new PickPlayerOrderer()); }
+            get { return _pickPlayerOrderer ?? (_pickPlayerOrderer = new PlayerOrderer()); }
         }
 
         private IPickProcessor _pickProcessor;
@@ -121,7 +119,7 @@ namespace Sheepshead.Models
         int PlayerCount { get; }
         List<IPlayer> Players { get; }
         List<IPlayer> PlayersWithoutPickTurn { get; }
-        IPickPlayerOrderer PickPlayerOrderer { get; }
+        IPlayerOrderer PickPlayerOrderer { get; }
         IPickProcessor PickProcessor { get; }
     }
 
