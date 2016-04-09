@@ -39,7 +39,7 @@ namespace Sheepshead.Tests
         }
 
         [TestMethod]
-        public void Game_PlayNonHuman_PlayCard1()
+        public void Game_PlayNonHuman_PlayCard()
         {
             var playerList = new List<Mock>() {
                 new Mock<IComputerPlayer>(),
@@ -80,7 +80,7 @@ namespace Sheepshead.Tests
         }
 
         [TestMethod]
-        public void Game_PlayNonHuman_LastPlayerIsNotHuman1()
+        public void Game_PlayNonHuman_LastPlayerIsNotHuman()
         {
             var playerList = new List<Mock>() {
                 new Mock<IComputerPlayer>(),
