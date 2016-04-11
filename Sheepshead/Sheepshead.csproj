@@ -193,6 +193,39 @@
     <Content Include="Dlls\MathNet.Numerics\lib\Net40\MathNet.Numerics.xml" />
     <Content Include="Dlls\MathNet.Numerics\lib\Net40\zlib.net.dll" />
     <Content Include="Dlls\MathNet.Numerics\License.txt" />
+    <Content Include="emberfiles\app\app.js" />
+    <Content Include="emberfiles\app\index.html" />
+    <Content Include="emberfiles\app\resolver.js" />
+    <Content Include="emberfiles\app\router.js" />
+    <Content Include="emberfiles\app\routes\about.js" />
+    <Content Include="emberfiles\app\styles\app.css" />
+    <Content Include="emberfiles\config\environment.js" />
+    <Content Include="emberfiles\dist\assets\emberfiles.css" />
+    <Content Include="emberfiles\dist\assets\emberfiles.js" />
+    <Content Include="emberfiles\dist\assets\failed.png" />
+    <Content Include="emberfiles\dist\assets\passed.png" />
+    <Content Include="emberfiles\dist\assets\test-loader.js" />
+    <Content Include="emberfiles\dist\assets\test-support.css" />
+    <Content Include="emberfiles\dist\assets\test-support.js" />
+    <Content Include="emberfiles\dist\assets\tests.js" />
+    <Content Include="emberfiles\dist\assets\vendor.css" />
+    <Content Include="emberfiles\dist\assets\vendor.js" />
+    <Content Include="emberfiles\dist\crossdomain.xml" />
+    <Content Include="emberfiles\dist\index.html" />
+    <Content Include="emberfiles\dist\robots.txt" />
+    <Content Include="emberfiles\dist\testem.js" />
+    <Content Include="emberfiles\dist\tests\index.html" />
+    <Content Include="emberfiles\ember-cli-build.js" />
+    <Content Include="emberfiles\public\crossdomain.xml" />
+    <Content Include="emberfiles\public\robots.txt" />
+    <Content Include="emberfiles\testem.js" />
+    <Content Include="emberfiles\tests\helpers\destroy-app.js" />
+    <Content Include="emberfiles\tests\helpers\module-for-acceptance.js" />
+    <Content Include="emberfiles\tests\helpers\resolver.js" />
+    <Content Include="emberfiles\tests\helpers\start-app.js" />
+    <Content Include="emberfiles\tests\index.html" />
+    <Content Include="emberfiles\tests\test-helper.js" />
+    <Content Include="emberfiles\tests\unit\routes\about-test.js" />
     <Content Include="Libraries\jquery-2.1.1.min.js" />
     <Content Include="Scripts\bury.js" />
     <Content Include="Scripts\generic.js" />
@@ -329,6 +362,41 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\Game\Play.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="emberfiles\vendor\.gitkeep" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="emberfiles\app\components\.gitkeep" />
+    <Content Include="emberfiles\app\controllers\.gitkeep" />
+    <Content Include="emberfiles\app\helpers\.gitkeep" />
+    <Content Include="emberfiles\app\models\.gitkeep" />
+    <Content Include="emberfiles\app\routes\.gitkeep" />
+    <Content Include="emberfiles\app\templates\about.hbs" />
+    <Content Include="emberfiles\app\templates\application.hbs" />
+    <Content Include="emberfiles\app\templates\components\.gitkeep" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="emberfiles\dist\assets\emberfiles.map" />
+    <Content Include="emberfiles\dist\assets\test-support.map" />
+    <Content Include="emberfiles\dist\assets\tests.map" />
+    <Content Include="emberfiles\dist\assets\vendor.map" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="emberfiles\tests\.jshintrc" />
+    <Content Include="emberfiles\tests\integration\.gitkeep" />
+    <Content Include="emberfiles\tests\unit\.gitkeep" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="emberfiles\.bowerrc" />
+    <Content Include="emberfiles\.editorconfig" />
+    <Content Include="emberfiles\.ember-cli" />
+    <Content Include="emberfiles\.gitignore" />
+    <Content Include="emberfiles\.jshintrc" />
+    <Content Include="emberfiles\.travis.yml" />
+    <Content Include="emberfiles\.watchmanconfig" />
+    <Content Include="emberfiles\bower.json" />
+    <Content Include="emberfiles\package.json" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
