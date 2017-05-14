@@ -1,4 +1,6 @@
-﻿class PlayerCountRadio extends React.Component {
+﻿import React from 'react';
+
+export default class PlayerCountRadio extends React.Component {
     render() {
         return (
             <div className="playerCountRadio">
@@ -41,7 +43,7 @@ class GameSetup extends React.Component {
     }
 }
 
-ReactDOM.render(
-    <GameSetup />,
-    document.getElementById('content')
-);
+//ReactDOM.render(
+//    <GameSetup />,
+//    document.getElementById('content')
+//);

@@ -13,6 +13,20 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="jstest\node_modules\**" />
+    <Compile Remove="react-node\node_modules\**" />
+    <Content Remove="jstest\node_modules\**" />
+    <Content Remove="react-node\node_modules\**" />
+    <EmbeddedResource Remove="jstest\node_modules\**" />
+    <EmbeddedResource Remove="react-node\node_modules\**" />
+    <None Remove="jstest\node_modules\**" />
+    <None Remove="react-node\node_modules\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="jstest\src\gamesetup.jsx">
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
     <Content Include="wwwroot\js\gamesetup.jsx" />
   </ItemGroup>
   <ItemGroup>
@@ -23,6 +37,7 @@
     <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="1.1.1" />
     <PackageReference Include="Microsoft.VisualStudio.Web.BrowserLink" Version="1.1.0" />
     <PackageReference Include="React.AspNet" Version="3.0.1" />
+    <PackageReference Include="React.MSBuild" Version="3.0.1" />
   </ItemGroup>
   <ItemGroup>
     <DotNetCliToolReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Tools" Version="1.0.0" />
