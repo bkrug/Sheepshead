@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UtilityRunner", "UtilityRun
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sheepshead.React", "Sheepshead.React\Sheepshead.React.csproj", "{4C8C8E0F-D25C-4A29-B3C0-643F90F5B03C}"
 EndProject
+Project("{9092AA53-FB77-4645-B42D-1CCCA6BD08BD}") = "Sheepshead.Node", "Sheepshead.Node\Sheepshead.Node.njsproj", "{79EBDA00-5CCB-445E-894E-6F0E2502A698}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{4C8C8E0F-D25C-4A29-B3C0-643F90F5B03C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4C8C8E0F-D25C-4A29-B3C0-643F90F5B03C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4C8C8E0F-D25C-4A29-B3C0-643F90F5B03C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{79EBDA00-5CCB-445E-894E-6F0E2502A698}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{79EBDA00-5CCB-445E-894E-6F0E2502A698}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{79EBDA00-5CCB-445E-894E-6F0E2502A698}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{79EBDA00-5CCB-445E-894E-6F0E2502A698}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
