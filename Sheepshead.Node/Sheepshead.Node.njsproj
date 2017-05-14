@@ -31,7 +31,7 @@
     <Compile Include="server.js" />
     <Compile Include="src\App.js" />
     <Compile Include="src\App.test.js" />
-    <Compile Include="src\GameSetup.test.js" />
+    <Compile Include="src\PlayerCountRadio.test.js" />
     <Compile Include="src\index.js" />
     <Content Include="package.json" />
     <Content Include="public\favicon.ico" />
@@ -41,6 +41,9 @@
     <Content Include="src\GameSetup.jsx" />
     <Content Include="src\index.css" />
     <Content Include="src\logo.svg" />
+    <Content Include="src\PlayerCountRadio.jsx">
+      <SubType>Code</SubType>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="public\" />

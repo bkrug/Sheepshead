@@ -1,6 +1,6 @@
 ﻿import React from 'react';
 import { shallow } from 'enzyme';
-import PlayerCountRadio from './gamesetup';
+import PlayerCountRadio from './PlayerCountRadio';
 
 test('PlayerCountRadio title is Dwayne', () => {
     const checkbox = shallow(
