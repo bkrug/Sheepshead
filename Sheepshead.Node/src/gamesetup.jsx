@@ -42,8 +42,3 @@ class GameSetup extends React.Component {
         );
     }
 }
-
-//ReactDOM.render(
-//    <GameSetup />,
-//    document.getElementById('content')
-//);

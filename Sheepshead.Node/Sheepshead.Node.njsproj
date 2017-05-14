@@ -31,14 +31,14 @@
     <Compile Include="server.js" />
     <Compile Include="src\App.js" />
     <Compile Include="src\App.test.js" />
-    <Compile Include="src\gamesetup.test.js" />
+    <Compile Include="src\GameSetup.test.js" />
     <Compile Include="src\index.js" />
     <Content Include="package.json" />
     <Content Include="public\favicon.ico" />
     <Content Include="public\index.html" />
     <Content Include="README.md" />
     <Content Include="src\App.css" />
-    <Content Include="src\gamesetup.jsx" />
+    <Content Include="src\GameSetup.jsx" />
     <Content Include="src\index.css" />
     <Content Include="src\logo.svg" />
   </ItemGroup>

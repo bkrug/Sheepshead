@@ -1,9 +1,9 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import App from './App';
+import PlayerCountRadio from './GameSetup';
 import './index.css';
 
 ReactDOM.render(
-  <App />,
+    <PlayerCountRadio name="fruit" title="vegetable" />,
   document.getElementById('root')
 );

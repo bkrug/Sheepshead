@@ -13,20 +13,13 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="jstest\node_modules\**" />
     <Compile Remove="react-node\node_modules\**" />
-    <Content Remove="jstest\node_modules\**" />
     <Content Remove="react-node\node_modules\**" />
-    <EmbeddedResource Remove="jstest\node_modules\**" />
     <EmbeddedResource Remove="react-node\node_modules\**" />
-    <None Remove="jstest\node_modules\**" />
     <None Remove="react-node\node_modules\**" />
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="jstest\src\gamesetup.jsx">
-      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-    </Content>
     <Content Include="wwwroot\js\gamesetup.jsx" />
   </ItemGroup>
   <ItemGroup>
