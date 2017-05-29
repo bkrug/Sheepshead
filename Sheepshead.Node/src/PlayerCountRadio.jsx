@@ -17,7 +17,13 @@ export default class PlayerCountRadio extends React.Component {
 
     renderRadio(i) {
         return (
-            <span><input type="radio" name={this.props.name} value={i} onClick={() => this.handleClick(i)} />{i}</span>
+            <span>
+                <input
+                    type="radio"
+                    name={this.props.name} value={i} onClick={() => this.handleClick(i)}
+                    checked={this.state.value === i}
+                />{i}
+            </span>
         );
     }
 
