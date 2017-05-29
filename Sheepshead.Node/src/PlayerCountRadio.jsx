@@ -9,6 +9,8 @@ export default class PlayerCountRadio extends React.Component {
 
     handleClick(i) {
         this.setState({ value: i });
+        if (this.props.onChange)
+            this.props.onChange(this);
     }
 
     getValue() {
@@ -20,7 +22,9 @@ export default class PlayerCountRadio extends React.Component {
             <span>
                 <input
                     type="radio"
-                    name={this.props.name} value={i} onClick={() => this.handleClick(i)}
+                    name={this.props.name}
+                    value={i}
+                    onClick={() => this.handleClick(i)}
                     checked={this.state.value === i}
                 />{i}
             </span>
@@ -29,7 +33,7 @@ export default class PlayerCountRadio extends React.Component {
 
     render() {
         return (
-            <div className="playerCountRadio">
+            <div className="playerCountRadio" onChange={this.props.onChange}>
                 <span className="title">{this.props.title}</span>
                 {this.renderRadio(0)}
                 {this.renderRadio(1)}
