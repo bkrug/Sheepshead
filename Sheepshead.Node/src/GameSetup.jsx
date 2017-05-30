@@ -27,6 +27,10 @@ export default class GameSetup extends React.Component {
         }
     }
 
+    playerCountValidityClass() {
+        return (this.state.value === 3 || this.state.value === 5) ? '' : 'invalidcount';
+    }
+
     render() {
         return (
             <div className="gameSetup">
@@ -37,8 +41,9 @@ export default class GameSetup extends React.Component {
                 <PlayerCountRadio name={this.LEARNING} title="A.I. Statistic" onChange={this.handleChange} remaining={this.state.remaining} />
                 <div>
                     <span>Total Players:</span>
-                    <span className="totalPlayers">{this.state.value}</span>
+                    <span className={"totalPlayers " + this.playerCountValidityClass()}>{this.state.value}</span>
                 </div>
+                <input type="hidden" className="remaining" value={this.state.remaining} />
                 <input type="button" value="Play" />
             </div>
         );

@@ -3,7 +3,7 @@
 export default class PlayerCountRadio extends React.Component {
     constructor(props) {
         super(props);
-        this.state = { value: 0 };
+        this.state = { value: props.value || 0 };
         this.handleClick = this.handleClick.bind(this);
     }
 
@@ -27,6 +27,7 @@ export default class PlayerCountRadio extends React.Component {
                     onClick={() => this.handleClick(i)}
                     onChange={() => function () { return; }}
                     checked={this.state.value === i}
+                    disabled={parseFloat(this.props.remaining) + parseFloat(this.state.value) < i ? 'disabled' : undefined }
                 />{i}
             </span>
         );
