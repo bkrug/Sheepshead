@@ -1,34 +1,44 @@
 ﻿import React from 'react';
 import PlayerCountRadio from './PlayerCountRadio';
 
-class PlayerCountText extends React.Component {
-    render() {
-        return (
-            <div className="playerCountText">
-                <span>Total Players:</span>
-                <span>0</span>
-            </div>
-        );
-    }
-}
-
 export default class GameSetup extends React.Component {
-    totalValue() {
-        return null;
+    constructor(props) {
+        super(props);
+        this.MAX_PLAYERS = 5;
+        this.state = { value: 0, remaining: this.MAX_PLAYERS };
+        this.handleChange = this.handleChange.bind(this);
+        this.setConstants();
+        this.selections = {};
+        this.selections[this.HUMANS] = this.selections[this.NEWBIE] = this.selections[this.BASIC] = this.selections[this.LEARNING] = 0;
     }
-    onChange(playerCountRadio) {
 
+    setConstants() {
+        this.HUMANS = "humans";
+        this.NEWBIE = "newbie";
+        this.BASIC = "basic";
+        this.LEARNING = "learning";
     }
+
+    handleChange(radioGroup, radioValue) {
+        if (radioValue === 0 || radioValue > 0) {
+            this.selections[radioGroup] = radioValue;
+            var newTotal = this.selections[this.HUMANS] + this.selections[this.NEWBIE] + this.selections[this.BASIC] + this.selections[this.LEARNING];
+            this.setState({ value: newTotal, remaining: this.MAX_PLAYERS - newTotal });
+        }
+    }
+
     render() {
         return (
             <div className="gameSetup">
                 <h4>Setup Sheepshead Game</h4>
-                <PlayerCountRadio name="humans" title="Humans" onChange={this.onChange} />
-                <PlayerCountRadio name="newbie" title="A.I. Simple" onChange={this.onChange} />
-                <PlayerCountRadio name="basic" title="A.I. Basic" onChange={this.onChange} />
-                <PlayerCountRadio name="learning" title="A.I. Statistic" onChange={this.onChange} />
-                <span>{this.totalValue()}</span>
-                <PlayerCountText />
+                <PlayerCountRadio name={this.HUMANS} title="Humans" onChange={this.handleChange} remaining={this.state.remaining} />
+                <PlayerCountRadio name={this.NEWBIE} title="A.I. Simple" onChange={this.handleChange} remaining={this.state.remaining} />
+                <PlayerCountRadio name={this.BASIC} title="A.I. Basic" onChange={this.handleChange} remaining={this.state.remaining} />
+                <PlayerCountRadio name={this.LEARNING} title="A.I. Statistic" onChange={this.handleChange} remaining={this.state.remaining} />
+                <div>
+                    <span>Total Players:</span>
+                    <span className="totalPlayers">{this.state.value}</span>
+                </div>
                 <input type="button" value="Play" />
             </div>
         );

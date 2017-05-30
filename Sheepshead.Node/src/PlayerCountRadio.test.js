@@ -30,14 +30,13 @@ test('PlayerCountRadio should have new value of 2', () => {
 });
 
 test('PlayerCountRadio click event should trigger a change event', () => {
-    var valueChanged = false;
-    var passedObject = null;
-    var changeFunction = function (obj) { valueChanged = true; passedObject = obj; };
+    var actGroupName, actPlayerCount;
+    var changeFunction = function (groupName, playerCount) { actGroupName = groupName; actPlayerCount = playerCount; };
     const pcRadio = shallow(
         <PlayerCountRadio name="dwight" title="dwayne" onChange={changeFunction}/>
     );
 
     pcRadio.find('input[type="radio"]').at(3).simulate('click');
-    expect(valueChanged).toEqual(true);
-    expect(passedObject.props.name).toEqual('dwight');
+    expect(actGroupName).toEqual("dwight");
+    expect(actPlayerCount).toEqual(3);
 });
