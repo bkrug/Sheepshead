@@ -4,15 +4,15 @@ import PlayerCountRadio from './PlayerCountRadio';
 export default class GameSetup extends React.Component {
     constructor(props) {
         super(props);
-        this.MAX_PLAYERS = 5;
+        this.setConstants();
         this.state = { value: 0, remaining: this.MAX_PLAYERS };
         this.handleChange = this.handleChange.bind(this);
-        this.setConstants();
         this.selections = {};
         this.selections[this.HUMANS] = this.selections[this.NEWBIE] = this.selections[this.BASIC] = this.selections[this.LEARNING] = 0;
     }
 
     setConstants() {
+        this.MAX_PLAYERS = 5;
         this.HUMANS = "humans";
         this.NEWBIE = "newbie";
         this.BASIC = "basic";
