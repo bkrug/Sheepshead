@@ -42,6 +42,8 @@ test('PlayerCountRadio click event should trigger a change event', () => {
 });
 
 test('PlayerCountRadio remaining property of 3 should cause 2 buttons to be disabled.', () => {
+    //The maximum number of players is 5 and 5 - 3 = 2
+
     const pcRadio = shallow(
         <PlayerCountRadio name="dwight" title="dwayne" remaining="3"/>
     );
@@ -55,7 +57,9 @@ test('PlayerCountRadio remaining property of 3 should cause 2 buttons to be disa
     expect(radios.at(5).prop('disabled')).toEqual('disabled');
 });
 
-test('PlayerCountRadio remaining property of 2 should cause 1 buttons to be disabled.', () => {
+test('PlayerCountRadio remaining property of 2 and value property of 2 should cause 1 buttons to be disabled.', () => {
+    //The maximum number of players is 5 and 5 - 2 - 2 = 1
+
     const pcRadio = shallow(
         <PlayerCountRadio name="dwight" title="dwayne" value="2" remaining="2" />
     );
