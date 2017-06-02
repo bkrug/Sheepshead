@@ -21,6 +21,9 @@
 
   <ItemGroup>
     <Content Include="wwwroot\js\gamesetup.jsx" />
+    <Content Include="wwwroot\js\gamesetup.old.jsx" />
+    <Content Include="wwwroot\js\PlayerCountRadio.jsx" />
+    <Content Include="wwwroot\js\Render.jsx" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.0.0" />
