@@ -111,9 +111,9 @@
     <Folder Include="Models\" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Sheepshead\Sheepshead.csproj">
-      <Project>{4ea049ab-6be7-4cb8-9a71-fa9666c1ae4c}</Project>
-      <Name>Sheepshead</Name>
+    <ProjectReference Include="..\Sheepshead.Model\Sheepshead.Model.csproj">
+      <Project>{d3975282-20d6-495f-bfd2-4f477879ad51}</Project>
+      <Name>Sheepshead.Model</Name>
     </ProjectReference>
   </ItemGroup>
   <PropertyGroup>

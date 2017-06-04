@@ -17,6 +17,8 @@ Project("{9092AA53-FB77-4645-B42D-1CCCA6BD08BD}") = "Sheepshead.Node", "Sheepshe
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sheeshead.WebApi", "Sheeshead.WebApi\Sheeshead.WebApi.csproj", "{485148CB-D684-430F-A983-E3142CD9DF0D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sheepshead.Model", "Sheepshead.Model\Sheepshead.Model.csproj", "{D3975282-20D6-495F-BFD2-4F477879AD51}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -51,6 +53,10 @@ Global
 		{485148CB-D684-430F-A983-E3142CD9DF0D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{485148CB-D684-430F-A983-E3142CD9DF0D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{485148CB-D684-430F-A983-E3142CD9DF0D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D3975282-20D6-495F-BFD2-4F477879AD51}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D3975282-20D6-495F-BFD2-4F477879AD51}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D3975282-20D6-495F-BFD2-4F477879AD51}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D3975282-20D6-495F-BFD2-4F477879AD51}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
