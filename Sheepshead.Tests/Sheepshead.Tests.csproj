@@ -129,9 +129,9 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Sheepshead\Sheepshead.csproj">
-      <Project>{4EA049AB-6BE7-4CB8-9A71-FA9666C1AE4C}</Project>
-      <Name>Sheepshead</Name>
+    <ProjectReference Include="..\Sheepshead.Model\Sheepshead.Model.csproj">
+      <Project>{d3975282-20d6-495f-bfd2-4f477879ad51}</Project>
+      <Name>Sheepshead.Model</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
