@@ -1,4 +1,5 @@
 ﻿import React from 'react';
+import 'whatwg-fetch';
 import PlayerCountRadio from './PlayerCountRadio';
 
 export default class GameSetup extends React.Component {
@@ -31,6 +32,16 @@ export default class GameSetup extends React.Component {
         return (this.state.value === 3 || this.state.value === 5) ? '' : 'invalidcount';
     }
 
+    handlePlayClick() {
+        fetch('http://localhost:61904/api/game/gettext')
+            .then(function (response) {
+                return response.text();
+            })
+            .then(function (text) {
+                alert(text);
+            });
+    }
+
     render() {
         return (
             <div className="gameSetup">
@@ -44,7 +55,7 @@ export default class GameSetup extends React.Component {
                     <span className={"totalPlayers " + this.playerCountValidityClass()}>{this.state.value}</span>
                 </div>
                 <input type="hidden" className="remaining" value={this.state.remaining} />
-                <input type="button" value="Play" />
+                <input type="button" value="Play" onClick={this.handlePlayClick} />
             </div>
         );
     }
