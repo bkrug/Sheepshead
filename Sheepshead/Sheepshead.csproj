@@ -132,14 +132,6 @@
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Content Include="Content\playTrick.css" />
-    <Content Include="Dlls\MathNet.Numerics\lib\Net40\MathNet.Numerics.dll" />
-    <Content Include="Dlls\MathNet.Numerics\lib\Net40\MathNet.Numerics.FSharp.dll" />
-    <Content Include="Dlls\MathNet.Numerics\lib\Net40\MathNet.Numerics.FSharp.pdb" />
-    <Content Include="Dlls\MathNet.Numerics\lib\Net40\MathNet.Numerics.FSharp.XML" />
-    <Content Include="Dlls\MathNet.Numerics\lib\Net40\MathNet.Numerics.pdb" />
-    <Content Include="Dlls\MathNet.Numerics\lib\Net40\MathNet.Numerics.xml" />
-    <Content Include="Dlls\MathNet.Numerics\lib\Net40\zlib.net.dll" />
-    <Content Include="Dlls\MathNet.Numerics\License.txt" />
     <Content Include="Libraries\jquery-2.1.1.min.js" />
     <Content Include="Scripts\bury.js" />
     <Content Include="Scripts\generic.js" />
