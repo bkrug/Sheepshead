@@ -43,6 +43,9 @@
     <Content Include="src\GameSetup.jsx" />
     <Content Include="src\index.css" />
     <Content Include="src\logo.svg" />
+    <Content Include="src\Mouse.jsx">
+      <SubType>Code</SubType>
+    </Content>
     <Content Include="src\PlayerCountRadio.jsx">
       <SubType>Code</SubType>
     </Content>
