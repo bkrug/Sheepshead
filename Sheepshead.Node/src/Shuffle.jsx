@@ -44,7 +44,7 @@ export default class Suffle extends React.Component {
     tick() {
         var newCount = this.state.count + 1;
         if (newCount > 32)
-            return;
+            window.location = "play";
         var playerCardsPerBlind = 2;
         var playerCount = 5;
         var groupSize = playerCount * playerCardsPerBlind + 1;
