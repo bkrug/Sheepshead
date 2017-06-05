@@ -1,20 +1,5 @@
 ﻿import React from 'react';
 
-export default class Suffle extends React.Component {
-    render() {
-        return (
-            <div>
-                <Stack title="blind" count="1" />
-                <Stack title="Frank" count="2" />
-                <Stack title="Mellisa" count="0" />
-                <Stack title="Joel" count="3" />
-                <Stack title="Roberto" count="6" />
-                <Stack title="Vivek" count="5" />
-            </div>
-        );
-    }
-}
-
 class Stack extends React.Component {
     renderFullCardBack() {
         return this.props.count > 0 ? (<div className="card-back-full" />) : (<div className="card-empty" />);
@@ -36,5 +21,59 @@ class Stack extends React.Component {
                 {this.renderPartialCardBack(6)}
             </div>
         )
+    }
+}
+
+export default class Suffle extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = { count: -1 };
+    }
+
+    componentDidMount() {
+        this.timerID = setInterval(
+            () => this.tick(),
+            100
+        );
+    }
+
+    componentWillUnmount() {
+        clearInterval(this.timerID);
+    }
+
+    tick() {
+        var newCount = this.state.count + 1;
+        if (newCount > 32)
+            return;
+        var playerCardsPerBlind = 2;
+        var playerCount = 5;
+        var groupSize = playerCount * playerCardsPerBlind + 1;
+        var modulus = newCount % groupSize;
+        var baseCards = parseInt(newCount / groupSize, 10) * playerCardsPerBlind + (modulus > playerCount ? 1 : 0);
+        var remainder = (modulus <= playerCount) ? modulus : modulus - playerCount;
+        var blind = parseInt(newCount / groupSize, 10);
+        this.setState({
+            count: newCount,
+            player1: baseCards + (remainder > 0 ? 1 : 0),
+            player2: baseCards + (remainder > 1 ? 1 : 0),
+            player3: baseCards + (remainder > 2 ? 1 : 0),
+            player4: baseCards + (remainder > 3 ? 1 : 0),
+            player5: baseCards + (remainder > 4 ? 1 : 0),
+            blind: blind
+        })
+    }
+
+    render() {
+        return (
+            <div>
+                <h2>Shuffling Cards</h2>
+                <Stack title="Frank" count={this.state.player1} />
+                <Stack title="Mellisa" count={this.state.player2} />
+                <Stack title="Joel" count={this.state.player3} />
+                <Stack title="Roberto" count={this.state.player4} />
+                <Stack title="Vivek" count={this.state.player5} />
+                <Stack title="blind" count={this.state.blind} />
+            </div>
+        );
     }
 }

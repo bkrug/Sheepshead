@@ -8,23 +8,29 @@ body {
     color: red;
 }
 
+.card-stack {
+    width: 200px;
+    display: inline-block;
+}
+
 .card-empty {
-    width: 20px;
-    height: 40px;
+    width: 71px;
+    height: 96px;
+    display: inline-block;
 }
 
 .card-back-full {
-    width: 20px;
-    height: 40px;
-    background-color: dodgerblue;
+    width: 71px;
+    height: 96px;
+    background-image: url('../Images/b1fv.png');
     border: 1px solid silver;
     display: inline-block;
 }
 
 .card-back-part {
-    width: 5px;
-    height: 40px;
-    background-color: dodgerblue;
+    width: 12px;
+    height: 96px;
+    background-image: url('../Images/b1pr.png');
     border: 1px solid silver;
     display: inline-block;
 }
