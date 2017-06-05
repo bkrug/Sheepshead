@@ -7,3 +7,24 @@ body {
 .invalidcount {
     color: red;
 }
+
+.card-empty {
+    width: 20px;
+    height: 40px;
+}
+
+.card-back-full {
+    width: 20px;
+    height: 40px;
+    background-color: dodgerblue;
+    border: 1px solid silver;
+    display: inline-block;
+}
+
+.card-back-part {
+    width: 5px;
+    height: 40px;
+    background-color: dodgerblue;
+    border: 1px solid silver;
+    display: inline-block;
+}

@@ -39,6 +39,7 @@ export default class GameSetup extends React.Component {
             })
             .then(function (text) {
                 alert(text);
+                fetch('Shuffle')
             });
     }
 
