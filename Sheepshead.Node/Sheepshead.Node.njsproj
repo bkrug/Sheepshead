@@ -35,6 +35,12 @@
     </Compile>
     <Compile Include="src\PlayerCountRadio.test.js" />
     <Compile Include="src\index.js" />
+    <Compile Include="src\withQuery.js">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="src\withQuery.test.js">
+      <SubType>Code</SubType>
+    </Compile>
     <Content Include="Images\1.png" />
     <Content Include="Images\10.png" />
     <Content Include="Images\11.png" />
