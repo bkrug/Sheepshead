@@ -2,7 +2,7 @@
     var paramValue = queryParams[key];
     if (Array.isArray(paramValue))
         return paramValue.map(v => encodeURIComponent(key) + "=" + encodeURIComponent(v)).join('&');
-    else if (typeof paramValue == "object")
+    else if (typeof paramValue === "object")
         return encodeURIComponent(key) + "=" + encodeURIComponent(JSON.stringify(paramValue));
     else
         return encodeURIComponent(key) + "=" + encodeURIComponent(paramValue);

@@ -1,6 +1,9 @@
-﻿using System;
+﻿using Sheepshead.Models;
 using System.Web.Http;
 using System.Web.Http.Cors;
+using System.Web.Http.ModelBinding;
+using System.Web.Http.ModelBinding.Binders;
+using Sheeshead.WebApi.Json;
 
 namespace Sheeshead.WebApi
 {
@@ -20,6 +23,9 @@ namespace Sheeshead.WebApi
                 routeTemplate: "api/{controller}/{id}",
                 defaults: new { id = RouteParameter.Optional }
             );
+
+            config.Services.Insert(typeof(ModelBinderProvider), 0, 
+                new SimpleModelBinderProvider(typeof(GameStartModel), new JsonBodyModelBinder<GameStartModel>()));
         }
     }
 }

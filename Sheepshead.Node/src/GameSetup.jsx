@@ -1,5 +1,6 @@
 ﻿import React from 'react';
 import 'whatwg-fetch';
+import { withQuery } from './withQuery'; 
 import PlayerCountRadio from './PlayerCountRadio';
 
 export default class GameSetup extends React.Component {
@@ -8,6 +9,7 @@ export default class GameSetup extends React.Component {
         this.setConstants();
         this.state = { value: 0, remaining: this.MAX_PLAYERS };
         this.handleChange = this.handleChange.bind(this);
+        this.handlePlayClick = this.handlePlayClick.bind(this);
         this.selections = {};
         this.selections[this.HUMANS] = this.selections[this.NEWBIE] = this.selections[this.BASIC] = this.selections[this.LEARNING] = 0;
     }
@@ -33,14 +35,30 @@ export default class GameSetup extends React.Component {
     }
 
     handlePlayClick() {
-        fetch('http://localhost:61904/api/game/gettext')
-            .then(function (response) {
-                return response.text();
-            })
-            .then(function (text) {
-                alert(text);
-                window.location = 'Shuffle';
-            });
+        var gameStartModel = {
+            HumanCount: this.selections[this.HUMANS],
+            NewbieCount: this.selections[this.NEWBIE],
+            BasicCount: this.selections[this.BASIC],
+            LearningCount: this.selections[this.LEARNING]
+        };
+        fetch(
+            'http://localhost:61904/api/game/create',
+            {
+                method: 'POST',
+                body: JSON.stringify(gameStartModel),
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                }
+            }
+        )
+        .then(function (response) {
+            return response.json()
+        }).then(function (json) {
+            console.log('parsed json', json)
+        }).catch(function (ex) {
+            console.log('parsing failed', ex)
+        });
     }
 
     render() {
