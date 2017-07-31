@@ -1,10 +1,7 @@
-﻿using Newtonsoft.Json;
-using Sheepshead.Models;
+﻿using Sheepshead.Models;
 using Sheepshead.Models.Players.Stats;
 using Sheepshead.Models.Wrappers;
-using Sheeshead.WebApi.Json;
 using System.Web.Http;
-using System.Web.Http.ModelBinding;
 
 namespace Sheeshead.WebApi.Controllers
 {
@@ -18,7 +15,7 @@ namespace Sheeshead.WebApi.Controllers
         }
 
         [HttpPost]
-        public IHttpActionResult Create([ModelBinder(BinderType = typeof(JsonBodyModelBinder<GameStartModel>))]GameStartModel model)
+        public IHttpActionResult Create(GameStartModel model)
         {
             var repository = new GameRepository(GameDictionary.Instance.Dictionary);
             var newGame = repository.CreateGame(model, _rnd, new LearningHelperFactory());
