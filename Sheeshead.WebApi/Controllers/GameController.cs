@@ -21,7 +21,7 @@ namespace Sheeshead.WebApi.Controllers
             var newGame = repository.CreateGame(model, _rnd, new LearningHelperFactory());
             repository.Save(newGame);
             newGame.RearrangePlayers();
-            return Json("Success is ours!");
+            return Json(new { success = true });
         }
     }
 }

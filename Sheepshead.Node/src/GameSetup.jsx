@@ -53,9 +53,13 @@ export default class GameSetup extends React.Component {
             }
         )
         .then(function (response) {
-            return response.json()
+            return response.json();
         }).then(function (json) {
             console.log('parsed json', json)
+            if (json.success === true)
+                document.location = "/Shuffle";
+            else
+                throw "Unknown server-side exception occurred.";
         }).catch(function (ex) {
             console.log('parsing failed', ex)
         });
