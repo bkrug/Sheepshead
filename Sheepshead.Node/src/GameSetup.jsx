@@ -1,14 +1,15 @@
 ﻿import React from 'react';
 import 'whatwg-fetch';
-import { withQuery } from './withQuery'; 
+//import { withQuery } from './withQuery'; 
 import PlayerCountRadio from './PlayerCountRadio';
 
 export default class GameSetup extends React.Component {
     constructor(props) {
         super(props);
         this.setConstants();
-        this.state = { value: 0, remaining: this.MAX_PLAYERS };
+        this.state = { value: 0, remaining: this.MAX_PLAYERS, gameName: '' };
         this.handleChange = this.handleChange.bind(this);
+        this.handleNameChange = this.handleNameChange.bind(this);
         this.handlePlayClick = this.handlePlayClick.bind(this);
         this.selections = {};
         this.selections[this.HUMANS] = this.selections[this.NEWBIE] = this.selections[this.BASIC] = this.selections[this.LEARNING] = 0;
@@ -30,12 +31,18 @@ export default class GameSetup extends React.Component {
         }
     }
 
+    handleNameChange(e) {
+        console.log(e.target.value);
+        this.setState({ gameName: e.target.value });
+    }
+
     playerCountValidityClass() {
         return (this.state.value === 3 || this.state.value === 5) ? '' : 'invalidcount';
     }
 
     handlePlayClick() {
         var gameStartModel = {
+            GameName: this.state.gameName,
             HumanCount: this.selections[this.HUMANS],
             NewbieCount: this.selections[this.NEWBIE],
             BasicCount: this.selections[this.BASIC],
@@ -59,7 +66,7 @@ export default class GameSetup extends React.Component {
             if (json.success === true)
                 document.location = "/Shuffle";
             else
-                throw "Unknown server-side exception occurred.";
+                throw new Error("Unknown server-side error occurred.");
         }).catch(function (ex) {
             console.log('parsing failed', ex)
         });
@@ -69,6 +76,8 @@ export default class GameSetup extends React.Component {
         return (
             <div className="gameSetup">
                 <h4>Setup Sheepshead Game</h4>
+                <label>Game Name</label>
+                <input id="name-input" type="text" onChange={this.handleNameChange} value={this.state.gameName} />
                 <PlayerCountRadio name={this.HUMANS} title="Humans" onChange={this.handleChange} remaining={this.state.remaining} />
                 <PlayerCountRadio name={this.NEWBIE} title="A.I. Simple" onChange={this.handleChange} remaining={this.state.remaining} />
                 <PlayerCountRadio name={this.BASIC} title="A.I. Basic" onChange={this.handleChange} remaining={this.state.remaining} />

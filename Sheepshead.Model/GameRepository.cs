@@ -23,6 +23,7 @@ namespace Sheepshead.Models
 
     public class GameStartModel
     {
+        public string GameName { get; set; }
         public int HumanCount { get; set; }
         public int NewbieCount { get; set; }
         public int BasicCount { get; set; }
