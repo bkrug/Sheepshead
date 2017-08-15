@@ -1,6 +1,6 @@
 ﻿import React from 'react';
 import 'whatwg-fetch';
-//import { withQuery } from './withQuery'; 
+import { withQuery } from './withQuery'; 
 import PlayerCountRadio from './PlayerCountRadio';
 
 export default class GameSetup extends React.Component {
@@ -13,7 +13,51 @@ export default class GameSetup extends React.Component {
         this.handlePlayClick = this.handlePlayClick.bind(this);
         this.selections = {};
         this.selections[this.HUMANS] = this.selections[this.NEWBIE] = this.selections[this.BASIC] = this.selections[this.LEARNING] = 0;
+        //this.headerTest();
     }
+
+    //headerTest() {
+    //    fetch(
+    //        withQuery('http://localhost:61904/api/game/RequestPlayerKey', { oldKey: '1ad8bd99-951d-4d93-a502-8eb0e6ee0a31' }),
+    //        {
+    //            method: 'POST',
+    //            headers: {
+    //                'Accept': 'application/json',
+    //                'Content-Type': 'application/json'
+    //            }
+    //        }
+    //    )
+    //    .then(function (response) {
+    //        return response.json();
+    //    }).then(function (json) {
+    //        console.log('parsed json', json);
+    //        localStorage.setItem('player-key', json);
+    //        return json;
+    //    });
+    //}
+
+    //headerTest2() {
+    //    var playerKey = localStorage.getItem('player-key');
+    //    if (!playerKey)
+    //        throw 'player key was not recorded';
+    //    console.log('player key ' + playerKey);
+    //    fetch(
+    //        'http://localhost:61904/api/game/ValidatePlayerKey?someNumber=5',
+    //        {
+    //            method: 'POST',
+    //            headers: {
+    //                'Accept': 'application/json',
+    //                'Content-Type': 'application/json',
+    //                'Player-Key': playerKey
+    //            }
+    //        }
+    //    )
+    //    .then(function (response) {
+    //        return response.json();
+    //    }).then(function (json) {
+    //        console.log('parsed json', json);
+    //    });
+    //}
 
     setConstants() {
         this.MAX_PLAYERS = 5;
@@ -24,6 +68,7 @@ export default class GameSetup extends React.Component {
     }
 
     handleChange(radioGroup, radioValue) {
+        //this.headerTest2();
         if (radioValue === 0 || radioValue > 0) {
             this.selections[radioGroup] = radioValue;
             var newTotal = this.selections[this.HUMANS] + this.selections[this.NEWBIE] + this.selections[this.BASIC] + this.selections[this.LEARNING];
@@ -61,7 +106,8 @@ export default class GameSetup extends React.Component {
         )
         .then(function (response) {
             return response.json();
-        }).then(function (json) {
+        })
+        .then(function (json) {
             console.log('parsed json', json)
             if (json.success === true)
                 document.location = "/Shuffle";

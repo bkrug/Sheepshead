@@ -44,7 +44,7 @@
   <ItemGroup>
     <Compile Include="BaseRepository.cs" />
     <Compile Include="Card.cs" />
-    <Compile Include="Class1.cs" />
+    <Compile Include="PlayerDictionary.cs" />
     <Compile Include="Deck.cs" />
     <Compile Include="Game.cs" />
     <Compile Include="GameRepository.cs" />
