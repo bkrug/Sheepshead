@@ -8,10 +8,10 @@ export interface GameSetupState {
     value: number;
     remaining: number;
     gameName: string;
+    selections: { [index: string]: number };
 }
 
 export class GameSetup extends React.Component<any, any> {
-    selections: { [index: string]: number };
     readonly MAX_PLAYERS = 5;
     readonly HUMANS = "humans";
     readonly NEWBIE = "newbie";
@@ -20,13 +20,12 @@ export class GameSetup extends React.Component<any, any> {
 
     constructor() {
         super();
-        this.state = { value: 0, remaining: this.MAX_PLAYERS, gameName: '' };
+        let selections: { [index: string]: number } = {};
+        selections[this.HUMANS] = selections[this.NEWBIE] = selections[this.BASIC] = selections[this.LEARNING] = 0;
+        this.state = { value: 0, remaining: this.MAX_PLAYERS, gameName: '', selections: selections };
         this.handleChange = this.handleChange.bind(this);
         this.handleNameChange = this.handleNameChange.bind(this);
         this.handlePlayClick = this.handlePlayClick.bind(this);
-        this.selections = { "a": 0 };
-        this.selections[this.HUMANS] = 0;
-        this.selections[this.NEWBIE] = this.selections[this.BASIC] = this.selections[this.LEARNING] = 0;
         //this.headerTest();
     }
 
@@ -76,8 +75,11 @@ export class GameSetup extends React.Component<any, any> {
     handleChange(radioGroup: string, radioValue: number) {
         //this.headerTest2();
         if (radioValue === 0 || radioValue > 0) {
-            this.selections[radioGroup] = radioValue;
-            let newTotal = this.selections[this.HUMANS] + this.selections[this.NEWBIE] + this.selections[this.BASIC] + this.selections[this.LEARNING];
+            this.state.selections[radioGroup] = radioValue;
+            let newTotal = this.state.selections[this.HUMANS]
+                + this.state.selections[this.NEWBIE]
+                + this.state.selections[this.BASIC]
+                + this.state.selections[this.LEARNING];
             this.setState({ value: newTotal, remaining: this.MAX_PLAYERS - newTotal });
         }
     }
@@ -94,10 +96,10 @@ export class GameSetup extends React.Component<any, any> {
     handlePlayClick() {
         var gameStartModel = {
             GameName: this.state.gameName,
-            HumanCount: this.selections[this.HUMANS],
-            NewbieCount: this.selections[this.NEWBIE],
-            BasicCount: this.selections[this.BASIC],
-            LearningCount: this.selections[this.LEARNING]
+            HumanCount: this.state.selections[this.HUMANS],
+            NewbieCount: this.state.selections[this.NEWBIE],
+            BasicCount: this.state.selections[this.BASIC],
+            LearningCount: this.state.selections[this.LEARNING]
         };
         fetch(
             'http://localhost:61904/api/game/create',
@@ -131,10 +133,10 @@ export class GameSetup extends React.Component<any, any> {
                 <h4>Setup Sheepshead Game</h4>
                 <label>Game Name</label>
                 <input id="name-input" type="text" onChange={ e => this.handleNameChange(e) } value={this.state.gameName} />
-                <PlayerCountRadio name={this.HUMANS} title="Humans" onChange={this.handleChange} remaining={this.state.remaining} />
-                <PlayerCountRadio name={this.NEWBIE} title="A.I. Simple" onChange={this.handleChange} remaining={this.state.remaining} />
-                <PlayerCountRadio name={this.BASIC} title="A.I. Basic" onChange={this.handleChange} remaining={this.state.remaining} />
-                <PlayerCountRadio name={this.LEARNING} title="A.I. Statistic" onChange={this.handleChange} remaining={this.state.remaining} />
+                <PlayerCountRadio name={this.HUMANS} title="Humans" onChange={this.handleChange} value={this.state.selections[this.HUMANS]} remaining={this.state.remaining} />
+                <PlayerCountRadio name={this.NEWBIE} title="A.I. Simple" onChange={this.handleChange} value={this.state.selections[this.NEWBIE]} remaining={this.state.remaining} />
+                <PlayerCountRadio name={this.BASIC} title="A.I. Basic" onChange={this.handleChange} value={this.state.selections[this.BASIC]} remaining={this.state.remaining} />
+                <PlayerCountRadio name={this.LEARNING} title="A.I. Statistic" onChange={this.handleChange} value={this.state.selections[this.LEARNING]} remaining={this.state.remaining} />
                 <div>
                     <span>Total Players:</span>
                     <span className={"totalPlayers " + this.playerCountValidityClass()}>{this.state.value}</span>
