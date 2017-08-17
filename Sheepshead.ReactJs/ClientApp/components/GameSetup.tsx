@@ -12,11 +12,11 @@ export interface GameSetupState {
 
 export class GameSetup extends React.Component<any, any> {
     selections: { [index: string]: number };
-    MAX_PLAYERS = 5;
-    HUMANS: "humans";
-    NEWBIE: "newbie";
-    BASIC: "basic";
-    LEARNING: "learning";
+    readonly MAX_PLAYERS = 5;
+    readonly HUMANS = "humans";
+    readonly NEWBIE = "newbie";
+    readonly BASIC = "basic";
+    readonly LEARNING = "learning";
 
     constructor() {
         super();
@@ -77,7 +77,7 @@ export class GameSetup extends React.Component<any, any> {
         //this.headerTest2();
         if (radioValue === 0 || radioValue > 0) {
             this.selections[radioGroup] = radioValue;
-            var newTotal = this.selections[this.HUMANS] + this.selections[this.NEWBIE] + this.selections[this.BASIC] + this.selections[this.LEARNING];
+            let newTotal = this.selections[this.HUMANS] + this.selections[this.NEWBIE] + this.selections[this.BASIC] + this.selections[this.LEARNING];
             this.setState({ value: newTotal, remaining: this.MAX_PLAYERS - newTotal });
         }
     }
@@ -110,18 +110,19 @@ export class GameSetup extends React.Component<any, any> {
                 }
             }
         )
-            .then(function (response) {
-                return response.json();
-            })
-            .then(function (json) {
-                console.log('parsed json', json)
-                if (json.success === true) { }
-                    //document.location = "/Shuffle";
-                else
-                    throw new Error("Unknown server-side error occurred.");
-            }).catch(function (ex) {
-                console.log('parsing failed', ex)
-            });
+        .then(function (response) {
+            return response.json();
+        })
+        .then(function (json) {
+            console.log('parsed json', json)
+            if (json.success === true) { }
+                //document.location = "/Shuffle";
+            else
+                throw new Error("Unknown server-side error occurred.");
+        })
+        .catch(function (ex) {
+            console.log('parsing failed', ex)
+        });
     }
 
     public render() {
