@@ -66,8 +66,6 @@
     <Compile Include="User.cs" />
     <Compile Include="UserRepository.cs" />
     <Compile Include="Wrappers\RandomWrapper.cs" />
-    <Compile Include="Wrappers\StreamReaderWrapper.cs" />
-    <Compile Include="Wrappers\StreamWriterWrapper.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
