@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Sheepshead.Models.Players;
 using Sheepshead.Models.Wrappers;
-using Sheepshead.Models.Players.Stats;
+
 
 namespace Sheepshead.Models
 {
@@ -20,7 +20,6 @@ namespace Sheepshead.Models
         public List<IDeck> Decks { get { return _decks; } }
         public IRandomWrapper _random { get; private set; }
         public IPlayer CurrentTurn { get { throw new NotImplementedException(); } }
-        private ILearningHelperFactory _learningHelperFactory;
         private IHandFactory _handFactory;
         public TurnType TurnType
         {
@@ -38,12 +37,11 @@ namespace Sheepshead.Models
             }
         } 
 
-        public Game(long id, List<IPlayer> players, IRandomWrapper random, ILearningHelperFactory factory, IHandFactory handFactory)
+        public Game(long id, List<IPlayer> players, IRandomWrapper random, IHandFactory handFactory)
         {
             _players = players;
             _id = id;
             _random = random;
-            _learningHelperFactory = factory;
             _handFactory = handFactory;
         }
 
@@ -69,7 +67,7 @@ namespace Sheepshead.Models
             if (TurnType != TurnType.Pick)
                 throw new WrongGamePhaseExcpetion("Game must be in the Pick phase.");
             var deck = Decks.Last();
-            return new PickProcessorOuter2().ContinueFromHumanPickTurn(human, willPick, deck, _handFactory, _learningHelperFactory, new PickProcessorOuter());
+            return new PickProcessorOuter2().ContinueFromHumanPickTurn(human, willPick, deck, _handFactory, new PickProcessorOuter());
         }
 
         public IComputerPlayer PlayUpToHumanPickTurn()
@@ -83,7 +81,7 @@ namespace Sheepshead.Models
         {
             if (TurnType != TurnType.Pick)
                 throw new WrongGamePhaseExcpetion("Game must be in the Pick phase.");
-            return new PickProcessorOuter().PlayNonHumanPickTurns(_decks.Last(), _handFactory, _learningHelperFactory);
+            return new PickProcessorOuter().PlayNonHumanPickTurns(_decks.Last(), _handFactory);
         }
 
         public void BuryCards(IHumanPlayer player, List<ICard> cards)

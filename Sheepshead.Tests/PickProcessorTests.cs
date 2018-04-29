@@ -5,7 +5,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using Sheepshead.Models;
 using Sheepshead.Models.Players;
-using Sheepshead.Models.Players.Stats;
+
 
 namespace Sheepshead.Tests
 {
@@ -206,7 +206,7 @@ namespace Sheepshead.Tests
             humanMock.Setup(m => m.Cards).Returns(humanCards);
             var pickProcessorMock = new Mock<IPickProcessorOuter>();
             pickProcessorMock
-                .Setup(m => m.PlayNonHumanPickTurns(It.IsAny<IDeck>(), It.IsAny<IHandFactory>(), It.IsAny<ILearningHelperFactory>()))
+                .Setup(m => m.PlayNonHumanPickTurns(It.IsAny<IDeck>(), It.IsAny<IHandFactory>()))
                 .Callback(() => Assert.Fail("Should not have let non humans pick."));
             var handMock = new Mock<IHand>();
             var handFactoryMock = new Mock<IHandFactory>();
@@ -218,10 +218,9 @@ namespace Sheepshead.Tests
             var deckMock = new Mock<IDeck>();
             deckMock.Setup(m => m.Blinds).Returns(blinds);
             deckMock.Setup(m => m.PlayersWithoutPickTurn).Returns(new List<IPlayer>() { humanMock.Object, new Mock<IComputerPlayer>().Object });
-            var learningHelperMock = new Mock<ILearningHelperFactory>();
 
             var pickProcessor = new PickProcessorOuter2();
-            var hand = pickProcessor.ContinueFromHumanPickTurn(humanMock.Object, true, deckMock.Object, handFactoryMock.Object, learningHelperMock.Object, pickProcessorMock.Object);
+            var hand = pickProcessor.ContinueFromHumanPickTurn(humanMock.Object, true, deckMock.Object, handFactoryMock.Object, pickProcessorMock.Object);
 
             Assert.AreSame(humanMock.Object, hand.Picker);
             Assert.IsTrue(humanCards.Contains(blinds[0]));
@@ -236,7 +235,7 @@ namespace Sheepshead.Tests
             var pickProcessorMock = new Mock<IPickProcessorOuter>();
             var handMock = new Mock<IHand>();
             pickProcessorMock
-                .Setup(m => m.PlayNonHumanPickTurns(It.IsAny<IDeck>(), It.IsAny<IHandFactory>(), It.IsAny<ILearningHelperFactory>()))
+                .Setup(m => m.PlayNonHumanPickTurns(It.IsAny<IDeck>(), It.IsAny<IHandFactory>()))
                 .Callback(() => handMock.Setup(m => m.Picker).Returns(expectedPicker))
                 .Returns(expectedPicker);
             var handFactoryMock = new Mock<IHandFactory>();
@@ -248,10 +247,9 @@ namespace Sheepshead.Tests
             deckMock.Setup(m => m.Hand).Returns(handMock.Object);
             deckMock.Setup(m => m.PlayersRefusingPick).Returns(refusingPlayers);
             deckMock.Setup(m => m.PlayersWithoutPickTurn).Returns(new List<IPlayer>() { humanMock.Object, expectedPicker });
-            var learningHelperMock = new Mock<ILearningHelperFactory>();
-
+            
             var pickProcessor = new PickProcessorOuter2();
-            var hand = pickProcessor.ContinueFromHumanPickTurn(humanMock.Object, false, deckMock.Object, handFactoryMock.Object, learningHelperMock.Object, pickProcessorMock.Object);
+            var hand = pickProcessor.ContinueFromHumanPickTurn(humanMock.Object, false, deckMock.Object, handFactoryMock.Object, pickProcessorMock.Object);
 
             Assert.IsTrue(hand.Picker is IComputerPlayer);
             Assert.AreSame(deckMock.Object.Hand, hand);
@@ -269,13 +267,12 @@ namespace Sheepshead.Tests
             var deckMock = new Mock<IDeck>();
             deckMock.Setup(m => m.Blinds).Returns(new List<ICard>());
             deckMock.Setup(m => m.PlayersWithoutPickTurn).Returns(new List<IPlayer>() { computerPlayer, humanMock.Object });
-            var learningHelperMock = new Mock<ILearningHelperFactory>();
 
             var pickProcessor = new PickProcessorOuter2();
             var threwException = false;
             try
             {
-                var hand = pickProcessor.ContinueFromHumanPickTurn(humanMock.Object, true, deckMock.Object, handFactoryMock.Object, learningHelperMock.Object, pickProcessorMock.Object);
+                var hand = pickProcessor.ContinueFromHumanPickTurn(humanMock.Object, true, deckMock.Object, handFactoryMock.Object, pickProcessorMock.Object);
             }
             catch (NotPlayersTurnException)
             {

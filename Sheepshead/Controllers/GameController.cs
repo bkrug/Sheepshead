@@ -6,7 +6,7 @@ using System.Web.Mvc;
 using Sheepshead.Models;
 using Sheepshead.Models.Wrappers;
 using Sheepshead.Models.Players;
-using Sheepshead.Models.Players.Stats;
+
 
 namespace Sheepshead.Controllers
 {
@@ -25,7 +25,6 @@ namespace Sheepshead.Controllers
             public string Name { get; set; }
             public int NewbiewCount { get; set; }
             public int BasicCount { get; set; }
-            public int LearningCount { get; set; }
         }
 
         public ActionResult Create()
@@ -43,21 +42,7 @@ namespace Sheepshead.Controllers
                 playerList.Add(new NewbiePlayer());
             for (var i = 0; i < model.BasicCount; ++i)
                 playerList.Add(new BasicPlayer());
-            //TODO: Guessers can be turned into Singletons
-            for (var i = 0; i < model.LearningCount; ++i)
-            {
-                playerList.Add(new LearningPlayer(
-                    new MoveKeyGenerator(), 
-                    new MoveStatResultPredictor(RepositoryRepository.Instance.MoveStatRepository),
-                    new PickKeyGenerator(),
-                    new PickStatResultPredictor(RepositoryRepository.Instance.PickStatRepository, new PickStatGuesser()),
-                    new BuryKeyGenerator(),
-                    new BuryStatResultPredictor(RepositoryRepository.Instance.BuryStatRepository, new BuryStatGuesser()),
-                    new LeasterKeyGenerator(),
-                    new LeasterStatResultPredictor(RepositoryRepository.Instance.LeasterStatRepository)
-                ));
-            }
-            var newGame = repository.CreateGame(model.Name, playerList, _rnd, new LearningHelperFactory());
+            var newGame = repository.CreateGame(model.Name, playerList, _rnd);
             repository.Save(newGame);
             newGame.RearrangePlayers();
             return RedirectToAction("Play", new { id = newGame.Id });

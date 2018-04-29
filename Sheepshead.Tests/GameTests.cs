@@ -6,7 +6,7 @@ using Moq;
 using Sheepshead.Models;
 using Sheepshead.Models.Players;
 using Sheepshead.Models.Wrappers;
-using Sheepshead.Models.Players.Stats;
+
 
 namespace Sheepshead.Tests
 {
@@ -14,7 +14,7 @@ namespace Sheepshead.Tests
     public class GameTests
     {
         private class ExposeGame : Game {
-            public ExposeGame() : base (0, new List<IPlayer>(), new RandomWrapper(), new Mock<ILearningHelperFactory>().Object, null)
+            public ExposeGame() : base (0, new List<IPlayer>(), new RandomWrapper(), null)
             {
 
             }
@@ -68,7 +68,7 @@ namespace Sheepshead.Tests
                     .Returns(new Mock<ICard>().Object)
                 );
 
-            var game = new Game(75291, playersDifferentOrder, new RandomWrapper(), null, null);
+            var game = new Game(75291, playersDifferentOrder, new RandomWrapper(), null);
             game.Decks.Add(new Mock<IDeck>().Object);
             game.Decks.Add(deckMock.Object);
             game.PlayNonHumansInTrick();
@@ -107,7 +107,7 @@ namespace Sheepshead.Tests
                     .Returns(new Mock<ICard>().Object)
                 );
 
-            var game = new Game(75291, playersDifferentOrder, new RandomWrapper(), null, null);
+            var game = new Game(75291, playersDifferentOrder, new RandomWrapper(), null);
             game.Decks.Add(deckMock.Object);
             game.PlayNonHumansInTrick();
 
@@ -138,7 +138,7 @@ namespace Sheepshead.Tests
                     .Setup(p => p.GetMove(It.IsAny<ITrick>()))
                     .Callback(() => Assert.Fail("Since it is not a computer's turn, the method should just not play any turns.")));
 
-            var game = new Game(75291, playersDifferentOrder, new RandomWrapper(), null, null);
+            var game = new Game(75291, playersDifferentOrder, new RandomWrapper(), null);
             game.Decks.Add(deckMock.Object);
             game.PlayNonHumansInTrick();
 
@@ -169,7 +169,7 @@ namespace Sheepshead.Tests
                 .Callback(() =>
                     Assert.IsFalse(true, "Should not have called AcceptComputerPicker().  Should have given human a chance to pick."));
 
-            var game = new Game(42340, playerList, null, null, handFactoryMock.Object);
+            var game = new Game(42340, playerList, null, handFactoryMock.Object);
             game.Decks.Add(deckMock.Object);
             var picker = game.PlayNonHumanPickTurns();
 
@@ -203,7 +203,7 @@ namespace Sheepshead.Tests
                 .Callback(() =>
                     Assert.IsFalse(true, "Should have instantiated hand through AcceptComputerPicker() instead."));
 
-            var game = new Game(42340, playerList, null, new Mock<ILearningHelperFactory>().Object, handFactoryMock.Object);
+            var game = new Game(42340, playerList, null, handFactoryMock.Object);
             game.Decks.Add(deckMock.Object);
             var picker = game.PlayNonHumanPickTurns();
 
@@ -236,7 +236,7 @@ namespace Sheepshead.Tests
                 .Callback(() => handCreated = true)
                 .Returns(() => new Mock<IHand>().Object);
 
-            var game = new Game(42340, playerList, null, new Mock<ILearningHelperFactory>().Object, handFactoryMock.Object);
+            var game = new Game(42340, playerList, null, handFactoryMock.Object);
             game.Decks.Add(deckMock.Object);
             var picker = game.PlayNonHumanPickTurns();
 
@@ -264,8 +264,7 @@ namespace Sheepshead.Tests
             var playerList = new List<IPlayer>();
             for (var i = 0; i < 5; ++i)
                 playerList.Add(new Player());
-            var learningHelperFactory = new Mock<ILearningHelperFactory>();
-            var game = new Game(4982, playerList, new RandomWrapper(), learningHelperFactory.Object, null);
+            var game = new Game(4982, playerList, new RandomWrapper(), null);
             var deck = new Deck(game, new RandomWrapper());
             Assert.AreEqual(2, deck.Blinds.Count(), "There should be two blinds after dealing");
             Assert.AreEqual(5, game.Players.Count(), "There should be five doctores");

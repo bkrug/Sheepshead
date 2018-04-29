@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-using Sheepshead.Models.Players.Stats;
+
 
 namespace Sheepshead.Models.Players
 {

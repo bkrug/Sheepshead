@@ -5,7 +5,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using Sheepshead.Models.Players;
 using Sheepshead.Models.Wrappers;
-using Sheepshead.Models.Players.Stats;
+
 
 namespace Sheepshead.Models
 {
@@ -29,9 +29,9 @@ namespace Sheepshead.Models
         {
         }
 
-        public IGame CreateGame(string name, List<IPlayer> players, IRandomWrapper rnd, ILearningHelperFactory factory)
+        public IGame CreateGame(string name, List<IPlayer> players, IRandomWrapper rnd)
         {
-            var game = new Game(0, players, rnd, factory, new HandFactory());
+            var game = new Game(0, players, rnd, new HandFactory());
             game.Name = name;
             return game;
         }
@@ -48,7 +48,7 @@ namespace Sheepshead.Models
 
     public interface IGameRepository : IBaseRepository<IGame>
     {
-        IGame CreateGame(string name, List<IPlayer> players, IRandomWrapper rnd, ILearningHelperFactory factory);
+        IGame CreateGame(string name, List<IPlayer> players, IRandomWrapper rnd);
         IGame GetGame(Func<IGame, bool> lambda);
         //IEnumerable<IGame> GetOpenGames();
     }
