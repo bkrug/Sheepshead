@@ -39,7 +39,6 @@ namespace Sheepshead.Models
 
         private SheepCard ChoosePartnerCard(IPlayer picker)
         {
-            var cri = CardRepository.Instance;
             var potentialPartnerCards = new[] {
                 SheepCard.JACK_DIAMONDS,
                 SheepCard.JACK_HEARTS,

@@ -29,10 +29,6 @@ namespace Sheepshead.Models
 
     public class CardRepository
     {
-        private static CardRepository _instance = new CardRepository();
-
-        public static CardRepository Instance { get { return _instance; } }
-
         public static CardType GetFace(SheepCard card)
         {
             Int32 cardVal = Convert.ToInt32(card) / 4;
@@ -128,7 +124,7 @@ namespace Sheepshead.Models
                 }
         }
 
-        public List<SheepCard> UnshuffledList()
+        public static List<SheepCard> UnshuffledList()
         {
             var list = new List<SheepCard>();
             foreach (var ss in Enum.GetValues(typeof(SheepCard)))
