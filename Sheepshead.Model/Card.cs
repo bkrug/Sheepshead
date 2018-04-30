@@ -331,21 +331,14 @@ namespace Sheepshead.Models
     {
         private StandardSuite _StandardSuite;
         private CardType _CardType;
-        private Int32 _Points;
-        private Int32 _Rank;
 
         public Card(StandardSuite ss, CardType ct, int points, int rank)
         {
             _StandardSuite = ss;
             _CardType = ct;
-            _Points = points;
-            _Rank = rank;
         }
-        public int Id { get { return (int)StandardSuite * 4 + (int)CardType + 1; } }
         public StandardSuite StandardSuite { get { return _StandardSuite; }}
         public CardType CardType { get { return _CardType; } }
-        public Int32 Points { get { return _Points; } }
-        public Int32 Rank { get { return _Rank; } }
         public override string ToString()
         {
             return _CardType + " " + _StandardSuite.ToString();
@@ -354,11 +347,8 @@ namespace Sheepshead.Models
 
     public interface ICard
     {
-        int Id { get; }
         StandardSuite StandardSuite { get; }
         CardType CardType { get; }
-        Int32 Points { get; }
-        Int32 Rank { get; }
         string ToString();
     }
 }
