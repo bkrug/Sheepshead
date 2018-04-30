@@ -30,8 +30,6 @@ namespace Sheepshead.Models
     public class CardRepository
     {
         private static CardRepository _instance = new CardRepository();
-        private TempCard[,] _cs = new TempCard[4, 8];
-        private Card[,] _cards = new Card[4, 8];
 
         public static CardRepository Instance { get { return _instance; } }
 
@@ -65,28 +63,6 @@ namespace Sheepshead.Models
             }
         }
 
-        private CardRepository()
-        {
-            SetPoints();
-            SetRanks();
-            Copy();
-        }
-
-        private void SetPoints()
-        {
-            for (var ss = (int)StandardSuite.CLUBS; ss <= (int)StandardSuite.DIAMONDS; ++ss)
-            {
-                _cs[ss, (int)CardType.ACE].Points = 11;
-                _cs[ss, (int)CardType.N10].Points = 10;
-                _cs[ss, (int)CardType.KING].Points = 4;
-                _cs[ss, (int)CardType.QUEEN].Points = 3;
-                _cs[ss, (int)CardType.JACK].Points = 2;
-                _cs[ss, (int)CardType.N9].Points = 0;
-                _cs[ss, (int)CardType.N8].Points = 0;
-                _cs[ss, (int)CardType.N7].Points = 0;
-            }
-        }
-
         public static int GetPoints(SheepCard card)
         {
             var cardType = GetFace(card);
@@ -104,31 +80,6 @@ namespace Sheepshead.Models
                     return 2;
                 default:
                     return 0;
-            }
-        }
-
-        private void SetRanks()
-        {
-            int ct, ss;
-
-            var rank = 1;
-            for (ct = (int)CardType.QUEEN; ct <= (int)CardType.JACK; ++ct)
-                for (ss = (int)StandardSuite.CLUBS; ss <= (int)StandardSuite.DIAMONDS; ++ss)
-                    _cs[ss, ct].Rank = rank++;
-
-            rank = 9; //Should already be 9 by this point. Setting it to 9 to make the next loop more clear.
-            ss = (int)StandardSuite.DIAMONDS;
-            for (ct = (int)CardType.ACE; ct <= (int)CardType.N7; ++ct)
-                _cs[ss, ct].Rank = rank++;
-
-            for (ss = (int)StandardSuite.CLUBS; ss <= (int)StandardSuite.HEARTS; ++ss)
-            {
-                _cs[ss, (int)CardType.ACE].Rank = 15;
-                _cs[ss, (int)CardType.N10].Rank = 16;
-                _cs[ss, (int)CardType.KING].Rank = 17;
-                _cs[ss, (int)CardType.N9].Rank = 18;
-                _cs[ss, (int)CardType.N8].Rank = 19;
-                _cs[ss, (int)CardType.N7].Rank = 20;
             }
         }
 
@@ -175,20 +126,6 @@ namespace Sheepshead.Models
                     default:
                         return -1;
                 }
-        }
-
-        private void Copy()
-        {
-            for (var ss = (int)StandardSuite.CLUBS; ss <= (int)StandardSuite.DIAMONDS; ++ss)
-                for (var ct = (int)CardType.QUEEN; ct <= (int)CardType.N7; ++ct) {
-                    var cur = _cs[ss, ct];
-                    _cards[ss, ct] = new Card((StandardSuite)ss, (CardType)ct, cur.Points, cur.Rank);
-                }
-        }
-
-        public Card this[StandardSuite ss, CardType ct]
-        {
-            get { return _cards[(int)ss, (int)ct]; }
         }
 
         public List<SheepCard> UnshuffledList()
@@ -265,42 +202,11 @@ namespace Sheepshead.Models
             return list1[card];
         }
 
-        private struct TempCard
-        {
-            public Int32 Points;
-            public Int32 Rank;
-        }
-
         public static string ToAbbr(SheepCard card)
         {
             var cardType = GetFace(card);
             var suit = GetStandardSuit(card);
             return CardTypeLetter[cardType] + SuiteLetter[suit];
         }
-    }
-    
-    public struct Card : ICard
-    {
-        private StandardSuite _StandardSuite;
-        private CardType _CardType;
-
-        public Card(StandardSuite ss, CardType ct, int points, int rank)
-        {
-            _StandardSuite = ss;
-            _CardType = ct;
-        }
-        public StandardSuite StandardSuite { get { return _StandardSuite; }}
-        public CardType CardType { get { return _CardType; } }
-        public override string ToString()
-        {
-            return _CardType + " " + _StandardSuite.ToString();
-        }
-    }
-
-    public interface ICard
-    {
-        StandardSuite StandardSuite { get; }
-        CardType CardType { get; }
-        string ToString();
     }
 }
