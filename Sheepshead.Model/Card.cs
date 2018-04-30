@@ -308,11 +308,6 @@ namespace Sheepshead.Models
             return list2[card];
         }
 
-        public static ICard GetICard(SheepCard card)
-        {
-            return list2.Single(kvp => kvp.Value == card).Key;
-        }
-
         private struct TempCard
         {
             public Int32 Points;

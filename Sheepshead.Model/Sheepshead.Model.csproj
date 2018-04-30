@@ -60,7 +60,6 @@
     <Compile Include="Players\NewbiePlayer.cs" />
     <Compile Include="Players\Player.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SummaryReader.cs" />
     <Compile Include="Trick.cs" />
     <Compile Include="TurnState.cs" />
     <Compile Include="User.cs" />
