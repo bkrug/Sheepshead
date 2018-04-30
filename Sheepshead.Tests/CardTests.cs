@@ -10,10 +10,8 @@ namespace Sheepshead.Tests
         [TestMethod]
         public void Card_ToAbbr()
         {
-            var card1 = new Card(StandardSuite.DIAMONDS, CardType.JACK, 0, 0);
-            Assert.AreEqual("JD", card1.ToAbbr());
-            var card2 = new Card(StandardSuite.HEARTS, CardType.N7, 0, 0);
-            Assert.AreEqual("7H", card2.ToAbbr());
+            Assert.AreEqual("JD", CardRepository.ToAbbr(SheepCard.JACK_DIAMONDS));
+            Assert.AreEqual("7H", CardRepository.ToAbbr(SheepCard.N7_HEARTS));
         }
 
         [TestMethod]

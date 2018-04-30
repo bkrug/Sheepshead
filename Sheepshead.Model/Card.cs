@@ -191,7 +191,7 @@ namespace Sheepshead.Models
             get { return _cards[(int)ss, (int)ct]; }
         }
 
-        public List<SheepCard> UnshuffledList1()
+        public List<SheepCard> UnshuffledList()
         {
             var list = new List<SheepCard>();
             foreach (var ss in Enum.GetValues(typeof(SheepCard)))
@@ -318,6 +318,13 @@ namespace Sheepshead.Models
             public Int32 Points;
             public Int32 Rank;
         }
+
+        public static string ToAbbr(SheepCard card)
+        {
+            var cardType = GetFace(card);
+            var suit = GetStandardSuit(card);
+            return CardTypeLetter[cardType] + SuiteLetter[suit];
+        }
     }
     
     public struct Card : ICard
@@ -343,10 +350,6 @@ namespace Sheepshead.Models
         {
             return _CardType + " " + _StandardSuite.ToString();
         }
-        public string ToAbbr()
-        {
-            return CardRepository.CardTypeLetter[_CardType] + CardRepository.SuiteLetter[_StandardSuite];
-        }
     }
 
     public interface ICard
@@ -357,6 +360,5 @@ namespace Sheepshead.Models
         Int32 Points { get; }
         Int32 Rank { get; }
         string ToString();
-        string ToAbbr();
     }
 }

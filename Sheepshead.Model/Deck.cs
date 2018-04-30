@@ -33,7 +33,7 @@ namespace Sheepshead.Models
 
         private Queue<SheepCard> ShuffleCards()
         {
-            List<SheepCard> cards = CardRepository.Instance.UnshuffledList1();
+            List<SheepCard> cards = CardRepository.Instance.UnshuffledList();
             for (var i = Sheepshead.Models.Game.CARDS_IN_DECK - 1; i > 0; --i)
             {
                 var j = _random.Next(i);
