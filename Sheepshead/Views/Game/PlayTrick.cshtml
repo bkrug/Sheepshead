@@ -24,7 +24,7 @@
         var playerIndex = Model.Deck.Game.Players.IndexOf(cardPlayed.Key);
         <td>
             <div>Player @(playerIndex + 1)</div>
-            <img src="@("\\Images\\" + @CardRepository.GetPictureFilename(cardPlayed.Value) + ".png")" />
+            <img src="@("\\Images\\" + CardUtil.GetPictureFilename(cardPlayed.Value) + ".png")" />
         </td>
     }
     </tr>
@@ -36,7 +36,7 @@
         var cardIndex = Model.HumanPlayer.Cards.IndexOf(card);
         var isLegal = Model.Deck.Hand.Tricks.Last().IsLegalAddition(card, Model.HumanPlayer);
         <input type="radio" name="indexOfCard" class="js-card-cb" value="@cardIndex.ToString()" data-index="@cardIndex.ToString()" style="@(isLegal ? "" : "display: none;")" />
-        <img src="@("\\Images\\" + CardRepository.GetPictureFilename(card) + ".png")" class="@(isLegal ? "" : "ui-illegal")" />
+        <img src="@("\\Images\\" + CardUtil.GetPictureFilename(card) + ".png")" class="@(isLegal ? "" : "ui-illegal")" />
     }
     <input type="hidden" value="@(Model.Deck.Game.Id)" id="id" name="id"/>
     <input type="submit" value="Play This Card" />

@@ -14,7 +14,7 @@
 {
     var index = Model.HumanPlayer.Cards.IndexOf(card);
     <input type="checkbox" class="js-card-cb" data-index="@index.ToString()" />
-    <img src="@("\\Images\\" + CardRepository.GetPictureFilename(card) + ".png")" />
+    <img src="@("\\Images\\" + CardUtil.GetPictureFilename(card) + ".png")" />
 }
 <form method="post">
     <input type="hidden" id="id" name="id" />

@@ -20,7 +20,7 @@ else {
 <p>These are your cards</p>
 @foreach (var card in (Model.HumanPlayer).Cards)
 {
-    <img src="@("\\Images\\" + CardRepository.GetPictureFilename(card) + ".png")" />
+    <img src="@("\\Images\\" + CardUtil.GetPictureFilename(card) + ".png")" />
 }
 
 @if (Model.Deck.Hand == null || Model.Deck.Hand.Picker == null) 

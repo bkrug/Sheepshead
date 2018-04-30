@@ -10,37 +10,37 @@ namespace Sheepshead.Tests
         [TestMethod]
         public void Card_ToAbbr()
         {
-            Assert.AreEqual("JD", CardRepository.ToAbbr(SheepCard.JACK_DIAMONDS));
-            Assert.AreEqual("7H", CardRepository.ToAbbr(SheepCard.N7_HEARTS));
+            Assert.AreEqual("JD", CardUtil.ToAbbr(SheepCard.JACK_DIAMONDS));
+            Assert.AreEqual("7H", CardUtil.ToAbbr(SheepCard.N7_HEARTS));
         }
 
         [TestMethod]
-        public void CardRepository_GetFace()
+        public void CardUtil_GetFace()
         {
-            Assert.AreEqual(CardType.QUEEN, CardRepository.GetFace(SheepCard.QUEEN_CLUBS));
-            Assert.AreEqual(CardType.QUEEN, CardRepository.GetFace(SheepCard.QUEEN_DIAMONDS));
-            Assert.AreEqual(CardType.N7, CardRepository.GetFace(SheepCard.N7_CLUBS));
-            Assert.AreEqual(CardType.N7, CardRepository.GetFace(SheepCard.N7_DIAMONDS));
+            Assert.AreEqual(CardType.QUEEN, CardUtil.GetFace(SheepCard.QUEEN_CLUBS));
+            Assert.AreEqual(CardType.QUEEN, CardUtil.GetFace(SheepCard.QUEEN_DIAMONDS));
+            Assert.AreEqual(CardType.N7, CardUtil.GetFace(SheepCard.N7_CLUBS));
+            Assert.AreEqual(CardType.N7, CardUtil.GetFace(SheepCard.N7_DIAMONDS));
         }
 
         [TestMethod]
-        public void CardRepository_GetSuit()
+        public void CardUtil_GetSuit()
         {
-            Assert.AreEqual(Suit.TRUMP, CardRepository.GetSuit(SheepCard.QUEEN_CLUBS));
-            Assert.AreEqual(Suit.TRUMP, CardRepository.GetSuit(SheepCard.QUEEN_DIAMONDS));
-            Assert.AreEqual(Suit.SPADES, CardRepository.GetSuit(SheepCard.ACE_SPADES));
-            Assert.AreEqual(Suit.CLUBS, CardRepository.GetSuit(SheepCard.N7_CLUBS));
-            Assert.AreEqual(Suit.TRUMP, CardRepository.GetSuit(SheepCard.N7_DIAMONDS));
+            Assert.AreEqual(Suit.TRUMP, CardUtil.GetSuit(SheepCard.QUEEN_CLUBS));
+            Assert.AreEqual(Suit.TRUMP, CardUtil.GetSuit(SheepCard.QUEEN_DIAMONDS));
+            Assert.AreEqual(Suit.SPADES, CardUtil.GetSuit(SheepCard.ACE_SPADES));
+            Assert.AreEqual(Suit.CLUBS, CardUtil.GetSuit(SheepCard.N7_CLUBS));
+            Assert.AreEqual(Suit.TRUMP, CardUtil.GetSuit(SheepCard.N7_DIAMONDS));
         }
 
         [TestMethod]
-        public void CardRepository_GetStandardSuit()
+        public void CardUtil_GetStandardSuit()
         {
-            Assert.AreEqual(StandardSuite.CLUBS, CardRepository.GetStandardSuit(SheepCard.QUEEN_CLUBS));
-            Assert.AreEqual(StandardSuite.DIAMONDS, CardRepository.GetStandardSuit(SheepCard.QUEEN_DIAMONDS));
-            Assert.AreEqual(StandardSuite.SPADES, CardRepository.GetStandardSuit(SheepCard.ACE_SPADES));
-            Assert.AreEqual(StandardSuite.CLUBS, CardRepository.GetStandardSuit(SheepCard.N7_CLUBS));
-            Assert.AreEqual(StandardSuite.DIAMONDS, CardRepository.GetStandardSuit(SheepCard.N7_DIAMONDS));
+            Assert.AreEqual(StandardSuite.CLUBS, CardUtil.GetStandardSuit(SheepCard.QUEEN_CLUBS));
+            Assert.AreEqual(StandardSuite.DIAMONDS, CardUtil.GetStandardSuit(SheepCard.QUEEN_DIAMONDS));
+            Assert.AreEqual(StandardSuite.SPADES, CardUtil.GetStandardSuit(SheepCard.ACE_SPADES));
+            Assert.AreEqual(StandardSuite.CLUBS, CardUtil.GetStandardSuit(SheepCard.N7_CLUBS));
+            Assert.AreEqual(StandardSuite.DIAMONDS, CardUtil.GetStandardSuit(SheepCard.N7_DIAMONDS));
         }
     }
 }

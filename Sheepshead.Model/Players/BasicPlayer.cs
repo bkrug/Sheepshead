@@ -25,7 +25,7 @@ namespace Sheepshead.Models.Players
             {
                 var previousWinners = trick.Hand.Tricks.Where(t => t != trick).Select(t => t.Winner());
                 var lowestTrick = previousWinners.Any() ? previousWinners.Min(w => w.Points) : -1;
-                if (previousWinners.Any(t => t.Player == this) || trick.CardsPlayed.Sum(c => CardRepository.GetPoints(c.Value)) > lowestTrick)
+                if (previousWinners.Any(t => t.Player == this) || trick.CardsPlayed.Sum(c => CardUtil.GetPoints(c.Value)) > lowestTrick)
                     moveCard = TryToLooseTrick(trick);
                 else
                     moveCard = TryToWinTrick(trick);
@@ -47,40 +47,40 @@ namespace Sheepshead.Models.Players
         private SheepCard TryToLooseTrick(ITrick trick)
         {
             var legalCards = Cards.Where(c => trick.IsLegalAddition(c, this));
-            return legalCards.OrderByDescending(l => CardRepository.GetRank(l)).First();
+            return legalCards.OrderByDescending(l => CardUtil.GetRank(l)).First();
         }
 
         private SheepCard GetLeadCard(ITrick trick, IEnumerable<SheepCard> legalCards)
         {
             IEnumerable<SheepCard> cardsOfPreferedSuite;
-            if (trick.Hand.Picker == this || this.Cards.Any(c => CardRepository.GetStandardSuit(c) == CardRepository.GetStandardSuit(trick.Hand.PartnerCard) && CardRepository.GetFace(c) == CardRepository.GetFace(trick.Hand.PartnerCard)))
-                cardsOfPreferedSuite = legalCards.Where(c => CardRepository.GetSuit(c) == Suit.TRUMP).ToList();
+            if (trick.Hand.Picker == this || this.Cards.Any(c => CardUtil.GetStandardSuit(c) == CardUtil.GetStandardSuit(trick.Hand.PartnerCard) && CardUtil.GetFace(c) == CardUtil.GetFace(trick.Hand.PartnerCard)))
+                cardsOfPreferedSuite = legalCards.Where(c => CardUtil.GetSuit(c) == Suit.TRUMP).ToList();
             else
-                cardsOfPreferedSuite = legalCards.Where(c => CardRepository.GetSuit(c) != Suit.TRUMP).ToList();
+                cardsOfPreferedSuite = legalCards.Where(c => CardUtil.GetSuit(c) != Suit.TRUMP).ToList();
             return legalCards.OrderBy(c => cardsOfPreferedSuite.Contains(c) ? 1 : 2)
-                             .OrderByDescending(c => CardRepository.GetRank(c))
-                             .ThenByDescending(c => CardRepository.GetPoints(c))
+                             .OrderByDescending(c => CardUtil.GetRank(c))
+                             .ThenByDescending(c => CardUtil.GetPoints(c))
                              .First();
         }
 
         private SheepCard GetMiddleCard(ITrick trick, IEnumerable<SheepCard> legalCards)
         {
-            return legalCards.OrderByDescending(c => CardRepository.GetRank(c))
-                             .ThenByDescending(c => CardRepository.GetPoints(c))
+            return legalCards.OrderByDescending(c => CardUtil.GetRank(c))
+                             .ThenByDescending(c => CardUtil.GetPoints(c))
                              .First();
         }
 
         private SheepCard GetFinishingCard(ITrick trick, IEnumerable<SheepCard> legalCards)
         {
-            var highestPlayedCard = trick.CardsPlayed.OrderByDescending(d => CardRepository.GetRank(d.Value)).First().Value;
-            var winningCards = legalCards.Where(c => CardRepository.GetRank(c) > CardRepository.GetRank(highestPlayedCard)).ToList();
-            return legalCards.OrderBy(c => winningCards.Contains(c) ? 1 : 2).ThenByDescending(c => CardRepository.GetRank(c)).First();
+            var highestPlayedCard = trick.CardsPlayed.OrderByDescending(d => CardUtil.GetRank(d.Value)).First().Value;
+            var winningCards = legalCards.Where(c => CardUtil.GetRank(c) > CardUtil.GetRank(highestPlayedCard)).ToList();
+            return legalCards.OrderBy(c => winningCards.Contains(c) ? 1 : 2).ThenByDescending(c => CardUtil.GetRank(c)).First();
         }
 
         public override bool WillPick(IDeck deck)
         {
             var middleQueueRankInTrick = (deck.Game.PlayerCount + 1) / 2;
-            var trumpCount = this.Cards.Count(c => CardRepository.GetSuit(c) == Suit.TRUMP);
+            var trumpCount = this.Cards.Count(c => CardUtil.GetSuit(c) == Suit.TRUMP);
             var willPick = QueueRankInDeck(deck) > middleQueueRankInTrick && trumpCount >= 2
                 || QueueRankInDeck(deck) == middleQueueRankInTrick && trumpCount >= 3
                 || trumpCount >= 4;
@@ -91,10 +91,10 @@ namespace Sheepshead.Models.Players
         {
             //get a list of cards for which there are no other cards in their suite.  Exclude Trump cards.
             var soloCardsOfSuite = Cards
-                .GroupBy(g => CardRepository.GetSuit(g))
-                .Where(g => g.Count() == 1 && CardRepository.GetSuit(g.First()) != Suit.TRUMP)
+                .GroupBy(g => CardUtil.GetSuit(g))
+                .Where(g => g.Count() == 1 && CardUtil.GetSuit(g.First()) != Suit.TRUMP)
                 .Select(g => g.First()).ToList();
-            return Cards.OrderBy(c => soloCardsOfSuite.Contains(c) ? 1 : 2).ThenByDescending(c => CardRepository.GetRank(c)).Take(2).ToList();
+            return Cards.OrderBy(c => soloCardsOfSuite.Contains(c) ? 1 : 2).ThenByDescending(c => CardUtil.GetRank(c)).Take(2).ToList();
         }
 
         protected virtual void OnMoveHandler(ITrick trick, SheepCard card)

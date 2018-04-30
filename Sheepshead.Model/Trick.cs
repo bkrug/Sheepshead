@@ -55,7 +55,7 @@ namespace Sheepshead.Models
         {
             _cards.Add(player, card);
             player.Cards.Remove(card);
-            if (CardRepository.GetStandardSuit(_hand.PartnerCard) == CardRepository.GetStandardSuit(card) && CardRepository.GetFace(_hand.PartnerCard) == CardRepository.GetFace(card))
+            if (CardUtil.GetStandardSuit(_hand.PartnerCard) == CardUtil.GetStandardSuit(card) && CardUtil.GetFace(_hand.PartnerCard) == CardUtil.GetFace(card))
                 _hand.SetPartner(player, this);
             OnMoveHandler(player, card);
             if (IsComplete())
@@ -69,24 +69,24 @@ namespace Sheepshead.Models
                 return true;
             var firstCard = _cards.First().Value;
             return hand.Contains(card) 
-                && (CardRepository.GetSuit(card) == CardRepository.GetSuit(firstCard) || !hand.Any(c => CardRepository.GetSuit(c) == CardRepository.GetSuit(firstCard)));
+                && (CardUtil.GetSuit(card) == CardUtil.GetSuit(firstCard) || !hand.Any(c => CardUtil.GetSuit(c) == CardUtil.GetSuit(firstCard)));
         }
 
         public TrickWinner Winner()
         {
             if (!_cards.Any())
                 return null;
-            var firstSuite = CardRepository.GetSuit(_cards.First().Value);
+            var firstSuite = CardUtil.GetSuit(_cards.First().Value);
             var validCards = new List<KeyValuePair<IPlayer, SheepCard>>();
             foreach(var keyValuePair in _cards) {
-                var suite = CardRepository.GetSuit(keyValuePair.Value);
+                var suite = CardUtil.GetSuit(keyValuePair.Value);
                 if (suite == firstSuite || suite == Suit.TRUMP)
                     validCards.Add(keyValuePair);
             }
             return new TrickWinner()
             {
-                Player = validCards.OrderBy(kvp => CardRepository.GetRank(kvp.Value)).First().Key,
-                Points = _cards.Sum(c => CardRepository.GetPoints(c.Value))
+                Player = validCards.OrderBy(kvp => CardUtil.GetRank(kvp.Value)).First().Key,
+                Points = _cards.Sum(c => CardUtil.GetPoints(c.Value))
             };
         }
 

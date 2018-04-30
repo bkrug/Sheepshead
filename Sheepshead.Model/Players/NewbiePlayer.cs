@@ -19,7 +19,7 @@ namespace Sheepshead.Models.Players
 
         protected override List<SheepCard> DropCardsForPickInternal(IDeck deck)
         {
-            return Cards.OrderByDescending(c => CardRepository.GetRank(c)).Take(2).ToList();
+            return Cards.OrderByDescending(c => CardUtil.GetRank(c)).Take(2).ToList();
         }
     }
 }

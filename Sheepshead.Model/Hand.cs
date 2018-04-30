@@ -136,7 +136,7 @@ namespace Sheepshead.Models
 
         private string GetBlindSummary()
         {
-            return String.Join("", Deck.Blinds.Select(c => CardRepository.ToAbbr(c)));
+            return String.Join("", Deck.Blinds.Select(c => CardUtil.ToAbbr(c)));
         }
 
         private string GetBuriedSummary()
@@ -147,7 +147,7 @@ namespace Sheepshead.Models
             var indexOfPicker = Players.IndexOf(Picker);
             var pickerId = indexOfPicker - indexOfStartingPlayer + 1;
             if (pickerId <= 0) pickerId += Deck.PlayerCount;
-            return pickerId + String.Join("", Deck.Buried.Select(c => CardRepository.ToAbbr(c)));
+            return pickerId + String.Join("", Deck.Buried.Select(c => CardUtil.ToAbbr(c)));
         }
 
         private string GetTrickSummary(ITrick trick)
@@ -157,7 +157,7 @@ namespace Sheepshead.Models
             {
                 var indexOfStartingPlayer = Players.IndexOf(Deck.StartingPlayer);
                 var player = indexOfStartingPlayer + i < Deck.PlayerCount ? indexOfStartingPlayer + i : indexOfStartingPlayer + i - Deck.PlayerCount;
-                summary += CardRepository.ToAbbr(trick.CardsPlayed[Players[player]]);
+                summary += CardUtil.ToAbbr(trick.CardsPlayed[Players[player]]);
             }
             return summary;
         }
