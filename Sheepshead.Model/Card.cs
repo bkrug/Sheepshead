@@ -19,6 +19,14 @@ namespace Sheepshead.Models
         CLUBS, SPADES, HEARTS, TRUMP
     }
 
+    public enum SheepCard
+    {
+        QUEEN_CLUBS, QUEEN_SPADES, QUEEN_HEARTS, QUEEN_DIAMONDS, JACK_CLUBS, JACK_SPADES, JACK_HEARTS, JACK_DIAMONDS,
+        ACE_CLUBS, ACE_SPADES, ACE_HEARTS, ACE_DIAMONDS, N10_CLUBS, N10_SPADES, N10_HEARTS, N10_DIAMONDS,
+        KING_CLUBS, KING_SPADES, KING_HEARTS, KING_DIAMONDS, N9_CLUBS, N9_SPADES, N9_HEARTS, N9_DIAMONDS,
+        N8_CLUBS, N8_SPADES, N8_HEARTS, N8_DIAMONDS, N7_CLUBS, N7_SPADES, N7_HEARTS, N7_DIAMONDS
+    }
+
     public class CardRepository
     {
         private static CardRepository _instance = new CardRepository();
@@ -26,6 +34,36 @@ namespace Sheepshead.Models
         private Card[,] _cards = new Card[4, 8];
 
         public static CardRepository Instance { get { return _instance; } }
+
+        public static CardType GetFace(SheepCard card)
+        {
+            Int32 cardVal = Convert.ToInt32(card) / 4;
+            return (CardType)cardVal;
+        }
+
+        public static StandardSuite GetStandardSuit(SheepCard card)
+        {
+            Int32 cardVal = Convert.ToInt32(card) % 4;
+            return (StandardSuite)cardVal;
+        }
+
+        public static Suit GetSuit(SheepCard card)
+        {
+            if (card <= SheepCard.JACK_DIAMONDS)
+                return Suit.TRUMP;
+            var standardSuit = GetStandardSuit(card);
+            switch(standardSuit)
+            {
+                case StandardSuite.DIAMONDS:
+                    return Suit.TRUMP;
+                case StandardSuite.CLUBS:
+                    return Suit.CLUBS;
+                case StandardSuite.HEARTS:
+                    return Suit.HEARTS;
+                default:
+                    return Suit.SPADES;
+            }
+        }
 
         private CardRepository()
         {
@@ -46,6 +84,26 @@ namespace Sheepshead.Models
                 _cs[ss, (int)CardType.N9].Points = 0;
                 _cs[ss, (int)CardType.N8].Points = 0;
                 _cs[ss, (int)CardType.N7].Points = 0;
+            }
+        }
+
+        public int GetPoints(SheepCard card)
+        {
+            var cardType = GetFace(card);
+            switch (cardType)
+            {
+                case CardType.ACE:
+                    return 11;
+                case CardType.N10:
+                    return 10;
+                case CardType.KING:
+                    return 4;
+                case CardType.QUEEN:
+                    return 3;
+                case CardType.JACK:
+                    return 2;
+                default:
+                    return 0;
             }
         }
 
@@ -72,6 +130,51 @@ namespace Sheepshead.Models
                 _cs[ss, (int)CardType.N8].Rank = 19;
                 _cs[ss, (int)CardType.N7].Rank = 20;
             }
+        }
+
+        public int GetRank(SheepCard card)
+        {
+            if (card <= SheepCard.JACK_DIAMONDS)
+                return Convert.ToInt32(card) + 1;
+
+            var standardSuit = GetStandardSuit(card);
+            var face = GetFace(card);
+            if (standardSuit == StandardSuite.DIAMONDS)
+                switch (face)
+                {
+                    case CardType.ACE:
+                        return 9;
+                    case CardType.N10:
+                        return 10;
+                    case CardType.KING:
+                        return 11;
+                    case CardType.N9:
+                        return 12;
+                    case CardType.N8:
+                        return 13;
+                    case CardType.N7:
+                        return 14;
+                    default:
+                        return -1;
+                }
+            else
+                switch (face)
+                {
+                    case CardType.ACE:
+                        return 15;
+                    case CardType.N10:
+                        return 16;
+                    case CardType.KING:
+                        return 17;
+                    case CardType.N9:
+                        return 18;
+                    case CardType.N8:
+                        return 19;
+                    case CardType.N7:
+                        return 20;
+                    default:
+                        return -1;
+                }
         }
 
         private void Copy()
@@ -101,6 +204,13 @@ namespace Sheepshead.Models
             foreach(var ss in Enum.GetValues(typeof(StandardSuite)))
                 foreach (var ct in Enum.GetValues(typeof(CardType)))
                     list.Add(Instance[(StandardSuite)ss, (CardType)ct]);
+            return list;
+        }
+        public List<SheepCard> UnshuffledList1()
+        {
+            var list = new List<SheepCard>();
+            foreach (var ss in Enum.GetValues(typeof(SheepCard)))
+                list.Add((SheepCard)ss);
             return list;
         }
 
@@ -138,6 +248,40 @@ namespace Sheepshead.Models
             { Instance[StandardSuite.HEARTS, CardType.N7], "31" },
             { Instance[StandardSuite.DIAMONDS, CardType.N7], "32" }
         };
+        private static Dictionary<SheepCard, string> list1 = new Dictionary<SheepCard, string>() {
+            { SheepCard.ACE_CLUBS, "1" },
+            { SheepCard.ACE_SPADES, "2" },
+            { SheepCard.ACE_HEARTS, "3" },
+            { SheepCard.ACE_DIAMONDS, "4" },
+            { SheepCard.KING_CLUBS, "5" },
+            { SheepCard.KING_SPADES, "6" },
+            { SheepCard.KING_HEARTS, "7" },
+            { SheepCard.KING_DIAMONDS, "8" },
+            { SheepCard.QUEEN_CLUBS, "9" },
+            { SheepCard.QUEEN_SPADES, "10" },
+            { SheepCard.QUEEN_HEARTS, "11" },
+            { SheepCard.QUEEN_DIAMONDS, "12" },
+            { SheepCard.JACK_CLUBS, "13" },
+            { SheepCard.JACK_SPADES, "14" },
+            { SheepCard.JACK_HEARTS, "15" },
+            { SheepCard.JACK_DIAMONDS, "16" },
+            { SheepCard.N10_CLUBS, "17" },
+            { SheepCard.N10_SPADES, "18" },
+            { SheepCard.N10_HEARTS, "19" },
+            { SheepCard.N10_DIAMONDS, "20" },
+            { SheepCard.N9_CLUBS, "21" },
+            { SheepCard.N9_SPADES, "22" },
+            { SheepCard.N9_HEARTS, "23" },
+            { SheepCard.N9_DIAMONDS, "24" },
+            { SheepCard.N8_CLUBS, "25" },
+            { SheepCard.N8_SPADES, "26" },
+            { SheepCard.N8_HEARTS, "27" },
+            { SheepCard.N8_DIAMONDS, "28" },
+            { SheepCard.N7_CLUBS, "29" },
+            { SheepCard.N7_SPADES, "30" },
+            { SheepCard.N7_HEARTS, "31" },
+            { SheepCard.N7_DIAMONDS, "32" }
+        };
 
         private static Dictionary<StandardSuite, string> _suiteLetter = new Dictionary<StandardSuite, string>()
         {
@@ -168,6 +312,10 @@ namespace Sheepshead.Models
         public static string GetPictureFilename(ICard card)
         {
             return list[card];
+        }
+        public static string GetPictureFilename(SheepCard card)
+        {
+            return list1[card];
         }
 
         private struct TempCard
