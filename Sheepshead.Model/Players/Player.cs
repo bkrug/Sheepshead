@@ -8,10 +8,10 @@ namespace Sheepshead.Models.Players
 {
     public class Player : IPlayer
     {
-        private List<ICard> _hand = new List<ICard>();
+        private List<SheepCard> _hand = new List<SheepCard>();
 
         public virtual string Name { get { return String.Empty; } }
-        public List<ICard> Cards { get { return _hand; } }
+        public List<SheepCard> Cards { get { return _hand; } }
 
         public int QueueRankInTrick(ITrick trick)
         {
@@ -35,7 +35,7 @@ namespace Sheepshead.Models.Players
     public interface IPlayer
     {
         string Name { get; }
-        List<ICard> Cards { get; }
+        List<SheepCard> Cards { get; }
         int QueueRankInTrick(ITrick trick);
         int QueueRankInDeck(IDeck deck);
     }

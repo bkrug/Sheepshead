@@ -114,11 +114,11 @@ namespace Sheepshead.Tests
         {
             var playerMocks = new List<Mock>() { new Mock<IHumanPlayer>(), new Mock<IComputerPlayer>(), new Mock<IComputerPlayer>() };
             var unplayedPlayers = playerMocks.Select(m => m.Object as IPlayer).ToList();
-            var humanCards = new List<ICard>();
+            var humanCards = new List<SheepCard>();
             var humanMock = ((Mock<IHumanPlayer>)playerMocks[0]);
             humanMock.Setup(m => m.Cards).Returns(humanCards);
 
-            var blinds = new List<ICard>() { new Mock<ICard>().Object, new Mock<ICard>().Object };
+            var blinds = new List<SheepCard>() { 0, (SheepCard)1 };
             var deckMock = new Mock<IDeck>();
             deckMock.Setup(m => m.PlayersWithoutPickTurn).Returns(unplayedPlayers);
             deckMock.Setup(m => m.Blinds).Returns(blinds);
@@ -138,7 +138,7 @@ namespace Sheepshead.Tests
         {
             var playerMocks = new List<Mock>() { new Mock<IHumanPlayer>(), new Mock<IComputerPlayer>(), new Mock<IComputerPlayer>() };
             var unplayedPlayers = playerMocks.Select(m => m.Object as IPlayer).ToList();
-            var humanCards = new List<ICard>();
+            var humanCards = new List<SheepCard>();
             var humanMock = ((Mock<IHumanPlayer>)playerMocks[0]);
 
             var deckMock = new Mock<IDeck>();
@@ -184,7 +184,7 @@ namespace Sheepshead.Tests
         {
             var deckMock = new Mock<IDeck>();
             var computerPlayerMock = new Mock<IComputerPlayer>();
-            var buried = new List<ICard>() { new Mock<ICard>().Object, new Mock<ICard>().Object };
+            var buried = new List<SheepCard>() { 0, (SheepCard)1 };
             computerPlayerMock.Setup(m => m.DropCardsForPick(deckMock.Object)).Returns(buried);
             var expectedHand = new Mock<IHand>().Object;
             var handFactoryMock = new Mock<IHandFactory>();
@@ -201,7 +201,7 @@ namespace Sheepshead.Tests
         [TestMethod]
         public void PickProcessorOuter2_ContinueFromHumanPickTurn_HumanPicks()
         {
-            var humanCards = new List<ICard>();
+            var humanCards = new List<SheepCard>();
             var humanMock = new Mock<IHumanPlayer>();
             humanMock.Setup(m => m.Cards).Returns(humanCards);
             var pickProcessorMock = new Mock<IPickProcessorOuter>();
@@ -211,10 +211,10 @@ namespace Sheepshead.Tests
             var handMock = new Mock<IHand>();
             var handFactoryMock = new Mock<IHandFactory>();
             handFactoryMock
-                .Setup(m => m.GetHand(It.IsAny<IDeck>(), It.IsAny<IPlayer>(), It.IsAny<List<ICard>>()))
-                .Callback((IDeck deck, IPlayer player, List<ICard> cards) => handMock.Setup(m => m.Picker).Returns(humanMock.Object))
+                .Setup(m => m.GetHand(It.IsAny<IDeck>(), It.IsAny<IPlayer>(), It.IsAny<List<SheepCard>>()))
+                .Callback((IDeck deck, IPlayer player, List<SheepCard> cards) => handMock.Setup(m => m.Picker).Returns(humanMock.Object))
                 .Returns(() => handMock.Object);
-            var blinds = new List<ICard>() { new Mock<ICard>().Object, new Mock<ICard>().Object };
+            var blinds = new List<SheepCard>() { 0, (SheepCard)1 };
             var deckMock = new Mock<IDeck>();
             deckMock.Setup(m => m.Blinds).Returns(blinds);
             deckMock.Setup(m => m.PlayersWithoutPickTurn).Returns(new List<IPlayer>() { humanMock.Object, new Mock<IComputerPlayer>().Object });
@@ -240,8 +240,8 @@ namespace Sheepshead.Tests
                 .Returns(expectedPicker);
             var handFactoryMock = new Mock<IHandFactory>();
             handFactoryMock
-                .Setup(m => m.GetHand(It.IsAny<IDeck>(), It.IsAny<IPlayer>(), It.IsAny<List<ICard>>()))
-                .Callback((IDeck deck, IPlayer player, List<ICard> cards) => Assert.Fail("Hand should not be created by ContinueFromHumanPick() method."));
+                .Setup(m => m.GetHand(It.IsAny<IDeck>(), It.IsAny<IPlayer>(), It.IsAny<List<SheepCard>>()))
+                .Callback((IDeck deck, IPlayer player, List<SheepCard> cards) => Assert.Fail("Hand should not be created by ContinueFromHumanPick() method."));
             var refusingPlayers = new List<IPlayer>();
             var deckMock = new Mock<IDeck>();
             deckMock.Setup(m => m.Hand).Returns(handMock.Object);
@@ -260,12 +260,12 @@ namespace Sheepshead.Tests
         public void PickProcessorOuter2_ContinueFromHumanPickTurn_WrongTurn()
         {
             var humanMock = new Mock<IHumanPlayer>();
-            humanMock.Setup(m => m.Cards).Returns(new List<ICard>());
+            humanMock.Setup(m => m.Cards).Returns(new List<SheepCard>());
             var computerPlayer = new Mock<IComputerPlayer>().Object;
             var pickProcessorMock = new Mock<IPickProcessorOuter>();
             var handFactoryMock = new Mock<IHandFactory>();
             var deckMock = new Mock<IDeck>();
-            deckMock.Setup(m => m.Blinds).Returns(new List<ICard>());
+            deckMock.Setup(m => m.Blinds).Returns(new List<SheepCard>());
             deckMock.Setup(m => m.PlayersWithoutPickTurn).Returns(new List<IPlayer>() { computerPlayer, humanMock.Object });
 
             var pickProcessor = new PickProcessorOuter2();
@@ -284,9 +284,9 @@ namespace Sheepshead.Tests
         [TestMethod]
         public void PickProcessorOuter_BuryCards()
         {
-            var toBury = new List<ICard>() { new Mock<ICard>().Object, new Mock<ICard>().Object };
+            var toBury = new List<SheepCard>() { 0, (SheepCard)1 };
             var playerCards = toBury.ToList();
-            var buried = new List<ICard>();
+            var buried = new List<SheepCard>();
             var humanMock = new Mock<IHumanPlayer>();
             humanMock.Setup(m => m.Cards).Returns(playerCards);
             var deckMock = new Mock<IDeck>();
@@ -304,14 +304,14 @@ namespace Sheepshead.Tests
         public void PickProcessorOuter_BuryCards_NotPicker()
         {
             var humanMock = new Mock<IHumanPlayer>();
-            humanMock.Setup(m => m.Cards).Returns(new List<ICard>());
+            humanMock.Setup(m => m.Cards).Returns(new List<SheepCard>());
             var deckMock = new Mock<IDeck>();
-            deckMock.Setup(m => m.Buried).Returns(new List<ICard>());
+            deckMock.Setup(m => m.Buried).Returns(new List<SheepCard>());
             deckMock.Setup(m => m.Hand.Picker).Returns(new Mock<IComputerPlayer>().Object);
 
             var threwException = false;
             try {
-                new PickProcessorOuter().BuryCards(deckMock.Object, humanMock.Object, new List<ICard>());
+                new PickProcessorOuter().BuryCards(deckMock.Object, humanMock.Object, new List<SheepCard>());
             }
             catch(NotPlayersTurnException)
             {

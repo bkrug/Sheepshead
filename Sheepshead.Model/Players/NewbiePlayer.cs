@@ -7,7 +7,7 @@ namespace Sheepshead.Models.Players
 {
     public class NewbiePlayer : ComputerPlayer
     {
-        public override ICard GetMove(ITrick trick)
+        public override SheepCard GetMove(ITrick trick)
         {
             return this.Cards.First(c => trick.IsLegalAddition(c, this));
         }
@@ -17,9 +17,9 @@ namespace Sheepshead.Models.Players
             return QueueRankInDeck(deck) == deck.PlayerCount;
         }
 
-        protected override List<ICard> DropCardsForPickInternal(IDeck deck)
+        protected override List<SheepCard> DropCardsForPickInternal(IDeck deck)
         {
-            return Cards.OrderByDescending(c => c.Rank).Take(2).ToList();
+            return Cards.OrderByDescending(c => CardRepository.GetRank(c)).Take(2).ToList();
         }
     }
 }

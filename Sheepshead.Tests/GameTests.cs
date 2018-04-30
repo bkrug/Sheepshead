@@ -56,8 +56,8 @@ namespace Sheepshead.Tests
             deckMock.Setup(m => m.Hand.Tricks).Returns(new List<ITrick>() { new Mock<ITrick>().Object, trickMock.Object });
             trickMock.Setup(m => m.PlayersWithoutTurn).Returns(players);
             trickMock
-                .Setup(m => m.Add(It.IsAny<IPlayer>(), It.IsAny<ICard>()))
-                .Callback((IPlayer player, ICard card) => {
+                .Setup(m => m.Add(It.IsAny<IPlayer>(), It.IsAny<SheepCard>()))
+                .Callback((IPlayer player, SheepCard card) => {
                     hasPlayed.Add(player);
                     Assert.IsNotNull(card);
                 });
@@ -65,7 +65,7 @@ namespace Sheepshead.Tests
                 .OfType<Mock<IComputerPlayer>>().ToList()
                 .ForEach(m => m
                     .Setup(p => p.GetMove(It.IsAny<ITrick>()))
-                    .Returns(new Mock<ICard>().Object)
+                    .Returns(0)
                 );
 
             var game = new Game(75291, playersDifferentOrder, new RandomWrapper(), null);
@@ -96,15 +96,15 @@ namespace Sheepshead.Tests
             deckMock.Setup(m => m.Hand.Tricks).Returns(new List<ITrick>() { trickMock.Object });
             trickMock.Setup(m => m.PlayersWithoutTurn).Returns(players);
             trickMock
-                .Setup(m => m.Add(It.IsAny<IPlayer>(), It.IsAny<ICard>()))
-                .Callback((IPlayer player, ICard card) => {
+                .Setup(m => m.Add(It.IsAny<IPlayer>(), It.IsAny<SheepCard>()))
+                .Callback((IPlayer player, SheepCard card) => {
                     hasPlayed.Add(player);
                 });
             playerList
                 .OfType<Mock<IComputerPlayer>>().ToList()
                 .ForEach(m => m
                     .Setup(p => p.GetMove(It.IsAny<ITrick>()))
-                    .Returns(new Mock<ICard>().Object)
+                    .Returns(0)
                 );
 
             var game = new Game(75291, playersDifferentOrder, new RandomWrapper(), null);
@@ -165,7 +165,7 @@ namespace Sheepshead.Tests
                 .Callback((IComputerPlayer p) =>
                     Assert.IsFalse(true, "Should not have called AcceptComputerPicker().  Should have given human a chance to pick."));
             var handFactoryMock = new Mock<IHandFactory>();
-            handFactoryMock.Setup(m => m.GetHand(It.IsAny<IDeck>(), It.IsAny<IPlayer>(), It.IsAny<List<ICard>>()))
+            handFactoryMock.Setup(m => m.GetHand(It.IsAny<IDeck>(), It.IsAny<IPlayer>(), It.IsAny<List<SheepCard>>()))
                 .Callback(() =>
                     Assert.IsFalse(true, "Should not have called AcceptComputerPicker().  Should have given human a chance to pick."));
 
@@ -199,7 +199,7 @@ namespace Sheepshead.Tests
                 .Callback(() => handCreated = true)
                 .Returns(new Mock<IHand>().Object);
             var handFactoryMock = new Mock<IHandFactory>();
-            handFactoryMock.Setup(m => m.GetHand(It.IsAny<IDeck>(), It.IsAny<IPlayer>(), It.IsAny<List<ICard>>()))
+            handFactoryMock.Setup(m => m.GetHand(It.IsAny<IDeck>(), It.IsAny<IPlayer>(), It.IsAny<List<SheepCard>>()))
                 .Callback(() =>
                     Assert.IsFalse(true, "Should have instantiated hand through AcceptComputerPicker() instead."));
 
@@ -232,7 +232,7 @@ namespace Sheepshead.Tests
                 .Callback((IComputerPlayer p) =>
                     Assert.IsFalse(true, "Should have instantiated hand through HandFactory.  Should be a leasters hand."));
             var handFactoryMock = new Mock<IHandFactory>();
-            handFactoryMock.Setup(m => m.GetHand(deckMock.Object, null, It.IsAny<List<ICard>>()))
+            handFactoryMock.Setup(m => m.GetHand(deckMock.Object, null, It.IsAny<List<SheepCard>>()))
                 .Callback(() => handCreated = true)
                 .Returns(() => new Mock<IHand>().Object);
 

@@ -24,15 +24,15 @@ namespace Sheepshead.Models
             public TurnType TurnType { get { throw new NotImplementedException(); } }
             public IPlayer CurrentTurn { get { throw new NotImplementedException(); } }
             public IHand ContinueFromHumanPickTurn(IHumanPlayer player, bool willPick) { throw new NotImplementedException(); }
-            public void BuryCards(IHumanPlayer player, List<ICard> cards) { throw new NotImplementedException(); }
-            public void RecordTurn(IHumanPlayer player, ICard card) { throw new NotImplementedException(); }
+            public void BuryCards(IHumanPlayer player, List<SheepCard> cards) { throw new NotImplementedException(); }
+            public void RecordTurn(IHumanPlayer player, SheepCard card) { throw new NotImplementedException(); }
         }
 
         private class FakeDeck : IDeck
         {
             public FakeDeck(IGame game) { Game = game; }
-            public List<ICard> Blinds { get; set; }
-            public List<ICard> Buried { get; set; }
+            public List<SheepCard> Blinds { get; set; }
+            public List<SheepCard> Buried { get; set; }
             public IGame Game { get; private set; }
             public IHand Hand { get; set; }
             public List<IPlayer> PlayersRefusingPick { get { throw new NotImplementedException(); } }
@@ -57,7 +57,7 @@ namespace Sheepshead.Models
             GivePlayersCards(trickSummaries, playerList);
             var buriedList = String.IsNullOrEmpty(buriedSummary)
                 ? null
-                : new List<ICard>() { GetCard(buriedSummary.Substring(1, 2)), GetCard(buriedSummary.Substring(3, 2)) };
+                : new List<SheepCard>() { GetCard(buriedSummary.Substring(1, 2)), GetCard(buriedSummary.Substring(3, 2)) };
 
             var game = GetGame(playerCount, playerList);
             var deck = GetDeck(blindSummary, playerList, game, buriedList);
@@ -75,13 +75,13 @@ namespace Sheepshead.Models
             return playerList;
         }
 
-        private static ICard GetCard(string abbr)
+        private static SheepCard GetCard(string abbr)
         {
             var typeLetter = abbr.Substring(0, 1);
             var suiteLetter = abbr.Substring(1);
             var type = CardRepository.ReverseCardTypeLetter[typeLetter];
             var suite = CardRepository.ReverseSuiteLetter[suiteLetter];
-            return CardRepository.Instance[suite, type];
+            return CardRepository.GetSheepCard(CardRepository.Instance[suite, type]);
         }
 
         private static FakeGame GetGame(int playerCount, List<IPlayer> playerList)
@@ -95,11 +95,11 @@ namespace Sheepshead.Models
             return game;
         }
 
-        private static FakeDeck GetDeck(string blindSummary, List<IPlayer> playerList, FakeGame game, List<ICard> buriedList)
+        private static FakeDeck GetDeck(string blindSummary, List<IPlayer> playerList, FakeGame game, List<SheepCard> buriedList)
         {
             var deck = new FakeDeck(game)
             {
-                Blinds = new List<ICard>() {
+                Blinds = new List<SheepCard>() {
                     GetCard(blindSummary.Substring(0, 2)), GetCard(blindSummary.Substring(2, 2))
                 },
                 Buried = buriedList,
@@ -108,7 +108,7 @@ namespace Sheepshead.Models
             return deck;
         }
 
-        private static Hand GetHand(string buriedSummary, List<IPlayer> playerList, List<ICard> buriedList, FakeDeck deck)
+        private static Hand GetHand(string buriedSummary, List<IPlayer> playerList, List<SheepCard> buriedList, FakeDeck deck)
         {
             var pickerNo = buriedSummary.Length > 0 ? (int?)int.Parse(buriedSummary.Substring(0, 1)) - 1 : null;
             var picker = pickerNo == null ? (IPlayer)null : playerList[pickerNo.Value];

@@ -84,7 +84,7 @@ namespace Sheepshead.Models
             return new PickProcessorOuter().PlayNonHumanPickTurns(_decks.Last(), _handFactory);
         }
 
-        public void BuryCards(IHumanPlayer player, List<ICard> cards)
+        public void BuryCards(IHumanPlayer player, List<SheepCard> cards)
         {
             if (TurnType != TurnType.Bury)
                 throw new WrongGamePhaseExcpetion("Game must be in the Bury phase.");
@@ -110,7 +110,7 @@ namespace Sheepshead.Models
         //TEST: Throw an error if it is not this player's turn yet.
         //TEST: Throw an error if this is not the play trick phase.
         //TEST: Throw an error if the player doesn't have this card.
-        public void RecordTurn(IHumanPlayer player, ICard card)
+        public void RecordTurn(IHumanPlayer player, SheepCard card)
         {
             ITrick trick = Decks.Last().Hand.Tricks.Last();
             trick.Add(player, card);
@@ -156,8 +156,8 @@ namespace Sheepshead.Models
         IHand ContinueFromHumanPickTurn(IHumanPlayer human, bool willPick);
         IComputerPlayer PlayNonHumanPickTurns();
         IComputerPlayer PlayUpToHumanPickTurn();
-        void BuryCards(IHumanPlayer player, List<ICard> cards);
+        void BuryCards(IHumanPlayer player, List<SheepCard> cards);
         void PlayNonHumansInTrick();
-        void RecordTurn(IHumanPlayer player, ICard card);
+        void RecordTurn(IHumanPlayer player, SheepCard card);
     }
 }

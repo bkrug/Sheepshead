@@ -11,12 +11,12 @@ namespace Sheepshead.Models.Players
         public class OnMoveEventArgs : EventArgs
         {
             public ITrick Trick;
-            public ICard Card;
+            public SheepCard Card;
         }
 
-        public override ICard GetMove(ITrick trick)
+        public override SheepCard GetMove(ITrick trick)
         {
-            ICard moveCard;
+            SheepCard moveCard;
             if (!trick.Hand.Leasters)
             {
                 moveCard = TryToWinTrick(trick);
@@ -25,7 +25,7 @@ namespace Sheepshead.Models.Players
             {
                 var previousWinners = trick.Hand.Tricks.Where(t => t != trick).Select(t => t.Winner());
                 var lowestTrick = previousWinners.Any() ? previousWinners.Min(w => w.Points) : -1;
-                if (previousWinners.Any(t => t.Player == this) || trick.CardsPlayed.Sum(c => c.Value.Points) > lowestTrick)
+                if (previousWinners.Any(t => t.Player == this) || trick.CardsPlayed.Sum(c => CardRepository.GetPoints(c.Value)) > lowestTrick)
                     moveCard = TryToLooseTrick(trick);
                 else
                     moveCard = TryToWinTrick(trick);
@@ -34,7 +34,7 @@ namespace Sheepshead.Models.Players
             return moveCard;
         }
 
-        private ICard TryToWinTrick(ITrick trick)
+        private SheepCard TryToWinTrick(ITrick trick)
         {
             if (trick.StartingPlayer == this)
                 return GetLeadCard(trick, this.Cards);
@@ -44,37 +44,37 @@ namespace Sheepshead.Models.Players
             return GetFinishingCard(trick, legalCards);
         }
 
-        private ICard TryToLooseTrick(ITrick trick)
+        private SheepCard TryToLooseTrick(ITrick trick)
         {
             var legalCards = Cards.Where(c => trick.IsLegalAddition(c, this));
-            return legalCards.OrderByDescending(l => l.Rank).First();
+            return legalCards.OrderByDescending(l => CardRepository.GetRank(l)).First();
         }
 
-        private ICard GetLeadCard(ITrick trick, IEnumerable<ICard> legalCards)
+        private SheepCard GetLeadCard(ITrick trick, IEnumerable<SheepCard> legalCards)
         {
-            IEnumerable<ICard> cardsOfPreferedSuite;
-            if (trick.Hand.Picker == this || this.Cards.Any(c => c.StandardSuite == trick.Hand.PartnerCard.StandardSuite && c.CardType == trick.Hand.PartnerCard.CardType))
+            IEnumerable<SheepCard> cardsOfPreferedSuite;
+            if (trick.Hand.Picker == this || this.Cards.Any(c => CardRepository.GetStandardSuit(c) == CardRepository.GetStandardSuit(trick.Hand.PartnerCard) && CardRepository.GetFace(c) == CardRepository.GetFace(trick.Hand.PartnerCard)))
                 cardsOfPreferedSuite = legalCards.Where(c => CardRepository.GetSuit(c) == Suit.TRUMP).ToList();
             else
                 cardsOfPreferedSuite = legalCards.Where(c => CardRepository.GetSuit(c) != Suit.TRUMP).ToList();
             return legalCards.OrderBy(c => cardsOfPreferedSuite.Contains(c) ? 1 : 2)
-                             .OrderByDescending(c => c.Rank)
-                             .ThenByDescending(c => c.Points)
+                             .OrderByDescending(c => CardRepository.GetRank(c))
+                             .ThenByDescending(c => CardRepository.GetPoints(c))
                              .First();
         }
 
-        private ICard GetMiddleCard(ITrick trick, IEnumerable<ICard> legalCards)
+        private SheepCard GetMiddleCard(ITrick trick, IEnumerable<SheepCard> legalCards)
         {
-            return legalCards.OrderByDescending(c => c.Rank)
-                             .ThenByDescending(c => c.Points)
+            return legalCards.OrderByDescending(c => CardRepository.GetRank(c))
+                             .ThenByDescending(c => CardRepository.GetPoints(c))
                              .First();
         }
 
-        private ICard GetFinishingCard(ITrick trick, IEnumerable<ICard> legalCards)
+        private SheepCard GetFinishingCard(ITrick trick, IEnumerable<SheepCard> legalCards)
         {
-            var highestPlayedCard = trick.CardsPlayed.OrderByDescending(d => d.Value.Rank).First().Value;
-            var winningCards = legalCards.Where(c => c.Rank > highestPlayedCard.Rank).ToList();
-            return legalCards.OrderBy(c => winningCards.Contains(c) ? 1 : 2).ThenByDescending(c => c.Rank).First();
+            var highestPlayedCard = trick.CardsPlayed.OrderByDescending(d => CardRepository.GetRank(d.Value)).First().Value;
+            var winningCards = legalCards.Where(c => CardRepository.GetRank(c) > CardRepository.GetRank(highestPlayedCard)).ToList();
+            return legalCards.OrderBy(c => winningCards.Contains(c) ? 1 : 2).ThenByDescending(c => CardRepository.GetRank(c)).First();
         }
 
         public override bool WillPick(IDeck deck)
@@ -87,17 +87,17 @@ namespace Sheepshead.Models.Players
             return willPick;
         }
 
-        protected override List<ICard> DropCardsForPickInternal(IDeck deck)
+        protected override List<SheepCard> DropCardsForPickInternal(IDeck deck)
         {
             //get a list of cards for which there are no other cards in their suite.  Exclude Trump cards.
             var soloCardsOfSuite = Cards
                 .GroupBy(g => CardRepository.GetSuit(g))
                 .Where(g => g.Count() == 1 && CardRepository.GetSuit(g.First()) != Suit.TRUMP)
                 .Select(g => g.First()).ToList();
-            return Cards.OrderBy(c => soloCardsOfSuite.Contains(c) ? 1 : 2).ThenByDescending(c => c.Rank).Take(2).ToList();
+            return Cards.OrderBy(c => soloCardsOfSuite.Contains(c) ? 1 : 2).ThenByDescending(c => CardRepository.GetRank(c)).Take(2).ToList();
         }
 
-        protected virtual void OnMoveHandler(ITrick trick, ICard card)
+        protected virtual void OnMoveHandler(ITrick trick, SheepCard card)
         {
             var e = new OnMoveEventArgs()
             {

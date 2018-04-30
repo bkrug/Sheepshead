@@ -8,26 +8,26 @@ namespace Sheepshead.Models
 {
     public class Trick : ITrick
     {
-        private Dictionary<IPlayer, ICard> _cards = new Dictionary<IPlayer, ICard>();
+        private Dictionary<IPlayer, SheepCard> _cards = new Dictionary<IPlayer, SheepCard>();
         private IHand _hand;
 
         public IHand Hand { get { return _hand; } }
         public IGame Game { get { return _hand.Deck.Game; } }
         public IPlayer StartingPlayer { get; private set; }
-        public Dictionary<IPlayer, ICard> CardsPlayed { get { return new Dictionary<IPlayer, ICard>(_cards); } }
+        public Dictionary<IPlayer, SheepCard> CardsPlayed { get { return new Dictionary<IPlayer, SheepCard>(_cards); } }
         public event EventHandler<EventArgs> OnTrickEnd;
         public event EventHandler<MoveEventArgs> OnMove;
 
-        public List<KeyValuePair<IPlayer, ICard>> OrderedMoves 
+        public List<KeyValuePair<IPlayer, SheepCard>> OrderedMoves 
         { 
             get 
             {
                 var indexOfStartingPlayer = Players.IndexOf(StartingPlayer);
                 var playerList = Players.Skip(indexOfStartingPlayer).Union(Players.Take(indexOfStartingPlayer)).ToList();
-                var orderedMoves = new List<KeyValuePair<IPlayer, ICard>>();
+                var orderedMoves = new List<KeyValuePair<IPlayer, SheepCard>>();
                 foreach (var player in playerList)
                     if (_cards.ContainsKey(player))
-                        orderedMoves.Add(new KeyValuePair<IPlayer, ICard>( player, _cards[player] ));
+                        orderedMoves.Add(new KeyValuePair<IPlayer, SheepCard>( player, _cards[player] ));
                 return orderedMoves;
             } 
         }
@@ -51,18 +51,18 @@ namespace Sheepshead.Models
                 : Hand.Tricks[index - 1].Winner().Player;
         }
 
-        public void Add(IPlayer player, ICard card)
+        public void Add(IPlayer player, SheepCard card)
         {
             _cards.Add(player, card);
             player.Cards.Remove(card);
-            if (_hand.PartnerCard != null && _hand.PartnerCard.StandardSuite == card.StandardSuite && _hand.PartnerCard.CardType == card.CardType)
+            if (CardRepository.GetStandardSuit(_hand.PartnerCard) == CardRepository.GetStandardSuit(card) && CardRepository.GetFace(_hand.PartnerCard) == CardRepository.GetFace(card))
                 _hand.SetPartner(player, this);
             OnMoveHandler(player, card);
             if (IsComplete())
                 OnTrickEndHandler();
         }
 
-        public bool IsLegalAddition(ICard card, IPlayer player)
+        public bool IsLegalAddition(SheepCard card, IPlayer player)
         {
             var hand = player.Cards;
             if (!_cards.Any())
@@ -77,7 +77,7 @@ namespace Sheepshead.Models
             if (!_cards.Any())
                 return null;
             var firstSuite = CardRepository.GetSuit(_cards.First().Value);
-            var validCards = new List<KeyValuePair<IPlayer, ICard>>();
+            var validCards = new List<KeyValuePair<IPlayer, SheepCard>>();
             foreach(var keyValuePair in _cards) {
                 var suite = CardRepository.GetSuit(keyValuePair.Value);
                 if (suite == firstSuite || suite == Suit.TRUMP)
@@ -85,18 +85,18 @@ namespace Sheepshead.Models
             }
             return new TrickWinner()
             {
-                Player = validCards.OrderBy(kvp => kvp.Value.Rank).First().Key,
-                Points = _cards.Sum(c => c.Value.Points)
+                Player = validCards.OrderBy(kvp => CardRepository.GetRank(kvp.Value)).First().Key,
+                Points = _cards.Sum(c => CardRepository.GetPoints(c.Value))
             };
         }
 
         public class MoveEventArgs : EventArgs
         {
             public IPlayer Player;
-            public ICard Card;
+            public SheepCard Card;
         }
 
-        protected virtual void OnMoveHandler(IPlayer player, ICard card)
+        protected virtual void OnMoveHandler(IPlayer player, SheepCard card)
         {
             var e = new MoveEventArgs()
             {
@@ -144,7 +144,7 @@ namespace Sheepshead.Models
             get { return Hand.Tricks.IndexOf(this); }
         }
 
-        public ICard PartnerCard { get { return Hand.PartnerCard; } }
+        public SheepCard PartnerCard { get { return Hand.PartnerCard; } }
 
         public List<IPlayer> PlayersInTurnOrder => PickPlayerOrderer.PlayersInTurnOrder(Players, StartingPlayer);
         public List<IPlayer> PlayersWithoutTurn => PickPlayerOrderer.PlayersWithoutTurn(PlayersInTurnOrder, CardsPlayed.Keys.ToList());
@@ -166,18 +166,18 @@ namespace Sheepshead.Models
         IHand Hand { get; }
         IGame Game { get; }
         TrickWinner Winner();
-        void Add(IPlayer player, ICard card);
-        bool IsLegalAddition(ICard card, IPlayer player);
+        void Add(IPlayer player, SheepCard card);
+        bool IsLegalAddition(SheepCard card, IPlayer player);
         IPlayer StartingPlayer { get; }
-        Dictionary<IPlayer, ICard> CardsPlayed { get; }
+        Dictionary<IPlayer, SheepCard> CardsPlayed { get; }
         bool IsComplete();
         int PlayerCount { get; }
         List<IPlayer> Players { get; }
         int QueueRankOfPicker { get; }
         int? QueueRankOfPartner { get; }
         int IndexInHand { get; }
-        ICard PartnerCard { get; }
-        List<KeyValuePair<IPlayer, ICard>> OrderedMoves { get; }
+        SheepCard PartnerCard { get; }
+        List<KeyValuePair<IPlayer, SheepCard>> OrderedMoves { get; }
         event EventHandler<EventArgs> OnTrickEnd;
         List<IPlayer> PlayersWithoutTurn { get; }
         IPlayerOrderer PickPlayerOrderer { get; }

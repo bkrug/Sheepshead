@@ -87,7 +87,7 @@ namespace Sheepshead.Models
             }
         }
 
-        public int GetPoints(SheepCard card)
+        public static int GetPoints(SheepCard card)
         {
             var cardType = GetFace(card);
             switch (cardType)
@@ -132,7 +132,7 @@ namespace Sheepshead.Models
             }
         }
 
-        public int GetRank(SheepCard card)
+        public static int GetRank(SheepCard card)
         {
             if (card <= SheepCard.JACK_DIAMONDS)
                 return Convert.ToInt32(card) + 1;
@@ -355,6 +355,11 @@ namespace Sheepshead.Models
         public static SheepCard GetSheepCard(ICard card)
         {
             return list2[card];
+        }
+
+        public static ICard GetICard(SheepCard card)
+        {
+            return list2.Single(kvp => kvp.Value == card).Key;
         }
 
         private struct TempCard

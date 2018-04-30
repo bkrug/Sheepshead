@@ -11,8 +11,8 @@ namespace Sheepshead.Models
     {
         private List<IPlayer> _playersRefusingPick = new List<IPlayer>();
         public IGame Game { get; private set; }
-        public List<ICard> Blinds { get; private set; }
-        public List<ICard> Buried { get; set; }
+        public List<SheepCard> Blinds { get; private set; }
+        public List<SheepCard> Buried { get; set; }
         public IHand Hand { get; set; }
         public List<IPlayer> PlayersRefusingPick { get { return _playersRefusingPick; } }
         public IPlayer StartingPlayer { get; private set; }
@@ -28,12 +28,12 @@ namespace Sheepshead.Models
             DealCards(cards);
             game.Decks.Add(this);
             SetStartingPlayer();
-            Buried = new List<ICard>();
+            Buried = new List<SheepCard>();
         }
 
-        private Queue<ICard> ShuffleCards()
+        private Queue<SheepCard> ShuffleCards()
         {
-            List<ICard> cards = CardRepository.Instance.UnshuffledList();
+            List<SheepCard> cards = CardRepository.Instance.UnshuffledList1();
             for (var i = Sheepshead.Models.Game.CARDS_IN_DECK - 1; i > 0; --i)
             {
                 var j = _random.Next(i);
@@ -41,18 +41,18 @@ namespace Sheepshead.Models
                 cards[i] = cards[j];
                 cards[j] = swap;
             }
-            var queue = new Queue<ICard>();
+            var queue = new Queue<SheepCard>();
             cards.ForEach(c => queue.Enqueue(c));
             return queue;
         }
 
-        private void DealCards(Queue<ICard> cards) 
+        private void DealCards(Queue<SheepCard> cards) 
         {
             foreach (var player in Game.Players)
                 player.Cards.RemoveAll(c => true);
             var totalTricks = (int)(Sheepshead.Models.Game.CARDS_IN_DECK / Game.PlayerCount);
             var totalRounds = totalTricks / 2;
-            Blinds = new List<ICard>();
+            Blinds = new List<SheepCard>();
             for (var round = 0; round < totalRounds; ++round)
             {
                 if (round > 0)
@@ -108,8 +108,8 @@ namespace Sheepshead.Models
 
     public interface IDeck
     {
-        List<ICard> Blinds { get; }
-        List<ICard> Buried { get; set; }
+        List<SheepCard> Blinds { get; }
+        List<SheepCard> Buried { get; set; }
         IGame Game { get; }
         IHand Hand { get; set; }
         List<IPlayer> PlayersRefusingPick { get; }

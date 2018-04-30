@@ -11,7 +11,7 @@ namespace Sheepshead.Models
         public IDeck Deck { get; private set; }
         public IPlayer Picker { get; private set; }
         public IPlayer Partner { get; private set; }
-        public ICard PartnerCard { get; private set; }
+        public SheepCard PartnerCard { get; private set; }
         public int[] PartnerCardPlayed { get; private set; }
         private List<ITrick> _tricks = new List<ITrick>();
         public List<ITrick> Tricks { get { return _tricks.ToList(); } }
@@ -21,7 +21,7 @@ namespace Sheepshead.Models
 
         public bool Leasters { get { return Picker == null; } }
 
-        public Hand(IDeck deck, IPlayer picker, List<ICard> droppedCards)
+        public Hand(IDeck deck, IPlayer picker, List<SheepCard> droppedCards)
         {
             Deck = deck;
             if (Deck.Hand != null)
@@ -37,7 +37,7 @@ namespace Sheepshead.Models
             PartnerCardPlayed = null;
         }
 
-        private ICard ChoosePartnerCard(IPlayer picker)
+        private SheepCard ChoosePartnerCard(IPlayer picker)
         {
             var cri = CardRepository.Instance;
             var potentialPartnerCards = new[] { 
@@ -52,11 +52,11 @@ namespace Sheepshead.Models
             if (!picker.Cards.Any())
             {
             }
-            if (!potentialPartnerCards.Any(c => !picker.Cards.Contains(c)))
+            if (!potentialPartnerCards.Any(c => !picker.Cards.Contains(CardRepository.GetSheepCard(c))))
             {
             }
-            var partnerCard = potentialPartnerCards.First(c => !picker.Cards.Contains(c));
-            return partnerCard;
+            var partnerCard = potentialPartnerCards.First(c => !picker.Cards.Contains(CardRepository.GetSheepCard(c)));
+            return CardRepository.GetSheepCard(partnerCard);
         }
 
         public void AddTrick(ITrick trick)
@@ -137,7 +137,7 @@ namespace Sheepshead.Models
 
         private string GetBlindSummary()
         {
-            return String.Join("", Deck.Blinds.Select(c => c.ToAbbr()));
+            return String.Join("", Deck.Blinds.Select(c => CardRepository.GetICard(c).ToAbbr()));
         }
 
         private string GetBuriedSummary()
@@ -148,7 +148,7 @@ namespace Sheepshead.Models
             var indexOfPicker = Players.IndexOf(Picker);
             var pickerId = indexOfPicker - indexOfStartingPlayer + 1;
             if (pickerId <= 0) pickerId += Deck.PlayerCount;
-            return pickerId + String.Join("", Deck.Buried.Select(c => c.ToAbbr()));
+            return pickerId + String.Join("", Deck.Buried.Select(c => CardRepository.GetICard(c).ToAbbr()));
         }
 
         private string GetTrickSummary(ITrick trick)
@@ -158,7 +158,7 @@ namespace Sheepshead.Models
             {
                 var indexOfStartingPlayer = Players.IndexOf(Deck.StartingPlayer);
                 var player = indexOfStartingPlayer + i < Deck.PlayerCount ? indexOfStartingPlayer + i : indexOfStartingPlayer + i - Deck.PlayerCount;
-                summary += trick.CardsPlayed[Players[player]].ToAbbr();
+                summary += CardRepository.GetICard(trick.CardsPlayed[Players[player]]).ToAbbr();
             }
             return summary;
         }
@@ -201,7 +201,7 @@ namespace Sheepshead.Models
         IDeck Deck { get; }
         IPlayer Picker { get; }
         IPlayer Partner { get; }
-        ICard PartnerCard { get; }
+        SheepCard PartnerCard { get; }
         int[] PartnerCardPlayed { get; }
         List<ITrick> Tricks { get; }
         void AddTrick(ITrick trick);

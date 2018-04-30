@@ -25,9 +25,9 @@ namespace Sheepshead.Tests
         public void NewbiePlayer_GetMove()
         {
             var mainPlayer = new NewbiePlayer();
-            var card1 = CardRepository.Instance[StandardSuite.CLUBS, CardType.JACK];
-            var card2 = CardRepository.Instance[StandardSuite.HEARTS, CardType.N8];
-            mainPlayer.Cards.AddRange(new List<ICard>() { card1, card2 });
+            var card1 = SheepCard.JACK_CLUBS;
+            var card2 = SheepCard.N8_HEARTS;
+            mainPlayer.Cards.AddRange(new List<SheepCard>() { card1, card2 });
             var playerList = new List<IPlayer>() { new Player(), new Player(), mainPlayer, new Player(), new Player() };
             {
                 var trickMock = GenerateTrickMock(playerList);
@@ -100,23 +100,23 @@ namespace Sheepshead.Tests
         public void NewbiePlayer_DropCards()
         {
             var picker = new BasicPlayer();
-            picker.Cards.AddRange(new List<ICard>()
+            picker.Cards.AddRange(new List<SheepCard>()
             {
-                CardRepository.Instance[StandardSuite.DIAMONDS, CardType.N7],
-                CardRepository.Instance[StandardSuite.DIAMONDS, CardType.QUEEN],
-                CardRepository.Instance[StandardSuite.CLUBS, CardType.JACK],
-                CardRepository.Instance[StandardSuite.CLUBS, CardType.N7],
-                CardRepository.Instance[StandardSuite.HEARTS, CardType.N7],
-                CardRepository.Instance[StandardSuite.HEARTS, CardType.N8]
+                SheepCard.N7_DIAMONDS,
+                SheepCard.QUEEN_DIAMONDS,
+                SheepCard.JACK_CLUBS,
+                SheepCard.N7_CLUBS,
+                SheepCard.N7_HEARTS,
+                SheepCard.N8_HEARTS
             });
             var deckMock = new Mock<IDeck>();
-            deckMock.Setup(m => m.Blinds).Returns(new List<ICard>() { 
-                CardRepository.Instance[StandardSuite.SPADES, CardType.N8],
-                CardRepository.Instance[StandardSuite.HEARTS, CardType.QUEEN]
+            deckMock.Setup(m => m.Blinds).Returns(new List<SheepCard>() { 
+                SheepCard.N8_SPADES,
+                SheepCard.QUEEN_HEARTS
             });
             var cardsToDrop = picker.DropCardsForPick(deckMock.Object);
-            Assert.IsTrue(cardsToDrop.Contains(CardRepository.Instance[StandardSuite.CLUBS, CardType.N7]), "Drop 7 of Clubs since it is only club.");
-            Assert.IsTrue(cardsToDrop.Contains(CardRepository.Instance[StandardSuite.SPADES, CardType.N8]), "Drop 8 of Spades since it is only club.");
+            Assert.IsTrue(cardsToDrop.Contains(SheepCard.N7_CLUBS), "Drop 7 of Clubs since it is only club.");
+            Assert.IsTrue(cardsToDrop.Contains(SheepCard.N8_SPADES), "Drop 8 of Spades since it is only club.");
         }
     }
 }

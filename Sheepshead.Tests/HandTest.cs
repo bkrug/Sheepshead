@@ -18,7 +18,7 @@ namespace Sheepshead.Tests
             {
                 var mockPlayer = new Mock<IPlayer>();
                 list.Add(mockPlayer.Object);
-                mockPlayer.Setup(m => m.Cards).Returns(new List<ICard>() { CardRepository.Instance[StandardSuite.SPADES, CardType.N7] });
+                mockPlayer.Setup(m => m.Cards).Returns(new List<SheepCard>() { SheepCard.N7_SPADES });
             }
             return list;
         }
@@ -46,9 +46,9 @@ namespace Sheepshead.Tests
             var deckMock = new Mock<IDeck>();
             deckMock.Setup(m => m.Players).Returns(players);
             deckMock.Setup(m => m.PlayerCount).Returns(players.Count);
-            var blinds = new List<ICard>() { CardRepository.Instance[StandardSuite.DIAMONDS, CardType.KING], CardRepository.Instance[StandardSuite.CLUBS, CardType.ACE] };
+            var blinds = new List<SheepCard>() { SheepCard.KING_DIAMONDS, SheepCard.ACE_CLUBS };
             deckMock.Setup(m => m.Blinds).Returns(blinds);
-            var hand = new Hand(deckMock.Object, picker, new List<ICard>());
+            var hand = new Hand(deckMock.Object, picker, new List<SheepCard>());
             foreach (var mockTrick in trickMocks)
             {
                 hand.AddTrick(mockTrick.Object);
@@ -131,11 +131,11 @@ namespace Sheepshead.Tests
         [TestMethod]
         public void Hand_IsComplete()
         {
-            var blinds = new List<ICard>() { CardRepository.Instance[StandardSuite.DIAMONDS, CardType.KING], CardRepository.Instance[StandardSuite.CLUBS, CardType.ACE] };
+            var blinds = new List<SheepCard>() { SheepCard.KING_DIAMONDS, SheepCard.ACE_CLUBS };
             var mockDeck = new Mock<IDeck>();
             mockDeck.Setup(m => m.Blinds).Returns(blinds);
             mockDeck.Setup(m => m.PlayerCount).Returns(5);
-            var hand = new Hand(mockDeck.Object, new NewbiePlayer(), new List<ICard>());
+            var hand = new Hand(mockDeck.Object, new NewbiePlayer(), new List<SheepCard>());
 
             var mockCompleteTrick = new Mock<ITrick>();
             var mockIncompleteTrick = new Mock<ITrick>();
@@ -151,7 +151,7 @@ namespace Sheepshead.Tests
             hand.AddTrick(mockIncompleteTrick.Object);
             Assert.IsFalse(hand.IsComplete(), "Hand is not complete if the last trick is not complete.");
 
-            hand = new Hand(mockDeck.Object, new NewbiePlayer(), new List<ICard>());
+            hand = new Hand(mockDeck.Object, new NewbiePlayer(), new List<SheepCard>());
             hand.AddTrick(mockCompleteTrick.Object);
             hand.AddTrick(mockCompleteTrick.Object);
             hand.AddTrick(mockCompleteTrick.Object);
@@ -164,30 +164,30 @@ namespace Sheepshead.Tests
         [TestMethod]
         public void Hand_Constructor()
         {
-            var blinds = new List<ICard>() { CardRepository.Instance[StandardSuite.DIAMONDS, CardType.KING], CardRepository.Instance[StandardSuite.CLUBS, CardType.ACE] };
+            var blinds = new List<SheepCard>() { SheepCard.KING_DIAMONDS, SheepCard.ACE_CLUBS };
             {
                 var mockDeck = new Mock<IDeck>();
                 mockDeck.Setup(m => m.Blinds).Returns(blinds);
                 var mockPicker = new Mock<IPlayer>();
-                var originalPickerCards = new List<ICard>() { CardRepository.Instance[StandardSuite.SPADES, CardType.N7], CardRepository.Instance[StandardSuite.SPADES, CardType.N8], CardRepository.Instance[StandardSuite.SPADES, CardType.N9], CardRepository.Instance[StandardSuite.SPADES, CardType.N10] };
+                var originalPickerCards = new List<SheepCard>() { SheepCard.N7_SPADES, SheepCard.N8_SPADES, SheepCard.N9_SPADES, SheepCard.N10_SPADES };
                 mockPicker.Setup(f => f.Cards).Returns(originalPickerCards);
-                var droppedCards = new List<ICard>() { CardRepository.Instance[StandardSuite.SPADES, CardType.N7], CardRepository.Instance[StandardSuite.SPADES, CardType.N8]};
+                var droppedCards = new List<SheepCard>() { SheepCard.N7_SPADES, SheepCard.N8_SPADES};
                 var hand = new Hand(mockDeck.Object, mockPicker.Object, droppedCards);
-                Assert.AreEqual(hand.PartnerCard, CardRepository.Instance[StandardSuite.DIAMONDS, CardType.JACK], "Jack of diamonds should be partner card right now");
-                var expectedPickerCards = new List<ICard>() { CardRepository.Instance[StandardSuite.DIAMONDS, CardType.KING], CardRepository.Instance[StandardSuite.CLUBS, CardType.ACE], CardRepository.Instance[StandardSuite.SPADES, CardType.N9], CardRepository.Instance[StandardSuite.SPADES, CardType.N10] };
+                Assert.AreEqual(hand.PartnerCard, SheepCard.JACK_DIAMONDS, "Jack of diamonds should be partner card right now");
+                var expectedPickerCards = new List<SheepCard>() { SheepCard.KING_DIAMONDS, SheepCard.ACE_CLUBS, SheepCard.N9_SPADES, SheepCard.N10_SPADES };
                 Assert.IsTrue(SameContents(expectedPickerCards, mockPicker.Object.Cards), "Picker dropped some cards to pick the blinds.");
             }
             {
                 var mockDeck = new Mock<IDeck>();
                 mockDeck.Setup(m => m.Blinds).Returns(blinds);
                 var mockPicker = new Mock<IPlayer>();
-                mockPicker.Setup(m => m.Cards).Returns(new List<ICard>() { CardRepository.Instance[StandardSuite.DIAMONDS, CardType.JACK] });
-                var hand = new Hand(mockDeck.Object, mockPicker.Object, new List<ICard>());
-                Assert.AreEqual(hand.PartnerCard, CardRepository.Instance[StandardSuite.HEARTS, CardType.JACK], "Jack of diamonds should be partner card right now");
+                mockPicker.Setup(m => m.Cards).Returns(new List<SheepCard>() { SheepCard.JACK_DIAMONDS });
+                var hand = new Hand(mockDeck.Object, mockPicker.Object, new List<SheepCard>());
+                Assert.AreEqual(hand.PartnerCard, SheepCard.JACK_HEARTS, "Jack of diamonds should be partner card right now");
             }
         }
 
-        private bool SameContents(List<ICard> list1, List<ICard> list2)
+        private bool SameContents(List<SheepCard> list1, List<SheepCard> list2)
         {
             var tempList = list1.ToList();
             var match = true;
@@ -209,9 +209,9 @@ namespace Sheepshead.Tests
             Assert.IsTrue(hand.Leasters, "When there is no picker, play leasters.");
 
             var pickerMock = new Mock<IPlayer>();
-            pickerMock.Setup(m => m.Cards).Returns(new List<ICard>());
-            deckMock.Setup(m => m.Blinds).Returns(new List<ICard>());
-            var hand2 = new Hand(deckMock.Object, pickerMock.Object, new List<ICard>());
+            pickerMock.Setup(m => m.Cards).Returns(new List<SheepCard>());
+            deckMock.Setup(m => m.Blinds).Returns(new List<SheepCard>());
+            var hand2 = new Hand(deckMock.Object, pickerMock.Object, new List<SheepCard>());
             Assert.IsFalse(hand2.Leasters, "When there is a picker, don't play leasters.");
         }
 
@@ -251,14 +251,14 @@ namespace Sheepshead.Tests
             var player3 = new Mock<IPlayer>();
             var player4 = new Mock<IPlayer>();
             var player5 = new Mock<IPlayer>();
-            player2.Setup(m => m.Cards).Returns(new List<ICard>());
+            player2.Setup(m => m.Cards).Returns(new List<SheepCard>());
             var playerList = new List<IPlayer>() { player1.Object, player2.Object, player3.Object, player4.Object, player5.Object };
             var deckMock = new Mock<IDeck>();
             deckMock.Setup(m => m.StartingPlayer).Returns(player5.Object);
             deckMock.Setup(m => m.PlayerCount).Returns(5);
             deckMock.Setup(m => m.Players).Returns(playerList);
-            deckMock.Setup(m => m.Blinds).Returns(new List<ICard>() { new Card(StandardSuite.HEARTS, CardType.N7, 0, 0), new Card(StandardSuite.DIAMONDS, CardType.JACK, 0, 0) });
-            deckMock.Setup(m => m.Buried).Returns(new List<ICard>() { new Card(StandardSuite.SPADES, CardType.ACE, 0, 0), new Card(StandardSuite.CLUBS, CardType.N10, 0, 0) });
+            deckMock.Setup(m => m.Blinds).Returns(new List<SheepCard>() { SheepCard.N7_HEARTS, SheepCard.JACK_DIAMONDS });
+            deckMock.Setup(m => m.Buried).Returns(new List<SheepCard>() { SheepCard.ACE_SPADES, SheepCard.N10_CLUBS });
             var hand = new Hand(deckMock.Object, player2.Object, deckMock.Object.Buried);
             GetTricks(playerList, hand);
             //Format:
@@ -274,7 +274,7 @@ namespace Sheepshead.Tests
             var expectedSummary = "7HJD,3ASTC,JDKC8H7SAH,AD9H8DQS8S,9CTHKSACJH,7HJSQDKH7C,KDTS7DJC9D,8CQH9SQCTD";
             Assert.AreEqual(expectedSummary, hand.Summary(), "Test output for normal hand.");
 
-            deckMock.Setup(m => m.Buried).Returns(new List<ICard>() {  });
+            deckMock.Setup(m => m.Buried).Returns(new List<SheepCard>() {  });
             var leastersHand = new Hand(deckMock.Object, null, null);
             GetTricks(playerList, leastersHand);
             var leastersSummary = "7HJD,,JDKC8H7SAH,AD9H8DQS8S,9CTHKSACJH,7HJSQDKH7C,KDTS7DJC9D,8CQH9SQCTD";
@@ -283,60 +283,60 @@ namespace Sheepshead.Tests
 
         private static void GetTricks(List<IPlayer> playerList, Hand hand)
         {
-            GetTrick(hand, playerList, new List<ICard>()
+            GetTrick(hand, playerList, new List<SheepCard>()
             {
-                new Card(StandardSuite.CLUBS, CardType.KING, 0, 0),
-                new Card(StandardSuite.HEARTS, CardType.N8, 0, 0),
-                new Card(StandardSuite.SPADES, CardType.N7, 0, 0),
-                new Card(StandardSuite.HEARTS, CardType.ACE, 0, 0),
-                new Card(StandardSuite.DIAMONDS, CardType.JACK, 0, 0)
+                SheepCard.KING_CLUBS,
+                SheepCard.N8_HEARTS,
+                SheepCard.N7_SPADES,
+                SheepCard.ACE_HEARTS,
+                SheepCard.JACK_DIAMONDS
             });
-            GetTrick(hand, playerList, new List<ICard>()
+            GetTrick(hand, playerList, new List<SheepCard>()
             {
-                new Card(StandardSuite.HEARTS, CardType.N9, 0, 0),
-                new Card(StandardSuite.DIAMONDS, CardType.N8, 0, 0),
-                new Card(StandardSuite.SPADES, CardType.QUEEN, 0, 0),
-                new Card(StandardSuite.SPADES, CardType.N8, 0, 0),
-                new Card(StandardSuite.DIAMONDS, CardType.ACE, 0, 0)
+                SheepCard.N9_HEARTS,
+                SheepCard.N8_DIAMONDS,
+                SheepCard.QUEEN_SPADES,
+                SheepCard.N8_SPADES,
+                SheepCard.ACE_DIAMONDS
             });
-            GetTrick(hand, playerList, new List<ICard>()
+            GetTrick(hand, playerList, new List<SheepCard>()
             {
-                new Card(StandardSuite.HEARTS, CardType.N10, 0, 0),
-                new Card(StandardSuite.SPADES, CardType.KING, 0, 0),
-                new Card(StandardSuite.CLUBS, CardType.ACE, 0, 0),
-                new Card(StandardSuite.HEARTS, CardType.JACK, 0, 0),
-                new Card(StandardSuite.CLUBS, CardType.N9, 0, 0)
+                SheepCard.N10_HEARTS,
+                SheepCard.KING_SPADES,
+                SheepCard.ACE_CLUBS,
+                SheepCard.JACK_HEARTS,
+                SheepCard.N9_CLUBS
             });
-            GetTrick(hand, playerList, new List<ICard>()
+            GetTrick(hand, playerList, new List<SheepCard>()
             {
-                new Card(StandardSuite.SPADES, CardType.JACK, 0, 0),
-                new Card(StandardSuite.DIAMONDS, CardType.QUEEN, 0, 0),
-                new Card(StandardSuite.HEARTS, CardType.KING, 0, 0),
-                new Card(StandardSuite.CLUBS, CardType.N7, 0, 0),
-                new Card(StandardSuite.HEARTS, CardType.N7, 0, 0)
+                SheepCard.JACK_SPADES,
+                SheepCard.QUEEN_DIAMONDS,
+                SheepCard.KING_HEARTS,
+                SheepCard.N7_CLUBS,
+                SheepCard.N7_HEARTS
             });
-            GetTrick(hand, playerList, new List<ICard>()
+            GetTrick(hand, playerList, new List<SheepCard>()
             {
-                new Card(StandardSuite.SPADES, CardType.N10, 0, 0),
-                new Card(StandardSuite.DIAMONDS, CardType.N7, 0, 0),
-                new Card(StandardSuite.CLUBS, CardType.JACK, 0, 0),
-                new Card(StandardSuite.DIAMONDS, CardType.N9, 0, 0),
-                new Card(StandardSuite.DIAMONDS, CardType.KING, 0, 0)
+                SheepCard.N10_SPADES,
+                SheepCard.N7_DIAMONDS,
+                SheepCard.JACK_CLUBS,
+                SheepCard.N9_DIAMONDS,
+                SheepCard.KING_DIAMONDS
             });
-            GetTrick(hand, playerList, new List<ICard>()
+            GetTrick(hand, playerList, new List<SheepCard>()
             {
-                new Card(StandardSuite.HEARTS, CardType.QUEEN, 0, 0),
-                new Card(StandardSuite.SPADES, CardType.N9, 0, 0),
-                new Card(StandardSuite.CLUBS, CardType.QUEEN, 0, 0),
-                new Card(StandardSuite.DIAMONDS, CardType.N10, 0, 0),
-                new Card(StandardSuite.CLUBS, CardType.N8, 0, 0)
+                SheepCard.QUEEN_HEARTS,
+                SheepCard.N9_SPADES,
+                SheepCard.QUEEN_CLUBS,
+                SheepCard.N10_DIAMONDS,
+                SheepCard.N8_CLUBS
             });
         }
 
-        private static void GetTrick(Hand hand, List<IPlayer> playerList, List<ICard> cards)
+        private static void GetTrick(Hand hand, List<IPlayer> playerList, List<SheepCard> cards)
         {
             var trick = new Mock<ITrick>();
-            var moves = new Dictionary<IPlayer, ICard>();
+            var moves = new Dictionary<IPlayer, SheepCard>();
             for (var i = 0; i < 5; ++i)
                 moves.Add(playerList[i], cards[i]);
             trick.Setup(m => m.CardsPlayed).Returns(moves);
@@ -351,16 +351,16 @@ namespace Sheepshead.Tests
             var player3 = new Mock<IPlayer>();
             var player4 = new Mock<IPlayer>();
             var player5 = new Mock<IPlayer>();
-            player3.Setup(m => m.Cards).Returns(new List<ICard>());
+            player3.Setup(m => m.Cards).Returns(new List<SheepCard>());
             var playerList = new List<IPlayer>() { player1.Object, player2.Object, player3.Object, player4.Object, player5.Object };
-            var cards = new List<ICard>();
-            for (var i = 0; i < 32; ++i) { cards.Add(new Mock<ICard>().Object); }
+            var cards = new List<SheepCard>();
+            for (var i = 0; i < 32; ++i) { cards.Add(0); }
             var deckMock = new Mock<IDeck>();
             deckMock.Setup(m => m.StartingPlayer).Returns(player2.Object);
             deckMock.Setup(m => m.PlayerCount).Returns(5);
             deckMock.Setup(m => m.Players).Returns(playerList);
-            deckMock.Setup(m => m.Blinds).Returns(new List<ICard>() { new Card(StandardSuite.HEARTS, CardType.N7, 0, 0), new Card(StandardSuite.DIAMONDS, CardType.JACK, 0, 0) });
-            deckMock.Setup(m => m.Buried).Returns(new List<ICard>() { new Card(StandardSuite.SPADES, CardType.ACE, 0, 0), new Card(StandardSuite.CLUBS, CardType.N10, 0, 0) });
+            deckMock.Setup(m => m.Blinds).Returns(new List<SheepCard>() { SheepCard.N7_HEARTS, SheepCard.JACK_DIAMONDS });
+            deckMock.Setup(m => m.Buried).Returns(new List<SheepCard>() { SheepCard.ACE_SPADES, SheepCard.N10_CLUBS });
 
             var hand = new Hand(deckMock.Object, player3.Object, deckMock.Object.Buried);
             var trickMocks = new List<Mock<ITrick>>();
