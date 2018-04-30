@@ -40,23 +40,23 @@ namespace Sheepshead.Models
         private SheepCard ChoosePartnerCard(IPlayer picker)
         {
             var cri = CardRepository.Instance;
-            var potentialPartnerCards = new[] { 
-                cri[StandardSuite.DIAMONDS, CardType.JACK],
-                cri[StandardSuite.HEARTS, CardType.JACK],
-                cri[StandardSuite.SPADES, CardType.JACK],
-                cri[StandardSuite.CLUBS, CardType.JACK],
-                cri[StandardSuite.DIAMONDS, CardType.QUEEN],
-                cri[StandardSuite.HEARTS, CardType.QUEEN],
-                cri[StandardSuite.SPADES, CardType.QUEEN]
+            var potentialPartnerCards = new[] {
+                SheepCard.JACK_DIAMONDS,
+                SheepCard.JACK_HEARTS,
+                SheepCard.JACK_SPADES,
+                SheepCard.JACK_CLUBS,
+                SheepCard.QUEEN_DIAMONDS,
+                SheepCard.QUEEN_HEARTS,
+                SheepCard.QUEEN_SPADES
             };
             if (!picker.Cards.Any())
             {
             }
-            if (!potentialPartnerCards.Any(c => !picker.Cards.Contains(CardRepository.GetSheepCard(c))))
+            if (!potentialPartnerCards.Any(c => !picker.Cards.Contains(c)))
             {
             }
-            var partnerCard = potentialPartnerCards.First(c => !picker.Cards.Contains(CardRepository.GetSheepCard(c)));
-            return CardRepository.GetSheepCard(partnerCard);
+            var partnerCard = potentialPartnerCards.First(c => !picker.Cards.Contains(c));
+            return partnerCard;
         }
 
         public void AddTrick(ITrick trick)
