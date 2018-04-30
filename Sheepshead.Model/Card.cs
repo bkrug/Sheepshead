@@ -233,40 +233,6 @@ namespace Sheepshead.Models
             { SheepCard.N7_HEARTS, "31" },
             { SheepCard.N7_DIAMONDS, "32" }
         };
-        private static Dictionary<ICard, SheepCard> list2 = new Dictionary<ICard, SheepCard>() {
-            { Instance[StandardSuite.CLUBS, CardType.ACE], SheepCard.ACE_CLUBS },
-            { Instance[StandardSuite.SPADES, CardType.ACE], SheepCard.ACE_SPADES },
-            { Instance[StandardSuite.HEARTS, CardType.ACE], SheepCard.ACE_HEARTS },
-            { Instance[StandardSuite.DIAMONDS, CardType.ACE],SheepCard.ACE_DIAMONDS },
-            { Instance[StandardSuite.CLUBS, CardType.KING], SheepCard.KING_CLUBS },
-            { Instance[StandardSuite.SPADES, CardType.KING], SheepCard.KING_SPADES },
-            { Instance[StandardSuite.HEARTS, CardType.KING], SheepCard.KING_HEARTS },
-            { Instance[StandardSuite.DIAMONDS, CardType.KING], SheepCard.KING_DIAMONDS },
-            { Instance[StandardSuite.CLUBS, CardType.QUEEN], SheepCard.QUEEN_CLUBS },
-            { Instance[StandardSuite.SPADES, CardType.QUEEN], SheepCard.QUEEN_SPADES },
-            { Instance[StandardSuite.HEARTS, CardType.QUEEN], SheepCard.QUEEN_HEARTS },
-            { Instance[StandardSuite.DIAMONDS, CardType.QUEEN], SheepCard.QUEEN_DIAMONDS },
-            { Instance[StandardSuite.CLUBS, CardType.JACK], SheepCard.JACK_CLUBS },
-            { Instance[StandardSuite.SPADES, CardType.JACK], SheepCard.JACK_SPADES },
-            { Instance[StandardSuite.HEARTS, CardType.JACK], SheepCard.JACK_HEARTS },
-            { Instance[StandardSuite.DIAMONDS, CardType.JACK], SheepCard.JACK_DIAMONDS },
-            { Instance[StandardSuite.CLUBS, CardType.N10], SheepCard.N10_CLUBS },
-            { Instance[StandardSuite.SPADES, CardType.N10], SheepCard.N10_SPADES },
-            { Instance[StandardSuite.HEARTS, CardType.N10], SheepCard.N10_HEARTS },
-            { Instance[StandardSuite.DIAMONDS, CardType.N10], SheepCard.N10_DIAMONDS },
-            { Instance[StandardSuite.CLUBS, CardType.N9], SheepCard.N9_CLUBS },
-            { Instance[StandardSuite.SPADES, CardType.N9], SheepCard.N9_SPADES },
-            { Instance[StandardSuite.HEARTS, CardType.N9], SheepCard.N9_HEARTS },
-            { Instance[StandardSuite.DIAMONDS, CardType.N9], SheepCard.N9_DIAMONDS },
-            { Instance[StandardSuite.CLUBS, CardType.N8], SheepCard.N8_CLUBS },
-            { Instance[StandardSuite.SPADES, CardType.N8], SheepCard.N8_SPADES },
-            { Instance[StandardSuite.HEARTS, CardType.N8], SheepCard.N8_HEARTS },
-            { Instance[StandardSuite.DIAMONDS, CardType.N8], SheepCard.N8_DIAMONDS },
-            { Instance[StandardSuite.CLUBS, CardType.N7], SheepCard.N7_CLUBS },
-            { Instance[StandardSuite.SPADES, CardType.N7], SheepCard.N7_SPADES },
-            { Instance[StandardSuite.HEARTS, CardType.N7], SheepCard.N7_HEARTS },
-            { Instance[StandardSuite.DIAMONDS, CardType.N7], SheepCard.N7_DIAMONDS }
-        };
 
         private static Dictionary<StandardSuite, string> _suiteLetter = new Dictionary<StandardSuite, string>()
         {
@@ -294,18 +260,9 @@ namespace Sheepshead.Models
         };
         public static Dictionary<string, CardType> ReverseCardTypeLetter { get { return _reverseCardTypeLetter; } }
 
-        public static string GetPictureFilename(ICard card)
-        {
-            return GetPictureFilename(GetSheepCard(card));
-        }
         public static string GetPictureFilename(SheepCard card)
         {
             return list1[card];
-        }
-
-        public static SheepCard GetSheepCard(ICard card)
-        {
-            return list2[card];
         }
 
         private struct TempCard
