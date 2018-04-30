@@ -191,21 +191,6 @@ namespace Sheepshead.Models
             get { return _cards[(int)ss, (int)ct]; }
         }
 
-        public static Suit GetSuit(ICard card)
-        {
-            if (card.CardType == CardType.QUEEN || card.CardType == CardType.JACK)
-                return Suit.TRUMP;
-            return (Suit)card.StandardSuite;
-        }
-
-        public List<ICard> UnshuffledList()
-        {
-            var list = new List<ICard>();
-            foreach(var ss in Enum.GetValues(typeof(StandardSuite)))
-                foreach (var ct in Enum.GetValues(typeof(CardType)))
-                    list.Add(Instance[(StandardSuite)ss, (CardType)ct]);
-            return list;
-        }
         public List<SheepCard> UnshuffledList1()
         {
             var list = new List<SheepCard>();
@@ -214,40 +199,6 @@ namespace Sheepshead.Models
             return list;
         }
 
-        private static Dictionary<ICard, string> list = new Dictionary<ICard, string>() {
-            { Instance[StandardSuite.CLUBS, CardType.ACE], "1" },
-            { Instance[StandardSuite.SPADES, CardType.ACE], "2" },
-            { Instance[StandardSuite.HEARTS, CardType.ACE], "3" },
-            { Instance[StandardSuite.DIAMONDS, CardType.ACE], "4" },
-            { Instance[StandardSuite.CLUBS, CardType.KING], "5" },
-            { Instance[StandardSuite.SPADES, CardType.KING], "6" },
-            { Instance[StandardSuite.HEARTS, CardType.KING], "7" },
-            { Instance[StandardSuite.DIAMONDS, CardType.KING], "8" },
-            { Instance[StandardSuite.CLUBS, CardType.QUEEN], "9" },
-            { Instance[StandardSuite.SPADES, CardType.QUEEN], "10" },
-            { Instance[StandardSuite.HEARTS, CardType.QUEEN], "11" },
-            { Instance[StandardSuite.DIAMONDS, CardType.QUEEN], "12" },
-            { Instance[StandardSuite.CLUBS, CardType.JACK], "13" },
-            { Instance[StandardSuite.SPADES, CardType.JACK], "14" },
-            { Instance[StandardSuite.HEARTS, CardType.JACK], "15" },
-            { Instance[StandardSuite.DIAMONDS, CardType.JACK], "16" },
-            { Instance[StandardSuite.CLUBS, CardType.N10], "17" },
-            { Instance[StandardSuite.SPADES, CardType.N10], "18" },
-            { Instance[StandardSuite.HEARTS, CardType.N10], "19" },
-            { Instance[StandardSuite.DIAMONDS, CardType.N10], "20" },
-            { Instance[StandardSuite.CLUBS, CardType.N9], "21" },
-            { Instance[StandardSuite.SPADES, CardType.N9], "22" },
-            { Instance[StandardSuite.HEARTS, CardType.N9], "23" },
-            { Instance[StandardSuite.DIAMONDS, CardType.N9], "24" },
-            { Instance[StandardSuite.CLUBS, CardType.N8], "25" },
-            { Instance[StandardSuite.SPADES, CardType.N8], "26" },
-            { Instance[StandardSuite.HEARTS, CardType.N8], "27" },
-            { Instance[StandardSuite.DIAMONDS, CardType.N8], "28" },
-            { Instance[StandardSuite.CLUBS, CardType.N7], "29" },
-            { Instance[StandardSuite.SPADES, CardType.N7], "30" },
-            { Instance[StandardSuite.HEARTS, CardType.N7], "31" },
-            { Instance[StandardSuite.DIAMONDS, CardType.N7], "32" }
-        };
         private static Dictionary<SheepCard, string> list1 = new Dictionary<SheepCard, string>() {
             { SheepCard.ACE_CLUBS, "1" },
             { SheepCard.ACE_SPADES, "2" },
