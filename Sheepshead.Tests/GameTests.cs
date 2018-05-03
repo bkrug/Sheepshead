@@ -6,7 +6,7 @@ using Moq;
 using Sheepshead.Models;
 using Sheepshead.Models.Players;
 using Sheepshead.Models.Wrappers;
-
+using Sheepshead.Tests.PlayerMocks;
 
 namespace Sheepshead.Tests
 {
@@ -41,42 +41,32 @@ namespace Sheepshead.Tests
         [TestMethod]
         public void Game_PlayNonHuman_PlayCard()
         {
-            var playerList = new List<Mock>() {
-                new Mock<IComputerPlayer>(),
-                new Mock<IComputerPlayer>(),
-                new Mock<IComputerPlayer>(),
-                new Mock<IHumanPlayer>(),
-                new Mock<IComputerPlayer>()
+            var playerList = new List<IPlayer>() {
+                new ComputerPlayerReportingPlays(SheepCard.JACK_DIAMONDS),
+                new ComputerPlayerReportingPlays(SheepCard.N7_CLUBS),
+                new ComputerPlayerReportingPlays(SheepCard.N9_HEARTS),
+                new Mock<IHumanPlayer>().Object,
+                new ComputerPlayerReportingPlays(SheepCard.QUEEN_SPADES)
             };
-            var players = playerList.Select(m => m.Object as IPlayer).ToList();
-            var playersDifferentOrder = players.Skip(2).Union(players.Take(2)).ToList();
-            var hasPlayed = new List<IPlayer>();
+            var playersDifferentOrder = playerList.Skip(2).Union(playerList.Take(2)).ToList();
             var trickMock = new Mock<ITrick>();
             var deckMock = new Mock<IDeck>();
+            var moveList = new List<SheepCard>();
             deckMock.Setup(m => m.Hand.Tricks).Returns(new List<ITrick>() { new Mock<ITrick>().Object, trickMock.Object });
-            trickMock.Setup(m => m.PlayersWithoutTurn).Returns(players);
+            trickMock.Setup(m => m.PlayersWithoutTurn).Returns(playerList);
             trickMock
                 .Setup(m => m.Add(It.IsAny<IPlayer>(), It.IsAny<SheepCard>()))
-                .Callback((IPlayer player, SheepCard card) => {
-                    hasPlayed.Add(player);
-                    Assert.IsNotNull(card);
-                });
-            playerList
-                .OfType<Mock<IComputerPlayer>>().ToList()
-                .ForEach(m => m
-                    .Setup(p => p.GetMove(It.IsAny<ITrick>()))
-                    .Returns(0)
-                );
+                .Callback((IPlayer player, SheepCard card) => { moveList.Add(card); });
 
-            var game = new Game(75291, playersDifferentOrder, new RandomWrapper(), null);
+            var game = new Game(75291, playersDifferentOrder, null, null);
             game.Decks.Add(new Mock<IDeck>().Object);
             game.Decks.Add(deckMock.Object);
             game.PlayNonHumansInTrick();
 
-            Assert.AreEqual(3, hasPlayed.Count(), "Should not reach human player.");
-            Assert.AreSame(hasPlayed[0], players[0]);
-            Assert.AreSame(hasPlayed[1], players[1]);
-            Assert.AreSame(hasPlayed[2], players[2]);
+            Assert.IsTrue(((ComputerPlayerReportingPlays)playerList[0]).MadeMove);
+            Assert.IsTrue(((ComputerPlayerReportingPlays)playerList[1]).MadeMove);
+            Assert.IsTrue(((ComputerPlayerReportingPlays)playerList[2]).MadeMove);
+            Assert.IsFalse(((ComputerPlayerReportingPlays)playerList[4]).MadeMove);
         }
 
         [TestMethod]

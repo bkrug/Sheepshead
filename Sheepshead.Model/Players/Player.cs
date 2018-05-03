@@ -1,17 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-
-
 
 namespace Sheepshead.Models.Players
 {
     public class Player : IPlayer
     {
-        private List<SheepCard> _hand = new List<SheepCard>();
-
         public virtual string Name { get { return String.Empty; } }
-        public List<SheepCard> Cards { get { return _hand; } }
+        public List<SheepCard> Cards { get; } = new List<SheepCard>();
 
         public int QueueRankInTrick(ITrick trick)
         {

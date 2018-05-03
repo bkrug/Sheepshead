@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Sheepshead.Models.Players;
 using Sheepshead.Models.Wrappers;
-
+using Sheepshead.Model.TurnProcessors;
 
 namespace Sheepshead.Models
 {
@@ -20,29 +20,21 @@ namespace Sheepshead.Models
         public IRandomWrapper _random { get; private set; }
         public IPlayer CurrentTurn { get { throw new NotImplementedException(); } }
         private IHandFactory _handFactory;
-        public TurnType TurnType
-        {
-            get
-            {
-                var deck = Decks.LastOrDefault();
-                if (!Decks.Any() || LastDeckIsComplete())
-                    return TurnType.BeginDeck;
-                else if (deck.Hand == null)
-                    return TurnType.Pick;
-                else if (!deck.Buried.Any() && !deck.Hand.Leasters)
-                    return TurnType.Bury;
-                else
-                    return TurnType.PlayTrick;
-            }
-        } 
+        public TurnType TurnType => new TurnTypeCalculator().GetTurnType(this);
 
+        public Game(long id, List<IPlayer> players) : this(id, players, null, null)
+        {
+
+        }
+
+        //TODO: Make this internal except to test project
         public Game(long id, List<IPlayer> players, IRandomWrapper random, IHandFactory handFactory)
         {
             _players = players;
             _id = id;
-            _random = random;
-            _handFactory = handFactory;
-        }
+            _random = random ?? new RandomWrapper();
+            _handFactory = handFactory ?? new HandFactory();
+        } 
 
         public void RearrangePlayers()
         {
@@ -57,8 +49,7 @@ namespace Sheepshead.Models
 
         public bool LastDeckIsComplete()
         {
-            var lastDeck = Decks.LastOrDefault();
-            return lastDeck == null || lastDeck.Hand != null && lastDeck.Hand.IsComplete();
+            return new TurnTypeCalculator().LastDeckIsComplete(this);
         }
 
         public IHand ContinueFromHumanPickTurn(IHumanPlayer human, bool willPick)
@@ -114,6 +105,33 @@ namespace Sheepshead.Models
             ITrick trick = Decks.Last().Hand.Tricks.Last();
             trick.Add(player, card);
         }
+
+        /// <summary>
+        /// If it is the turn of the input player, process the HumanMove object according to the current game state.
+        /// If it is a different player's turn throw an error.
+        /// </summary>
+        /// <param name="humanPlayer"></param>
+        /// <param name="move"></param>
+        public void PlayHumanMove(IHumanPlayer humanPlayer, HumanMove move)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Play Computer player moves until you reach a human player's turn or the end of a trick or pick phase.
+        /// </summary>
+        /// <returns></returns>
+        public IHumanPlayer PlayUpToHumanMove()
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    public class HumanMove
+    {
+        public SheepCard? TrickCard { get; set; }
+        public bool? WillPick { get; set; }
+        public SheepCard[] BuryCards { get; set; }
     }
 
     public class TooManyPlayersException : ApplicationException
