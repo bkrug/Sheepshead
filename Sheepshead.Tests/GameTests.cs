@@ -49,7 +49,6 @@ namespace Sheepshead.Tests
                 new Mock<IHumanPlayer>().Object,
                 new ComputerPlayerReportingPlays(SheepCard.QUEEN_SPADES)
             };
-            var playersDifferentOrder = playerList.Skip(2).Union(playerList.Take(2)).ToList();
             var trickMock = new Mock<ITrick>();
             var moveList = new List<SheepCard>();
             trickMock.Setup(m => m.PlayersWithoutTurn).Returns(playerList);
@@ -58,6 +57,7 @@ namespace Sheepshead.Tests
                 .Callback((IPlayer player, SheepCard card) => { moveList.Add(card); });
             var gameStateDescriberMock = new Mock<IGameStateDescriber>();
             gameStateDescriberMock.Setup(m => m.CurrentTrick).Returns(trickMock.Object);
+            var playersDifferentOrder = playerList.Skip(2).Union(playerList.Take(2)).ToList();
 
             var game = new Game(75291, playersDifferentOrder, null, null, gameStateDescriberMock.Object);
             game.PlayNonHumansInTrick();
@@ -75,67 +75,46 @@ namespace Sheepshead.Tests
         [TestMethod]
         public void Game_PlayNonHuman_LastPlayerIsNotHuman()
         {
-            var playerList = new List<Mock>() {
-                new Mock<IComputerPlayer>(),
-                new Mock<IComputerPlayer>(),
-                new Mock<IComputerPlayer>(),
-                new Mock<IComputerPlayer>()
+            var players = new List<IPlayer>() {
+                new ComputerPlayerReportingPlays(SheepCard.JACK_HEARTS),
+                new ComputerPlayerReportingPlays(SheepCard.KING_HEARTS),
+                new ComputerPlayerReportingPlays(SheepCard.N10_CLUBS),
+                new ComputerPlayerReportingPlays(SheepCard.N7_HEARTS)
             };
-            var players = playerList.Select(m => m.Object as IPlayer).ToList();
-            var playersDifferentOrder = players.Skip(2).Union(players.Take(2)).ToList();
-            var hasPlayed = new List<IPlayer>();
             var trickMock = new Mock<ITrick>();
-            var deckMock = new Mock<IDeck>();
-            deckMock.Setup(m => m.Hand.Tricks).Returns(new List<ITrick>() { trickMock.Object });
             trickMock.Setup(m => m.PlayersWithoutTurn).Returns(players);
-            trickMock
-                .Setup(m => m.Add(It.IsAny<IPlayer>(), It.IsAny<SheepCard>()))
-                .Callback((IPlayer player, SheepCard card) => {
-                    hasPlayed.Add(player);
-                });
-            playerList
-                .OfType<Mock<IComputerPlayer>>().ToList()
-                .ForEach(m => m
-                    .Setup(p => p.GetMove(It.IsAny<ITrick>()))
-                    .Returns(0)
-                );
+            var playersDifferentOrder = players.Skip(2).Union(players.Take(2)).ToList();
+            var gameStateDescriberMock = new Mock<IGameStateDescriber>();
+            gameStateDescriberMock.Setup(m => m.CurrentTrick).Returns(trickMock.Object);
 
-            var game = new Game(75291, playersDifferentOrder, new RandomWrapper(), null, null);
-            game.Decks.Add(deckMock.Object);
+            var game = new Game(75291, playersDifferentOrder, null, null, gameStateDescriberMock.Object);
             game.PlayNonHumansInTrick();
 
-            Assert.AreEqual(4, hasPlayed.Count(), "All players have played.");
-            Assert.AreSame(hasPlayed[0], players[0]);
-            Assert.AreSame(hasPlayed[1], players[1]);
-            Assert.AreSame(hasPlayed[2], players[2]);
-            Assert.AreSame(hasPlayed[3], players[3]);
+            Assert.IsTrue(players.OfType<ComputerPlayerReportingPlays>().All(p => p.MadeMove), "All players have played.");
         }
 
         [TestMethod]
         public void Game_PlayNonHuman_HumanHasNextTurn()
         {
-            var playerList = new List<Mock>() {
-                new Mock<IHumanPlayer>(),
-                new Mock<IComputerPlayer>(),
-                new Mock<IComputerPlayer>(),
-                new Mock<IComputerPlayer>()
+            var players = new List<IPlayer>() {
+                new Mock<IHumanPlayer>().Object,
+                new ComputerPlayerReportingPlays(SheepCard.JACK_HEARTS),
+                new ComputerPlayerReportingPlays(SheepCard.KING_HEARTS),
+                new ComputerPlayerReportingPlays(SheepCard.N10_CLUBS),
+                new ComputerPlayerReportingPlays(SheepCard.N7_HEARTS)
             };
-            var players = playerList.Select(m => m.Object as IPlayer).ToList();
             var playersDifferentOrder = players.Skip(2).Union(players.Take(2)).ToList();
             var trickMock = new Mock<ITrick>();
             var deckMock = new Mock<IDeck>();
             deckMock.Setup(m => m.Hand.Tricks).Returns(new List<ITrick>() { trickMock.Object });
             trickMock.Setup(m => m.PlayersWithoutTurn).Returns(players);
-            playerList.OfType<Mock<IComputerPlayer>>().ToList()
-                .ForEach(m => m
-                    .Setup(p => p.GetMove(It.IsAny<ITrick>()))
-                    .Callback(() => Assert.Fail("Since it is not a computer's turn, the method should just not play any turns.")));
+            var gameStateDescriberMock = new Mock<IGameStateDescriber>();
+            gameStateDescriberMock.Setup(m => m.CurrentTrick).Returns(trickMock.Object);
 
-            var game = new Game(75291, playersDifferentOrder, new RandomWrapper(), null, null);
-            game.Decks.Add(deckMock.Object);
+            var game = new Game(75291, playersDifferentOrder, null, null, gameStateDescriberMock.Object);
             game.PlayNonHumansInTrick();
 
-            Assert.IsTrue(true, "Got this far without playing a computer player's turn.");
+            Assert.IsTrue(players.OfType<ComputerPlayerReportingPlays>().All(p => !p.MadeMove), "Got this far without playing a computer player's turn.");
         }
 
         [TestMethod]

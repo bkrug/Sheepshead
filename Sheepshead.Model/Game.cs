@@ -30,6 +30,9 @@ namespace Sheepshead.Models
         }
 
         //TODO: Make this internal except to test project
+        /// <summary>
+        /// This constructor is for passing in Mocks in unit tests.
+        /// </summary>
         public Game(long id, List<IPlayer> players, IRandomWrapper random, IHandFactory handFactory, IGameStateDescriber gameStateDescriber)
         {
             _players = players;
