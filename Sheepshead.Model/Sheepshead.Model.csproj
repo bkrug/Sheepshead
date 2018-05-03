@@ -48,6 +48,7 @@
     <Compile Include="Game.cs" />
     <Compile Include="GameRepository.cs" />
     <Compile Include="GameService.cs" />
+    <Compile Include="GameStateDescriber.cs" />
     <Compile Include="Hand.cs" />
     <Compile Include="HandFactory.cs" />
     <Compile Include="LongId.cs" />

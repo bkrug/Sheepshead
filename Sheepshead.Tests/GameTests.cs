@@ -7,6 +7,7 @@ using Sheepshead.Models;
 using Sheepshead.Models.Players;
 using Sheepshead.Models.Wrappers;
 using Sheepshead.Tests.PlayerMocks;
+using Sheepshead.Model;
 
 namespace Sheepshead.Tests
 {
@@ -14,7 +15,7 @@ namespace Sheepshead.Tests
     public class GameTests
     {
         private class ExposeGame : Game {
-            public ExposeGame() : base (0, new List<IPlayer>(), new RandomWrapper(), null)
+            public ExposeGame() : base (0, new List<IPlayer>(), new RandomWrapper(), null, null)
             {
 
             }
@@ -50,23 +51,25 @@ namespace Sheepshead.Tests
             };
             var playersDifferentOrder = playerList.Skip(2).Union(playerList.Take(2)).ToList();
             var trickMock = new Mock<ITrick>();
-            var deckMock = new Mock<IDeck>();
             var moveList = new List<SheepCard>();
-            deckMock.Setup(m => m.Hand.Tricks).Returns(new List<ITrick>() { new Mock<ITrick>().Object, trickMock.Object });
             trickMock.Setup(m => m.PlayersWithoutTurn).Returns(playerList);
             trickMock
                 .Setup(m => m.Add(It.IsAny<IPlayer>(), It.IsAny<SheepCard>()))
                 .Callback((IPlayer player, SheepCard card) => { moveList.Add(card); });
+            var gameStateDescriberMock = new Mock<IGameStateDescriber>();
+            gameStateDescriberMock.Setup(m => m.CurrentTrick).Returns(trickMock.Object);
 
-            var game = new Game(75291, playersDifferentOrder, null, null);
-            game.Decks.Add(new Mock<IDeck>().Object);
-            game.Decks.Add(deckMock.Object);
+            var game = new Game(75291, playersDifferentOrder, null, null, gameStateDescriberMock.Object);
             game.PlayNonHumansInTrick();
 
             Assert.IsTrue(((ComputerPlayerReportingPlays)playerList[0]).MadeMove);
             Assert.IsTrue(((ComputerPlayerReportingPlays)playerList[1]).MadeMove);
             Assert.IsTrue(((ComputerPlayerReportingPlays)playerList[2]).MadeMove);
             Assert.IsFalse(((ComputerPlayerReportingPlays)playerList[4]).MadeMove);
+            Assert.AreEqual(3, moveList.Count);
+            Assert.AreEqual(moveList[0], SheepCard.JACK_DIAMONDS);
+            Assert.AreEqual(moveList[1], SheepCard.N7_CLUBS);
+            Assert.AreEqual(moveList[2], SheepCard.N9_HEARTS);
         }
 
         [TestMethod]
@@ -97,7 +100,7 @@ namespace Sheepshead.Tests
                     .Returns(0)
                 );
 
-            var game = new Game(75291, playersDifferentOrder, new RandomWrapper(), null);
+            var game = new Game(75291, playersDifferentOrder, new RandomWrapper(), null, null);
             game.Decks.Add(deckMock.Object);
             game.PlayNonHumansInTrick();
 
@@ -128,7 +131,7 @@ namespace Sheepshead.Tests
                     .Setup(p => p.GetMove(It.IsAny<ITrick>()))
                     .Callback(() => Assert.Fail("Since it is not a computer's turn, the method should just not play any turns.")));
 
-            var game = new Game(75291, playersDifferentOrder, new RandomWrapper(), null);
+            var game = new Game(75291, playersDifferentOrder, new RandomWrapper(), null, null);
             game.Decks.Add(deckMock.Object);
             game.PlayNonHumansInTrick();
 
@@ -159,7 +162,7 @@ namespace Sheepshead.Tests
                 .Callback(() =>
                     Assert.IsFalse(true, "Should not have called AcceptComputerPicker().  Should have given human a chance to pick."));
 
-            var game = new Game(42340, playerList, null, handFactoryMock.Object);
+            var game = new Game(42340, playerList, null, handFactoryMock.Object, null);
             game.Decks.Add(deckMock.Object);
             var picker = game.PlayNonHumanPickTurns();
 
@@ -193,7 +196,7 @@ namespace Sheepshead.Tests
                 .Callback(() =>
                     Assert.IsFalse(true, "Should have instantiated hand through AcceptComputerPicker() instead."));
 
-            var game = new Game(42340, playerList, null, handFactoryMock.Object);
+            var game = new Game(42340, playerList, null, handFactoryMock.Object, null);
             game.Decks.Add(deckMock.Object);
             var picker = game.PlayNonHumanPickTurns();
 
@@ -226,7 +229,7 @@ namespace Sheepshead.Tests
                 .Callback(() => handCreated = true)
                 .Returns(() => new Mock<IHand>().Object);
 
-            var game = new Game(42340, playerList, null, handFactoryMock.Object);
+            var game = new Game(42340, playerList, null, handFactoryMock.Object, null);
             game.Decks.Add(deckMock.Object);
             var picker = game.PlayNonHumanPickTurns();
 
@@ -254,7 +257,7 @@ namespace Sheepshead.Tests
             var playerList = new List<IPlayer>();
             for (var i = 0; i < 5; ++i)
                 playerList.Add(new Player());
-            var game = new Game(4982, playerList, new RandomWrapper(), null);
+            var game = new Game(4982, playerList, new RandomWrapper(), null, null);
             var deck = new Deck(game, new RandomWrapper());
             Assert.AreEqual(2, deck.Blinds.Count(), "There should be two blinds after dealing");
             Assert.AreEqual(5, game.Players.Count(), "There should be five doctores");

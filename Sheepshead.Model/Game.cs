@@ -4,6 +4,7 @@ using System.Linq;
 using Sheepshead.Models.Players;
 using Sheepshead.Models.Wrappers;
 using Sheepshead.Model.TurnProcessors;
+using Sheepshead.Model;
 
 namespace Sheepshead.Models
 {
@@ -16,24 +17,26 @@ namespace Sheepshead.Models
         public int HumanPlayerCount => _players.Count(p => p is IHumanPlayer);
         protected List<IPlayer> _players;
         public List<IPlayer> Players => _players.ToList();
-        public List<IDeck> Decks { get; } = new List<IDeck>();
+        public List<IDeck> Decks => _gameStateDesciber.Decks;
         public IRandomWrapper _random { get; private set; }
         public IPlayer CurrentTurn { get { throw new NotImplementedException(); } }
         private IHandFactory _handFactory;
+        private IGameStateDescriber _gameStateDesciber;
         public TurnType TurnType => new TurnTypeCalculator().GetTurnType(this);
 
-        public Game(long id, List<IPlayer> players) : this(id, players, null, null)
+        public Game(long id, List<IPlayer> players) : this(id, players, null, null, null)
         {
 
         }
 
         //TODO: Make this internal except to test project
-        public Game(long id, List<IPlayer> players, IRandomWrapper random, IHandFactory handFactory)
+        public Game(long id, List<IPlayer> players, IRandomWrapper random, IHandFactory handFactory, IGameStateDescriber gameStateDescriber)
         {
             _players = players;
             _id = id;
             _random = random ?? new RandomWrapper();
             _handFactory = handFactory ?? new HandFactory();
+            _gameStateDesciber = gameStateDescriber ?? new GameStateDescriber();
         } 
 
         public void RearrangePlayers()
@@ -83,9 +86,7 @@ namespace Sheepshead.Models
 
         public void PlayNonHumansInTrick()
         {
-            var trick = Decks.LastOrDefault()?.Hand.Tricks.LastOrDefault();
-            if (trick == null || trick.IsComplete() && !Decks.LastOrDefault().Hand.IsComplete())
-                trick = new Trick(Decks.LastOrDefault().Hand);
+            var trick = _gameStateDesciber.CurrentTrick;
             foreach (var player in trick.PlayersWithoutTurn)
             {
                 var computerPlayer = player as IComputerPlayer;
