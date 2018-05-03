@@ -11,13 +11,12 @@ namespace Sheepshead.Models
     {
         public const int CARDS_IN_DECK = 32;
         public string Name { get; set; }
-        public int PlayerCount { get { return _players.Count(); } }
-        public int Blind { get { return CARDS_IN_DECK % _players.Count(); } }
-        public int HumanPlayerCount { get { return _players.Count(p => p is IHumanPlayer); } }
+        public int PlayerCount => _players.Count();
+        public int Blind => CARDS_IN_DECK % _players.Count();
+        public int HumanPlayerCount => _players.Count(p => p is IHumanPlayer);
         protected List<IPlayer> _players;
-        public List<IPlayer> Players { get { return _players.ToList(); } }
-        private List<IDeck> _decks = new List<IDeck>();
-        public List<IDeck> Decks { get { return _decks; } }
+        public List<IPlayer> Players => _players.ToList();
+        public List<IDeck> Decks { get; } = new List<IDeck>();
         public IRandomWrapper _random { get; private set; }
         public IPlayer CurrentTurn { get { throw new NotImplementedException(); } }
         private IHandFactory _handFactory;
@@ -81,7 +80,7 @@ namespace Sheepshead.Models
         {
             if (TurnType != TurnType.Pick)
                 throw new WrongGamePhaseExcpetion("Game must be in the Pick phase.");
-            return new PickProcessorOuter().PlayNonHumanPickTurns(_decks.Last(), _handFactory);
+            return new PickProcessorOuter().PlayNonHumanPickTurns(Decks.Last(), _handFactory);
         }
 
         public void BuryCards(IHumanPlayer player, List<SheepCard> cards)
