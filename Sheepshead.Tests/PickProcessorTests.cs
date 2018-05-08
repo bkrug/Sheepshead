@@ -5,7 +5,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using Sheepshead.Models;
 using Sheepshead.Models.Players;
-
+using Sheepshead.Tests.PlayerMocks;
 
 namespace Sheepshead.Tests
 {
@@ -15,16 +15,23 @@ namespace Sheepshead.Tests
         [TestMethod]
         public void PickProcessor_PlayNonHumanPickTurns_EveryonePasses()
         {
-            var playerMocks = new List<Mock>() { new Mock<IComputerPlayer>(), new Mock<IComputerPlayer>(), new Mock<IComputerPlayer>() };
-            var unplayedPlayers = playerMocks.Select(m => m.Object as IPlayer).ToList();
-            var computerPlayerMocks = playerMocks.OfType<Mock<IComputerPlayer>>().ToList();
-            computerPlayerMocks.ForEach(m => m.Setup(p => p.WillPick(It.IsAny<IDeck>())).Returns(false));
-
             var deckMock = new Mock<IDeck>();
-            deckMock.Setup(m => m.PlayersWithoutPickTurn).Returns(unplayedPlayers);
-            var refusingPlayers = new List<IPlayer>() { new Mock<IComputerPlayer>().Object, new Mock<IHumanPlayer>().Object };
+
+            var refusingPlayers = new List<IPlayer>() {
+                new Mock<IComputerPlayer>().Object,
+                new Mock<IHumanPlayer>().Object
+            };
             var refusingPlayersOrig = refusingPlayers.ToList();
-            deckMock.Setup(m => m.PlayersRefusingPick).Returns(refusingPlayers);
+            deckMock.SetupGet(m => m.PlayersRefusingPick).Returns(refusingPlayers);
+
+            var unplayedPlayersOrig = new List<IPlayer>()
+            {
+                new ComputerPlayerPickingMock(false),
+                new ComputerPlayerPickingMock(false),
+                new ComputerPlayerPickingMock(false)
+            };
+            var unplayedPlayers = unplayedPlayersOrig.ToList();            
+            deckMock.SetupGet(m => m.PlayersWithoutPickTurn).Returns(unplayedPlayers);
 
             var pickProcessor = new PickProcessor(deckMock.Object, null);
             var picker = pickProcessor.PlayNonHumanPickTurns();
@@ -32,58 +39,72 @@ namespace Sheepshead.Tests
             Assert.AreSame(null, picker);
             Assert.AreSame(refusingPlayersOrig[0], refusingPlayers[0]);
             Assert.AreSame(refusingPlayersOrig[1], refusingPlayers[1]);
-            Assert.AreSame(unplayedPlayers[0], refusingPlayers[2]);
-            Assert.AreSame(unplayedPlayers[1], refusingPlayers[3]);
-            Assert.AreSame(unplayedPlayers[2], refusingPlayers[4]);
+            Assert.AreSame(unplayedPlayersOrig[0], refusingPlayers[2]);
+            Assert.AreSame(unplayedPlayersOrig[1], refusingPlayers[3]);
+            Assert.AreSame(unplayedPlayersOrig[2], refusingPlayers[4]);
         }
 
         [TestMethod]
         public void PickProcessor_PlayNonHumanPickTurns_PlayTillHumanTurn()
         {
-            var playerMocks = new List<Mock>() { new Mock<IComputerPlayer>(), new Mock<IComputerPlayer>(), new Mock<IHumanPlayer>() };
-            var unplayedPlayers = playerMocks.Select(m => m.Object as IPlayer).ToList();
-            var computerPlayerMocks = playerMocks.OfType<Mock<IComputerPlayer>>().ToList();
-            computerPlayerMocks.ForEach(m => m.Setup(p => p.WillPick(It.IsAny<IDeck>())).Returns(false));
-
             var deckMock = new Mock<IDeck>();
-            deckMock.Setup(m => m.PlayersWithoutPickTurn).Returns(unplayedPlayers);
-            var refusingPlayers = new List<IPlayer>() { new Mock<IComputerPlayer>().Object, new Mock<IHumanPlayer>().Object };
+
+            var refusingPlayers = new List<IPlayer>() {
+                new Mock<IComputerPlayer>().Object,
+                new Mock<IHumanPlayer>().Object
+            };
             var refusingPlayersOrig = refusingPlayers.ToList();
-            deckMock.Setup(m => m.PlayersRefusingPick).Returns(refusingPlayers);
+            deckMock.SetupGet(m => m.PlayersRefusingPick).Returns(refusingPlayers);
+
+            var unplayedPlayersOrig = new List<IPlayer>()
+            {
+                new ComputerPlayerPickingMock(false),
+                new ComputerPlayerPickingMock(false),
+                new Mock<IHumanPlayer>().Object
+            };
+            var unplayedPlayers = unplayedPlayersOrig.ToList();
+            deckMock.SetupGet(m => m.PlayersWithoutPickTurn).Returns(unplayedPlayers);
 
             var pickProcessor = new PickProcessor(deckMock.Object, null);
             var picker = pickProcessor.PlayNonHumanPickTurns();
 
-            Assert.AreSame(null, picker);
+            Assert.IsNull(picker);
             Assert.AreEqual(4, refusingPlayers.Count);
             Assert.AreSame(refusingPlayersOrig[0], refusingPlayers[0]);
             Assert.AreSame(refusingPlayersOrig[1], refusingPlayers[1]);
-            Assert.AreSame(unplayedPlayers[0], refusingPlayers[2]);
-            Assert.AreSame(unplayedPlayers[1], refusingPlayers[3]);
+            Assert.AreSame(unplayedPlayersOrig[0], refusingPlayers[2]);
+            Assert.AreSame(unplayedPlayersOrig[1], refusingPlayers[3]);
         }
 
         [TestMethod]
         public void PickProcessor_PlayNonHumanPickTurns_FindPicker()
         {
-            var playerMocks = new List<Mock>() { new Mock<IComputerPlayer>(), new Mock<IComputerPlayer>(), new Mock<IComputerPlayer>(), new Mock<IHumanPlayer>() };
-            var unplayedPlayers = playerMocks.Select(m => m.Object as IPlayer).ToList();
-            var computerPlayerMocks = playerMocks.OfType<Mock<IComputerPlayer>>().ToList();
-            computerPlayerMocks[0].Setup(p => p.WillPick(It.IsAny<IDeck>())).Returns(false);
-            computerPlayerMocks[1].Setup(p => p.WillPick(It.IsAny<IDeck>())).Returns(false);
-            computerPlayerMocks[2].Setup(p => p.WillPick(It.IsAny<IDeck>())).Returns(true);
-
             var deckMock = new Mock<IDeck>();
-            deckMock.Setup(m => m.PlayersWithoutPickTurn).Returns(unplayedPlayers);
-            var refusingPlayers = new List<IPlayer>();
-            deckMock.Setup(m => m.PlayersRefusingPick).Returns(refusingPlayers);
+
+            var refusingPlayers = new List<IPlayer>() {
+                new Mock<IComputerPlayer>().Object,
+                new Mock<IHumanPlayer>().Object
+            };
+            var refusingPlayersOrig = refusingPlayers.ToList();
+            deckMock.SetupGet(m => m.PlayersRefusingPick).Returns(refusingPlayers);
+
+            var unplayedPlayersOrig = new List<IPlayer>()
+            {
+                new ComputerPlayerPickingMock(false),
+                new ComputerPlayerPickingMock(true),
+                new ComputerPlayerPickingMock(false)
+            };
+            var unplayedPlayers = unplayedPlayersOrig.ToList();
+            deckMock.SetupGet(m => m.PlayersWithoutPickTurn).Returns(unplayedPlayers);
 
             var pickProcessor = new PickProcessor(deckMock.Object, null);
             var picker = pickProcessor.PlayNonHumanPickTurns();
 
-            Assert.AreSame(unplayedPlayers[2], picker);
-            Assert.AreEqual(2, refusingPlayers.Count);
-            Assert.AreSame(unplayedPlayers[0], refusingPlayers[0]);
-            Assert.AreSame(unplayedPlayers[1], refusingPlayers[1]);
+            Assert.AreSame(unplayedPlayersOrig[1], picker);
+            Assert.AreEqual(3, refusingPlayers.Count);
+            Assert.AreSame(refusingPlayersOrig[0], refusingPlayers[0]);
+            Assert.AreSame(refusingPlayersOrig[1], refusingPlayers[1]);
+            Assert.AreSame(unplayedPlayersOrig[0], refusingPlayers[2]);
         }
 
         [TestMethod]

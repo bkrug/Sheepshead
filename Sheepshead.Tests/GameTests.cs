@@ -120,40 +120,42 @@ namespace Sheepshead.Tests
         [TestMethod]
         public void Game_PlayNonHumanPickTurns_StopAtHuman()
         {
-            var playerMocks = new List<Mock>() { new Mock<IHumanPlayer>(), new Mock<IComputerPlayer>(), new Mock<IComputerPlayer>(), new Mock<IHumanPlayer>(), new Mock<IComputerPlayer>() };
-            var playerList = playerMocks.Select(m => m.Object as IPlayer).ToList();
-            var unplayedPlayers = playerList.Skip(1).ToList();
-            var refusingPick = playerList.Take(1).ToList();
+            var players = new List<IPlayer>() {
+                new Mock<IHumanPlayer>().Object,
+                new ComputerPlayerPickingMock(false),
+                new ComputerPlayerPickingMock(false),
+                new Mock<IHumanPlayer>().Object,
+                new ComputerPlayerPickingMock(true)
+            };
+            var refusingPick = players.Take(1).ToList();
+            var unplayedPlayers = players.Skip(1).ToList();
             var deckMock = new Mock<IDeck>();
-            deckMock.Setup(m => m.PlayersWithoutPickTurn).Returns(unplayedPlayers);
             deckMock.Setup(m => m.PlayersRefusingPick).Returns(refusingPick);
-            deckMock.Setup(m => m.PickProcessor.PlayNonHumanPickTurns())
-                .Callback(() => {
-                    refusingPick.AddRange(playerList.Skip(1).Take(2));
-                    unplayedPlayers.RemoveRange(0, 2);
-                    })
-                .Returns(() => null);
-            deckMock.Setup(m => m.PickProcessor.AcceptComputerPicker(It.IsAny<IComputerPlayer>()))
-                .Callback((IComputerPlayer p) =>
-                    Assert.IsFalse(true, "Should not have called AcceptComputerPicker().  Should have given human a chance to pick."));
+            deckMock.Setup(m => m.PlayersWithoutPickTurn).Returns(unplayedPlayers);
+            var gameStateDescriberMock = new Mock<IGameStateDescriber>();
+            gameStateDescriberMock.Setup(m => m.CurrentDeck).Returns(deckMock.Object);
+            gameStateDescriberMock.Setup(m => m.GetTurnType()).Returns(TurnType.Pick);
             var handFactoryMock = new Mock<IHandFactory>();
-            handFactoryMock.Setup(m => m.GetHand(It.IsAny<IDeck>(), It.IsAny<IPlayer>(), It.IsAny<List<SheepCard>>()))
-                .Callback(() =>
-                    Assert.IsFalse(true, "Should not have called AcceptComputerPicker().  Should have given human a chance to pick."));
+            handFactoryMock
+                .Setup(m => m.GetHand(It.IsAny<IDeck>(), It.IsAny<IPlayer>(), It.IsAny<List<SheepCard>>()))
+                .Callback(() => Assert.Fail("Should not have attempted to create a hand"));
 
-            var game = new Game(42340, playerList, null, handFactoryMock.Object, null);
-            game.Decks.Add(deckMock.Object);
+            var game = new Game(42340, players, null, handFactoryMock.Object, gameStateDescriberMock.Object);
             var picker = game.PlayNonHumanPickTurns();
 
-            Assert.IsNull(picker, "Picker should be null because the computer players didn't pick.  " + 
-                "No hand should have been created since not everyone has had a turn.");
+            Assert.IsNull(picker, "Picker should be null because the computer players didn't pick and we didn't ask the second human yet.");
         }
 
         [TestMethod]
         public void Game_PlayNonHumanPickTurns_FindAPicker()
         {
-            var playerMocks = new List<Mock>() { new Mock<IHumanPlayer>(), new Mock<IComputerPlayer>(), new Mock<IComputerPlayer>(), new Mock<IHumanPlayer>(), new Mock<IComputerPlayer>() };
-            var playerList = playerMocks.Select(m => m.Object as IPlayer).ToList();
+            var playerList = new List<IPlayer>() {
+                new Mock<IHumanPlayer>().Object,
+                new ComputerPlayerPickingMock(false),
+                new ComputerPlayerPickingMock(true),
+                new Mock<IHumanPlayer>().Object,
+                new ComputerPlayerPickingMock(false)
+            };
             var unplayedPlayers = playerList.Skip(1).ToList();
             var expectedPicker = playerList[2] as IComputerPlayer;
             var refusingPick = playerList.Take(1).ToList();
@@ -161,22 +163,15 @@ namespace Sheepshead.Tests
             var deckMock = new Mock<IDeck>();
             deckMock.Setup(m => m.PlayersWithoutPickTurn).Returns(unplayedPlayers);
             deckMock.Setup(m => m.PlayersRefusingPick).Returns(refusingPick);
-            deckMock.Setup(m => m.PickProcessor.PlayNonHumanPickTurns())
-                .Callback(() => {
-                    refusingPick.AddRange(playerList.Skip(1).Take(1));
-                    unplayedPlayers.RemoveRange(0, 1);
-                })
-                .Returns(expectedPicker);
-            deckMock.Setup(m => m.PickProcessor.AcceptComputerPicker(expectedPicker))
-                .Callback(() => handCreated = true)
-                .Returns(new Mock<IHand>().Object);
             var handFactoryMock = new Mock<IHandFactory>();
-            handFactoryMock.Setup(m => m.GetHand(It.IsAny<IDeck>(), It.IsAny<IPlayer>(), It.IsAny<List<SheepCard>>()))
-                .Callback(() =>
-                    Assert.IsFalse(true, "Should have instantiated hand through AcceptComputerPicker() instead."));
+            handFactoryMock
+                .Setup(m => m.GetHand(It.IsAny<IDeck>(), expectedPicker, It.IsAny<List<SheepCard>>()))
+                .Callback(() => handCreated = true);
+            var gameStateDescriberMock = new Mock<IGameStateDescriber>();
+            gameStateDescriberMock.Setup(m => m.CurrentDeck).Returns(deckMock.Object);
+            gameStateDescriberMock.Setup(m => m.GetTurnType()).Returns(TurnType.Pick);
 
-            var game = new Game(42340, playerList, null, handFactoryMock.Object, null);
-            game.Decks.Add(deckMock.Object);
+            var game = new Game(42340, playerList, null, handFactoryMock.Object, gameStateDescriberMock.Object);
             var picker = game.PlayNonHumanPickTurns();
 
             Assert.IsTrue(handCreated);
@@ -186,30 +181,28 @@ namespace Sheepshead.Tests
         [TestMethod]
         public void Game_PlayNonHumanPickTurns_LeastersGame()
         {
-            var playerMocks = new List<Mock>() { new Mock<IHumanPlayer>(), new Mock<IComputerPlayer>(), new Mock<IComputerPlayer>(), new Mock<IComputerPlayer>(), new Mock<IComputerPlayer>() };
-            var playerList = playerMocks.Select(m => m.Object as IPlayer).ToList();
+            var playerList = new List<IPlayer>() {
+                new Mock<IHumanPlayer>().Object,
+                new ComputerPlayerPickingMock(false),
+                new ComputerPlayerPickingMock(false),
+                new ComputerPlayerPickingMock(false),
+                new ComputerPlayerPickingMock(false)
+            };
             var unplayedPlayers = playerList.Skip(1).ToList();
             var refusingPick = playerList.Take(1).ToList();
             var handCreated = false;
             var deckMock = new Mock<IDeck>();
-            deckMock.Setup(m => m.PlayersWithoutPickTurn).Returns(unplayedPlayers);
-            deckMock.Setup(m => m.PlayersRefusingPick).Returns(refusingPick);
-            deckMock.Setup(m => m.PickProcessor.PlayNonHumanPickTurns())
-                .Callback(() => {
-                    refusingPick.AddRange(playerList.Skip(1).Take(4));
-                    unplayedPlayers.RemoveRange(0, 4);
-                })
-                .Returns(() => null);
-            deckMock.Setup(m => m.PickProcessor.AcceptComputerPicker(It.IsAny<IComputerPlayer>()))
-                .Callback((IComputerPlayer p) =>
-                    Assert.IsFalse(true, "Should have instantiated hand through HandFactory.  Should be a leasters hand."));
+            deckMock.SetupGet(m => m.PlayersWithoutPickTurn).Returns(unplayedPlayers);
+            deckMock.SetupGet(m => m.PlayersRefusingPick).Returns(refusingPick);
             var handFactoryMock = new Mock<IHandFactory>();
             handFactoryMock.Setup(m => m.GetHand(deckMock.Object, null, It.IsAny<List<SheepCard>>()))
                 .Callback(() => handCreated = true)
                 .Returns(() => new Mock<IHand>().Object);
+            var gameStateDescriberMock = new Mock<IGameStateDescriber>();
+            gameStateDescriberMock.Setup(m => m.CurrentDeck).Returns(deckMock.Object);
+            gameStateDescriberMock.Setup(m => m.GetTurnType()).Returns(TurnType.Pick);
 
-            var game = new Game(42340, playerList, null, handFactoryMock.Object, null);
-            game.Decks.Add(deckMock.Object);
+            var game = new Game(42340, playerList, null, handFactoryMock.Object, gameStateDescriberMock.Object);
             var picker = game.PlayNonHumanPickTurns();
 
             Assert.IsTrue(handCreated);

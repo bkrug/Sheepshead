@@ -106,6 +106,7 @@
     <Compile Include="CardTests.cs" />
     <Compile Include="PickProcessorTests.cs" />
     <Compile Include="PlayerMocks\ComputerPlayerReportingPlays.cs" />
+    <Compile Include="PlayerMocks\ComputerPlayerPickingMock.cs" />
     <Compile Include="PlayerOrdererTests.cs" />
     <Compile Include="GameRepositoryTests.cs" />
     <Compile Include="GameTests.cs" />

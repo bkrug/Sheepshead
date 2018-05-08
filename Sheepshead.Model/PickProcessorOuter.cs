@@ -16,10 +16,11 @@ namespace Sheepshead.Models
     {
         public IComputerPlayer PlayNonHumanPickTurns(IDeck deck, IHandFactory handFactory)
         {
-            var picker = deck.PickProcessor.PlayNonHumanPickTurns();
+            var pickProcessor = new PickProcessor(deck, handFactory);
+            var picker = pickProcessor.PlayNonHumanPickTurns();
             IHand hand = null;
             if (picker != null)
-                hand = deck.PickProcessor.AcceptComputerPicker(picker);
+                hand = pickProcessor.AcceptComputerPicker(picker);
             else if (picker == null && !deck.PlayersWithoutPickTurn.Any())
                 hand = handFactory.GetHand(deck, picker, new List<SheepCard>());
             return picker;

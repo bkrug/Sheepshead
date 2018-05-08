@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using Sheepshead.Models.Players;
 using Sheepshead.Models.Wrappers;
-using Sheepshead.Model.TurnProcessors;
 using Sheepshead.Model;
 
 namespace Sheepshead.Models
@@ -22,7 +21,7 @@ namespace Sheepshead.Models
         public IPlayer CurrentTurn { get { throw new NotImplementedException(); } }
         private IHandFactory _handFactory;
         private IGameStateDescriber _gameStateDesciber;
-        public TurnType TurnType => new TurnTypeCalculator().GetTurnType(this);
+        public TurnType TurnType => _gameStateDesciber.GetTurnType();
 
         public Game(long id, List<IPlayer> players) : this(id, players, null, null, null)
         {
@@ -55,7 +54,7 @@ namespace Sheepshead.Models
 
         public bool LastDeckIsComplete()
         {
-            return new TurnTypeCalculator().LastDeckIsComplete(this);
+            return _gameStateDesciber.LastDeckIsComplete();
         }
 
         public IHand ContinueFromHumanPickTurn(IHumanPlayer human, bool willPick)
@@ -77,7 +76,7 @@ namespace Sheepshead.Models
         {
             if (TurnType != TurnType.Pick)
                 throw new WrongGamePhaseExcpetion("Game must be in the Pick phase.");
-            return new PickProcessorOuter().PlayNonHumanPickTurns(Decks.Last(), _handFactory);
+            return new PickProcessorOuter().PlayNonHumanPickTurns(_gameStateDesciber.CurrentDeck, _handFactory);
         }
 
         public void BuryCards(IHumanPlayer player, List<SheepCard> cards)

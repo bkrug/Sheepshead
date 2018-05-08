@@ -38,11 +38,12 @@ namespace Sheepshead.Models
         {
             if (!(_deck.PlayersWithoutPickTurn.FirstOrDefault() is IComputerPlayer))
                 throw new NotPlayersTurnException("Next player must be a computer player.");
-            foreach (var player in _deck.PlayersWithoutPickTurn)
+            foreach (var player in _deck.PlayersWithoutPickTurn.ToList())
             {
                 var computerPlayer = player as IComputerPlayer;
                 if (computerPlayer == null)
                     return null; //Must be human's turn.
+                _deck.PlayersWithoutPickTurn.Remove(player);
                 if (computerPlayer.WillPick(_deck))
                     return computerPlayer;
                 else
