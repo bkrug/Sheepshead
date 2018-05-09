@@ -9,6 +9,7 @@ namespace Sheepshead.Models
     {
         IComputerPlayer PlayNonHumanPickTurns(IDeck deck, IHandFactory handFactory);
         void BuryCards(IDeck deck, IHumanPlayer picker, List<SheepCard> cardsToBury);
+        IHand ContinueFromHumanPickTurn(IHumanPlayer human, bool willPick, IDeck deck, IHandFactory handFactory, IPickProcessor pickProcessorOuter);
     }
 
     public class PickProcessor : IPickProcessor
@@ -59,6 +60,25 @@ namespace Sheepshead.Models
                 throw new NotPlayersTurnException("A non-picker cannot bury cards.");
             cardsToBury.ForEach(c => picker.Cards.Remove(c));
             cardsToBury.ForEach(c => deck.Buried.Add(c));
+        }
+
+        public IHand ContinueFromHumanPickTurn(IHumanPlayer human, bool willPick, IDeck deck, IHandFactory handFactory, IPickProcessor pickProcessorOuter)
+        {
+            if (deck.PlayersWithoutPickTurn.FirstOrDefault() != human)
+                throw new NotPlayersTurnException("This is not the player's turn to pick.");
+            IHand hand;
+            if (willPick)
+            {
+                human.Cards.AddRange(deck.Blinds);
+                hand = handFactory.GetHand(deck, human, new List<SheepCard>());
+            }
+            else
+            {
+                deck.PlayersRefusingPick.Add(human);
+                pickProcessorOuter.PlayNonHumanPickTurns(deck, handFactory);
+                hand = deck.Hand;
+            }
+            return hand;
         }
     }
 }

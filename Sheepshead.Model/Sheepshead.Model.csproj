@@ -54,7 +54,6 @@
     <Compile Include="LongId.cs" />
     <Compile Include="PickPlayerOrderer.cs" />
     <Compile Include="PickProcessor.cs" />
-    <Compile Include="HumanPickProcessor.cs" />
     <Compile Include="Players\BasicPlayer.cs" />
     <Compile Include="Players\ComputerPlayer.cs" />
     <Compile Include="Players\HumanPlayer.cs" />
