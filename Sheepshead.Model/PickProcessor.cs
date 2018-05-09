@@ -7,17 +7,13 @@ namespace Sheepshead.Models
 {
     public interface IPickProcessor
     {
-        void LetHumanPick(IHumanPlayer human, bool willPick);
         IComputerPlayer PlayNonHumanPickTurns(IDeck deck, IHandFactory handFactory);
     }
 
     public class PickProcessor : IPickProcessor
     {
-        private IDeck _deck;
-
-        public PickProcessor(IDeck currentDeck)
+        public PickProcessor()
         {
-            _deck = currentDeck;
         }
 
         public IComputerPlayer PlayNonHumanPickTurns(IDeck deck, IHandFactory handFactory)
@@ -54,17 +50,6 @@ namespace Sheepshead.Models
             var buriedCards = picker.DropCardsForPick(deck);
             deck.Buried = buriedCards;
             return handFactory.GetHand(deck, picker, buriedCards);
-        }
-
-        //TODO: Either star calling this from the PicProcessorOuter2.ContinueFromHumanPickTurn() or delete it.
-        public void LetHumanPick(IHumanPlayer human, bool willPick)
-        {
-            if (_deck.PlayersWithoutPickTurn.FirstOrDefault() != human)
-                throw new NotPlayersTurnException("This is not the player's turn to pick.");
-            if (willPick)
-                human.Cards.AddRange(_deck.Blinds);
-            else
-                _deck.PlayersRefusingPick.Add(human);
         }
     }
 }

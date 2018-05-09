@@ -62,7 +62,7 @@ namespace Sheepshead.Models
             if (TurnType != TurnType.Pick)
                 throw new WrongGamePhaseExcpetion("Game must be in the Pick phase.");
             var deck = _gameStateDesciber.CurrentDeck;
-            return new HumanPickProcessor().ContinueFromHumanPickTurn(human, willPick, deck, _handFactory, new PickProcessor(deck));
+            return new HumanPickProcessor().ContinueFromHumanPickTurn(human, willPick, deck, _handFactory, new PickProcessor());
         }
 
         public IComputerPlayer PlayUpToHumanPickTurn()
@@ -76,7 +76,7 @@ namespace Sheepshead.Models
         {
             if (TurnType != TurnType.Pick)
                 throw new WrongGamePhaseExcpetion("Game must be in the Pick phase.");
-            return new PickProcessor(null).PlayNonHumanPickTurns(_gameStateDesciber.CurrentDeck, _handFactory);
+            return new PickProcessor().PlayNonHumanPickTurns(_gameStateDesciber.CurrentDeck, _handFactory);
         }
 
         public void BuryCards(IHumanPlayer player, List<SheepCard> cards)
