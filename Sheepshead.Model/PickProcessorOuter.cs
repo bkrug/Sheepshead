@@ -35,7 +35,7 @@ namespace Sheepshead.Models
         }
     }
 
-    public class PickProcessorOuter2
+    public class HumanPickProcessor
     { 
         public IHand ContinueFromHumanPickTurn(IHumanPlayer human, bool willPick, IDeck deck, IHandFactory handFactory, 
             IPickProcessorOuter pickProcessorOuter)

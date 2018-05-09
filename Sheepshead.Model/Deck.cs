@@ -98,12 +98,6 @@ namespace Sheepshead.Models
         {
             get { return _pickPlayerOrderer ?? (_pickPlayerOrderer = new PlayerOrderer()); }
         }
-
-        private IPickProcessor _pickProcessor;
-        public IPickProcessor PickProcessor
-        {
-            get { return _pickProcessor ?? (_pickProcessor = new PickProcessor(this, new HandFactory())); }
-        }
     }
 
     public interface IDeck
@@ -119,7 +113,6 @@ namespace Sheepshead.Models
         List<IPlayer> Players { get; }
         List<IPlayer> PlayersWithoutPickTurn { get; }
         IPlayerOrderer PickPlayerOrderer { get; }
-        IPickProcessor PickProcessor { get; }
     }
 
     public class PreviousDeckIncompleteException : Exception

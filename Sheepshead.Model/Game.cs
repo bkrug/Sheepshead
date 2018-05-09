@@ -61,8 +61,8 @@ namespace Sheepshead.Models
         {
             if (TurnType != TurnType.Pick)
                 throw new WrongGamePhaseExcpetion("Game must be in the Pick phase.");
-            var deck = Decks.Last();
-            return new PickProcessorOuter2().ContinueFromHumanPickTurn(human, willPick, deck, _handFactory, new PickProcessorOuter());
+            var deck = _gameStateDesciber.CurrentDeck;
+            return new HumanPickProcessor().ContinueFromHumanPickTurn(human, willPick, deck, _handFactory, new PickProcessorOuter());
         }
 
         public IComputerPlayer PlayUpToHumanPickTurn()
