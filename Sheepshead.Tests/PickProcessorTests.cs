@@ -255,7 +255,7 @@ namespace Sheepshead.Tests
             deckMock.Setup(m => m.Buried).Returns(buried);
             deckMock.Setup(m => m.Hand.Picker).Returns(humanMock.Object);
 
-            new PickProcessorOuter().BuryCards(deckMock.Object, humanMock.Object, toBury);
+            new PickProcessor().BuryCards(deckMock.Object, humanMock.Object, toBury);
 
             Assert.AreEqual(0, playerCards.Count(), "The buried cards were removed from the picker's hand.");
             Assert.IsTrue(buried.Contains(toBury[0]));
@@ -273,7 +273,7 @@ namespace Sheepshead.Tests
 
             var threwException = false;
             try {
-                new PickProcessorOuter().BuryCards(deckMock.Object, humanMock.Object, new List<SheepCard>());
+                new PickProcessor().BuryCards(deckMock.Object, humanMock.Object, new List<SheepCard>());
             }
             catch(NotPlayersTurnException)
             {

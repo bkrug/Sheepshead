@@ -83,7 +83,7 @@ namespace Sheepshead.Models
         {
             if (TurnType != TurnType.Bury)
                 throw new WrongGamePhaseExcpetion("Game must be in the Bury phase.");
-            new PickProcessorOuter().BuryCards(Decks.Last(), player, cards);
+            new PickProcessor().BuryCards(Decks.Last(), player, cards);
         }
 
         public void PlayNonHumansInTrick()

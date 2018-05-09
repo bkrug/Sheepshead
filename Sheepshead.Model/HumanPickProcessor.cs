@@ -6,22 +6,6 @@ using Sheepshead.Models.Players;
 
 namespace Sheepshead.Models
 {
-    public interface IPickProcessorOuter
-    {
-        void BuryCards(IDeck deck, IHumanPlayer picker, List<SheepCard> cardsToBury);
-    }
-
-    public class PickProcessorOuter : IPickProcessorOuter
-    {
-        public void BuryCards(IDeck deck, IHumanPlayer picker, List<SheepCard> cardsToBury)
-        {
-            if (deck.Hand?.Picker != picker)
-                throw new NotPlayersTurnException("A non-picker cannot bury cards.");
-            cardsToBury.ForEach(c => picker.Cards.Remove(c));
-            cardsToBury.ForEach(c => deck.Buried.Add(c));
-        }
-    }
-
     public class HumanPickProcessor
     { 
         public IHand ContinueFromHumanPickTurn(IHumanPlayer human, bool willPick, IDeck deck, IHandFactory handFactory, 
