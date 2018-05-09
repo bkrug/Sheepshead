@@ -7,20 +7,53 @@ namespace Sheepshead.Models
 {
     public interface IPickProcessor
     {
-        IHand AcceptComputerPicker(IComputerPlayer picker);
         void LetHumanPick(IHumanPlayer human, bool willPick);
-        IComputerPlayer PlayNonHumanPickTurns();
+        IComputerPlayer PlayNonHumanPickTurns(IDeck deck, IHandFactory handFactory);
     }
 
     public class PickProcessor : IPickProcessor
     {
         private IDeck _deck;
-        private IHandFactory _handFactory;
 
-        public PickProcessor(IDeck currentDeck, IHandFactory handFactory)
+        public PickProcessor(IDeck currentDeck)
         {
             _deck = currentDeck;
-            _handFactory = handFactory;
+        }
+
+        public IComputerPlayer PlayNonHumanPickTurns(IDeck deck, IHandFactory handFactory)
+        {
+            var picker = PlayNonHumanPickTurns(deck);
+            IHand hand = null;
+            if (picker != null)
+                hand = AcceptComputerPicker(deck, picker, handFactory);
+            else if (picker == null && !deck.PlayersWithoutPickTurn.Any())
+                hand = handFactory.GetHand(deck, picker, new List<SheepCard>());
+            return picker;
+        }
+
+        private IComputerPlayer PlayNonHumanPickTurns(IDeck deck)
+        {
+            if (!(deck.PlayersWithoutPickTurn.FirstOrDefault() is IComputerPlayer))
+                throw new NotPlayersTurnException("Next player must be a computer player.");
+            foreach (var player in deck.PlayersWithoutPickTurn.ToList())
+            {
+                var computerPlayer = player as IComputerPlayer;
+                if (computerPlayer == null)
+                    return null; //Must be human's turn.
+                deck.PlayersWithoutPickTurn.Remove(player);
+                if (computerPlayer.WillPick(deck))
+                    return computerPlayer;
+                else
+                    deck.PlayersRefusingPick.Add(computerPlayer);
+            }
+            return null;
+        }
+
+        private IHand AcceptComputerPicker(IDeck deck, IComputerPlayer picker, IHandFactory handFactory)
+        {
+            var buriedCards = picker.DropCardsForPick(deck);
+            deck.Buried = buriedCards;
+            return handFactory.GetHand(deck, picker, buriedCards);
         }
 
         //TODO: Either star calling this from the PicProcessorOuter2.ContinueFromHumanPickTurn() or delete it.
@@ -32,31 +65,6 @@ namespace Sheepshead.Models
                 human.Cards.AddRange(_deck.Blinds);
             else
                 _deck.PlayersRefusingPick.Add(human);
-        }
-
-        public IComputerPlayer PlayNonHumanPickTurns()
-        {
-            if (!(_deck.PlayersWithoutPickTurn.FirstOrDefault() is IComputerPlayer))
-                throw new NotPlayersTurnException("Next player must be a computer player.");
-            foreach (var player in _deck.PlayersWithoutPickTurn.ToList())
-            {
-                var computerPlayer = player as IComputerPlayer;
-                if (computerPlayer == null)
-                    return null; //Must be human's turn.
-                _deck.PlayersWithoutPickTurn.Remove(player);
-                if (computerPlayer.WillPick(_deck))
-                    return computerPlayer;
-                else
-                    _deck.PlayersRefusingPick.Add(computerPlayer);
-            }
-            return null;
-        }
-
-        public IHand AcceptComputerPicker(IComputerPlayer picker)
-        {
-            var buriedCards = picker.DropCardsForPick(_deck);
-            _deck.Buried = buriedCards;
-            return _handFactory.GetHand(_deck, picker, buriedCards);
         }
     }
 }

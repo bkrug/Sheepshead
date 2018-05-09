@@ -22,7 +22,7 @@ namespace Sheepshead.Tests.PlayerMocks
 
         public List<SheepCard> DropCardsForPick(IDeck deck)
         {
-            return new List<SheepCard>();
+            return new List<SheepCard>() { 0, (SheepCard)1 };
         }
 
         public SheepCard GetMove(ITrick trick)
