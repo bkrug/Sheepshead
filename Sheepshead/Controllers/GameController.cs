@@ -63,7 +63,7 @@ namespace Sheepshead.Controllers
             }
             else if (turnState.TurnType == TurnType.Pick)
             {
-                game.PlayUpToHumanPickTurn();
+                game.PlayNonHumanPickTurns(true);
             }
             else if (turnState.TurnType == TurnType.PlayTrick)
             {

@@ -65,15 +65,10 @@ namespace Sheepshead.Models
             return new PickProcessor().ContinueFromHumanPickTurn(human, willPick, deck, _handFactory, new PickProcessor());
         }
 
-        public IComputerPlayer PlayUpToHumanPickTurn()
+        public IComputerPlayer PlayNonHumanPickTurns(bool returnNullIfHumanNext = false)
         {
-            if (Decks.Last().PlayersWithoutPickTurn.FirstOrDefault() is IComputerPlayer)
-                return PlayNonHumanPickTurns();
-            return null;
-        }
-
-        public IComputerPlayer PlayNonHumanPickTurns()
-        {
+            if (returnNullIfHumanNext && _gameStateDesciber.CurrentDeck.PlayersWithoutPickTurn.FirstOrDefault() is IHumanPlayer)
+                return null;
             if (TurnType != TurnType.Pick)
                 throw new WrongGamePhaseExcpetion("Game must be in the Pick phase.");
             return new PickProcessor().PlayNonHumanPickTurns(_gameStateDesciber.CurrentDeck, _handFactory);
@@ -174,8 +169,7 @@ namespace Sheepshead.Models
         void RearrangePlayers();
         bool LastDeckIsComplete();
         IHand ContinueFromHumanPickTurn(IHumanPlayer human, bool willPick);
-        IComputerPlayer PlayNonHumanPickTurns();
-        IComputerPlayer PlayUpToHumanPickTurn();
+        IComputerPlayer PlayNonHumanPickTurns(bool returnNullIfHumanNext = false);
         void BuryCards(IHumanPlayer player, List<SheepCard> cards);
         void PlayNonHumansInTrick();
         void RecordTurn(IHumanPlayer player, SheepCard card);
