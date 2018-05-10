@@ -53,21 +53,18 @@ namespace Sheepshead.Controllers
         {
             var repository = new GameRepository(GameDictionary.Instance.Dictionary);
             var game = repository.GetById(id);
-            var turnState = new TurnState();
-            turnState.HumanPlayer = (IHumanPlayer)game.Players.First(p => p is IHumanPlayer);
-            turnState.Deck = game.Decks.LastOrDefault();
-            turnState.TurnType = game.TurnType;
-            if (turnState.TurnType == TurnType.BeginDeck)
+            var turnState = game.TurnState;
+            switch (game.TurnType)
             {
-                turnState.Deck = new Deck(game, _rnd);
-            }
-            else if (turnState.TurnType == TurnType.Pick)
-            {
-                game.PlayNonHumanPickTurns(true);
-            }
-            else if (turnState.TurnType == TurnType.PlayTrick)
-            {
-                game.PlayNonHumansInTrick();
+                case TurnType.BeginDeck:
+                    turnState.Deck = new Deck(game, _rnd);
+                    break;
+                case TurnType.Pick:
+                    game.PlayNonHumanPickTurns(true);
+                    break;
+                case TurnType.PlayTrick:
+                    game.PlayNonHumansInTrick();
+                    break;
             }
             return View(turnState);
         }

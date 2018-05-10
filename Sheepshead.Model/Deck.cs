@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-
 using Sheepshead.Models.Players;
 using Sheepshead.Models.Wrappers;
 
@@ -9,12 +7,11 @@ namespace Sheepshead.Models
 {
     public class Deck : IDeck
     {
-        private List<IPlayer> _playersRefusingPick = new List<IPlayer>();
         public IGame Game { get; private set; }
         public List<SheepCard> Blinds { get; private set; }
         public List<SheepCard> Buried { get; set; }
         public IHand Hand { get; set; }
-        public List<IPlayer> PlayersRefusingPick { get { return _playersRefusingPick; } }
+        public List<IPlayer> PlayersRefusingPick { get; } = new List<IPlayer>();
         public IPlayer StartingPlayer { get; private set; }
         public IRandomWrapper _random { get; private set; }
 
@@ -77,7 +74,7 @@ namespace Sheepshead.Models
 
         public void PlayerWontPick(IPlayer player)
         {
-            _playersRefusingPick.Add(player);
+            PlayersRefusingPick.Add(player);
         }
 
         public int PlayerCount

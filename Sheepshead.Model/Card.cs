@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace Sheepshead.Models
 {
@@ -167,18 +166,16 @@ namespace Sheepshead.Models
             { SheepCard.N7_DIAMONDS, "32" }
         };
 
-        private static Dictionary<StandardSuite, string> _suiteLetter = new Dictionary<StandardSuite, string>()
+        public static Dictionary<StandardSuite, string> SuiteLetter { get; } = new Dictionary<StandardSuite, string>()
         {
             { StandardSuite.CLUBS, "C" }, { StandardSuite.DIAMONDS, "D" }, { StandardSuite.HEARTS, "H" }, { StandardSuite.SPADES, "S" }
         };
-        public static Dictionary<StandardSuite, string> SuiteLetter { get { return _suiteLetter; } }
-        
-        private static Dictionary<CardType, string> _cardTypeLetter = new Dictionary<CardType, string>()
+
+        public static Dictionary<CardType, string> CardTypeLetter { get; } = new Dictionary<CardType, string>()
         {
-            { CardType.ACE, "A" }, { CardType.JACK, "J" }, { CardType.KING, "K" }, { CardType.QUEEN, "Q" }, 
+            { CardType.ACE, "A" }, { CardType.JACK, "J" }, { CardType.KING, "K" }, { CardType.QUEEN, "Q" },
             { CardType.N10, "T" }, { CardType.N9, "9" }, { CardType.N8, "8" }, { CardType.N7, "7" }
         };
-        public static Dictionary<CardType, string> CardTypeLetter { get { return _cardTypeLetter; } }
 
         public static string GetPictureFilename(SheepCard card)
         {

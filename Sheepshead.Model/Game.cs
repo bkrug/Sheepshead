@@ -21,6 +21,12 @@ namespace Sheepshead.Models
         private IHandFactory _handFactory;
         private IGameStateDescriber _gameStateDesciber;
         public TurnType TurnType => _gameStateDesciber.GetTurnType();
+        public TurnState TurnState => new TurnState
+        {
+            HumanPlayer = (IHumanPlayer)Players.First(p => p is IHumanPlayer),
+            Deck = _gameStateDesciber.CurrentDeck,
+            TurnType = TurnType
+        };
 
         public Game(long id, List<IPlayer> players) : this(id, players, null, null, null)
         {
@@ -144,6 +150,7 @@ namespace Sheepshead.Models
         List<IPlayer> Players { get; }
         List<IDeck> Decks { get; }
         TurnType TurnType { get; }
+        TurnState TurnState { get; }
         void RearrangePlayers();
         bool LastDeckIsComplete();
         IHand ContinueFromHumanPickTurn(IHumanPlayer human, bool willPick);
