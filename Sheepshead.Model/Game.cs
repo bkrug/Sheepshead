@@ -18,7 +18,6 @@ namespace Sheepshead.Models
         public List<IPlayer> Players => _players.ToList();
         public List<IDeck> Decks => _gameStateDesciber.Decks;
         public IRandomWrapper _random { get; private set; }
-        public IPlayer CurrentTurn { get { throw new NotImplementedException(); } }
         private IHandFactory _handFactory;
         private IGameStateDescriber _gameStateDesciber;
         public TurnType TurnType => _gameStateDesciber.GetTurnType();
@@ -103,26 +102,6 @@ namespace Sheepshead.Models
             ITrick trick = Decks.Last().Hand.Tricks.Last();
             trick.Add(player, card);
         }
-
-        /// <summary>
-        /// If it is the turn of the input player, process the HumanMove object according to the current game state.
-        /// If it is a different player's turn throw an error.
-        /// </summary>
-        /// <param name="humanPlayer"></param>
-        /// <param name="move"></param>
-        public void PlayHumanMove(IHumanPlayer humanPlayer, HumanMove move)
-        {
-            throw new NotImplementedException();
-        }
-
-        /// <summary>
-        /// Play Computer player moves until you reach a human player's turn or the end of a trick or pick phase.
-        /// </summary>
-        /// <returns></returns>
-        public IHumanPlayer PlayUpToHumanMove()
-        {
-            throw new NotImplementedException();
-        }
     }
 
     public class HumanMove
@@ -164,7 +143,6 @@ namespace Sheepshead.Models
         int PlayerCount { get; }
         List<IPlayer> Players { get; }
         List<IDeck> Decks { get; }
-        IPlayer CurrentTurn { get; }
         TurnType TurnType { get; }
         void RearrangePlayers();
         bool LastDeckIsComplete();
