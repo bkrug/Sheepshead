@@ -1,0 +1,17 @@
+﻿.title-container {
+    width: 80px;
+    display: inline-block;
+}
+
+.button-container {
+    display: inline-block;
+}
+
+.button-container input {
+    margin-left: 6px;
+    margin-right: 2px;
+}
+
+label {
+    margin-right: 4px;
+}
