@@ -34,7 +34,7 @@ export class NavMenu extends React.Component<{}, {}> {
                         </li>
                         <li>
                             <NavLink to={'/setup'} activeClassName='active'>
-                                <span className='glyphicon glyphicon-th-list'></span> Setup Game
+                                <span className='glyphicon glyphicon-queen'></span> Setup Game
                             </NavLink>
                         </li>
                     </ul>
