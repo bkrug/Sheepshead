@@ -43,8 +43,12 @@ export class GameSetup extends React.Component<RouteComponentProps<{}>, GameSetu
         this.setState({ gameName: e.currentTarget.value });
     }
 
-    playerCountValidityClass() {
-        return (this.state.value === 3 || this.state.value === 5) ? '' : 'invalidcount';
+    playerCountValidityStyle() {
+        return this.validPlayerCount() ? '' : 'invalid';
+    }
+
+    validPlayerCount() {
+        return (this.state.value === 3 || this.state.value === 5);
     }
 
     handlePlayClick() {
@@ -54,17 +58,16 @@ export class GameSetup extends React.Component<RouteComponentProps<{}>, GameSetu
             NewbieCount: this.state.selections[this.NEWBIE],
             BasicCount: this.state.selections[this.BASIC]
         };
-        fetch(
-            'http://localhost:61904/api/game/create',
-            {
-                method: 'POST',
-                body: JSON.stringify(gameStartModel),
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json'
+        fetch('http://localhost:61904/api/game/create',
+                {
+                    method: 'POST',
+                    body: JSON.stringify(gameStartModel),
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    }
                 }
-            }
-        )
+            )
             .then(function (response) {
                 return response.json();
             })
@@ -91,10 +94,10 @@ export class GameSetup extends React.Component<RouteComponentProps<{}>, GameSetu
                 <PlayerCountRadio name={this.BASIC} title="A.I. Basic" onChange={this.handleChange} value={this.state.selections[this.BASIC]} remaining={this.state.remaining} />
                 <div>
                     <span>Total Players:</span>
-                    <span className={"totalPlayers " + this.playerCountValidityClass()}>{this.state.value}</span>
+                    <span className={"totalPlayers " + this.playerCountValidityStyle()}>{this.state.value}</span>
                 </div>
                 <input type="hidden" className="remaining" value={this.state.remaining} />
-                <input type="button" value="Play" onClick={this.handlePlayClick} />
+                <input type="button" value="Play" onClick={this.handlePlayClick} disabled={!this.validPlayerCount()} />
             </div>
         );
     }

@@ -15,3 +15,11 @@
 label {
     margin-right: 4px;
 }
+
+input[disabled] {
+    color: gray;
+}
+
+.invalid {
+    color: red;
+}
