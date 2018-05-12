@@ -14,29 +14,15 @@ namespace Sheepshead.Tests
     [TestClass]
     public class GameTests
     {
-        private class ExposeGame : Game {
-            public ExposeGame() : base (new List<IPlayer>(), new RandomWrapper(), null, null)
-            {
-
-            }
-
-            public new List<IPlayer> Players
-            {
-                get { return _players; }
-                set { _players = value; }
-            }
-        }
-
         [TestMethod]
         public void Game_CanCountAllPlayersInGame()
         {
-            var exposedGame = new ExposeGame();
-            var game = (Game)exposedGame;
             var mockPlayer1 = new Mock<IPlayer>();
             var mockPlayer2 = new Mock<IPlayer>();
             var mockPlayer3 = new Mock<IPlayer>();
-            exposedGame.Players = new List<IPlayer>() { mockPlayer1.Object, mockPlayer2.Object, mockPlayer3.Object };
-            Assert.AreEqual(exposedGame.Players.Count, game.PlayerCount, "Returned correct number of players");
+            var game = new Game(new List<IPlayer>() { mockPlayer1.Object, mockPlayer2.Object, mockPlayer3.Object });
+            Assert.AreEqual(3, game.PlayerCount, "Returned correct number of players");
+            Assert.AreEqual(3, game.Players.Count, "Returned correct number of players");
         }
 
         [TestMethod]
@@ -221,6 +207,42 @@ namespace Sheepshead.Tests
                     match = false;
             }
             return match && !tempList.Any();
+        }
+
+        [TestMethod]
+        public void Game_UnassignedPlayers_ReturnsOnlyHumans()
+        {
+            var human1 = new Mock<IHumanPlayer>();
+            var human2 = new Mock<IHumanPlayer>();
+            var game = new Game(new List<IPlayer>()
+            {
+                new Mock<IPlayer>().Object,
+                new Mock<IPlayer>().Object,
+                human1.Object,
+                new Mock<IPlayer>().Object,
+                human2.Object
+            });
+            Assert.AreEqual(2, game.UnassignedPlayers.Count);
+            Assert.IsTrue(game.UnassignedPlayers.Contains(human1.Object));
+            Assert.IsTrue(game.UnassignedPlayers.Contains(human2.Object));
+        }
+
+        [TestMethod]
+        public void Game_UnassignedPlayers_ReturnsOnlyUnassignedHumans()
+        {
+            var human1 = new Mock<IHumanPlayer>();
+            var human2 = new Mock<IHumanPlayer>();
+            human2.Setup(m => m.AssignedToClient).Returns(true);
+            var game = new Game(new List<IPlayer>()
+            {
+                new Mock<IPlayer>().Object,
+                new Mock<IPlayer>().Object,
+                human1.Object,
+                new Mock<IPlayer>().Object,
+                human2.Object
+            });
+            Assert.AreEqual(1, game.UnassignedPlayers.Count);
+            Assert.IsTrue(game.UnassignedPlayers.Contains(human1.Object));
         }
     }
 }

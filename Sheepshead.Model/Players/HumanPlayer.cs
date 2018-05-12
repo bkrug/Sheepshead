@@ -22,5 +22,8 @@ namespace Sheepshead.Models.Players
 
     public interface IHumanPlayer : IPlayer
     {
+        bool AssignedToClient { get; }
+        Guid Id { get; }
+        Guid AssignToClient();
     }
 }

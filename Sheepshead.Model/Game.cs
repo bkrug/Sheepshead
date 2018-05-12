@@ -15,6 +15,7 @@ namespace Sheepshead.Models
         public int Blind => CARDS_IN_DECK % Players.Count();
         public int HumanPlayerCount => Players.Count(p => p is IHumanPlayer);
         public List<IPlayer> Players { get; }
+        public List<IHumanPlayer> UnassignedPlayers => new List<IHumanPlayer>();
         public List<IDeck> Decks => _gameStateDesciber.Decks;
         public IRandomWrapper _random { get; private set; }
         private IHandFactory _handFactory;
@@ -147,6 +148,7 @@ namespace Sheepshead.Models
         int HumanPlayerCount { get; }
         int PlayerCount { get; }
         List<IPlayer> Players { get; }
+        List<IHumanPlayer> UnassignedPlayers { get; }
         List<IDeck> Decks { get; }
         TurnType TurnType { get; }
         TurnState TurnState { get; }
