@@ -16,5 +16,18 @@ namespace Sheepshead.React.Controllers
             var game = repository.Create(humanCount, newbieCount, basicCount);
             return RedirectToAction("RegisterHuman", new { id = game.Id });
         }
+
+        [HttpPost]
+        public IActionResult RegisterHuman(string gameId, string playerName)
+        {
+            var repository = new GameRepository(GameDictionary.Instance.Dictionary);
+            var game = repository.GetById(Guid.Parse(gameId));
+            var player = game.UnassignedPlayers.FirstOrDefault();
+            if (player == null)
+                return RedirectToAction("GameFull", new { gameId = game.Id });
+            
+            player.AssignToClient();
+            return RedirectToAction("Play", "Game", new { gameId = game.Id, playerId = player.Id });
+        }
     }
 }

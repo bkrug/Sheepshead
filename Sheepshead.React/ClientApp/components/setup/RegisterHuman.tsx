@@ -7,11 +7,6 @@ export interface RegisterHumanState {
 }
 
 export class RegisterHuman extends React.Component<RouteComponentProps<{}>, RegisterHumanState> {
-    readonly MAX_PLAYERS = 5;
-    readonly HUMANS = "humanCount";
-    readonly NEWBIE = "newbieCount";
-    readonly BASIC = "basicCount";
-
     constructor(props: any) {
         super(props);
         this.state = { gameId: this.getGameId(props), playerName: '' };
@@ -35,7 +30,7 @@ export class RegisterHuman extends React.Component<RouteComponentProps<{}>, Regi
 
     public render() {
         return (
-            <div className="gameSetup">
+            <div>
                 <h4>Register Player</h4>
                 Share this page's URL with your friends to allow them to join the game.
                 <form method="post">
