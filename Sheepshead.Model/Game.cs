@@ -15,7 +15,7 @@ namespace Sheepshead.Models
         public int Blind => CARDS_IN_DECK % Players.Count();
         public int HumanPlayerCount => Players.Count(p => p is IHumanPlayer);
         public List<IPlayer> Players { get; }
-        public List<IHumanPlayer> UnassignedPlayers => new List<IHumanPlayer>();
+        public List<IHumanPlayer> UnassignedPlayers => Players.OfType<IHumanPlayer>().Where(p => !p.AssignedToClient).ToList();
         public List<IDeck> Decks => _gameStateDesciber.Decks;
         public IRandomWrapper _random { get; private set; }
         private IHandFactory _handFactory;
