@@ -18,7 +18,6 @@ var BuryPage = function () {
                 dropCards.push($(this).data('index'));
         });
         if (dropCards.length == 2) {
-            $('#id').val(1);
             $('#droppedCardIndicies').val(dropCards.join(';'));
             $('form').submit();
         }

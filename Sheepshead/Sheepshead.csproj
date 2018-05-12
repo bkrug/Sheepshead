@@ -133,7 +133,6 @@
     <Content Include="Content\playTrick.css" />
     <Content Include="Libraries\jquery-2.1.1.min.js" />
     <Content Include="Scripts\bury.js" />
-    <Content Include="Scripts\generic.js" />
     <Content Include="Scripts\pick.js" />
   </ItemGroup>
   <ItemGroup>

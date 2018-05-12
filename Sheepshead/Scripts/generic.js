@@ -1,3 +1,0 @@
-﻿var GenerateParameters = function (parms) {
-
-};
