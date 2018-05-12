@@ -51,19 +51,14 @@ export class GameSetup extends React.Component<RouteComponentProps<{}>, GameSetu
 
     handlePlayClick() {
         var gameStartModel = {
-            GameName: this.state.gameName,
-            HumanCount: this.state.selections[this.HUMANS],
-            NewbieCount: this.state.selections[this.NEWBIE],
-            BasicCount: this.state.selections[this.BASIC]
+            humanCount: this.state.selections[this.HUMANS],
+            newbieCount: this.state.selections[this.NEWBIE],
+            basicCount: this.state.selections[this.BASIC]
         };
-        fetch('http://localhost:61904/api/game/create',
+        fetch('Setup/Create',
                 {
                     method: 'POST',
-                    body: JSON.stringify(gameStartModel),
-                    headers: {
-                        'Accept': 'application/json',
-                        'Content-Type': 'application/json'
-                    }
+                    body: gameStartModel
                 }
             )
             .then(function (response) {
@@ -71,10 +66,7 @@ export class GameSetup extends React.Component<RouteComponentProps<{}>, GameSetu
             })
             .then(function (json) {
                 console.log('parsed json', json)
-                if (json.success === true) { }
                 //document.location = "/Shuffle";
-                else
-                    throw new Error("Unknown server-side error occurred.");
             })
             .catch(function (ex) {
                 console.log('parsing failed', ex);
@@ -85,8 +77,6 @@ export class GameSetup extends React.Component<RouteComponentProps<{}>, GameSetu
         return (
             <div className="gameSetup">
                 <h4>Setup Sheepshead Game</h4>
-                <label>Game Name</label>
-                <input id="name-input" type="text" onChange={e => this.handleNameChange(e)} value={this.state.gameName} />
                 <PlayerCountRadio name={this.HUMANS} title="Humans" onChange={this.handleChange} value={this.state.selections[this.HUMANS]} remaining={this.state.remaining} />
                 <PlayerCountRadio name={this.NEWBIE} title="A.I. Simple" onChange={this.handleChange} value={this.state.selections[this.NEWBIE]} remaining={this.state.remaining} />
                 <PlayerCountRadio name={this.BASIC} title="A.I. Basic" onChange={this.handleChange} value={this.state.selections[this.BASIC]} remaining={this.state.remaining} />
