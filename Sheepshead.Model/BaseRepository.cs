@@ -5,20 +5,18 @@ using System.Linq;
 namespace Sheepshead.Models
 {
     public class BaseRepository<T>
-        : IBaseRepository<T> where T : ILongId
+        : IBaseRepository<T> where T : IGame
     {
-        private int m_currentIdValue = 0;
-
         private BaseRepository() { }
 
-        public BaseRepository(Dictionary<long, T> datasource)
+        public BaseRepository(Dictionary<Guid, T> datasource)
         {
             Items = datasource;
         }
 
-        protected Dictionary<long, T> Items { get; set; }
+        protected Dictionary<Guid, T> Items { get; set; }
 
-        public void Save(T saveThis)
+        protected void Save(T saveThis)
         {
             if (saveThis == null)
             {
@@ -26,18 +24,10 @@ namespace Sheepshead.Models
                      "saveThis", "Argument cannot be null.");
             }
 
-            if (saveThis.Id == 0)
-            {
-                saveThis.Id = ++m_currentIdValue;
-            }
-
-            if (Items.Keys.Contains(saveThis.Id) == false)
-            {
-                Items.Add(saveThis.Id, saveThis);
-            }
+            Items.Add(saveThis.Id, saveThis);
         }
 
-        public T GetById(long id)
+        public T GetById(Guid id)
         {
             if (Items.ContainsKey(id))
                 return Items[id];
@@ -57,8 +47,7 @@ namespace Sheepshead.Models
 
     public interface IBaseRepository<T>
     {
-        void Save(T saveThis);
-        T GetById(long id);
+        T GetById(Guid id);
         IList<T> GetAll();
         void Delete(T saveThis);
     }

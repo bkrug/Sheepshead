@@ -36,23 +36,15 @@ namespace Sheepshead.Controllers
         public ActionResult Create(GameModel model)
         {
             var repository = new GameRepository(GameDictionary.Instance.Dictionary);
-            var playerList = new List<IPlayer>();
-            playerList.Add(new HumanPlayer());
-            for (var i = 0; i < model.NewbiewCount; ++i)
-                playerList.Add(new NewbiePlayer());
-            for (var i = 0; i < model.BasicCount; ++i)
-                playerList.Add(new BasicPlayer());
-            var newGame = repository.CreateGame(model.Name, playerList, _rnd);
-            repository.Save(newGame);
-            newGame.RearrangePlayers();
+            var newGame = repository.Create(1, model.NewbiewCount, model.BasicCount);
             return RedirectToAction("Play", new { id = newGame.Id });
         }
 
         [HttpGet]
-        public ActionResult Play(int id)
+        public ActionResult Play(string id)
         {
             var repository = new GameRepository(GameDictionary.Instance.Dictionary);
-            var game = repository.GetById(id);
+            var game = repository.GetById(Guid.Parse(id));
             var turnState = game.TurnState;
             switch (game.TurnType)
             {
@@ -70,10 +62,10 @@ namespace Sheepshead.Controllers
         }
 
         [HttpPost]
-        public ActionResult Play(int id, int? indexOfCard, bool? willPick, string buriedCardIndicies)
+        public ActionResult Play(string id, int? indexOfCard, bool? willPick, string buriedCardIndicies)
         {
             var repository = new GameRepository(GameDictionary.Instance.Dictionary);
-            var game = repository.GetById(id);
+            var game = repository.GetById(Guid.Parse(id));
             switch (game.TurnType)
             {
                 case TurnType.BeginDeck:

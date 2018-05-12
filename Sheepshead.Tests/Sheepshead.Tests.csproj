@@ -114,7 +114,6 @@
     <Compile Include="HandTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="GameCreationTests.cs" />
-    <Compile Include="LongIdTests.cs" />
     <Compile Include="PlayerTests.cs" />
     <Compile Include="TrickTests.cs" />
   </ItemGroup>

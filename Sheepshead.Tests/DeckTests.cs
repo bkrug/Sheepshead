@@ -20,7 +20,7 @@ namespace Sheepshead.Tests
             var playerList = new List<IPlayer>();
             for (var i = 0; i < 5; ++i)
                 playerList.Add(new Player());
-            var game = new Game(4982, playerList, new RandomWrapper(), null, null);
+            var game = new Game(playerList, new RandomWrapper(), null, null);
             var deck = new Deck(game, new RandomWrapper());
             Assert.AreEqual(2, deck.Blinds.Count(), "There should be two blinds after dealing");
             Assert.AreEqual(5, game.Players.Count(), "There should be five doctores");

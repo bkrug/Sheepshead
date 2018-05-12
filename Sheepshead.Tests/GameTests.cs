@@ -15,7 +15,7 @@ namespace Sheepshead.Tests
     public class GameTests
     {
         private class ExposeGame : Game {
-            public ExposeGame() : base (0, new List<IPlayer>(), new RandomWrapper(), null, null)
+            public ExposeGame() : base (new List<IPlayer>(), new RandomWrapper(), null, null)
             {
 
             }
@@ -59,7 +59,7 @@ namespace Sheepshead.Tests
             gameStateDescriberMock.Setup(m => m.CurrentTrick).Returns(trickMock.Object);
             var playersDifferentOrder = playerList.Skip(2).Union(playerList.Take(2)).ToList();
 
-            var game = new Game(75291, playersDifferentOrder, null, null, gameStateDescriberMock.Object);
+            var game = new Game(playersDifferentOrder, null, null, gameStateDescriberMock.Object);
             game.PlayNonHumansInTrick();
 
             Assert.IsTrue(((ComputerPlayerReportingPlays)playerList[0]).MadeMove);
@@ -87,7 +87,7 @@ namespace Sheepshead.Tests
             var gameStateDescriberMock = new Mock<IGameStateDescriber>();
             gameStateDescriberMock.Setup(m => m.CurrentTrick).Returns(trickMock.Object);
 
-            var game = new Game(75291, playersDifferentOrder, null, null, gameStateDescriberMock.Object);
+            var game = new Game(playersDifferentOrder, null, null, gameStateDescriberMock.Object);
             game.PlayNonHumansInTrick();
 
             Assert.IsTrue(players.OfType<ComputerPlayerReportingPlays>().All(p => p.MadeMove), "All players have played.");
@@ -111,7 +111,7 @@ namespace Sheepshead.Tests
             var gameStateDescriberMock = new Mock<IGameStateDescriber>();
             gameStateDescriberMock.Setup(m => m.CurrentTrick).Returns(trickMock.Object);
 
-            var game = new Game(75291, playersDifferentOrder, null, null, gameStateDescriberMock.Object);
+            var game = new Game(playersDifferentOrder, null, null, gameStateDescriberMock.Object);
             game.PlayNonHumansInTrick();
 
             Assert.IsTrue(players.OfType<ComputerPlayerReportingPlays>().All(p => !p.MadeMove), "Got this far without playing a computer player's turn.");
@@ -140,7 +140,7 @@ namespace Sheepshead.Tests
                 .Setup(m => m.GetHand(It.IsAny<IDeck>(), It.IsAny<IPlayer>(), It.IsAny<List<SheepCard>>()))
                 .Callback(() => Assert.Fail("Should not have attempted to create a hand"));
 
-            var game = new Game(42340, players, null, handFactoryMock.Object, gameStateDescriberMock.Object);
+            var game = new Game(players, null, handFactoryMock.Object, gameStateDescriberMock.Object);
             var picker = game.PlayNonHumanPickTurns();
 
             Assert.IsNull(picker, "Picker should be null because the computer players didn't pick and we didn't ask the second human yet.");
@@ -171,7 +171,7 @@ namespace Sheepshead.Tests
             gameStateDescriberMock.Setup(m => m.CurrentDeck).Returns(deckMock.Object);
             gameStateDescriberMock.Setup(m => m.GetTurnType()).Returns(TurnType.Pick);
 
-            var game = new Game(42340, playerList, null, handFactoryMock.Object, gameStateDescriberMock.Object);
+            var game = new Game(playerList, null, handFactoryMock.Object, gameStateDescriberMock.Object);
             var picker = game.PlayNonHumanPickTurns();
 
             Assert.IsTrue(handCreated);
@@ -202,7 +202,7 @@ namespace Sheepshead.Tests
             gameStateDescriberMock.Setup(m => m.CurrentDeck).Returns(deckMock.Object);
             gameStateDescriberMock.Setup(m => m.GetTurnType()).Returns(TurnType.Pick);
 
-            var game = new Game(42340, playerList, null, handFactoryMock.Object, gameStateDescriberMock.Object);
+            var game = new Game(playerList, null, handFactoryMock.Object, gameStateDescriberMock.Object);
             var picker = game.PlayNonHumanPickTurns();
 
             Assert.IsTrue(handCreated);

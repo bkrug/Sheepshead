@@ -51,7 +51,6 @@
     <Compile Include="GameStateDescriber.cs" />
     <Compile Include="Hand.cs" />
     <Compile Include="HandFactory.cs" />
-    <Compile Include="LongId.cs" />
     <Compile Include="PickPlayerOrderer.cs" />
     <Compile Include="PickProcessor.cs" />
     <Compile Include="Players\BasicPlayer.cs" />

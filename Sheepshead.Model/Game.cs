@@ -7,10 +7,10 @@ using Sheepshead.Model;
 
 namespace Sheepshead.Models
 {
-    public class Game : LongId, IGame
+    public class Game : IGame
     {
+        public Guid Id { get; } = Guid.NewGuid();
         public const int CARDS_IN_DECK = 32;
-        public string Name { get; set; }
         public int PlayerCount => _players.Count();
         public int Blind => CARDS_IN_DECK % _players.Count();
         public int HumanPlayerCount => _players.Count(p => p is IHumanPlayer);
@@ -28,7 +28,7 @@ namespace Sheepshead.Models
             TurnType = TurnType
         };
 
-        public Game(long id, List<IPlayer> players) : this(id, players, null, null, null)
+        public Game(List<IPlayer> players) : this(players, null, null, null)
         {
 
         }
@@ -37,10 +37,9 @@ namespace Sheepshead.Models
         /// <summary>
         /// This constructor is for passing in Mocks in unit tests.
         /// </summary>
-        public Game(long id, List<IPlayer> players, IRandomWrapper random, IHandFactory handFactory, IGameStateDescriber gameStateDescriber)
+        public Game(List<IPlayer> players, IRandomWrapper random, IHandFactory handFactory, IGameStateDescriber gameStateDescriber)
         {
             _players = players;
-            _id = id;
             _random = random ?? new RandomWrapper();
             _handFactory = handFactory ?? new HandFactory();
             _gameStateDesciber = gameStateDescriber ?? new GameStateDescriber();
@@ -142,9 +141,9 @@ namespace Sheepshead.Models
         public NotPlayersTurnException(string message) : base(message) { }
     }
 
-    public interface IGame : ILongId
+    public interface IGame
     {
-        string Name { get; set; }
+        Guid Id { get; }
         int HumanPlayerCount { get; }
         int PlayerCount { get; }
         List<IPlayer> Players { get; }

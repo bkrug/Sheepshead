@@ -19,13 +19,7 @@ namespace Sheepshead.Models
             _repository = repository;
         }
 
-        public IGame CreateGame(string name, List<IPlayer> players, IRandomWrapper rnd)
-        {
-            var game = _repository.CreateGame(name, players, rnd);
-            return game;
-        }
-
-        public IGame GetGame(long id)
+        public IGame GetGame(Guid id)
         {
             return _repository.GetById(id);
         }
@@ -33,7 +27,6 @@ namespace Sheepshead.Models
 
     public interface IGameService
     {
-        IGame CreateGame(string name, List<IPlayer> players, IRandomWrapper rnd);
-        IGame GetGame(long id);
+        IGame GetGame(Guid id);
     }
 }
