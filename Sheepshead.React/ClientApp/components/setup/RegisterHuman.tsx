@@ -36,6 +36,7 @@ export class RegisterHuman extends React.Component<RouteComponentProps<{}>, Regi
                     <input type="hidden" name="gameId" value={this.state.gameId} />
                     <input type="submit" value="Play" disabled={this.validName()} />
                 </form>
+                Share this URL with your friends to allow them to join the game.
             </div>
         );
     }
