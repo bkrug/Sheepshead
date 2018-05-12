@@ -14,7 +14,7 @@ namespace Sheepshead.React.Controllers
         {
             var repository = new GameRepository(GameDictionary.Instance.Dictionary);
             var game = repository.Create(humanCount, newbieCount, basicCount);
-            return new JsonResult(new { id = game.Id });
+            return RedirectToAction("RegisterHuman", new { id = game.Id });
         }
     }
 }

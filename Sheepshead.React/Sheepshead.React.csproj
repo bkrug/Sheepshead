@@ -24,6 +24,7 @@
   <ItemGroup>
     <None Remove="ClientApp\components\setup\GameSetup.tsx" />
     <None Remove="ClientApp\components\setup\PlayerCountRadio.tsx" />
+    <None Remove="ClientApp\components\setup\RegisterHuman.tsx" />
   </ItemGroup>
 
   <ItemGroup>
@@ -33,6 +34,7 @@
   <ItemGroup>
     <TypeScriptCompile Include="ClientApp\components\setup\GameSetup.tsx" />
     <TypeScriptCompile Include="ClientApp\components\setup\PlayerCountRadio.tsx" />
+    <TypeScriptCompile Include="ClientApp\components\setup\RegisterHuman.tsx" />
   </ItemGroup>
 
   <Target Name="DebugRunWebpack" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('wwwroot\dist') ">

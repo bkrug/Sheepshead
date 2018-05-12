@@ -11,9 +11,9 @@ export interface GameSetupState {
 
 export class GameSetup extends React.Component<RouteComponentProps<{}>, GameSetupState> {
     readonly MAX_PLAYERS = 5;
-    readonly HUMANS = "humans";
-    readonly NEWBIE = "newbie";
-    readonly BASIC = "basic";
+    readonly HUMANS = "humanCount";
+    readonly NEWBIE = "newbieCount";
+    readonly BASIC = "basicCount";
 
     constructor() {
         super();
@@ -21,8 +21,6 @@ export class GameSetup extends React.Component<RouteComponentProps<{}>, GameSetu
         selections[this.HUMANS] = selections[this.NEWBIE] = selections[this.BASIC] = 0;
         this.state = { value: 0, remaining: this.MAX_PLAYERS, gameName: '', selections: selections };
         this.handleChange = this.handleChange.bind(this);
-        this.handleNameChange = this.handleNameChange.bind(this);
-        this.handlePlayClick = this.handlePlayClick.bind(this);
     }
 
     handleChange(radioGroup: string, radioValue: number) {
@@ -36,11 +34,6 @@ export class GameSetup extends React.Component<RouteComponentProps<{}>, GameSetu
         }
     }
 
-    handleNameChange(e: React.FormEvent<HTMLInputElement>) {
-        console.log(e.currentTarget.value);
-        this.setState({ gameName: e.currentTarget.value });
-    }
-
     playerCountValidityStyle() {
         return this.validPlayerCount() ? '' : 'invalid';
     }
@@ -49,43 +42,21 @@ export class GameSetup extends React.Component<RouteComponentProps<{}>, GameSetu
         return (this.state.value === 3 || this.state.value === 5);
     }
 
-    handlePlayClick() {
-        var gameStartModel = {
-            humanCount: this.state.selections[this.HUMANS],
-            newbieCount: this.state.selections[this.NEWBIE],
-            basicCount: this.state.selections[this.BASIC]
-        };
-        fetch('Setup/Create',
-                {
-                    method: 'POST',
-                    body: gameStartModel
-                }
-            )
-            .then(function (response) {
-                return response.json();
-            })
-            .then(function (json) {
-                console.log('parsed json', json)
-                //document.location = "/Shuffle";
-            })
-            .catch(function (ex) {
-                console.log('parsing failed', ex);
-            });
-    }
-
     public render() {
         return (
             <div className="gameSetup">
                 <h4>Setup Sheepshead Game</h4>
-                <PlayerCountRadio name={this.HUMANS} title="Humans" onChange={this.handleChange} value={this.state.selections[this.HUMANS]} remaining={this.state.remaining} />
-                <PlayerCountRadio name={this.NEWBIE} title="A.I. Simple" onChange={this.handleChange} value={this.state.selections[this.NEWBIE]} remaining={this.state.remaining} />
-                <PlayerCountRadio name={this.BASIC} title="A.I. Basic" onChange={this.handleChange} value={this.state.selections[this.BASIC]} remaining={this.state.remaining} />
-                <div>
-                    <span>Total Players:</span>
-                    <span className={"totalPlayers " + this.playerCountValidityStyle()}>{this.state.value}</span>
-                </div>
-                <input type="hidden" className="remaining" value={this.state.remaining} />
-                <input type="button" value="Play" onClick={this.handlePlayClick} disabled={!this.validPlayerCount()} />
+                <form method="post">
+                    <PlayerCountRadio name={this.HUMANS} title="Humans" onChange={this.handleChange} value={this.state.selections[this.HUMANS]} remaining={this.state.remaining} />
+                    <PlayerCountRadio name={this.NEWBIE} title="A.I. Simple" onChange={this.handleChange} value={this.state.selections[this.NEWBIE]} remaining={this.state.remaining} />
+                    <PlayerCountRadio name={this.BASIC} title="A.I. Basic" onChange={this.handleChange} value={this.state.selections[this.BASIC]} remaining={this.state.remaining} />
+                    <div>
+                        <span>Total Players:</span>
+                        <span className={"totalPlayers " + this.playerCountValidityStyle()}>{this.state.value}</span>
+                    </div>
+                    <input type="hidden" className="remaining" value={this.state.remaining} />
+                    <input type="submit" value="Play" disabled={!this.validPlayerCount()} />
+                </form>
             </div>
         );
     }

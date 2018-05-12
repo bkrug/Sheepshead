@@ -11,11 +11,10 @@ namespace Sheepshead.Models
     {
         public Guid Id { get; } = Guid.NewGuid();
         public const int CARDS_IN_DECK = 32;
-        public int PlayerCount => _players.Count();
-        public int Blind => CARDS_IN_DECK % _players.Count();
-        public int HumanPlayerCount => _players.Count(p => p is IHumanPlayer);
-        protected List<IPlayer> _players;
-        public List<IPlayer> Players => _players.ToList();
+        public int PlayerCount => Players.Count();
+        public int Blind => CARDS_IN_DECK % Players.Count();
+        public int HumanPlayerCount => Players.Count(p => p is IHumanPlayer);
+        public List<IPlayer> Players { get; }
         public List<IDeck> Decks => _gameStateDesciber.Decks;
         public IRandomWrapper _random { get; private set; }
         private IHandFactory _handFactory;
@@ -40,7 +39,7 @@ namespace Sheepshead.Models
         /// </summary>
         public Game(List<IPlayer> players, IRandomWrapper random, IHandFactory handFactory, IGameStateDescriber gameStateDescriber)
         {
-            _players = players;
+            Players = players;
             _random = random ?? new RandomWrapper();
             _handFactory = handFactory ?? new HandFactory();
             _gameStateDesciber = gameStateDescriber ?? new GameStateDescriber();
