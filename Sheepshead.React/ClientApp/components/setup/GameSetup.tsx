@@ -1,7 +1,5 @@
 ﻿import * as React from 'react';
 import { RouteComponentProps } from 'react-router';
-import 'whatwg-fetch';
-//import { withQuery } from './withQuery';
 import PlayerCountRadio from './PlayerCountRadio';
 
 export interface GameSetupState {

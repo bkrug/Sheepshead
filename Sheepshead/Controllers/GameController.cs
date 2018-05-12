@@ -37,7 +37,7 @@ namespace Sheepshead.Controllers
         {
             var repository = new GameRepository(GameDictionary.Instance.Dictionary);
             var playerList = new List<IPlayer>();
-            playerList.Add(new HumanPlayer(new User()));
+            playerList.Add(new HumanPlayer());
             for (var i = 0; i < model.NewbiewCount; ++i)
                 playerList.Add(new NewbiePlayer());
             for (var i = 0; i < model.BasicCount; ++i)

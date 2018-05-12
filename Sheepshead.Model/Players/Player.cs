@@ -5,7 +5,7 @@ namespace Sheepshead.Models.Players
 {
     public class Player : IPlayer
     {
-        public virtual string Name { get { return String.Empty; } }
+        public virtual string Name { get; set; }
         public List<SheepCard> Cards { get; } = new List<SheepCard>();
 
         public int QueueRankInTrick(ITrick trick)

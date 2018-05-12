@@ -7,17 +7,11 @@ namespace Sheepshead.Models.Players
 {
     public class HumanPlayer : Player, IHumanPlayer
     {
-        private IUser _user;
-
-        private HumanPlayer() { }
-        public HumanPlayer(IUser user) {
-            _user = user;
-        }
-
-        public override string Name
+        public HumanPlayer()
         {
-            get { return _user.Name; }
         }
+
+        public override string Name { get; set; }
     }
 
     public interface IHumanPlayer : IPlayer

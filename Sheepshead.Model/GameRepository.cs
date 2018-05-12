@@ -29,6 +29,21 @@ namespace Sheepshead.Models
         {
         }
 
+        public IGame Create(int humanCount, int newbieCount, int basicCount)
+        {
+            var playerList = new List<IPlayer>();
+            for (var i = 0; i < humanCount; ++i)
+                playerList.Add(new HumanPlayer());
+            for (var i = 0; i < newbieCount; ++i)
+                playerList.Add(new NewbiePlayer());
+            for (var i = 0; i < basicCount; ++i)
+                playerList.Add(new BasicPlayer());
+            var newGame = new Game(0, playerList);
+            Save(newGame);
+            newGame.RearrangePlayers();
+            return newGame;
+        }
+
         public IGame CreateGame(string name, List<IPlayer> players, IRandomWrapper rnd)
         {
             var game = new Game(0, players, rnd, new HandFactory(), null);

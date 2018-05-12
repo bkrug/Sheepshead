@@ -50,7 +50,7 @@ export default class PlayerCountRadio extends React.Component<any, any> {
     public render() {
         return (
             <div className="playerCountRadio" onChange={this.state.onChange}>
-                <div className="title-container"><span className="title">{this.props.title}</span></div>
+                <div className="title-container"><span>{this.props.title}</span></div>
                 <div className="button-container">
                     {this.renderRadio(0)}
                     {this.renderRadio(1)}
