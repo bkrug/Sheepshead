@@ -1,5 +1,4 @@
 ﻿@model Sheepshead.Models.TurnState
-@using Sheepshead.Models.Players
 @using Sheepshead.Models
 @Scripts.Render("~/Libraries/jquery-2.1.1.min.js")
 @Scripts.Render("~/Scripts/bury.js")
@@ -17,7 +16,7 @@
     <img src="@("\\Images\\" + CardUtil.GetPictureFilename(card) + ".png")" />
 }
 <form method="post">
-    <input type="hidden" id="id" name="id" />
+    <input type="hidden" id="id" name="id" value="@Model.GameId.ToString()"/>
     <input type="hidden" id="droppedCardIndicies" name="buriedCardIndicies" />
     <input id="bury-btn" type="button" value="Bury" />
 </form>

@@ -77,7 +77,7 @@ export class GameSetup extends React.Component<RouteComponentProps<{}>, GameSetu
                     throw new Error("Unknown server-side error occurred.");
             })
             .catch(function (ex) {
-                console.log('parsing failed', ex)
+                console.log('parsing failed', ex);
             });
     }
 

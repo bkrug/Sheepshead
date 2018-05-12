@@ -18,10 +18,10 @@
     <legend>Game</legend>
     
     <div class="display-label">
-            @Html.DisplayNameFor(model => model.Game.Name)
+            @Html.DisplayNameFor(model => model.Game.Id)
     </div>
     <div class="display-field">
-        @Html.DisplayFor(model => model.Game.Name)
+        @Html.DisplayFor(model => model.Game.Id)
     </div>
     
     <div class="display-label">
@@ -53,7 +53,7 @@
     </div>
 
     <p>
-        @Html.ActionLink("Pick", "Play", new { id = Model.Game.Id })
+        @Html.ActionLink("Pick", "Play", new { id = Model.Game.Id.ToString() })
     </p>
 </fieldset>
 

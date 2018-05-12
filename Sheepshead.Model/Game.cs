@@ -25,7 +25,8 @@ namespace Sheepshead.Models
         {
             HumanPlayer = (IHumanPlayer)Players.First(p => p is IHumanPlayer),
             Deck = _gameStateDesciber.CurrentDeck,
-            TurnType = TurnType
+            TurnType = TurnType,
+            GameId = Id
         };
 
         public Game(List<IPlayer> players) : this(players, null, null, null)

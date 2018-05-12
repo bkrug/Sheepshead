@@ -27,7 +27,7 @@ else {
 {
     <p>Will you pick?</p>
     <form method="post">
-        <input type="hidden" id="id" name="id" value="1" />
+        <input type="hidden" id="id" name="id" value="@Model.GameId.ToString()" />
         <input type="hidden" id="willPick" name="willPick" />
         <input id="yes-btn" type="button" value="Yes" />
         <input id="no-btn" type="button" value="No" />
