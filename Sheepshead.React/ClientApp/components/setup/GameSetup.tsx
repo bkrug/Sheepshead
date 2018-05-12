@@ -24,7 +24,6 @@ export class GameSetup extends React.Component<RouteComponentProps<{}>, GameSetu
     }
 
     handleChange(radioGroup: string, radioValue: number) {
-        //this.headerTest2();
         if (radioValue === 0 || radioValue > 0) {
             this.state.selections[radioGroup] = radioValue;
             let newTotal = this.state.selections[this.HUMANS]
