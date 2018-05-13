@@ -13,8 +13,7 @@ export class GameFull extends React.Component<RouteComponentProps<{}>, GameFullS
 
     private getGameId(props: any) {
         var pathParts = props.location.pathname.split('/');
-        var indexOfGameId = pathParts.indexOf('GameFull') + 1;
-        var gameId = pathParts[indexOfGameId];
+        var gameId = pathParts[pathParts.length - 1];
         return gameId;
     }
 

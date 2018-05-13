@@ -9,20 +9,25 @@ export class Play extends React.Component<RouteComponentProps<{}>, PlayState> {
     constructor(props: any) {
         super(props);
         this.state = { gameId: this.getGameId(props) };
+        this.getUrl = this.getUrl.bind(this);
     }
 
     private getGameId(props: any) {
         var pathParts = props.location.pathname.split('/');
-        var indexOfGameId = pathParts.indexOf('Play') + 1;
-        var gameId = pathParts[indexOfGameId];
+        var gameId = pathParts[pathParts.length-1];
         return gameId;
+    }
+
+    private getUrl() {
+        return window.location.host + '/setup/RegisterHuman/' + this.state.gameId;
     }
 
     public render() {
         return (
             <div>
                 <h4>Play Sheepshead</h4>
-                Waiting for other players.
+                <p>Waiting for other players.</p>
+                <p>Share this url with friends that you will play with: <b>{this.getUrl()}</b> </p>
             </div>
         );
     }

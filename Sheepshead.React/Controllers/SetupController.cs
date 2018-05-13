@@ -18,16 +18,17 @@ namespace Sheepshead.React.Controllers
         }
 
         [HttpPost]
-        public IActionResult RegisterHuman(string gameId, string playerName)
+        public IActionResult RegisterHuman2(string gameId, string playerName)
         {
             var repository = new GameRepository(GameDictionary.Instance.Dictionary);
             var game = repository.GetById(Guid.Parse(gameId));
             var player = game.UnassignedPlayers.FirstOrDefault();
-            if (player == null)
-                return RedirectToAction("GameFull", new { gameId = game.Id });
-            
-            player.AssignToClient();
-            return RedirectToAction("Play", "Game", new { gameId = game.Id, playerId = player.Id });
+            player?.AssignToClient();
+            return Json(new {
+                gameId = game.Id,
+                playerId = player?.Id,
+                full = player == null
+            });
         }
     }
 }

@@ -11,12 +11,12 @@ export class RegisterHuman extends React.Component<RouteComponentProps<{}>, Regi
         super(props);
         this.state = { gameId: this.getGameId(props), playerName: '' };
         this.handleNameChange = this.handleNameChange.bind(this);
+        this.handleSubmit = this.handleSubmit.bind(this);
     }
 
     private getGameId(props: any) {
         var pathParts = props.location.pathname.split('/');
-        var indexOfGameId = pathParts.indexOf('RegisterHuman') + 1;
-        var gameId = pathParts[indexOfGameId];
+        var gameId = pathParts[pathParts.length - 1];
         return gameId;
     }
 
@@ -28,17 +28,32 @@ export class RegisterHuman extends React.Component<RouteComponentProps<{}>, Regi
         return this.state.playerName ? true : false;
     }
 
+    private handleSubmit(e: React.FormEvent<HTMLInputElement>) {
+        var gameId = this.state.gameId;
+        var self = this;
+        fetch('Setup/RegisterHuman2?gameId='+this.state.gameId+'&playerName='+this.state.playerName, {
+            method: 'POST'
+        }).then(function (response) {
+            return response.json();
+        }).then(function (json) {
+            window.sessionStorage.setItem('game' + gameId + 'player', json.playerId);
+            window.location.href = (json.full)
+                ? '/setup/gamefull/' + gameId
+                : '/game/play/' + gameId;
+        }).catch(function (ex) {
+            console.log('parsing failed', ex)
+        })
+    }
+
     public render() {
         return (
             <div>
                 <h4>Register Player</h4>
-                Share this page's URL with your friends to allow them to join the game.
-                <form method="post">
-                    <label>Your name</label>
-                    <input type="text" name="playerName" onChange={this.handleNameChange}/>
-                    <input type="hidden" name="gameId" value={this.state.gameId} />
-                    <input type="submit" value="Play" disabled={!this.validName()} />
-                </form>
+                <p>Share this page's URL with your friends to allow them to join the game.</p>
+                <label>Your name</label>
+                <input type="text" name="playerName" onChange={this.handleNameChange}/>
+                <input type="hidden" name="gameId" value={this.state.gameId} />
+                <input type="button" value="Play" disabled={!this.validName()} onClick={this.handleSubmit} />
             </div>
         );
     }

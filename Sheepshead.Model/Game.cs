@@ -23,10 +23,9 @@ namespace Sheepshead.Models
         public TurnType TurnType => _gameStateDesciber.GetTurnType();
         public TurnState TurnState => new TurnState
         {
-            HumanPlayer = (IHumanPlayer)Players.First(p => p is IHumanPlayer),
+            GameId = Id,
             Deck = _gameStateDesciber.CurrentDeck,
-            TurnType = TurnType,
-            GameId = Id
+            TurnType = TurnType
         };
 
         public Game(List<IPlayer> players) : this(players, null, null, null)
