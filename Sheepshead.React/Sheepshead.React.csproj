@@ -23,6 +23,7 @@
 
   <ItemGroup>
     <None Remove="ClientApp\components\game\Play.tsx" />
+    <None Remove="ClientApp\components\IdUtils.tsx" />
     <None Remove="ClientApp\components\setup\GameFull.tsx" />
     <None Remove="ClientApp\components\setup\GameSetup.tsx" />
     <None Remove="ClientApp\components\setup\PlayerCountRadio.tsx" />
@@ -35,6 +36,7 @@
 
   <ItemGroup>
     <TypeScriptCompile Include="ClientApp\components\game\Play.tsx" />
+    <TypeScriptCompile Include="ClientApp\components\IdUtils.tsx" />
     <TypeScriptCompile Include="ClientApp\components\setup\GameFull.tsx" />
     <TypeScriptCompile Include="ClientApp\components\setup\GameSetup.tsx" />
     <TypeScriptCompile Include="ClientApp\components\setup\PlayerCountRadio.tsx" />

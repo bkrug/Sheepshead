@@ -1,5 +1,6 @@
 ﻿import * as React from 'react';
 import { RouteComponentProps } from 'react-router';
+import { IdUtils } from '../IdUtils';
 
 export interface RegisterHumanState {
     gameId: string;
@@ -9,15 +10,9 @@ export interface RegisterHumanState {
 export class RegisterHuman extends React.Component<RouteComponentProps<{}>, RegisterHumanState> {
     constructor(props: any) {
         super(props);
-        this.state = { gameId: this.getGameId(props), playerName: '' };
+        this.state = { gameId: IdUtils.getGameId(props), playerName: '' };
         this.handleNameChange = this.handleNameChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
-    }
-
-    private getGameId(props: any) {
-        var pathParts = props.location.pathname.split('/');
-        var gameId = pathParts[pathParts.length - 1];
-        return gameId;
     }
 
     private handleNameChange(e: React.FormEvent<HTMLInputElement>) {
@@ -36,7 +31,7 @@ export class RegisterHuman extends React.Component<RouteComponentProps<{}>, Regi
         }).then(function (response) {
             return response.json();
         }).then(function (json) {
-            window.sessionStorage.setItem('game' + gameId + 'player', json.playerId);
+            IdUtils.setPlayerId(gameId, json.playerId);
             window.location.href = (json.full)
                 ? '/setup/gamefull/' + gameId
                 : '/game/play/' + gameId;

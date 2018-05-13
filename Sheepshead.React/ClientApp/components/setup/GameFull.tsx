@@ -1,5 +1,6 @@
 ﻿import * as React from 'react';
 import { RouteComponentProps } from 'react-router';
+import { IdUtils } from '../IdUtils';
 
 export interface GameFullState {
     gameId: string;
@@ -8,13 +9,7 @@ export interface GameFullState {
 export class GameFull extends React.Component<RouteComponentProps<{}>, GameFullState> {
     constructor(props: any) {
         super(props);
-        this.state = { gameId: this.getGameId(props) };
-    }
-
-    private getGameId(props: any) {
-        var pathParts = props.location.pathname.split('/');
-        var gameId = pathParts[pathParts.length - 1];
-        return gameId;
+        this.state = { gameId: IdUtils.getGameId(props) };
     }
 
     public render() {
