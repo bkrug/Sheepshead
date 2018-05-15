@@ -2,12 +2,12 @@
 import { RouteComponentProps } from 'react-router';
 import { IdUtils } from '../IdUtils';
 
-export interface PlayState {
+export interface RegistrationWaitState {
     gameId: string;
     allPlayersReady: boolean;
 }
 
-export class Play extends React.Component<RouteComponentProps<{}>, PlayState> {
+export class RegistrationWait extends React.Component<RouteComponentProps<{}>, RegistrationWaitState> {
     constructor(props: any) {
         super(props);
         this.state = {

@@ -34,7 +34,7 @@ export class RegisterHuman extends React.Component<RouteComponentProps<{}>, Regi
             IdUtils.setPlayerId(gameId, json.playerId);
             window.location.href = (json.full)
                 ? '/setup/gamefull/' + gameId
-                : '/game/play/' + gameId;
+                : '/setup/registrationwait/' + gameId;
         }).catch(function (ex) {
             console.log('parsing failed', ex)
         })
