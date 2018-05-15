@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using Sheepshead.Models;
 using Microsoft.AspNetCore.Mvc;
 
@@ -18,7 +16,7 @@ namespace Sheepshead.React.Controllers
         }
 
         [HttpPost]
-        public IActionResult RegisterHuman2(string gameId, string playerName)
+        public IActionResult RegisterHuman(string gameId, string playerName)
         {
             var repository = new GameRepository(GameDictionary.Instance.Dictionary);
             var game = repository.GetById(Guid.Parse(gameId));
@@ -28,6 +26,17 @@ namespace Sheepshead.React.Controllers
                 gameId = game.Id,
                 playerId = player?.Id,
                 full = player == null
+            });
+        }
+
+        [HttpGet]
+        public IActionResult AllPlayersReady(string gameId)
+        {
+            var repository = new GameRepository(GameDictionary.Instance.Dictionary);
+            var game = repository.GetById(Guid.Parse(gameId));
+            return Json(new
+            {
+                allPlayersReady = !game.UnassignedPlayers.Any()
             });
         }
     }

@@ -26,7 +26,7 @@ export class RegisterHuman extends React.Component<RouteComponentProps<{}>, Regi
     private handleSubmit(e: React.FormEvent<HTMLInputElement>) {
         var gameId = this.state.gameId;
         var self = this;
-        fetch('Setup/RegisterHuman2?gameId='+this.state.gameId+'&playerName='+this.state.playerName, {
+        fetch('Setup/RegisterHuman?gameId='+this.state.gameId+'&playerName='+this.state.playerName, {
             method: 'POST'
         }).then(function (response) {
             return response.json();
