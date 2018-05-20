@@ -26,8 +26,10 @@ export class RegistrationWait extends React.Component<RouteComponentProps<{}>, R
         fetch('/Setup/AllPlayersReady?gameId=' + this.state.gameId)
             .then(response => response.json())
             .then(data => {
-                if (data.allPlayersReady)
+                if (data.allPlayersReady) {
                     this.setState({ allPlayersReady: true });
+                    window.location.href = '/game/playpane/' + this.state.gameId;
+                }
                 else
                     setTimeout(() => { this.checkIfPlayersReady() }, 1000)
             });

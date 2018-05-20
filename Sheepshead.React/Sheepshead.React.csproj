@@ -22,6 +22,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Remove="ClientApp\components\game\ActionPane.tsx" />
+    <None Remove="ClientApp\components\game\CardsHeldPane.tsx" />
+    <None Remove="ClientApp\components\game\GameDetails.tsx" />
+    <None Remove="ClientApp\components\game\HandDetails.tsx" />
+    <None Remove="ClientApp\components\game\PlayPane.tsx" />
     <None Remove="ClientApp\components\game\RegistrationWait.tsx" />
     <None Remove="ClientApp\components\IdUtils.tsx" />
     <None Remove="ClientApp\components\setup\GameFull.tsx" />
@@ -35,16 +40,17 @@
   </ItemGroup>
 
   <ItemGroup>
+    <TypeScriptCompile Include="ClientApp\components\game\CardsHeldPane.tsx" />
+    <TypeScriptCompile Include="ClientApp\components\game\ActionPane.tsx" />
+    <TypeScriptCompile Include="ClientApp\components\game\GameDetails.tsx" />
+    <TypeScriptCompile Include="ClientApp\components\game\HandDetails.tsx" />
+    <TypeScriptCompile Include="ClientApp\components\game\PlayPane.tsx" />
     <TypeScriptCompile Include="ClientApp\components\setup\RegistrationWait.tsx" />
     <TypeScriptCompile Include="ClientApp\components\IdUtils.tsx" />
     <TypeScriptCompile Include="ClientApp\components\setup\GameFull.tsx" />
     <TypeScriptCompile Include="ClientApp\components\setup\GameSetup.tsx" />
     <TypeScriptCompile Include="ClientApp\components\setup\PlayerCountRadio.tsx" />
     <TypeScriptCompile Include="ClientApp\components\setup\RegisterHuman.tsx" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="ClientApp\components\game\" />
   </ItemGroup>
 
   <Target Name="DebugRunWebpack" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('wwwroot\dist') ">
