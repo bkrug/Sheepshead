@@ -9,9 +9,10 @@ namespace Sheepshead.Models.Players
     {
         public bool AssignedToClient { get; private set; } = false;
         public Guid Id { get; } = Guid.NewGuid();
-        public Guid AssignToClient()
+        public Guid AssignToClient(string name)
         {
             AssignedToClient = true;
+            Name = name;
             return Id;
         }
 
@@ -24,6 +25,6 @@ namespace Sheepshead.Models.Players
     {
         bool AssignedToClient { get; }
         Guid Id { get; }
-        Guid AssignToClient();
+        Guid AssignToClient(string name);
     }
 }

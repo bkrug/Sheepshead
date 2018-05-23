@@ -107,6 +107,26 @@ namespace Sheepshead.Models
             ITrick trick = Decks.Last().Hand.Tricks.Last();
             trick.Add(player, card);
         }
+
+        public void MaybeGiveComputerPlayersNames()
+        {
+            if (UnassignedPlayers.Any())
+                return;
+            var rnd = new Random();
+            var unusedNames = potentialNames.Except(Players.OfType<IHumanPlayer>().Select(h => h.Name)).ToList();
+            foreach(var player in Players.OfType<IComputerPlayer>())
+            {
+                var nameIndex = rnd.Next(unusedNames.Count - 1);
+                var nameToUse = unusedNames.ElementAt(nameIndex);
+                unusedNames.RemoveAt(nameIndex);
+                player.Name = nameToUse;
+            }   
+        }
+
+        private List<string> potentialNames = new List<string>()
+        {
+            "Ben", "Sam", "John", "Sarah", "Rachel", "Liz", "Vivek", "Jing", "Junior", "Fido"
+        };
     }
 
     public class HumanMove
@@ -158,5 +178,6 @@ namespace Sheepshead.Models
         void BuryCards(IHumanPlayer player, List<SheepCard> cards);
         void PlayNonHumansInTrick();
         void RecordTurn(IHumanPlayer player, SheepCard card);
+        void MaybeGiveComputerPlayersNames();
     }
 }

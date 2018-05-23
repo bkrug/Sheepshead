@@ -21,7 +21,8 @@ namespace Sheepshead.React.Controllers
             var repository = new GameRepository(GameDictionary.Instance.Dictionary);
             var game = repository.GetById(Guid.Parse(gameId));
             var player = game.UnassignedPlayers.FirstOrDefault();
-            player?.AssignToClient();
+            player?.AssignToClient(playerName);
+            game.MaybeGiveComputerPlayersNames();
             return Json(new {
                 gameId = game.Id,
                 playerId = player?.Id,

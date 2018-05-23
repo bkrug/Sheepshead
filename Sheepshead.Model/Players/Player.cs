@@ -29,7 +29,7 @@ namespace Sheepshead.Models.Players
 
     public interface IPlayer
     {
-        string Name { get; }
+        string Name { get; set; }
         List<SheepCard> Cards { get; }
         int QueueRankInTrick(ITrick trick);
         int QueueRankInDeck(IDeck deck);
