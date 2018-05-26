@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using Microsoft.AspNetCore.Mvc;
 using Sheepshead.Models;
+using Sheepshead.Models.Players;
 
 namespace Sheepshead.React.Controllers
 {
@@ -24,6 +25,18 @@ namespace Sheepshead.React.Controllers
                                     name = s.Key.Name,
                                     score = s.Value
                                 }));
+        }
+
+        [HttpGet]
+        public IActionResult GetCards(string gameId, string playerId)
+        {
+            var repository = new GameRepository(GameDictionary.Instance.Dictionary);
+            var game = repository.GetById(Guid.Parse(gameId));
+            var player = game.Players.OfType<IHumanPlayer>().Single(p => p.Id == Guid.Parse(playerId));
+            return Json(new
+            {
+                cards = player.Cards
+            });
         }
     }
 }

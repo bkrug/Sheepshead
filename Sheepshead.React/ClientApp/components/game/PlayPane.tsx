@@ -20,9 +20,9 @@ export class PlayPane extends React.Component<RouteComponentProps<{}>, PlayPaneS
         return (
             <div className="playPane">
                 <GameDetails gameId={this.state.gameId} />
-                <HandDetails />
-                <ActionPane />
-                <CardsHeldPane />
+                <HandDetails gameId={this.state.gameId} />
+                <ActionPane gameId={this.state.gameId} />
+                <CardsHeldPane gameId={this.state.gameId} />
             </div>
         );
     }

@@ -15,6 +15,10 @@ namespace Sheepshead.Models
         public IPlayer StartingPlayer { get; private set; }
         public IRandomWrapper _random { get; private set; }
 
+        public Deck(IGame game) : this(game, new RandomWrapper())
+        {
+        }
+
         public Deck(IGame game, IRandomWrapper random)
         {
             if (!game.LastDeckIsComplete())

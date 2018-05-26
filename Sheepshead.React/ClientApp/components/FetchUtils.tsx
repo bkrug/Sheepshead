@@ -2,8 +2,16 @@
 
 export class FetchUtils {
     public static get(url: string, callback: (json: any)=> void) : void {
+        FetchUtils.fetchWithMethod(url, 'GET', callback);
+    }
+
+    public static post(url: string, callback: (json: any) => void): void {
+        FetchUtils.fetchWithMethod(url, 'POST', callback);
+    }
+
+    private static fetchWithMethod(url: string, requestMethod: string, callback: (json: any) => void): void {
         fetch(url, {
-            method: 'GET'
+            method: requestMethod
         })
         .then(function (response) {
             return response.json();
@@ -12,7 +20,7 @@ export class FetchUtils {
             callback(json);
         })
         .catch(function (ex) {
-            console.log('parsing failed', ex)
+            console.error('parsing failed', ex);
         });
     }
 }

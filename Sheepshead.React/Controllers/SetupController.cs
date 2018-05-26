@@ -22,7 +22,11 @@ namespace Sheepshead.React.Controllers
             var game = repository.GetById(Guid.Parse(gameId));
             var player = game.UnassignedPlayers.FirstOrDefault();
             player?.AssignToClient(playerName);
-            game.MaybeGiveComputerPlayersNames();
+            if (!game.UnassignedPlayers.Any())
+            {
+                game.MaybeGiveComputerPlayersNames();
+                new Deck(game);
+            }
             return Json(new {
                 gameId = game.Id,
                 playerId = player?.Id,

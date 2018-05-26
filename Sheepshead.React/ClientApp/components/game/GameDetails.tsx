@@ -32,8 +32,8 @@ export default class GameDetails extends React.Component<any, any> {
 
 
     public render() {
-        var scoreList = this.state.scores.map((score: GameScore) => 
-                <div>{score.name} - {score.score}</div>
+        var scoreList = this.state.scores.map((score: GameScore, i: number) => 
+                <div key={i}>{score.name} - {score.score}</div>
             );
         return (
             <div className="gameDetails">

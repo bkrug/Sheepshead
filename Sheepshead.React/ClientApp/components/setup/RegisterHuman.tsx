@@ -1,6 +1,7 @@
 ﻿import * as React from 'react';
 import { RouteComponentProps } from 'react-router';
 import { IdUtils } from '../IdUtils';
+import { FetchUtils } from '../FetchUtils';
 
 export interface RegisterHumanState {
     gameId: string;
@@ -26,18 +27,13 @@ export class RegisterHuman extends React.Component<RouteComponentProps<{}>, Regi
     private handleSubmit(e: React.FormEvent<HTMLInputElement>) {
         var gameId = this.state.gameId;
         var self = this;
-        fetch('Setup/RegisterHuman?gameId='+this.state.gameId+'&playerName='+this.state.playerName, {
-            method: 'POST'
-        }).then(function (response) {
-            return response.json();
-        }).then(function (json) {
-            IdUtils.setPlayerId(gameId, json.playerId);
-            window.location.href = (json.full)
-                ? '/setup/gamefull/' + gameId
-                : '/setup/registrationwait/' + gameId;
-        }).catch(function (ex) {
-            console.log('parsing failed', ex)
-        })
+        FetchUtils.post('Setup/RegisterHuman?gameId=' + this.state.gameId + '&playerName=' + this.state.playerName,
+            function (json: any) {
+                IdUtils.setPlayerId(gameId, json.playerId);
+                window.location.href = (json.full)
+                    ? '/setup/gamefull/' + gameId
+                    : '/setup/registrationwait/' + gameId;
+            });
     }
 
     public render() {
