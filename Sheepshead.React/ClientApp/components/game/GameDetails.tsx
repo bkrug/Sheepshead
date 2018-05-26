@@ -1,6 +1,7 @@
 ﻿import * as React from 'react';
 import { RouteComponentProps } from 'react-router';
 import { IdUtils } from '../IdUtils';
+import { FetchUtils } from '../FetchUtils';
 
 export interface GameScore {
     name: string;
@@ -21,16 +22,14 @@ export default class GameDetails extends React.Component<any, any> {
             scores: scores
         };
         var self = this;
-        fetch('Game/Summary?gameId=' + this.state.gameId, {
-            method: 'GET'
-        }).then(function (response) {
-            return response.json();
-        }).then(function (json) {
-            self.setState({ scores: json });
-        }).catch(function (ex) {
-            console.log('parsing failed', ex)
-        });
+        FetchUtils.get(
+            'Game/Summary?gameId=' + this.state.gameId,
+            function(json: GameScore[]): void {
+                self.setState({ scores: json });
+            }
+        );
     }
+
 
     public render() {
         var scoreList = this.state.scores.map((score: GameScore) => 
