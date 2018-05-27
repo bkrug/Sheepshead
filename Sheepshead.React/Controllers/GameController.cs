@@ -33,10 +33,11 @@ namespace Sheepshead.React.Controllers
             var repository = new GameRepository(GameDictionary.Instance.Dictionary);
             var game = repository.GetById(Guid.Parse(gameId));
             var player = game.Players.OfType<IHumanPlayer>().Single(p => p.Id == Guid.Parse(playerId));
-            return Json(new
+            return Json(player.Cards.Select(c => new
             {
-                cards = player.Cards
-            });
+                filename = CardUtil.GetPictureFilename(c),
+                cardAbbr = CardUtil.ToAbbr(c)
+            }));
         }
     }
 }
