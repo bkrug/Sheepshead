@@ -3,9 +3,7 @@ import { RouteComponentProps } from 'react-router';
 import { IdUtils } from '../IdUtils';
 import { FetchUtils } from '../FetchUtils';
 
-export interface ActionPaneState {
-    gameId: string;
-    playerId: string;
+interface PlayState {
     turnType: string;
     humanTurn: boolean;
     requestingPlayerTurn: boolean;
@@ -14,26 +12,30 @@ export interface ActionPaneState {
     cardsPlayed: { [key: string]: string };
 }
 
+export interface ActionPaneState {
+    gameId: string;
+    playerId: string;
+    playState: PlayState;
+}
+
 export default class ActionPane extends React.Component<any, any> {
     constructor(props: ActionPaneState) {
         super(props);
         this.state = {
             gameId: props.gameId,
-            playerId: IdUtils.getPlayerId(props.gameId)
+            playerId: IdUtils.getPlayerId(props.gameId),
+            playState: null
         };
         var self = this;
-        FetchUtils.get(
+        FetchUtils.repeatGet(
             'Game/GetPlayState?gameId=' + this.state.gameId + '&playerId=' + this.state.playerId,
-            function (json: any): void {
-                self.setState({
-                    turnType: json.turnType,
-                    humanTurn: json.humanTurn,
-                    requestingPlayerTurn: json.requestingPlayerTurn,
-                    blinds: json.blinds,
-                    pickChoices: json.pickChoices,
-                    cardsPlayed: json.cardsPlayed
-                });
-            }
+            function (json: PlayState): void {
+                self.setState({ playState: json });
+            },
+            function (json: PlayState): boolean {
+                return json.requestingPlayerTurn == false;
+            },
+            1000
         );
     }
 
@@ -42,7 +44,7 @@ export default class ActionPane extends React.Component<any, any> {
             <div>
                 <h4>Pick Phase</h4>
                 {
-                    this.state.pickChoices.map(
+                    this.state.playState.pickChoices.map(
                         (pickChoice: any, i: number) =>
                             <div key={i}>
                                 <p>{pickChoice.item1 + (pickChoice.item2 ? ' picked.' : ' refused.')}</p>
@@ -51,7 +53,7 @@ export default class ActionPane extends React.Component<any, any> {
                 }
                 <div>
                 {
-                    this.state.requestingPlayerTurn ? <b>Do you want to pick?</b> : ''
+                    this.state.playState.requestingPlayerTurn ? <b>Do you want to pick?</b> : ''
                 }
                 </div>
             </div>
@@ -62,7 +64,7 @@ export default class ActionPane extends React.Component<any, any> {
         return (
             <div>
                 {
-                    this.state.turnType == 'Pick'
+                    this.state.playState != null && this.state.playState.turnType == 'Pick'
                         ? this.renderPick()
                         : <h4>Other</h4>
                 }
