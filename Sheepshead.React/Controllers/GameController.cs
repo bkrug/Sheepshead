@@ -39,5 +39,19 @@ namespace Sheepshead.React.Controllers
                 cardAbbr = CardUtil.ToAbbr(c)
             }));
         }
+
+        [HttpGet]
+        public IActionResult GetPlayState(string gameId, string playerId)
+        {
+            var repository = new GameRepository(GameDictionary.Instance.Dictionary);
+            var game = repository.GetById(Guid.Parse(gameId));
+            var playState = game.PlayState(Guid.Parse(playerId));
+            if (!playState.HumanTurn && game.TurnType == TurnType.Pick)
+            {
+                game.PlayNonHumanPickTurns();
+                playState = game.PlayState(Guid.Parse(playerId));
+            }
+            return Json(playState);
+        }
     }
 }

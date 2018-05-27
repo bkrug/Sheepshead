@@ -37,8 +37,7 @@ export default class GameDetails extends React.Component<any, any> {
                 {score.name}
                 <br/>
                 {score.score || '-'}
-            </div>
-            );
+            </div>);
         return (
             <div className="gameDetails">
                 <h4>Game Details</h4>

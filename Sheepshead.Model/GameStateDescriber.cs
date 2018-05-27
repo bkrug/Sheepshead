@@ -24,7 +24,7 @@ namespace Sheepshead.Model
 
         public ITrick CurrentTrick {
             get {
-                var trick = Decks.LastOrDefault()?.Hand.Tricks.LastOrDefault();
+                var trick = Decks.LastOrDefault()?.Hand?.Tricks?.LastOrDefault();
                 if (trick == null || trick.IsComplete() && !Decks.LastOrDefault().Hand.IsComplete())
                     trick = new Trick(Decks.LastOrDefault().Hand);
                 return trick;
