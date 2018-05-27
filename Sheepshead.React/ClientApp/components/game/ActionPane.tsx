@@ -40,7 +40,7 @@ export default class ActionPane extends React.Component<any, any> {
     private renderPick() {
         return (
             <div>
-                <b>Pick</b>
+                <h4>Pick Phase</h4>
                 {
                     this.state.pickChoices.map(
                         (pickChoice: any, i: number) =>
@@ -61,11 +61,10 @@ export default class ActionPane extends React.Component<any, any> {
     public render() {
         return (
             <div>
-                <h4>Action Pane Details</h4>
                 {
                     this.state.turnType == 'Pick'
                         ? this.renderPick()
-                        : <div>Other</div>
+                        : <h4>Other</h4>
                 }
             </div>
         );

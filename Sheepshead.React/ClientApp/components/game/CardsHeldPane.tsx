@@ -37,7 +37,7 @@ export default class CardsHeldPane extends React.Component<any, any> {
         );
         return (
             <div>
-                <h4>Cards Held Pane</h4>
+                <h4>These are your cards</h4>
                 {cardList}
             </div>
         );
