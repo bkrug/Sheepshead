@@ -71,7 +71,7 @@ namespace Sheepshead.Controllers
                 case TurnType.BeginDeck:
                     break;
                 case TurnType.Pick:
-                    Pick(game, willPick.Value, buriedCardIndicies);
+                    Pick(game, willPick.Value);
                     break;
                 case TurnType.Bury:
                     Bury(game, buriedCardIndicies);
@@ -84,7 +84,7 @@ namespace Sheepshead.Controllers
             return RedirectToAction("Play", new { id = game.Id });
         }
 
-        private void Pick(IGame game, bool willPick, string buriedCardIndicies)
+        private void Pick(IGame game, bool willPick)
         {
             var human = game.Players.OfType<IHumanPlayer>().First();
             var hand = game.ContinueFromHumanPickTurn(human, willPick);

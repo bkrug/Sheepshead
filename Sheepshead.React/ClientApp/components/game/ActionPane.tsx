@@ -26,6 +26,11 @@ export default class ActionPane extends React.Component<any, any> {
             playerId: IdUtils.getPlayerId(props.gameId),
             playState: null
         };
+        this.initializePlayStatePinging = this.initializePlayStatePinging.bind(this);
+        this.initializePlayStatePinging();
+    }
+
+    private initializePlayStatePinging(): void {
         var self = this;
         FetchUtils.repeatGet(
             'Game/GetPlayState?gameId=' + this.state.gameId + '&playerId=' + this.state.playerId,
@@ -35,7 +40,17 @@ export default class ActionPane extends React.Component<any, any> {
             function (json: PlayState): boolean {
                 return json.requestingPlayerTurn == false;
             },
-            1000
+            1000);
+    }
+
+    private pickChoice(willPick: boolean) : void {
+        console.log(willPick);
+        var self = this;
+        FetchUtils.post(
+            'Game/RecordPickChoice?gameId=' + this.state.gameId + '&playerId=' + this.state.playerId + '&willPick=' + willPick,
+            function (json: number[]): void {
+                self.initializePlayStatePinging();
+            }
         );
     }
 
@@ -53,7 +68,13 @@ export default class ActionPane extends React.Component<any, any> {
                 }
                 <div>
                 {
-                    this.state.playState.requestingPlayerTurn ? <b>Do you want to pick?</b> : ''
+                        this.state.playState.requestingPlayerTurn
+                            ? <div>
+                                <b>Do you want to pick?</b>
+                                <button onClick={() => this.pickChoice(true)}>Yes</button>
+                                <button onClick={() => this.pickChoice(false)}>No</button>
+                              </div>
+                            : ''
                 }
                 </div>
             </div>

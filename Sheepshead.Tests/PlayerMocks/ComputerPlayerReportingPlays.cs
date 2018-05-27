@@ -16,6 +16,8 @@ namespace Sheepshead.Tests.PlayerMocks
 
         public List<SheepCard> Cards => throw new NotImplementedException();
 
+        string IPlayer.Name { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+
         public ComputerPlayerReportingPlays(SheepCard moveToMake)
         {
             _moveToMake = moveToMake;

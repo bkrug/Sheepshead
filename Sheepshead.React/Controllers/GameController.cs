@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using Microsoft.AspNetCore.Mvc;
 using Sheepshead.Models;
@@ -52,6 +53,19 @@ namespace Sheepshead.React.Controllers
                 playState = game.PlayState(Guid.Parse(playerId));
             }
             return Json(playState);
+        }
+
+        [HttpPost]
+        public IActionResult RecordPickChoice(string gameId, string playerId, bool willPick)
+        {
+            var playerGuid = Guid.Parse(playerId);
+            var repository = new GameRepository(GameDictionary.Instance.Dictionary);
+            var game = repository.GetById(Guid.Parse(gameId));
+            var human = game.Players.OfType<IHumanPlayer>().Single(h => h.Id == playerGuid);
+            var hand = game.ContinueFromHumanPickTurn(human, willPick);
+            if (willPick)
+                return Json(game.PlayState(playerGuid).Blinds);
+            return Json(new List<int>());
         }
     }
 }
