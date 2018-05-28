@@ -24,7 +24,6 @@
   <ItemGroup>
     <None Remove="ClientApp\components\FetchUtils.tsx" />
     <None Remove="ClientApp\components\game\ActionPane.tsx" />
-    <None Remove="ClientApp\components\game\CardsHeldPane.tsx" />
     <None Remove="ClientApp\components\game\GameDetails.tsx" />
     <None Remove="ClientApp\components\game\HandDetails.tsx" />
     <None Remove="ClientApp\components\game\PlayPane.tsx" />
@@ -107,7 +106,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <TypeScriptCompile Include="ClientApp\components\game\CardsHeldPane.tsx" />
     <TypeScriptCompile Include="ClientApp\components\game\ActionPane.tsx" />
     <TypeScriptCompile Include="ClientApp\components\game\GameDetails.tsx" />
     <TypeScriptCompile Include="ClientApp\components\game\HandDetails.tsx" />

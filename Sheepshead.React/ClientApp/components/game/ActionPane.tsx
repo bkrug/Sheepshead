@@ -10,6 +10,7 @@ interface PlayState {
     blinds: number[];
     pickChoices: { [key: string]: boolean };
     cardsPlayed: { [key: string]: string };
+    playerCards: string[];
 }
 
 export interface ActionPaneState {
@@ -81,13 +82,31 @@ export default class ActionPane extends React.Component<any, any> {
         );
     }
 
+    private renderCards() {
+        return (
+            <div>
+                <h4>These are your cards</h4>
+                {
+                    this.state.playState == null
+                        ? ''
+                        : this.state.playState.playerCards.map((card: string, i: number) =>
+                            <img key={i} src={'./img/' + card + '.png'} alt={card} />
+                        )
+                }
+            </div>
+        );
+    }
+
     public render() {
         return (
             <div>
                 {
-                    this.state.playState != null && this.state.playState.turnType == 'Pick'
+                    this.state.playState != null && ['Pick','Bury'].indexOf(this.state.playState.turnType) >= 0
                         ? this.renderPick()
                         : <h4>Other</h4>
+                }
+                {
+                    this.renderCards()
                 }
             </div>
         );

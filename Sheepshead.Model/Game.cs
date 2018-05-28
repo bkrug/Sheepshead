@@ -139,6 +139,7 @@ namespace Sheepshead.Models
                 : turnType == TurnType.PlayTrick ? currentTrick?.PlayersWithoutTurn?.FirstOrDefault()
                 : null;
             var humanPlayer = currentPlayer as IHumanPlayer;
+            var requestingPlayer = Players.OfType<IHumanPlayer>().SingleOrDefault(p => p.Id == requestingPlayerId);
             return new PlayState
             {
                 TurnType = turnType.ToString(),
@@ -150,7 +151,8 @@ namespace Sheepshead.Models
                     .Union(new List<Tuple<string, bool>> { new Tuple<string, bool>(currentDeck?.Hand?.Picker?.Name, true) })
                     .Where(p => p.Item1 != null)
                     .ToList(),
-                CardsPlayed = currentTrick?.CardsPlayed?.Select(cp => new Tuple<string, string>(cp.Key.Name, CardUtil.GetPictureFilename(cp.Value)))?.ToList()
+                CardsPlayed = currentTrick?.CardsPlayed?.Select(cp => new Tuple<string, string>(cp.Key.Name, CardUtil.GetPictureFilename(cp.Value)))?.ToList(),
+                PlayerCards = requestingPlayer?.Cards?.Select(rp => CardUtil.GetPictureFilename(rp))?.ToList()
             };
         }
     }

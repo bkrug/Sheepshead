@@ -4,7 +4,6 @@ import { IdUtils } from '../IdUtils';
 import GameDetails from './GameDetails';
 import HandDetails from './HandDetails';
 import ActionPane from './ActionPane';
-import CardsHeldPane from './CardsHeldPane';
 
 export interface PlayPaneState {
     gameId: string;
@@ -22,7 +21,6 @@ export class PlayPane extends React.Component<RouteComponentProps<{}>, PlayPaneS
                 <GameDetails gameId={this.state.gameId} />
                 <HandDetails gameId={this.state.gameId} />
                 <ActionPane gameId={this.state.gameId} />
-                <CardsHeldPane gameId={this.state.gameId} />
             </div>
         );
     }
