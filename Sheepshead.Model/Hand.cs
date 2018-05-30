@@ -80,7 +80,7 @@ namespace Sheepshead.Models
             foreach (var trick in _tricks)
             {
                 var winnerData = trick.Winner();
-                if (winnerData.Player != Picker && winnerData.Player != Partner)
+                if (winnerData?.Player != Picker && winnerData?.Player != Partner)
                     defensePoints += winnerData.Points;
             }
             int defensiveHandPoints;

@@ -55,6 +55,19 @@ export default class ActionPane extends React.Component<any, any> {
         );
     }
 
+    private displayPhase(): string {
+        if (this.state.playState == null)
+            return 'Other';
+        if (this.state.playState.turnType == 'Pick')
+            return 'Pick';
+        if (this.state.playState.turnType == 'Bury' && !this.state.playState.requestingPlayerTurn)
+            return 'Pick';
+        if (this.state.playState.turnType == 'Bury' && this.state.playState.requestingPlayerTurn)
+            return 'Bury';
+        else
+            return 'Other';
+    }
+
     private renderPick() {
         return (
             <div>
@@ -69,15 +82,23 @@ export default class ActionPane extends React.Component<any, any> {
                 }
                 <div>
                 {
-                        this.state.playState.requestingPlayerTurn
-                            ? <div>
-                                <b>Do you want to pick?</b>
-                                <button onClick={() => this.pickChoice(true)}>Yes</button>
-                                <button onClick={() => this.pickChoice(false)}>No</button>
-                              </div>
-                            : ''
+                    this.state.playState.requestingPlayerTurn
+                        ? <div>
+                            <b>Do you want to pick?</b>
+                            <button onClick={() => this.pickChoice(true)}>Yes</button>
+                            <button onClick={() => this.pickChoice(false)}>No</button>
+                            </div>
+                        : ''
                 }
                 </div>
+            </div>
+        );
+    }
+
+    private renderBury() {
+        return (
+            <div>
+                <h4>Pick cards to bury</h4>
             </div>
         );
     }
@@ -101,9 +122,9 @@ export default class ActionPane extends React.Component<any, any> {
         return (
             <div>
                 {
-                    this.state.playState != null && ['Pick','Bury'].indexOf(this.state.playState.turnType) >= 0
-                        ? this.renderPick()
-                        : <h4>Other</h4>
+                    this.displayPhase() == 'Pick' ? this.renderPick()
+                    : this.displayPhase() == 'Bury' ? this.renderBury()
+                    : <h4>Other</h4>
                 }
                 {
                     this.renderCards()
