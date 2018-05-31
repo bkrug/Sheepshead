@@ -2,8 +2,10 @@
 import { RouteComponentProps } from 'react-router';
 import { IdUtils } from '../IdUtils';
 import { FetchUtils } from '../FetchUtils';
+import CardPane from './CardPane';
+import { render } from 'react-dom';
 
-interface PlayState {
+class PlayState {
     turnType: string;
     humanTurn: boolean;
     requestingPlayerTurn: boolean;
@@ -16,15 +18,19 @@ interface PlayState {
 export interface ActionPaneState {
     gameId: string;
     playerId: string;
-    playState: PlayState;
+    playState: PlayState | null;
 }
 
-export default class ActionPane extends React.Component<any, any> {
-    constructor(props: ActionPaneState) {
+export interface ActionPaneProps extends React.Props<any> {
+    gameId: string;
+}
+
+export default class ActionPane extends React.Component<ActionPaneProps, ActionPaneState> {
+    constructor(props: ActionPaneProps) {
         super(props);
         this.state = {
             gameId: props.gameId,
-            playerId: IdUtils.getPlayerId(props.gameId),
+            playerId: IdUtils.getPlayerId(props.gameId) || '',
             playState: null
         };
         this.initializePlayStatePinging = this.initializePlayStatePinging.bind(this);
@@ -68,27 +74,41 @@ export default class ActionPane extends React.Component<any, any> {
             return 'Other';
     }
 
+    private renderChoices(given1: { [key: string]: boolean }): any[] {
+        var retVal = [];
+        for (var prop in given1) {
+            retVal.push({
+                playerName: prop,
+                madeChoice: given1[prop]
+            });
+        }
+        return retVal;
+    }
+
     private renderPick() {
         return (
             <div>
                 <h4>Pick Phase</h4>
                 {
-                    this.state.playState.pickChoices.map(
-                        (pickChoice: any, i: number) =>
-                            <div key={i}>
-                                <p>{pickChoice.item1 + (pickChoice.item2 ? ' picked.' : ' refused.')}</p>
-                            </div>
-                    )
+                    this.state.playState 
+                    ?
+                        this.renderChoices(this.state.playState.pickChoices).map(
+                            (pickChoice: any, i: number) =>
+                                <div key={i}>
+                                    <p>{pickChoice.playerName + (pickChoice.madeChoice ? ' picked.' : ' refused.')}</p>
+                                </div>
+                        )
+                    : <div></div>
                 }
                 <div>
                 {
-                    this.state.playState.requestingPlayerTurn
-                        ? <div>
-                            <b>Do you want to pick?</b>
-                            <button onClick={() => this.pickChoice(true)}>Yes</button>
-                            <button onClick={() => this.pickChoice(false)}>No</button>
-                            </div>
-                        : ''
+                    this.state.playState && this.state.playState.requestingPlayerTurn
+                    ? <div>
+                        <b>Do you want to pick?</b>
+                        <button onClick={() => this.pickChoice(true)}>Yes</button>
+                        <button onClick={() => this.pickChoice(false)}>No</button>
+                        </div>
+                    : <div></div>
                 }
                 </div>
             </div>
@@ -103,21 +123,6 @@ export default class ActionPane extends React.Component<any, any> {
         );
     }
 
-    private renderCards() {
-        return (
-            <div>
-                <h4>These are your cards</h4>
-                {
-                    this.state.playState == null
-                        ? ''
-                        : this.state.playState.playerCards.map((card: string, i: number) =>
-                            <img key={i} src={'./img/' + card + '.png'} alt={card} />
-                        )
-                }
-            </div>
-        );
-    }
-
     public render() {
         return (
             <div>
@@ -127,7 +132,11 @@ export default class ActionPane extends React.Component<any, any> {
                     : <h4>Other</h4>
                 }
                 {
-                    this.renderCards()
+                    this.state.playState 
+                        ? 
+                        <CardPane filenumbers={this.state.playState.playerCards.join()} />
+                        : 
+                        <div></div>
                 }
             </div>
         );
