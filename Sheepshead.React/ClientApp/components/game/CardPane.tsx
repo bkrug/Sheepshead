@@ -1,7 +1,7 @@
 ﻿import * as React from 'react';
 import { RouteComponentProps } from 'react-router';
-//import { DragDropContextProvider } from 'react-dnd'
 import { FetchUtils } from '../FetchUtils';
+import DraggableCard from './DraggableCard';
 
 export interface CardPaneState {
     filenumbers: string[]
@@ -19,26 +19,16 @@ export default class CardPane extends React.Component<CardPaneProps, CardPaneSta
         };
     }
 
-    private renderCards() {
+    public render() {
         return (
             <div>
                 <h4>These are your cards</h4>
                 {
                     this.state && this.state.filenumbers
-                    ? this.state.filenumbers.map((card: string, i: number) =>
-                            <img key={i} src={'./img/' + card + '.png'} alt={card} />
-                    )
-                    : (<div />)
-                }
-            </div>
-        );
-    }
-
-    public render() {
-        return (
-            <div>
-                {
-                    this.renderCards()
+                        ? this.state.filenumbers.map((card: string, i: number) =>
+                            <DraggableCard key={i} cardImgNo={card} />
+                        )
+                        : (<div />)
                 }
             </div>
         );
