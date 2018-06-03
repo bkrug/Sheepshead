@@ -2,6 +2,7 @@
 import { RouteComponentProps } from 'react-router';
 import { FetchUtils } from '../FetchUtils';
 import DraggableCard from './DraggableCard';
+import CardDropBox from './CardDropBox';
 
 export interface CardPaneState {
     filenumbers: string[]
@@ -22,6 +23,7 @@ export default class CardPane extends React.Component<CardPaneProps, CardPaneSta
     public render() {
         return (
             <div>
+                <CardDropBox />
                 <h4>These are your cards</h4>
                 {
                     this.state && this.state.filenumbers

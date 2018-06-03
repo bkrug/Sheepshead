@@ -47,9 +47,10 @@ export default class DraggableCard extends React.Component<CardProps, any> {
 
     public render() {
         const { cardImgNo, isDragging, connectDragSource } = this.props;
+        const opacity = isDragging ? 0.2 : 1;
         if (connectDragSource)
             return (
-                connectDragSource(<img src={'./img/' + cardImgNo + '.png'} alt={cardImgNo} />)
+                connectDragSource(<img src={'./img/' + cardImgNo + '.png'} alt={cardImgNo} style={{ opacity }} />)
             )
         else
             return (<div></div>)
