@@ -21,19 +21,23 @@ const style: React.CSSProperties = {
 }
 
 export interface CardDropBoxProps {
+    accepts: string[]
     canDrop?: boolean
+    lastDroppedItem?: any
     isOver?: boolean
     connectDropTarget?: ConnectDropTarget
+    onDrop: (item: any) => void
 }
 
 const boxTarget = {
-    drop() {
-        return { name: 'DropBox' }
+    drop(props: CardDropBoxProps, monitor: DropTargetMonitor) {
+        console.log(props);
+        props.onDrop(monitor.getItem());
     },
 }
 
 @DropTarget(
-    'card',
+    (props: CardDropBoxProps) => props.accepts,
     boxTarget,
     (connect: DropTargetConnector, monitor: DropTargetMonitor) => ({
         connectDropTarget: connect.dropTarget(),
@@ -42,11 +46,14 @@ const boxTarget = {
     }),
 )
 
-export default class CardDropBox extends React.Component<CardDropBoxProps, any> {
+export default class CardDropBox extends React.Component<CardDropBoxProps> {
     public static propTypes = {
-        connectDragSource: PropTypes.func.isRequired,
-        isDragging: PropTypes.bool.isRequired,
-        card: PropTypes.string.isRequired,
+        connectDropTarget: PropTypes.func.isRequired,
+        isOver: PropTypes.bool.isRequired,
+        canDrop: PropTypes.bool.isRequired,
+        accepts: PropTypes.arrayOf(PropTypes.string).isRequired,
+        lastDroppedItem: PropTypes.object,
+        onDrop: PropTypes.func.isRequired,
     }
 
     public render() {
