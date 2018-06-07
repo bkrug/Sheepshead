@@ -4,8 +4,6 @@ import { IdUtils } from '../IdUtils';
 import { FetchUtils } from '../FetchUtils';
 import CardPane from './CardPane';
 import { render } from 'react-dom';
-import { DragDropContextProvider } from 'react-dnd';
-import HTML5Backend from 'react-dnd-html5-backend';
 
 class PlayState {
     turnType: string;
@@ -127,20 +125,18 @@ export default class ActionPane extends React.Component<ActionPaneProps, ActionP
 
     public render() {
         return (
-            <DragDropContextProvider backend={HTML5Backend}>
-                <div>
-                    {
-                        this.displayPhase() == 'Pick' ? this.renderPick()
-                        : this.displayPhase() == 'Bury' ? this.renderBury()
-                        : <h4>Other</h4>
-                    }
-                    {
-                        this.state.playState 
-                            ? <CardPane filenumbers={this.state.playState.playerCards.join()} />
-                            : <div></div>
-                    }
-                </div>
-            </DragDropContextProvider>
+            <div>
+                {
+                    this.displayPhase() == 'Pick' ? this.renderPick()
+                    : this.displayPhase() == 'Bury' ? this.renderBury()
+                    : <h4>Other</h4>
+                }
+                {
+                    this.state.playState 
+                        ? <CardPane filenumbers={this.state.playState.playerCards.join()} />
+                        : <div></div>
+                }
+            </div>
         );
     }
 }
