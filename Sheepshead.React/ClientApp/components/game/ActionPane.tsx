@@ -2,8 +2,8 @@
 import { RouteComponentProps } from 'react-router';
 import { IdUtils } from '../IdUtils';
 import { FetchUtils } from '../FetchUtils';
-import CardPane from './CardPane';
 import { render } from 'react-dom';
+import DraggableCard from './DraggableCard';
 
 class PlayState {
     turnType: string;
@@ -18,7 +18,8 @@ class PlayState {
 export interface ActionPaneState {
     gameId: string;
     playerId: string;
-    playState: PlayState | null;
+    playState: PlayState;
+    cardCount: number;
 }
 
 export interface ActionPaneProps extends React.Props<any> {
@@ -31,7 +32,8 @@ export default class ActionPane extends React.Component<ActionPaneProps, ActionP
         this.state = {
             gameId: props.gameId,
             playerId: IdUtils.getPlayerId(props.gameId) || '',
-            playState: null
+            playState: new PlayState,
+            cardCount: 0
         };
         this.initializePlayStatePinging = this.initializePlayStatePinging.bind(this);
         this.initializePlayStatePinging();
@@ -42,10 +44,13 @@ export default class ActionPane extends React.Component<ActionPaneProps, ActionP
         FetchUtils.repeatGet(
             'Game/GetPlayState?gameId=' + this.state.gameId + '&playerId=' + this.state.playerId,
             function (json: PlayState): void {
-                self.setState({ playState: json });
+                self.setState({
+                    playState: json,
+                    cardCount: json.playerCards.length
+                });
             },
             function (json: PlayState): boolean {
-                return json.requestingPlayerTurn == false;
+                return true; // json.requestingPlayerTurn == false;
             },
             1000);
     }
@@ -132,9 +137,11 @@ export default class ActionPane extends React.Component<ActionPaneProps, ActionP
                     : <h4>Other</h4>
                 }
                 {
-                    this.state.playState 
-                        ? <CardPane filenumbers={this.state.playState.playerCards.join()} />
-                        : <div></div>
+                    this.state.playState.playerCards
+                        ? this.state.playState.playerCards.map((card: string, i: number) =>
+                            <DraggableCard key={i} cardImgNo={card} />
+                        )
+                        : (<div />)
                 }
             </div>
         );
