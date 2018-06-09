@@ -22,6 +22,8 @@ export interface PickPaneProps extends React.Props<any> {
 }
 
 export default class PickPane extends React.Component<PickPaneProps, PickPaneState> {
+    private cardContainerStyle = { height: "96px" };
+
     constructor(props: PickPaneProps) {
         super(props);
         this.state = {
@@ -90,18 +92,22 @@ export default class PickPane extends React.Component<PickPaneProps, PickPaneSta
                 {this.state.requestingPlayerTurn
                     ? <div>
                         <h4>Pick cards to bury</h4>
-                        <b>Selected Cards</b>
-                        {
-                            this.state.buryCards.map((card: string, i: number) =>
-                                <DraggableCard key={i} cardImgNo={card} />
-                            )
-                        }
                         <b>Held Cards</b>
+                        <div style={this.cardContainerStyle}>
                         {
                             this.state.playerCards.map((card: string, i: number) =>
                                 <DraggableCard key={i} cardImgNo={card} onClick={this.buryChoice} />
                             )
                         }
+                        </div>
+                        <b>Cards to Bury</b>
+                        <div style={this.cardContainerStyle}>
+                            {
+                                this.state.buryCards.map((card: string, i: number) =>
+                                    <DraggableCard key={i} cardImgNo={card} />
+                                )
+                            }
+                        </div>
                     </div>
                     : <div><h4>Bury Phase</h4>Waiting for Picker to bury cards.</div>
                 }

@@ -19,7 +19,7 @@ export default class DraggableCard extends React.Component<CardProps, any> {
     public render() {
         const { cardImgNo } = this.props;
         return (
-            <img src={'./img/' + cardImgNo + '.png'} alt={cardImgNo} onClick={this.onClick} />
+            <img src={'./img/' + cardImgNo + '.png'} alt={cardImgNo} onClick={this.onClick} style={{ cursor: "pointer" }}/>
         )
 	}
 }
