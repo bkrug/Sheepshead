@@ -19,6 +19,7 @@ export interface PickPaneProps extends React.Props<any> {
     pickChoices: PickChoice[];
     playerCards: string[];
     requestingPlayerTurn: boolean;
+    onPick: () => void;
 }
 
 export default class PickPane extends React.Component<PickPaneProps, PickPaneState> {
@@ -44,9 +45,11 @@ export default class PickPane extends React.Component<PickPaneProps, PickPaneSta
                     pickChoices: json.pickChoices,
                     requestingPlayerTurn: json.requestingPlayerTurn
                 });
+                if (json.turnType != "Pick")
+                    self.props.onPick();
             },
             function (json: PlayState): boolean {
-                return true;// json.requestingPlayerTurn == false;
+                return json.requestingPlayerTurn == false && json.turnType == "Pick";
             },
             1000);
     }
@@ -57,7 +60,7 @@ export default class PickPane extends React.Component<PickPaneProps, PickPaneSta
         FetchUtils.post(
             'Game/RecordPickChoice?gameId=' + this.state.gameId + '&playerId=' + this.state.playerId + '&willPick=' + willPick,
             function (json: number[]): void {
-                //self.initializePlayStatePinging();
+                self.props.onPick();
             }
         );
     }

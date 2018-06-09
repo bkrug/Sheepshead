@@ -50,7 +50,7 @@ export default class ActionPane extends React.Component<ActionPaneProps, ActionP
                 });
             },
             function (json: PlayState): boolean {
-                return false; // json.requestingPlayerTurn == false;
+                return false;
             },
             1000);
     }
@@ -60,9 +60,9 @@ export default class ActionPane extends React.Component<ActionPaneProps, ActionP
             return 'Other';
         if (this.state.playState.turnType == 'Pick')
             return 'Pick';
-        if (this.state.playState.turnType == 'Bury' && !this.state.playState.requestingPlayerTurn)
-            return 'Pick';
-        if (this.state.playState.turnType == 'Bury' && this.state.playState.requestingPlayerTurn)
+        //if (this.state.playState.turnType == 'Bury' && !this.state.playState.requestingPlayerTurn)
+        //    return 'Pick';
+        if (this.state.playState.turnType == 'Bury') // && this.state.playState.requestingPlayerTurn)
             return 'Bury';
         else
             return 'Other';
@@ -71,13 +71,18 @@ export default class ActionPane extends React.Component<ActionPaneProps, ActionP
     private renderBury() {
         return (
             <div>
-                <h4>Pick cards to bury</h4>
-                {
-                    this.state.playState.playerCards
-                        ? this.state.playState.playerCards.map((card: string, i: number) =>
-                            <DraggableCard key={i} cardImgNo={card} />
-                        )
-                        : (<div />)
+                { this.state.playState.requestingPlayerTurn
+                    ?   <div>
+                            <h4>Pick cards to bury</h4>
+                            {
+                                this.state.playState.playerCards
+                                    ? this.state.playState.playerCards.map((card: string, i: number) =>
+                                        <DraggableCard key={i} cardImgNo={card} />
+                                    )
+                                    : (<div />)
+                            }
+                        </div>
+                    :   <div><h4>Bury Phase</h4>Waiting for Picker to bury cards.</div>
                 }
             </div>
         );
@@ -91,9 +96,10 @@ export default class ActionPane extends React.Component<ActionPaneProps, ActionP
                         ? <PickPane gameId={this.state.gameId}
                             pickChoices={this.state.pickChoices}
                             playerCards={this.state.playState.playerCards}
-                            requestingPlayerTurn={this.state.playState.requestingPlayerTurn} />
-                    : this.displayPhase() == 'Bury' ? this.renderBury()
-                    : <h4>Other</h4>
+                            requestingPlayerTurn={this.state.playState.requestingPlayerTurn}
+                            onPick={this.initializePlayStatePinging} />
+                        :
+                    this.displayPhase() == 'Bury' ? this.renderBury() : <h4>Other</h4>
                 }
             </div>
         );
