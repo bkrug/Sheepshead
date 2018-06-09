@@ -5,6 +5,7 @@ import { FetchUtils } from '../FetchUtils';
 import { render } from 'react-dom';
 import DraggableCard from './DraggableCard';
 import PickPane from './PickPane';
+import BuryPane from './BuryPane';
 import { PlayState, PickChoice } from './PlayState';
 
 export interface ActionPaneState {
@@ -35,11 +36,11 @@ export default class ActionPane extends React.Component<ActionPaneProps, ActionP
             },
             pickChoices: []
         };
-        this.initializePlayStatePinging = this.initializePlayStatePinging.bind(this);
-        this.initializePlayStatePinging();
+        this.loadPlayState = this.loadPlayState.bind(this);
+        this.loadPlayState();
     }
 
-    private initializePlayStatePinging(): void {
+    private loadPlayState(): void {
         var self = this;
         FetchUtils.repeatGet(
             'Game/GetPlayState?gameId=' + this.state.gameId + '&playerId=' + this.state.playerId,
@@ -68,26 +69,6 @@ export default class ActionPane extends React.Component<ActionPaneProps, ActionP
             return 'Other';
     }
 
-    private renderBury() {
-        return (
-            <div>
-                { this.state.playState.requestingPlayerTurn
-                    ?   <div>
-                            <h4>Pick cards to bury</h4>
-                            {
-                                this.state.playState.playerCards
-                                    ? this.state.playState.playerCards.map((card: string, i: number) =>
-                                        <DraggableCard key={i} cardImgNo={card} />
-                                    )
-                                    : (<div />)
-                            }
-                        </div>
-                    :   <div><h4>Bury Phase</h4>Waiting for Picker to bury cards.</div>
-                }
-            </div>
-        );
-    }
-
     public render() {
         return (
             <div>
@@ -97,9 +78,17 @@ export default class ActionPane extends React.Component<ActionPaneProps, ActionP
                             pickChoices={this.state.pickChoices}
                             playerCards={this.state.playState.playerCards}
                             requestingPlayerTurn={this.state.playState.requestingPlayerTurn}
-                            onPick={this.initializePlayStatePinging} />
+                            onPick={this.loadPlayState} />
                         :
-                    this.displayPhase() == 'Bury' ? this.renderBury() : <h4>Other</h4>
+                    this.displayPhase() == 'Bury'
+                        ? <BuryPane gameId={this.state.gameId}
+                            playerCards={this.state.playState.playerCards}
+                            requestingPlayerTurn={this.state.playState.requestingPlayerTurn}
+                            onBury={this.loadPlayState} />
+                    : <div>
+                                <h4>Other Phase</h4>
+                                This is not a Pick or Bury phase.
+                      </div>
                 }
             </div>
         );

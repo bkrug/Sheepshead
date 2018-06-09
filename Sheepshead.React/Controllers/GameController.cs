@@ -67,5 +67,17 @@ namespace Sheepshead.React.Controllers
                 return Json(game.PlayState(playerGuid).Blinds);
             return Json(new List<int>());
         }
+
+        [HttpPost]
+        public IActionResult RecordBury(string gameId, string playerId, string[] cardFilenames)
+        {
+            var playerGuid = Guid.Parse(playerId);
+            var repository = new GameRepository(GameDictionary.Instance.Dictionary);
+            var game = repository.GetById(Guid.Parse(gameId));
+            var human = game.Players.OfType<IHumanPlayer>().Single(h => h.Id == playerGuid);
+            var buriedCards = cardFilenames.Select(c => CardUtil.GetCardFromFilename(c)).ToList();
+            game.BuryCards(human, buriedCards);
+            return Json(new { buryRecorded = true });
+        }
     }
 }

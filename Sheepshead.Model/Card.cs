@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Collections.Generic;
 
 namespace Sheepshead.Models
@@ -180,6 +181,11 @@ namespace Sheepshead.Models
         public static string GetPictureFilename(SheepCard card)
         {
             return list1[card];
+        }
+
+        public static SheepCard GetCardFromFilename(string filename)
+        {
+            return list1.First(l => l.Value == filename).Key;
         }
 
         public static string ToAbbr(SheepCard card)

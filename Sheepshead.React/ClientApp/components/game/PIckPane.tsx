@@ -55,7 +55,6 @@ export default class PickPane extends React.Component<PickPaneProps, PickPaneSta
     }
 
     private pickChoice(willPick: boolean): void {
-        console.log(willPick);
         var self = this;
         FetchUtils.post(
             'Game/RecordPickChoice?gameId=' + this.state.gameId + '&playerId=' + this.state.playerId + '&willPick=' + willPick,
