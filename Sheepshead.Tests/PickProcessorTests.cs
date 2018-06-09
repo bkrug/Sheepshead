@@ -77,6 +77,36 @@ namespace Sheepshead.Tests
         }
 
         [TestMethod]
+        public void PickProcessor_PlayNonHumanPickTurns_NextPlayerIsHuman()
+        {
+            var deckMock = new Mock<IDeck>();
+
+            var refusingPlayers = new List<IPlayer>() {
+                new Mock<IComputerPlayer>().Object,
+                new Mock<IHumanPlayer>().Object
+            };
+            var refusingPlayersOrig = refusingPlayers.ToList();
+            deckMock.SetupGet(m => m.PlayersRefusingPick).Returns(refusingPlayers);
+
+            var unplayedPlayersOrig = new List<IPlayer>()
+            {
+                new Mock<IHumanPlayer>().Object,
+                new ComputerPlayerPickingMock(false),
+                new ComputerPlayerPickingMock(false)
+            };
+            var unplayedPlayers = unplayedPlayersOrig.ToList();
+            deckMock.SetupGet(m => m.PlayersWithoutPickTurn).Returns(unplayedPlayers);
+
+            var pickProcessor = new PickProcessor();
+            var picker = pickProcessor.PlayNonHumanPickTurns(deckMock.Object, null);
+
+            Assert.IsNull(picker);
+            Assert.AreEqual(2, refusingPlayers.Count);
+            Assert.AreSame(refusingPlayersOrig[0], refusingPlayers[0]);
+            Assert.AreSame(refusingPlayersOrig[1], refusingPlayers[1]);
+        }
+
+        [TestMethod]
         public void PickProcessor_PlayNonHumanPickTurns_FindPicker()
         {
             var deckMock = new Mock<IDeck>();
@@ -105,29 +135,6 @@ namespace Sheepshead.Tests
             Assert.AreSame(refusingPlayersOrig[0], refusingPlayers[0]);
             Assert.AreSame(refusingPlayersOrig[1], refusingPlayers[1]);
             Assert.AreSame(unplayedPlayersOrig[0], refusingPlayers[2]);
-        }
-
-        [TestMethod]
-        public void PickProcessor_PlayNonHumanPickTurns_WrongPlayer()
-        {
-            var playerMocks = new List<Mock>() { new Mock<IHumanPlayer>(), new Mock<IComputerPlayer>(), new Mock<IComputerPlayer>(), new Mock<IHumanPlayer>() };
-            var unplayedPlayers = playerMocks.Select(m => m.Object as IPlayer).ToList();
-
-            var deckMock = new Mock<IDeck>();
-            deckMock.Setup(m => m.PlayersWithoutPickTurn).Returns(unplayedPlayers);
-            var refusingPlayers = new List<IPlayer>() { new Mock<IHumanPlayer>().Object };
-            deckMock.Setup(m => m.PlayersRefusingPick).Returns(refusingPlayers);
-
-            var pickProcessor = new PickProcessor();
-            var threwException = false;
-            try {
-                var picker = pickProcessor.PlayNonHumanPickTurns(deckMock.Object, null);
-            }
-            catch(NotPlayersTurnException)
-            {
-                threwException = true;
-            }
-            Assert.IsTrue(threwException, "Can't let computer pick unless computer has next turn.");
         }
 
         [TestMethod]
