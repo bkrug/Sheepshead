@@ -3,7 +3,7 @@
     humanTurn: boolean;
     requestingPlayerTurn: boolean;
     blinds: number[];
-    pickChoices: { [key: string]: boolean };
+    pickChoices: any[];
     cardsPlayed: { [key: string]: string };
     playerCards: string[];
 }

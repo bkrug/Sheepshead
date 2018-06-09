@@ -10,7 +10,7 @@ export interface ActionPaneState {
     gameId: string;
     playerId: string;
     playState: PlayState;
-    pickChoices: { [key: string]: boolean };
+    pickChoices: any[];
 }
 
 export interface ActionPaneProps extends React.Props<any> {
@@ -28,11 +28,11 @@ export default class ActionPane extends React.Component<ActionPaneProps, ActionP
                 humanTurn: false,
                 requestingPlayerTurn: false,
                 blinds: [],
-                pickChoices: {},
+                pickChoices: [],
                 cardsPlayed: {},
                 playerCards: []
             },
-            pickChoices: {}
+            pickChoices: []
         };
         this.initializePlayStatePinging = this.initializePlayStatePinging.bind(this);
         this.initializePlayStatePinging();
@@ -47,7 +47,6 @@ export default class ActionPane extends React.Component<ActionPaneProps, ActionP
                     playState: json,
                     pickChoices: json.pickChoices
                 });
-                console.log(self.state);
             },
             function (json: PlayState): boolean {
                 return false; // json.requestingPlayerTurn == false;

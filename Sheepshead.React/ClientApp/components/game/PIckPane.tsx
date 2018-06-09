@@ -8,14 +8,14 @@ import DraggableCard from './DraggableCard';
 export interface PickPaneState {
     gameId: string;
     playerId: string;
-    pickChoices: { [key: string]: boolean };
+    pickChoices: any[];
     playerCards: string[];
     requestingPlayerTurn: boolean;
 }
 
 export interface PickPaneProps extends React.Props<any> {
     gameId: string;
-    pickChoices: { [key: string]: boolean };
+    pickChoices: any[];
     playerCards: string[];
     requestingPlayerTurn: boolean;
 }
@@ -43,23 +43,12 @@ export default class PickPane extends React.Component<PickPaneProps, PickPaneSta
                     pickChoices: json.pickChoices,
                     requestingPlayerTurn: json.requestingPlayerTurn
                 });
-                console.log(self.state);
+                console.log(self.state.pickChoices[2].valueOf());
             },
             function (json: PlayState): boolean {
                 return json.requestingPlayerTurn == false;
             },
             1000);
-    }
-
-    private renderChoices(given1: { [key: string]: boolean }): any[] {
-        var retVal = [];
-        for (var prop in given1) {
-            retVal.push({
-                playerName: prop,
-                madeChoice: given1[prop]
-            });
-        }
-        return retVal;
     }
 
     private pickChoice(willPick: boolean): void {
@@ -78,12 +67,11 @@ export default class PickPane extends React.Component<PickPaneProps, PickPaneSta
             <div>
                 <h4>Pick Phase</h4>
                 {
-                    this.renderChoices(this.state.pickChoices).map(
-                        (pickChoice: any, i: number) =>
+                    Object.keys(this.state.pickChoices).map((playerName, i) => (
                             <div key={i}>
-                                <p>{pickChoice.playerName + (pickChoice.madeChoice ? ' picked.' : ' refused.')}</p>
+                            <p>{this.state.pickChoices[i].item1 + (this.state.pickChoices[i].item2 ? ' picked.' : ' refused.')}</p>
                             </div>
-                    )
+                    ))
                 }
                 <div>
                     {
