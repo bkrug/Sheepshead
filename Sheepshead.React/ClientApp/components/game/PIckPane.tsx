@@ -32,6 +32,7 @@ export default class PickPane extends React.Component<PickPaneProps, PickPaneSta
             playerCards: props.playerCards,
             requestingPlayerTurn: props.requestingPlayerTurn
         };
+        this.pickChoice = this.pickChoice.bind(this);
         this.initializePlayStatePinging = this.initializePlayStatePinging.bind(this);
         this.initializePlayStatePinging();
     }
@@ -59,7 +60,10 @@ export default class PickPane extends React.Component<PickPaneProps, PickPaneSta
         FetchUtils.post(
             'Game/RecordPickChoice?gameId=' + this.state.gameId + '&playerId=' + this.state.playerId + '&willPick=' + willPick,
             function (json: number[]): void {
-                self.props.onPick();
+                if (willPick)
+                    self.props.onPick();
+                else
+                    self.initializePlayStatePinging();
             }
         );
     }

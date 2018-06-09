@@ -13,6 +13,7 @@ export interface ActionPaneState {
     playerId: string;
     playState: PlayState;
     pickChoices: any[];
+    turnType: string;
 }
 
 export interface ActionPaneProps extends React.Props<any> {
@@ -34,7 +35,8 @@ export default class ActionPane extends React.Component<ActionPaneProps, ActionP
                 cardsPlayed: {},
                 playerCards: []
             },
-            pickChoices: []
+            pickChoices: [],
+            turnType: '',
         };
         this.loadPlayState = this.loadPlayState.bind(this);
         this.loadPlayState();
@@ -47,7 +49,8 @@ export default class ActionPane extends React.Component<ActionPaneProps, ActionP
             function (json: PlayState): void {
                 self.setState({
                     playState: json,
-                    pickChoices: json.pickChoices
+                    pickChoices: json.pickChoices,
+                    turnType: json.turnType
                 });
             },
             function (json: PlayState): boolean {
@@ -59,11 +62,11 @@ export default class ActionPane extends React.Component<ActionPaneProps, ActionP
     private displayPhase(): string {
         if (this.state.playState == null)
             return 'Other';
-        if (this.state.playState.turnType == 'Pick')
+        if (this.state.turnType == 'Pick')
             return 'Pick';
-        //if (this.state.playState.turnType == 'Bury' && !this.state.playState.requestingPlayerTurn)
+        //if (this.state.turnType == 'Bury' && !this.state.playState.requestingPlayerTurn)
         //    return 'Pick';
-        if (this.state.playState.turnType == 'Bury') // && this.state.playState.requestingPlayerTurn)
+        if (this.state.turnType == 'Bury') // && this.state.playState.requestingPlayerTurn)
             return 'Bury';
         else
             return 'Other';
@@ -86,8 +89,8 @@ export default class ActionPane extends React.Component<ActionPaneProps, ActionP
                             requestingPlayerTurn={this.state.playState.requestingPlayerTurn}
                             onBury={this.loadPlayState} />
                     : <div>
-                                <h4>Other Phase</h4>
-                                This is not a Pick or Bury phase.
+                            <h4>Other Phase</h4>
+                            This is not a Pick or Bury phase.
                       </div>
                 }
             </div>
