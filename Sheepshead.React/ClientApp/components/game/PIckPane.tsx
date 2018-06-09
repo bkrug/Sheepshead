@@ -4,18 +4,19 @@ import { IdUtils } from '../IdUtils';
 import { FetchUtils } from '../FetchUtils';
 import { render } from 'react-dom';
 import DraggableCard from './DraggableCard';
+import { PlayState, PickChoice } from './PlayState';
 
 export interface PickPaneState {
     gameId: string;
     playerId: string;
-    pickChoices: any[];
+    pickChoices: PickChoice[];
     playerCards: string[];
     requestingPlayerTurn: boolean;
 }
 
 export interface PickPaneProps extends React.Props<any> {
     gameId: string;
-    pickChoices: any[];
+    pickChoices: PickChoice[];
     playerCards: string[];
     requestingPlayerTurn: boolean;
 }
@@ -43,10 +44,9 @@ export default class PickPane extends React.Component<PickPaneProps, PickPaneSta
                     pickChoices: json.pickChoices,
                     requestingPlayerTurn: json.requestingPlayerTurn
                 });
-                console.log(self.state.pickChoices[2].valueOf());
             },
             function (json: PlayState): boolean {
-                return json.requestingPlayerTurn == false;
+                return true;// json.requestingPlayerTurn == false;
             },
             1000);
     }

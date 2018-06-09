@@ -5,6 +5,7 @@ import { FetchUtils } from '../FetchUtils';
 import { render } from 'react-dom';
 import DraggableCard from './DraggableCard';
 import PickPane from './PickPane';
+import { PlayState, PickChoice } from './PlayState';
 
 export interface ActionPaneState {
     gameId: string;

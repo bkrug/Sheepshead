@@ -1,9 +1,14 @@
-﻿class PlayState {
+﻿export class PlayState {
     turnType: string;
     humanTurn: boolean;
     requestingPlayerTurn: boolean;
     blinds: number[];
-    pickChoices: any[];
+    pickChoices: PickChoice[];
     cardsPlayed: { [key: string]: string };
     playerCards: string[];
+}
+
+export class PickChoice {
+    item1: string;
+    item2: boolean;
 }
