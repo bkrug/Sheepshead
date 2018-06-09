@@ -28,7 +28,9 @@
     <None Remove="ClientApp\components\game\DraggableCard.tsx" />
     <None Remove="ClientApp\components\game\GameDetails.tsx" />
     <None Remove="ClientApp\components\game\HandDetails.tsx" />
+    <None Remove="ClientApp\components\game\PIckPane.tsx" />
     <None Remove="ClientApp\components\game\PlayPane.tsx" />
+    <None Remove="ClientApp\components\game\PlayState.tsx" />
     <None Remove="ClientApp\components\game\RegistrationWait.tsx" />
     <None Remove="ClientApp\components\IdUtils.tsx" />
     <None Remove="ClientApp\components\setup\GameFull.tsx" />
@@ -108,6 +110,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <TypeScriptCompile Include="ClientApp\components\game\PickPane.tsx" />
     <TypeScriptCompile Include="ClientApp\components\game\ActionPane.tsx" />
     <TypeScriptCompile Include="ClientApp\components\game\CardDropBox.tsx" />
     <TypeScriptCompile Include="ClientApp\components\game\DraggableCard.tsx" />
@@ -115,6 +118,7 @@
     <TypeScriptCompile Include="ClientApp\components\game\HandDetails.tsx" />
     <TypeScriptCompile Include="ClientApp\components\game\PlayPane.tsx" />
     <TypeScriptCompile Include="ClientApp\components\FetchUtils.tsx" />
+    <TypeScriptCompile Include="ClientApp\components\game\PlayState.tsx" />
     <TypeScriptCompile Include="ClientApp\components\setup\RegistrationWait.tsx" />
     <TypeScriptCompile Include="ClientApp\components\IdUtils.tsx" />
     <TypeScriptCompile Include="ClientApp\components\setup\GameFull.tsx" />
