@@ -64,35 +64,39 @@ export default class ActionPane extends React.Component<ActionPaneProps, ActionP
             return 'Other';
         if (this.state.turnType == 'Pick')
             return 'Pick';
-        //if (this.state.turnType == 'Bury' && !this.state.playState.requestingPlayerTurn)
-        //    return 'Pick';
-        if (this.state.turnType == 'Bury') // && this.state.playState.requestingPlayerTurn)
+        if (this.state.turnType == 'Bury')
             return 'Bury';
         else
             return 'Other';
     }
 
+    public selectRenderPhase() {
+        var displayPhase = this.displayPhase();
+        switch (displayPhase) {
+            case 'Pick':
+                return (<PickPane gameId={this.state.gameId}
+                    pickChoices={this.state.pickChoices}
+                    playerCards={this.state.playState.playerCards}
+                    requestingPlayerTurn={this.state.playState.requestingPlayerTurn}
+                    onPick={this.loadPlayState} />);
+            case 'Bury':
+                return (<BuryPane gameId={this.state.gameId}
+                    playerCards={this.state.playState.playerCards}
+                    requestingPlayerTurn={this.state.playState.requestingPlayerTurn}
+                    onBury={this.loadPlayState} />);
+            default:
+                return (
+                    <div>
+                        <h4>Other Phase</h4>
+                        This is not a Pick or Bury phase.
+                    </div>);
+        }
+    }
+
     public render() {
         return (
             <div>
-                {
-                    this.displayPhase() == 'Pick'
-                        ? <PickPane gameId={this.state.gameId}
-                            pickChoices={this.state.pickChoices}
-                            playerCards={this.state.playState.playerCards}
-                            requestingPlayerTurn={this.state.playState.requestingPlayerTurn}
-                            onPick={this.loadPlayState} />
-                        :
-                    this.displayPhase() == 'Bury'
-                        ? <BuryPane gameId={this.state.gameId}
-                            playerCards={this.state.playState.playerCards}
-                            requestingPlayerTurn={this.state.playState.requestingPlayerTurn}
-                            onBury={this.loadPlayState} />
-                    : <div>
-                            <h4>Other Phase</h4>
-                            This is not a Pick or Bury phase.
-                      </div>
-                }
+                { this.selectRenderPhase() }
             </div>
         );
     }
