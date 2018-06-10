@@ -6,6 +6,7 @@ import { render } from 'react-dom';
 import DraggableCard from './DraggableCard';
 import PickPane from './PickPane';
 import BuryPane from './BuryPane';
+import TrickPane from './TrickPane';
 import { PlayState, PickChoice } from './PlayState';
 
 export interface ActionPaneState {
@@ -32,7 +33,7 @@ export default class ActionPane extends React.Component<ActionPaneProps, ActionP
                 requestingPlayerTurn: false,
                 blinds: [],
                 pickChoices: [],
-                cardsPlayed: {},
+                cardsPlayed: [],
                 playerCards: []
             },
             pickChoices: [],
@@ -66,6 +67,8 @@ export default class ActionPane extends React.Component<ActionPaneProps, ActionP
             return 'Pick';
         if (this.state.turnType == 'Bury')
             return 'Bury';
+        if (this.state.turnType == 'PlayTrick')
+            return 'PlayTrick';
         else
             return 'Other';
     }
@@ -84,11 +87,14 @@ export default class ActionPane extends React.Component<ActionPaneProps, ActionP
                     playerCards={this.state.playState.playerCards}
                     requestingPlayerTurn={this.state.playState.requestingPlayerTurn}
                     onBury={this.loadPlayState} />);
+            case 'PlayTrick':
+                return (<TrickPane gameId={this.state.gameId}
+                    playerCards={this.state.playState.playerCards} />);
             default:
                 return (
                     <div>
                         <h4>Other Phase</h4>
-                        This is not a Pick or Bury phase.
+                        This is not a Pick or Bury or Trick phase.
                     </div>);
         }
     }

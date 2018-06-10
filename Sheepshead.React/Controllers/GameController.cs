@@ -12,8 +12,7 @@ namespace Sheepshead.React.Controllers
         [HttpGet]
         public IActionResult Summary(string gameId)
         {
-            var repository = new GameRepository(GameDictionary.Instance.Dictionary);
-            var game = repository.GetById(Guid.Parse(gameId));
+            IGame game = GetGame(gameId);
             var hand = game.TurnState?.Deck?.Hand;
             if (hand == null)
                 return Json(game.Players.Select(p => new
@@ -31,8 +30,7 @@ namespace Sheepshead.React.Controllers
         [HttpGet]
         public IActionResult GetCards(string gameId, string playerId)
         {
-            var repository = new GameRepository(GameDictionary.Instance.Dictionary);
-            var game = repository.GetById(Guid.Parse(gameId));
+            IGame game = GetGame(gameId);
             var player = game.Players.OfType<IHumanPlayer>().Single(p => p.Id == Guid.Parse(playerId));
             return Json(player.Cards.Select(c => new
             {
@@ -44,13 +42,22 @@ namespace Sheepshead.React.Controllers
         [HttpGet]
         public IActionResult GetPlayState(string gameId, string playerId)
         {
-            var repository = new GameRepository(GameDictionary.Instance.Dictionary);
-            var game = repository.GetById(Guid.Parse(gameId));
+            IGame game = GetGame(gameId);
             var playState = game.PlayState(Guid.Parse(playerId));
-            if (!playState.HumanTurn && game.TurnType == TurnType.Pick)
+            if (!playState.HumanTurn)
             {
-                game.PlayNonHumanPickTurns();
-                playState = game.PlayState(Guid.Parse(playerId));
+                switch (game.TurnType) {
+                    case TurnType.Pick:
+                        game.PlayNonHumanPickTurns();
+                        playState = game.PlayState(Guid.Parse(playerId));
+                        break;
+                    case TurnType.PlayTrick:
+                        game.PlayNonHumansInTrick();
+                        playState = game.PlayState(Guid.Parse(playerId));
+                        break;
+                    default:
+                        break;
+                }
             }
             return Json(playState);
         }
@@ -58,26 +65,44 @@ namespace Sheepshead.React.Controllers
         [HttpPost]
         public IActionResult RecordPickChoice(string gameId, string playerId, bool willPick)
         {
-            var playerGuid = Guid.Parse(playerId);
-            var repository = new GameRepository(GameDictionary.Instance.Dictionary);
-            var game = repository.GetById(Guid.Parse(gameId));
-            var human = game.Players.OfType<IHumanPlayer>().Single(h => h.Id == playerGuid);
+            GetGameAndHuman(gameId, playerId, out var game, out var human);
             var hand = game.ContinueFromHumanPickTurn(human, willPick);
             if (willPick)
-                return Json(game.PlayState(playerGuid).Blinds);
+                return Json(game.PlayState(Guid.Parse(playerId)).Blinds);
             return Json(new List<int>());
         }
 
         [HttpPost]
         public IActionResult RecordBury(string gameId, string playerId, string[] cardFilenames)
         {
-            var playerGuid = Guid.Parse(playerId);
-            var repository = new GameRepository(GameDictionary.Instance.Dictionary);
-            var game = repository.GetById(Guid.Parse(gameId));
-            var human = game.Players.OfType<IHumanPlayer>().Single(h => h.Id == playerGuid);
+            GetGameAndHuman(gameId, playerId, out var game, out var human);
             var buriedCards = cardFilenames.Select(c => CardUtil.GetCardFromFilename(c)).ToList();
             game.BuryCards(human, buriedCards);
             return Json(new { buryRecorded = true });
+        }
+
+        [HttpPost]
+        public IActionResult RecordTrickChoice(string gameId, string playerId, string cardFilename)
+        {
+            GetGameAndHuman(gameId, playerId, out var game, out var human);
+            var playedCard = CardUtil.GetCardFromFilename(cardFilename);
+            game.RecordTurn(human, playedCard);
+            game.PlayNonHumansInTrick();
+            return Json(new { playRecorded = true });
+        }
+
+        private static IGame GetGame(string gameId)
+        {
+            var repository = new GameRepository(GameDictionary.Instance.Dictionary);
+            return repository.GetById(Guid.Parse(gameId));
+        }
+
+        private static void GetGameAndHuman(string gameId, string playerId, out IGame game, out IHumanPlayer human)
+        {
+            var playerGuid = Guid.Parse(playerId);
+            var repository = new GameRepository(GameDictionary.Instance.Dictionary);
+            game = repository.GetById(Guid.Parse(gameId));
+            human = game.Players.OfType<IHumanPlayer>().Single(h => h.Id == playerGuid);
         }
     }
 }
