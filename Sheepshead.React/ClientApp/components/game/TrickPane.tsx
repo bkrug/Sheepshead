@@ -35,8 +35,7 @@ export default class TrickPane extends React.Component<TrickPaneProps, TrickPane
         this.initializePlayStatePinging = this.initializePlayStatePinging.bind(this);
         this.initializePlayStatePinging();
         this.displayOneMorePlay = this.displayOneMorePlay.bind(this);
-        var self = this;
-        setInterval(function () { self.displayOneMorePlay(); }, 500);
+        setInterval(this.displayOneMorePlay, 500);
     }
 
     private initializePlayStatePinging(): void {
