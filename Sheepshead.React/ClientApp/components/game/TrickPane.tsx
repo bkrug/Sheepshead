@@ -9,16 +9,14 @@ import { PlayState, TrickChoice } from './PlayState';
 export interface TrickPaneState {
     gameId: string;
     playerId: string;
-    cardsPlayed: TrickChoice[];
+    cardsPlayed: TrickChoice[][];
     playerCards: string[];
     requestingPlayerTurn: boolean;
 }
 
 export interface TrickPaneProps extends React.Props<any> {
     gameId: string;
-    //cardsPlayed: TrickChoice[];
     playerCards: string[];
-    //requestingPlayerTurn: boolean;
 }
 
 export default class TrickPane extends React.Component<TrickPaneProps, TrickPaneState> {
@@ -63,24 +61,37 @@ export default class TrickPane extends React.Component<TrickPaneProps, TrickPane
         );
     }
 
+    private renderOneTrick(playsInTrick: TrickChoice[]) {
+        return (
+            <div>
+                {
+                    Object.keys(playsInTrick).map((playerName, i) => (
+                        <div key={i} style={{ display: "inline-block" }}>
+                            <p>{playsInTrick[i].item1}</p>
+                            <DraggableCard key={i} cardImgNo={playsInTrick[i].item2} />
+                        </div>
+                    ))
+                }
+            </div>
+        );
+    }
+
     public render() {
         return (
             <div>
                 <h4>Trick Phase</h4>
                 {
-                    Object.keys(this.state.cardsPlayed).map((playerName, i) => (
-                            <div key={i}>
-                                <p>{this.state.cardsPlayed[i].item1}</p>
-                                <DraggableCard key={i} cardImgNo={this.state.cardsPlayed[i].item2} />
-                            </div>
+                    this.state.cardsPlayed.map((list: TrickChoice[], i: number) => (
+                        <div>
+                            <b>Trick {i+1}</b>
+                            {this.renderOneTrick(this.state.cardsPlayed[i])}
+                        </div>
                     ))
                 }
                 <div>
                     {
                         this.state.requestingPlayerTurn
-                            ? <div>
-                                <b>What card will you play?</b>
-                            </div>
+                            ? <div><b>What card will you play?</b></div>
                             : <div></div>
                     }
                 </div>

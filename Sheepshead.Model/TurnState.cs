@@ -29,7 +29,7 @@ namespace Sheepshead.Models
         //Player name and whether or not the picked
         public List<Tuple<string, bool>> PickChoices { get; set; }
         //Player name and card filename
-        public List<Tuple<string, string>> CardsPlayed { get; set; }
+        public List<List<Tuple<string, string>>> CardsPlayed { get; set; }
         //Filename number for the player's cards.
         public List<string> PlayerCards { get; set; }
     }

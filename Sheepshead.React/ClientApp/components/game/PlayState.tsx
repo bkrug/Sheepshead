@@ -4,7 +4,7 @@
     requestingPlayerTurn: boolean;
     blinds: number[];
     pickChoices: PickChoice[];
-    cardsPlayed: TrickChoice[];
+    cardsPlayed: TrickChoice[][];
     //cardsPlayed: { [key: string]: string };
     playerCards: string[];
 }
