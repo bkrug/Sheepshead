@@ -60,20 +60,14 @@ export default class TrickPane extends React.Component<TrickPaneProps, TrickPane
         var lastDisplayedTrick = this.state.displayedCardsPlayed[lastDisplayedTrickIndex];
         var inMemoryVersionOfTrick = this.state.cardsPlayed[lastDisplayedTrickIndex];
 
-        if (inMemoryVersionOfTrick.length > lastDisplayedTrick.length) {
-            var tricks = this.state.displayedCardsPlayed;
+        var tricks = this.state.displayedCardsPlayed;
+        if (inMemoryVersionOfTrick.length > lastDisplayedTrick.length)
             tricks[lastDisplayedTrickIndex] = inMemoryVersionOfTrick.slice(0, lastDisplayedTrick.length + 1);
-            this.setState({
-                displayedCardsPlayed: tricks
-            });
-        }
-        else if (this.state.cardsPlayed.length > this.state.displayedCardsPlayed.length) {
-            var tricks = this.state.displayedCardsPlayed;
+        else if (this.state.cardsPlayed.length > this.state.displayedCardsPlayed.length)
             tricks.push([]);
-            this.setState({
-                displayedCardsPlayed: tricks
-            });
-        }
+        this.setState({
+            displayedCardsPlayed: tricks
+        });
     }
 
     private trickChoice(card: DraggableCard): void {
