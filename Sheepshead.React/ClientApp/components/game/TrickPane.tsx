@@ -106,14 +106,8 @@ export default class TrickPane extends React.Component<TrickPaneProps, TrickPane
         return (
             <div>
                 <h4>Trick Phase</h4>
-                {
-                    this.state.displayedCardsPlayed.map((list: TrickChoice[], i: number) => (
-                        <div key={i}>
-                            <b>Trick {i+1}</b>
-                            {this.renderOneTrick(this.state.displayedCardsPlayed[i])}
-                        </div>
-                    ))
-                }
+                <b>Trick {this.state.displayedCardsPlayed.length}</b>
+                { this.renderOneTrick(this.state.displayedCardsPlayed[this.state.displayedCardsPlayed.length - 1]) }
                 <div>
                     {
                         this.state.requestingPlayerTurn
