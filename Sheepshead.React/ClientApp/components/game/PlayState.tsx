@@ -5,8 +5,8 @@
     blinds: number[];
     pickChoices: PickChoice[];
     cardsPlayed: TrickChoice[][];
-    //cardsPlayed: { [key: string]: string };
     playerCards: string[];
+    trickWinners: string[];
 }
 
 export class PickChoice {

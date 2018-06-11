@@ -10,6 +10,7 @@ export interface TrickPaneState {
     gameId: string;
     playerId: string;
     cardsPlayed: TrickChoice[][];
+    displayedCardsPlayed: TrickChoice[][];
     playerCards: string[];
     requestingPlayerTurn: boolean;
 }
@@ -26,12 +27,16 @@ export default class TrickPane extends React.Component<TrickPaneProps, TrickPane
             gameId: props.gameId,
             playerId: IdUtils.getPlayerId(props.gameId) || '',
             cardsPlayed: [],
+            displayedCardsPlayed: [[]],
             playerCards: props.playerCards,
             requestingPlayerTurn: false
         };
         this.trickChoice = this.trickChoice.bind(this);
         this.initializePlayStatePinging = this.initializePlayStatePinging.bind(this);
         this.initializePlayStatePinging();
+        this.displayOneMorePlay = this.displayOneMorePlay.bind(this);
+        var self = this;
+        setInterval(function () { self.displayOneMorePlay(); }, 500);
     }
 
     private initializePlayStatePinging(): void {
@@ -49,6 +54,27 @@ export default class TrickPane extends React.Component<TrickPaneProps, TrickPane
                 return json.requestingPlayerTurn == false && json.turnType == "PlayTrick";
             },
             1000);
+    }
+
+    private displayOneMorePlay(): void {
+        var lastDisplayedTrickIndex = this.state.displayedCardsPlayed.length - 1;
+        var lastDisplayedTrick = this.state.displayedCardsPlayed[lastDisplayedTrickIndex];
+        var inMemoryVersionOfTrick = this.state.cardsPlayed[lastDisplayedTrickIndex];
+
+        if (inMemoryVersionOfTrick.length > lastDisplayedTrick.length) {
+            var tricks = this.state.displayedCardsPlayed;
+            tricks[lastDisplayedTrickIndex] = inMemoryVersionOfTrick.slice(0, lastDisplayedTrick.length + 1);
+            this.setState({
+                displayedCardsPlayed: tricks
+            });
+        }
+        else if (this.state.cardsPlayed.length > this.state.displayedCardsPlayed.length) {
+            var tricks = this.state.displayedCardsPlayed;
+            tricks.push([]);
+            this.setState({
+                displayedCardsPlayed: tricks
+            });
+        }
     }
 
     private trickChoice(card: DraggableCard): void {
@@ -81,10 +107,10 @@ export default class TrickPane extends React.Component<TrickPaneProps, TrickPane
             <div>
                 <h4>Trick Phase</h4>
                 {
-                    this.state.cardsPlayed.map((list: TrickChoice[], i: number) => (
-                        <div>
+                    this.state.displayedCardsPlayed.map((list: TrickChoice[], i: number) => (
+                        <div key={i}>
                             <b>Trick {i+1}</b>
-                            {this.renderOneTrick(this.state.cardsPlayed[i])}
+                            {this.renderOneTrick(this.state.displayedCardsPlayed[i])}
                         </div>
                     ))
                 }

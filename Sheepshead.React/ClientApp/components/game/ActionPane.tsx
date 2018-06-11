@@ -34,7 +34,8 @@ export default class ActionPane extends React.Component<ActionPaneProps, ActionP
                 blinds: [],
                 pickChoices: [],
                 cardsPlayed: [],
-                playerCards: []
+                playerCards: [],
+                trickWinners: []
             },
             pickChoices: [],
             turnType: '',

@@ -153,7 +153,8 @@ namespace Sheepshead.Models
                     .Where(p => p.Item1 != null)
                     .ToList(),
                 CardsPlayed = tricks.Select(t => t.CardsPlayed.Select(cp => new Tuple<string, string>(cp.Key.Name, CardUtil.GetPictureFilename(cp.Value))).ToList())?.ToList(),
-                PlayerCards = requestingPlayer?.Cards?.Select(rp => CardUtil.GetPictureFilename(rp))?.ToList()
+                PlayerCards = requestingPlayer?.Cards?.Select(rp => CardUtil.GetPictureFilename(rp))?.ToList(),
+                TrickWinners = tricks.Select(t => t?.Winner()?.Player?.Name).Where(t => t != null).ToList()
             };
         }
     }
