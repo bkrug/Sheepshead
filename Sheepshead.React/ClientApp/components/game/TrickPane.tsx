@@ -18,6 +18,7 @@ export interface TrickPaneState {
 export interface TrickPaneProps extends React.Props<any> {
     gameId: string;
     playerCards: string[];
+    onTrickEnd: () => void;
 }
 
 export default class TrickPane extends React.Component<TrickPaneProps, TrickPaneState> {
@@ -43,11 +44,16 @@ export default class TrickPane extends React.Component<TrickPaneProps, TrickPane
         FetchUtils.repeatGet(
             'Game/GetPlayState?gameId=' + this.state.gameId + '&playerId=' + this.state.playerId,
             function (json: PlayState): void {
+                var trickCount = self.state.cardsPlayed.length;
+
                 self.setState({
                     cardsPlayed: json.cardsPlayed,
                     requestingPlayerTurn: json.requestingPlayerTurn,
                     playerCards: json.playerCards
                 });
+
+                if (trickCount != json.cardsPlayed.length)
+                    self.props.onTrickEnd();
             },
             function (json: PlayState): boolean {
                 return json.requestingPlayerTurn == false && json.turnType == "PlayTrick";

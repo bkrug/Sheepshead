@@ -19,6 +19,7 @@ export interface ActionPaneState {
 
 export interface ActionPaneProps extends React.Props<any> {
     gameId: string;
+    onTrickEnd: () => void;
 }
 
 export default class ActionPane extends React.Component<ActionPaneProps, ActionPaneState> {
@@ -90,7 +91,8 @@ export default class ActionPane extends React.Component<ActionPaneProps, ActionP
                     onBury={this.loadPlayState} />);
             case 'PlayTrick':
                 return (<TrickPane gameId={this.state.gameId}
-                    playerCards={this.state.playState.playerCards} />);
+                    playerCards={this.state.playState.playerCards}
+                    onTrickEnd={this.props.onTrickEnd} />);
             default:
                 return (
                     <div>

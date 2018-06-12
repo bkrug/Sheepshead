@@ -62,6 +62,13 @@ namespace Sheepshead.React.Controllers
             return Json(playState);
         }
 
+        [HttpGet]
+        public IActionResult GetTrickResults(string gameId)
+        {
+            var game = GetGame(gameId);
+            return Json(new { trickWinners = game.GetTrickWinners() });
+        }
+
         [HttpPost]
         public IActionResult RecordPickChoice(string gameId, string playerId, bool willPick)
         {

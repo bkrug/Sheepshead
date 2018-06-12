@@ -153,9 +153,15 @@ namespace Sheepshead.Models
                     .Where(p => p.Item1 != null)
                     .ToList(),
                 CardsPlayed = tricks.Select(t => t.CardsPlayed.Select(cp => new Tuple<string, string>(cp.Key.Name, CardUtil.GetPictureFilename(cp.Value))).ToList())?.ToList(),
-                PlayerCards = requestingPlayer?.Cards?.Select(rp => CardUtil.GetPictureFilename(rp))?.ToList(),
-                TrickWinners = tricks.Select(t => t?.Winner()?.Player?.Name).Where(t => t != null).ToList()
+                PlayerCards = requestingPlayer?.Cards?.Select(rp => CardUtil.GetPictureFilename(rp))?.ToList()
             };
+        }
+
+        public List<string> GetTrickWinners()
+        {
+            var currentDeck = _gameStateDesciber.CurrentDeck;
+            var tricks = currentDeck?.Hand?.Tricks ?? new List<ITrick>();
+            return tricks.Where(t => t.PlayersWithoutTurn.Count == 0).Select(t => t?.Winner()?.Player?.Name).ToList();
         }
     }
 
@@ -210,5 +216,6 @@ namespace Sheepshead.Models
         void RecordTurn(IHumanPlayer player, SheepCard card);
         void MaybeGiveComputerPlayersNames();
         PlayState PlayState(Guid requestingPlayerId);
+        List<string> GetTrickWinners();
     }
 }

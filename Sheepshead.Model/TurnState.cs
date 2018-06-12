@@ -32,6 +32,5 @@ namespace Sheepshead.Models
         public List<List<Tuple<string, string>>> CardsPlayed { get; set; }
         //Filename number for the player's cards.
         public List<string> PlayerCards { get; set; }
-        public List<string> TrickWinners { get; set; }
     }
 }

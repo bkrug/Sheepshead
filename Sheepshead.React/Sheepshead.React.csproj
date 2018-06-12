@@ -28,7 +28,6 @@
     <None Remove="ClientApp\components\game\CardDropBox.tsx" />
     <None Remove="ClientApp\components\game\DraggableCard.tsx" />
     <None Remove="ClientApp\components\game\GameDetails.tsx" />
-    <None Remove="ClientApp\components\game\HandDetails.tsx" />
     <None Remove="ClientApp\components\game\PIckPane.tsx" />
     <None Remove="ClientApp\components\game\PlayPane.tsx" />
     <None Remove="ClientApp\components\game\PlayState.tsx" />
@@ -119,7 +118,6 @@
     <TypeScriptCompile Include="ClientApp\components\game\CardDropBox.tsx" />
     <TypeScriptCompile Include="ClientApp\components\game\DraggableCard.tsx" />
     <TypeScriptCompile Include="ClientApp\components\game\GameDetails.tsx" />
-    <TypeScriptCompile Include="ClientApp\components\game\HandDetails.tsx" />
     <TypeScriptCompile Include="ClientApp\components\game\PlayPane.tsx" />
     <TypeScriptCompile Include="ClientApp\components\FetchUtils.tsx" />
     <TypeScriptCompile Include="ClientApp\components\game\PlayState.tsx" />
