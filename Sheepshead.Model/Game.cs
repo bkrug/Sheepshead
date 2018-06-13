@@ -99,12 +99,15 @@ namespace Sheepshead.Models
         }
 
         //TEST: That the move is recorded.
-        //TEST: Throw an error if it is not this player's turn yet.
-        //TEST: Throw an error if this is not the play trick phase.
-        //TEST: Throw an error if the player doesn't have this card.
         public void RecordTurn(IHumanPlayer player, SheepCard card)
         {
-            ITrick trick = Decks.Last().Hand.Tricks.Last();
+            var trick = _gameStateDesciber.CurrentTrick;
+            if (trick.PlayersWithoutTurn.FirstOrDefault() != player)
+                throw new NotPlayersTurnException($"This is not the turn for the player: {player.Name}");
+            if (!player.Cards.Contains(card))
+                throw new ArgumentException("Player does not have this card", "card");
+            if (!trick.IsLegalAddition(card, player))
+                throw new ArgumentException("This move is not legal", "card");
             trick.Add(player, card);
         }
 

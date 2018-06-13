@@ -64,9 +64,9 @@ namespace Sheepshead.Models
 
         public bool IsLegalAddition(SheepCard card, IPlayer player)
         {
-            var hand = player.Cards;
             if (!_cards.Any())
                 return true;
+            var hand = player.Cards;
             var firstCard = _cards.First().Value;
             return hand.Contains(card) 
                 && (CardUtil.GetSuit(card) == CardUtil.GetSuit(firstCard) || !hand.Any(c => CardUtil.GetSuit(c) == CardUtil.GetSuit(firstCard)));

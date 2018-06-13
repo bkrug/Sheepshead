@@ -244,5 +244,112 @@ namespace Sheepshead.Tests
             Assert.AreEqual(1, game.UnassignedPlayers.Count);
             Assert.IsTrue(game.UnassignedPlayers.Contains(human1.Object));
         }
+
+        [TestMethod]
+        public void Game_RecordTurn_IllegalMove()
+        {
+            var humanPlayerMock = new Mock<IHumanPlayer>();
+            humanPlayerMock.Setup(m => m.Cards).Returns(new List<SheepCard>()
+            {
+                SheepCard.N7_CLUBS, SheepCard.N7_HEARTS, SheepCard.KING_HEARTS
+            });
+            var players = new List<IPlayer> {
+                new Mock<IPlayer>().Object,
+                new Mock<IPlayer>().Object,
+                humanPlayerMock.Object,
+                new Mock<IPlayer>().Object,
+                new Mock<IPlayer>().Object
+            };
+            var trickMock = new Mock<ITrick>();
+            trickMock.Setup(m => m.PlayersWithoutTurn).Returns(players.Skip(2).ToList());
+            trickMock.Setup(m => m.IsLegalAddition(SheepCard.N7_CLUBS, (IHumanPlayer)players[2])).Returns(false);
+            var gamestateDescriberMock = new Mock<IGameStateDescriber>();
+            gamestateDescriberMock.Setup(m => m.CurrentTrick).Returns(trickMock.Object);
+
+            var game = new Game(players, null, null, gamestateDescriberMock.Object);
+            try
+            {
+                game.RecordTurn((IHumanPlayer)players[2], SheepCard.N7_CLUBS);
+                Assert.Fail("An exception should have been thrown because the move was illegal");
+            }
+            catch (ArgumentException ex)
+            {
+                Assert.AreEqual("card", ex.ParamName, "Argument exception should have been thrown because that move was not legal.");
+            }
+        }
+
+        [TestMethod]
+        public void Game_RecordTurn_DoesNotHaveCard()
+        {
+            var humanPlayerMock = new Mock<IHumanPlayer>();
+            humanPlayerMock.Setup(m => m.Cards).Returns(new List<SheepCard>()
+            {
+                SheepCard.N7_CLUBS, SheepCard.N7_HEARTS, SheepCard.KING_HEARTS
+            });
+            var players = new List<IPlayer> {
+                new Mock<IPlayer>().Object,
+                new Mock<IPlayer>().Object,
+                humanPlayerMock.Object,
+                new Mock<IPlayer>().Object,
+                new Mock<IPlayer>().Object
+            };
+            var trickMock = new Mock<ITrick>();
+            trickMock.Setup(m => m.PlayersWithoutTurn).Returns(players.Skip(2).ToList());
+            trickMock.Setup(m => m.CardsPlayed).Returns(new Dictionary<IPlayer, SheepCard>()
+            {
+                { players[0], SheepCard.ACE_HEARTS },
+                { players[1], SheepCard.N7_SPADES }
+            });
+            var gamestateDescriberMock = new Mock<IGameStateDescriber>();
+            gamestateDescriberMock.Setup(m => m.CurrentTrick).Returns(trickMock.Object);
+
+            var game = new Game(players, null, null, gamestateDescriberMock.Object);
+            try
+            {
+                game.RecordTurn((IHumanPlayer)players[2], SheepCard.N8_HEARTS);
+                Assert.Fail("An exception should have been thrown because player does not have this card.");
+            }
+            catch (ArgumentException ex)
+            {
+                Assert.AreEqual("card", ex.ParamName, "Argument exception should have been thrown because player does not have this card.");
+                Assert.IsTrue(ex.Message.StartsWith("Player does not have this card"));
+            }
+        }
+
+        [TestMethod]
+        public void Game_RecordTurn_NotPlayersTurn()
+        {
+            var humanPlayerMock = new Mock<IHumanPlayer>();
+            humanPlayerMock.Setup(m => m.Cards).Returns(new List<SheepCard>()
+            {
+                SheepCard.N7_CLUBS, SheepCard.N7_HEARTS, SheepCard.KING_HEARTS
+            });
+            var players = new List<IPlayer> {
+                new Mock<IPlayer>().Object,
+                new Mock<IPlayer>().Object,
+                humanPlayerMock.Object,
+                new Mock<IPlayer>().Object,
+                new Mock<IPlayer>().Object
+            };
+            var trickMock = new Mock<ITrick>();
+            trickMock.Setup(m => m.PlayersWithoutTurn).Returns(players.Skip(1).ToList());
+            trickMock.Setup(m => m.CardsPlayed).Returns(new Dictionary<IPlayer, SheepCard>()
+            {
+                { players[0], SheepCard.ACE_HEARTS }
+            });
+            var gamestateDescriberMock = new Mock<IGameStateDescriber>();
+            gamestateDescriberMock.Setup(m => m.CurrentTrick).Returns(trickMock.Object);
+
+            var game = new Game(players, null, null, gamestateDescriberMock.Object);
+            try
+            {
+                game.RecordTurn((IHumanPlayer)players[2], SheepCard.N7_HEARTS);
+                Assert.Fail("An exception should have been thrown because it is not the player's turn.");
+            }
+            catch (NotPlayersTurnException ex)
+            {
+                Assert.IsTrue(true, "Not Players turn.");
+            }
+        }
     }
 }
