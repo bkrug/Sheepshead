@@ -4,20 +4,20 @@ import { IdUtils } from '../IdUtils';
 import { FetchUtils } from '../FetchUtils';
 import { render } from 'react-dom';
 import DraggableCard from './DraggableCard';
-import { PlayState, PickChoice } from './PlayState';
+import { PlayState, PickChoice, CardSummary } from './PlayState';
 
 export interface PickPaneState {
     gameId: string;
     playerId: string;
     pickChoices: PickChoice[];
-    playerCards: string[];
+    playerCards: CardSummary[];
     requestingPlayerTurn: boolean;
 }
 
 export interface PickPaneProps extends React.Props<any> {
     gameId: string;
     pickChoices: PickChoice[];
-    playerCards: string[];
+    playerCards: CardSummary[];
     requestingPlayerTurn: boolean;
     onPick: () => void;
 }
@@ -91,8 +91,8 @@ export default class PickPane extends React.Component<PickPaneProps, PickPaneSta
                     }
                 </div>
                 {
-                    this.state.playerCards.map((card: string, i: number) =>
-                        <DraggableCard key={i} cardImgNo={card} />
+                    this.state.playerCards.map((card: CardSummary, i: number) =>
+                        <DraggableCard key={i} cardSummary={card} />
                     )
                 }
             </div>

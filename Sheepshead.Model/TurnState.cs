@@ -25,12 +25,12 @@ namespace Sheepshead.Models
         public string TurnType { get; set; }
         public bool HumanTurn { get; set; }
         public bool RequestingPlayerTurn { get; set; }
-        public List<string> Blinds { get; set; }
+        public List<CardSummary> Blinds { get; set; }
         //Player name and whether or not the picked
         public List<Tuple<string, bool>> PickChoices { get; set; }
         //Player name and card filename
-        public List<List<Tuple<string, string>>> CardsPlayed { get; set; }
+        public List<List<Tuple<string, CardSummary>>> CardsPlayed { get; set; }
         //Filename number for the player's cards.
-        public List<string> PlayerCards { get; set; }
+        public List<CardSummary> PlayerCards { get; set; }
     }
 }

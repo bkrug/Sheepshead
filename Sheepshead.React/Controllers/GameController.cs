@@ -80,19 +80,19 @@ namespace Sheepshead.React.Controllers
         }
 
         [HttpPost]
-        public IActionResult RecordBury(string gameId, string playerId, string[] cardFilenames)
+        public IActionResult RecordBury(string gameId, string playerId, string[] cards)
         {
             GetGameAndHuman(gameId, playerId, out var game, out var human);
-            var buriedCards = cardFilenames.Select(c => CardUtil.GetCardFromFilename(c)).ToList();
+            var buriedCards = cards.Select(c => Enum.Parse<SheepCard>(c)).ToList();
             game.BuryCards(human, buriedCards);
             return Json(new { buryRecorded = true });
         }
 
         [HttpPost]
-        public IActionResult RecordTrickChoice(string gameId, string playerId, string cardFilename)
+        public IActionResult RecordTrickChoice(string gameId, string playerId, string card)
         {
             GetGameAndHuman(gameId, playerId, out var game, out var human);
-            var playedCard = CardUtil.GetCardFromFilename(cardFilename);
+            var playedCard = Enum.Parse<SheepCard>(card);
             game.RecordTurn(human, playedCard);
             game.PlayNonHumansInTrick();
             return Json(new { playRecorded = true });

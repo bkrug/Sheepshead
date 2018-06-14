@@ -194,5 +194,22 @@ namespace Sheepshead.Models
             var suit = GetStandardSuit(card);
             return CardTypeLetter[cardType] + SuiteLetter[suit];
         }
+
+        public static CardSummary GetCardSummary(SheepCard card, bool? legalMove = null)
+        {
+            return new CardSummary()
+            {
+                Name = card.ToString(),
+                Filename = GetPictureFilename(card),
+                LegalMove = legalMove
+            };
+        }
+    }
+
+    public struct CardSummary
+    {
+        public string Name { get; set; }
+        public string Filename { get; set; }
+        public bool? LegalMove { get; set; }
     }
 }

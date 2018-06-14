@@ -128,7 +128,7 @@ namespace Sheepshead.Models
 
         private List<string> potentialNames = new List<string>()
         {
-            "Ben", "Sam", "John", "Sarah", "Rachel", "Liz", "Vivek", "Jing", "Junior", "Fido"
+            "Ben", "Sam", "Johann", "Fritz", "Sarah", "Rachel", "Liz", "Vivek", "Jing", "Junior", "Fido", "Peter", "Katrina", "Akinpelu"
         };
 
         public PlayState PlayState(Guid requestingPlayerId)
@@ -149,14 +149,17 @@ namespace Sheepshead.Models
                 TurnType = turnType.ToString(),
                 HumanTurn = humanPlayer != null,
                 RequestingPlayerTurn = humanPlayer?.Id == requestingPlayerId,
-                Blinds = turnType == TurnType.Bury ? currentDeck?.Blinds?.Select(b => CardUtil.GetPictureFilename(b))?.ToList() : null,
+                Blinds = turnType == TurnType.Bury ? currentDeck?.Blinds?.Select(b => CardUtil.GetCardSummary(b))?.ToList() : null,
                 PickChoices = 
                     currentDeck?.PlayersRefusingPick.Select(p => new Tuple<string, bool>(p.Name, false))
                     .Union(new List<Tuple<string, bool>> { new Tuple<string, bool>(currentDeck?.Hand?.Picker?.Name, true) })
                     .Where(p => p.Item1 != null)
                     .ToList(),
-                CardsPlayed = tricks.Select(t => t.CardsPlayed.Select(cp => new Tuple<string, string>(cp.Key.Name, CardUtil.GetPictureFilename(cp.Value))).ToList())?.ToList(),
-                PlayerCards = requestingPlayer?.Cards?.Select(rp => CardUtil.GetPictureFilename(rp))?.ToList()
+                CardsPlayed = tricks.Select(t => t.CardsPlayed
+                                                  .Select(cp => new Tuple<string, CardSummary>(cp.Key.Name, CardUtil.GetCardSummary(cp.Value)))
+                                                  .ToList()
+                                           )?.ToList(),
+                PlayerCards = requestingPlayer?.Cards?.Select(c => CardUtil.GetCardSummary(c, currentTrick?.IsLegalAddition(c, requestingPlayer)))?.ToList()
             };
         }
 

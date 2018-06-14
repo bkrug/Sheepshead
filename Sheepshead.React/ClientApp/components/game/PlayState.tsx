@@ -2,10 +2,10 @@
     turnType: string;
     humanTurn: boolean;
     requestingPlayerTurn: boolean;
-    blinds: number[];
+    blinds: CardSummary[];
     pickChoices: PickChoice[];
     cardsPlayed: TrickChoice[][];
-    playerCards: string[];
+    playerCards: CardSummary[];
     trickWinners: string[];
 }
 
@@ -16,5 +16,11 @@ export class PickChoice {
 
 export class TrickChoice {
     item1: string;
-    item2: string;
+    item2: CardSummary;
+}
+
+export class CardSummary {
+    name: string;
+    filename: string;
+    legalMove: boolean | null;
 }

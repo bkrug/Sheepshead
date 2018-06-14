@@ -4,19 +4,19 @@ import { IdUtils } from '../IdUtils';
 import { FetchUtils } from '../FetchUtils';
 import { render } from 'react-dom';
 import DraggableCard from './DraggableCard';
-import { PlayState, PickChoice } from './PlayState';
+import { PlayState, PickChoice, CardSummary } from './PlayState';
 
 export interface PickPaneState {
     gameId: string;
     playerId: string;
-    playerCards: string[];
+    playerCards: CardSummary[];
     requestingPlayerTurn: boolean;
-    buryCards: string[];
+    buryCards: CardSummary[];
 }
 
 export interface PickPaneProps extends React.Props<any> {
     gameId: string;
-    playerCards: string[];
+    playerCards: CardSummary[];
     requestingPlayerTurn: boolean;
     onBury: () => void;
 }
@@ -58,10 +58,10 @@ export default class PickPane extends React.Component<PickPaneProps, PickPaneSta
 
     private buryChoice(card: DraggableCard): void {
         var buryList = this.state.buryCards;
-        buryList.push(card.props.cardImgNo);
+        buryList.push(card.props.cardSummary);
 
         var heldList = this.state.playerCards;
-        var index = heldList.indexOf(card.props.cardImgNo);
+        var index = heldList.indexOf(card.props.cardSummary);
         heldList.splice(index, 1);
 
         this.setState({
@@ -77,8 +77,8 @@ export default class PickPane extends React.Component<PickPaneProps, PickPaneSta
         var self = this;
         var url = 'Game/RecordBury?gameId=' + this.state.gameId
             + '&playerId=' + this.state.playerId
-            + '&cardFilenames=' + this.state.buryCards[0]
-            + '&cardFilenames=' + this.state.buryCards[1];
+            + '&cards=' + this.state.buryCards[0].name
+            + '&cards=' + this.state.buryCards[1].name;
         FetchUtils.post(url,
             function (json: number[]): void {
                 self.props.onBury();
@@ -95,16 +95,16 @@ export default class PickPane extends React.Component<PickPaneProps, PickPaneSta
                         <b>Held Cards</b>
                         <div style={this.cardContainerStyle}>
                         {
-                            this.state.playerCards.map((card: string, i: number) =>
-                                <DraggableCard key={i} cardImgNo={card} onClick={this.buryChoice} />
+                            this.state.playerCards.map((card: CardSummary, i: number) =>
+                                <DraggableCard key={i} cardSummary={card} onClick={this.buryChoice} />
                             )
                         }
                         </div>
                         <b>Cards to Bury</b>
                         <div style={this.cardContainerStyle}>
                             {
-                                this.state.buryCards.map((card: string, i: number) =>
-                                    <DraggableCard key={i} cardImgNo={card} />
+                                this.state.buryCards.map((card: CardSummary, i: number) =>
+                                    <DraggableCard key={i} cardSummary={card} />
                                 )
                             }
                         </div>

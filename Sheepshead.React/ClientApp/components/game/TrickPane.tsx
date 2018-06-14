@@ -4,20 +4,21 @@ import { IdUtils } from '../IdUtils';
 import { FetchUtils } from '../FetchUtils';
 import { render } from 'react-dom';
 import DraggableCard from './DraggableCard';
-import { PlayState, TrickChoice } from './PlayState';
+import { PlayState, TrickChoice, CardSummary } from './PlayState';
 
 export interface TrickPaneState {
     gameId: string;
     playerId: string;
     cardsPlayed: TrickChoice[][];
+    legalMoves: (boolean | null)[],
     displayedCardsPlayed: TrickChoice[][];
-    playerCards: string[];
+    playerCards: CardSummary[];
     requestingPlayerTurn: boolean;
 }
 
 export interface TrickPaneProps extends React.Props<any> {
     gameId: string;
-    playerCards: string[];
+    playerCards: CardSummary[];
     onTrickEnd: () => void;
 }
 
@@ -28,14 +29,15 @@ export default class TrickPane extends React.Component<TrickPaneProps, TrickPane
             gameId: props.gameId,
             playerId: IdUtils.getPlayerId(props.gameId) || '',
             cardsPlayed: [],
+            legalMoves: [],
             displayedCardsPlayed: [[]],
             playerCards: props.playerCards,
-            requestingPlayerTurn: false
+            requestingPlayerTurn: false,
         };
         this.trickChoice = this.trickChoice.bind(this);
+        this.displayOneMorePlay = this.displayOneMorePlay.bind(this);
         this.initializePlayStatePinging = this.initializePlayStatePinging.bind(this);
         this.initializePlayStatePinging();
-        this.displayOneMorePlay = this.displayOneMorePlay.bind(this);
         setInterval(this.displayOneMorePlay, 500);
     }
 
@@ -49,7 +51,10 @@ export default class TrickPane extends React.Component<TrickPaneProps, TrickPane
                 self.setState({
                     cardsPlayed: json.cardsPlayed,
                     requestingPlayerTurn: json.requestingPlayerTurn,
-                    playerCards: json.playerCards
+                    playerCards: json.playerCards,
+                    legalMoves: json.playerCards.map((value: CardSummary, index: number) => {
+                        return value.legalMove;
+                    }),
                 });
 
                 if (trickCount != json.cardsPlayed.length)
@@ -79,7 +84,7 @@ export default class TrickPane extends React.Component<TrickPaneProps, TrickPane
     private trickChoice(card: DraggableCard): void {
         var self = this;
         FetchUtils.post(
-            'Game/RecordTrickChoice?gameId=' + this.state.gameId + '&playerId=' + this.state.playerId + '&cardFilename=' + card.props.cardImgNo,
+            'Game/RecordTrickChoice?gameId=' + this.state.gameId + '&playerId=' + this.state.playerId + '&card=' + card.props.cardSummary.name,
             function (json: number[]): void {
                 self.initializePlayStatePinging();
             }
@@ -93,7 +98,7 @@ export default class TrickPane extends React.Component<TrickPaneProps, TrickPane
                     Object.keys(playsInTrick).map((playerName, i) => (
                         <div key={i} style={{ display: "inline-block" }}>
                             <p>{playsInTrick[i].item1}</p>
-                            <DraggableCard key={i} cardImgNo={playsInTrick[i].item2} />
+                            <DraggableCard key={i} cardSummary={playsInTrick[i].item2} />
                         </div>
                     ))
                 }
@@ -115,8 +120,8 @@ export default class TrickPane extends React.Component<TrickPaneProps, TrickPane
                     }
                 </div>
                 {
-                    this.state.playerCards.map((card: string, i: number) =>
-                        <DraggableCard key={i} cardImgNo={card} onClick={this.trickChoice} />
+                    this.state.playerCards.map((card: CardSummary, i: number) =>
+                        <DraggableCard key={i} cardSummary={card} onClick={this.trickChoice} />
                     )
                 }
             </div>
