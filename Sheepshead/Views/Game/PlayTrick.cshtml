@@ -31,10 +31,10 @@
 </table>
 <form method="post">
     <p>What card will you play?</p>
-    @foreach (var card in Model.HumanPlayer.Cards)
+    @foreach (var card in Model.Deck.Players.OfType<IHumanPlayer>().First().Cards)
     {
-        var cardIndex = Model.HumanPlayer.Cards.IndexOf(card);
-        var isLegal = Model.Deck.Hand.Tricks.Last().IsLegalAddition(card, Model.HumanPlayer);
+        var cardIndex = Model.Deck.Players.OfType<IHumanPlayer>().First().Cards.IndexOf(card);
+        var isLegal = Model.Deck.Hand.Tricks.Last().IsLegalAddition(card, Model.Deck.Players.OfType<IHumanPlayer>().First());
         <input type="radio" name="indexOfCard" class="js-card-cb" value="@cardIndex.ToString()" data-index="@cardIndex.ToString()" style="@(isLegal ? "" : "display: none;")" />
         <img src="@("\\Images\\" + CardUtil.GetPictureFilename(card) + ".png")" class="@(isLegal ? "" : "ui-illegal")" />
     }

@@ -18,7 +18,7 @@ else {
 }
 
 <p>These are your cards</p>
-@foreach (var card in (Model.HumanPlayer).Cards)
+@foreach (var card in Model.Deck.Players.OfType<IHumanPlayer>().First().Cards)
 {
     <img src="@("\\Images\\" + CardUtil.GetPictureFilename(card) + ".png")" />
 }
