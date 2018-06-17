@@ -20,9 +20,14 @@ export interface TrickPaneProps extends React.Props<any> {
     gameId: string;
     playerCards: CardSummary[];
     onTrickEnd: () => void;
+    onTrickPhaseComplete: () => void;
+    playerCount: number;
+    trickCount: number;
 }
 
 export default class TrickPane extends React.Component<TrickPaneProps, TrickPaneState> {
+    displayInterval: number;
+
     constructor(props: TrickPaneProps) {
         super(props);
         this.state = {
@@ -38,7 +43,7 @@ export default class TrickPane extends React.Component<TrickPaneProps, TrickPane
         this.displayOneMorePlay = this.displayOneMorePlay.bind(this);
         this.initializePlayStatePinging = this.initializePlayStatePinging.bind(this);
         this.initializePlayStatePinging();
-        setInterval(this.displayOneMorePlay, 500);
+        this.displayInterval = setInterval(this.displayOneMorePlay, 500);
     }
 
     private initializePlayStatePinging(): void {
@@ -56,9 +61,6 @@ export default class TrickPane extends React.Component<TrickPaneProps, TrickPane
                         return value.legalMove;
                     }),
                 });
-
-                if (trickCount != json.cardsPlayed.length)
-                    self.props.onTrickEnd();
             },
             function (json: PlayState): boolean {
                 return json.requestingPlayerTurn == false && json.turnType == "PlayTrick";
@@ -79,6 +81,14 @@ export default class TrickPane extends React.Component<TrickPaneProps, TrickPane
         this.setState({
             displayedCardsPlayed: tricks
         });
+
+        if (this.state.displayedCardsPlayed[tricksToDisplay - 1].length >= this.props.playerCount) {
+            this.props.onTrickEnd();
+            if (this.state.displayedCardsPlayed.length >= this.props.trickCount) {
+                this.props.onTrickPhaseComplete();
+                clearInterval(this.displayInterval);
+            }
+        }
     }
 
     private trickChoice(card: DraggableCard): void {

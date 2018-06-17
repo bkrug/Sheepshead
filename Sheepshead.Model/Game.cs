@@ -141,7 +141,7 @@ namespace Sheepshead.Models
                 : turnType == TurnType.Bury ? currentDeck?.Hand?.Picker
                 : turnType == TurnType.PlayTrick ? currentTrick?.PlayersWithoutTurn?.FirstOrDefault()
                 : null;
-            var tricks = currentDeck?.Hand?.Tricks ?? new List<ITrick>();
+            var tricks = this.Decks.Where(d => d.Hand != null).LastOrDefault()?.Hand?.Tricks ?? new List<ITrick>();
             var humanPlayer = currentPlayer as IHumanPlayer;
             var requestingPlayer = Players.OfType<IHumanPlayer>().SingleOrDefault(p => p.Id == requestingPlayerId);
             return new PlayState
