@@ -7,6 +7,7 @@ import DraggableCard from './DraggableCard';
 import PickPane from './PickPane';
 import BuryPane from './BuryPane';
 import TrickPane from './TrickPane';
+import HandSummaryPane from './HandSummaryPane';
 import { PlayState, PickChoice } from './PlayState';
 
 export interface ActionPaneState {
@@ -23,9 +24,7 @@ export interface ActionPaneProps extends React.Props<any> {
 }
 
 export default class ActionPane extends React.Component<ActionPaneProps, ActionPaneState> {
-    pickPhaseReached: boolean;
-    buryPhaseReached: boolean;
-    trickPhaseReached: boolean;
+    phaseToDisplay: string;
 
     constructor(props: ActionPaneProps) {
         super(props);
@@ -48,7 +47,6 @@ export default class ActionPane extends React.Component<ActionPaneProps, ActionP
         this.onPickComplete = this.onPickComplete.bind(this);
         this.onBuryComplete = this.onBuryComplete.bind(this);
         this.onTrickPhaseComplete = this.onTrickPhaseComplete.bind(this);
-        this.displayPhase = this.displayPhase.bind(this);
         this.loadPlayState = this.loadPlayState.bind(this);
         this.loadPlayState();
     }
@@ -58,17 +56,7 @@ export default class ActionPane extends React.Component<ActionPaneProps, ActionP
         FetchUtils.get(
             'Game/GetPlayState?gameId=' + this.state.gameId + '&playerId=' + this.state.playerId,
             function (json: PlayState): void {
-                switch (json.turnType) {
-                    case 'Pick':
-                        self.pickPhaseReached = true;
-                        break;
-                    case 'Bury':
-                        self.buryPhaseReached = true;
-                        break;
-                    case 'PlayTrick':
-                        self.trickPhaseReached = true;
-                        break;
-                }
+                self.phaseToDisplay = json.turnType == 'BeginDeck' ? 'ReportHand' : json.turnType;
                 self.setState({
                     playState: json,
                     pickChoices: json.pickChoices,
@@ -78,34 +66,19 @@ export default class ActionPane extends React.Component<ActionPaneProps, ActionP
     }
 
     private onPickComplete(): void {
-        this.pickPhaseReached = false;
-        this.buryPhaseReached = true;
         this.loadPlayState();
     }
 
     private onBuryComplete(): void {
-        this.buryPhaseReached = false;
-        this.trickPhaseReached = true;
         this.loadPlayState();
     }
 
     private onTrickPhaseComplete(): void {
-        this.trickPhaseReached = false;
         this.loadPlayState();
     }
 
-    private displayPhase(): string {
-        if (this.pickPhaseReached && !this.trickPhaseReached)
-            return 'Pick';
-        if (this.buryPhaseReached && !this.pickPhaseReached)
-            return 'Bury';
-        if (this.trickPhaseReached && !this.buryPhaseReached)
-            return 'PlayTrick';
-        return '';
-    }
-
     public selectRenderPhase() {
-        var displayPhase = this.displayPhase();
+        var displayPhase = this.phaseToDisplay;
         switch (displayPhase) {
             case 'Pick':
                 return (<PickPane gameId={this.state.gameId}
@@ -124,6 +97,8 @@ export default class ActionPane extends React.Component<ActionPaneProps, ActionP
                     onTrickEnd={this.props.onTrickEnd}
                     onTrickPhaseComplete={this.onTrickPhaseComplete}
                     trickCount={6} playerCount={5} />);
+            case 'ReportHand':
+                return (<HandSummaryPane gameId={this.state.gameId} />);
             case 'BeginDeck':
                 return (<div>Begin Deck Phase</div>);
             default:

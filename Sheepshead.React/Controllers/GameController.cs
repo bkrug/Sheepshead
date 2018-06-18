@@ -13,18 +13,31 @@ namespace Sheepshead.React.Controllers
         public IActionResult Summary(string gameId)
         {
             IGame game = GetGame(gameId);
-            var hand = game.TurnState?.Deck?.Hand;
+            var hand = game.Decks.LastOrDefault(d => d.Hand != null)?.Hand;
             if (hand == null)
                 return Json(game.Players.Select(p => new
                                 {
                                     name = p.Name
                                 }));
             else
-                return Json(hand.Scores().Select(s => new
+                return Json(hand.Scores().Coins.Select(s => new
                                 {
                                     name = s.Key.Name,
                                     score = s.Value
                                 }));
+        }
+        
+        [HttpGet]
+        public IActionResult HandSummary(string gameId)
+        {
+            IGame game = GetGame(gameId);
+            var hand = game.Decks.LastOrDefault(d => d.Hand != null)?.Hand;
+            var scores = hand?.Scores();
+            return Json(new
+            {
+                points = scores?.Points?.ToDictionary(k => k.Key.Name, k => k.Value),
+                coins = scores?.Coins?.ToDictionary(k => k.Key.Name, k => k.Value)
+            });
         }
 
         [HttpGet]
@@ -66,7 +79,7 @@ namespace Sheepshead.React.Controllers
         public IActionResult GetTrickResults(string gameId)
         {
             var game = GetGame(gameId);
-            return Json(new { trickWinners = game.GetTrickWinners() });
+            return Json(game.GetTrickWinners());
         }
 
         [HttpPost]

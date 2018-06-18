@@ -61,13 +61,13 @@
     </div>
     <table>
         <tr>
-            @foreach (var playerScore in Model.Scores())
+            @foreach (var playerScore in Model.Scores().Coins)
             {
                 <th>Player @(Model.Deck.Game.Players.IndexOf(playerScore.Key) + 1)</th>
             }
         </tr>
         <tr>
-            @foreach (var playerScore in Model.Scores())
+            @foreach (var playerScore in Model.Scores().Coins)
             {
                 <td>@(playerScore.Value)</td>
             }

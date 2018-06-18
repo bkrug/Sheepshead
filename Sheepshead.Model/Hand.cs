@@ -66,7 +66,8 @@ namespace Sheepshead.Models
                 trick.OnTrickEnd += (Object sender, EventArgs e) => { OnHandEndHandler(); };
         }
 
-        public Dictionary<IPlayer, int> Scores()
+        //TODO: Are we including the blinds in the scores?
+        public HandScores Scores()
         {
             if (!Leasters)
                 return NonLeasterPoints();
@@ -74,47 +75,66 @@ namespace Sheepshead.Models
                 return LeasterPoints();
         }
 
-        private Dictionary<IPlayer, int> NonLeasterPoints()
+        private HandScores NonLeasterPoints()
         {
+            var handScores = new HandScores() {
+                Points = new Dictionary<IPlayer, int>(),
+                Coins = new Dictionary<IPlayer, int>()
+            };
+
             var defensePoints = 0;
             foreach (var trick in _tricks)
             {
                 var winnerData = trick.Winner();
                 if (winnerData?.Player != Picker && winnerData?.Player != Partner)
+                {
                     defensePoints += winnerData.Points;
+                }
+                if (winnerData?.Player != null)
+                {
+                    if (handScores.Points.ContainsKey(winnerData.Player))
+                        handScores.Points[winnerData.Player] += winnerData.Points;
+                    else
+                        handScores.Points.Add(winnerData.Player, winnerData.Points);
+                }
             }
-            int defensiveHandPoints;
-            if (defensePoints == 0)
-                defensiveHandPoints = -3;
-            else if (defensePoints <= 29)
-                defensiveHandPoints = -2;
-            else if (defensePoints <= 59)
-                defensiveHandPoints = -1;
-            else
-                defensiveHandPoints = 2;
 
-            var dict = new Dictionary<IPlayer, int>();
+            int defensiveCoins;
+            if (defensePoints == 0)
+                defensiveCoins = -3;
+            else if (defensePoints <= 29)
+                defensiveCoins = -2;
+            else if (defensePoints <= 59)
+                defensiveCoins = -1;
+            else
+                defensiveCoins = 2;
+
             foreach (var player in Deck.Players)
             {
                 if (player == Picker)
-                    dict.Add(player, defensiveHandPoints * -2);
+                    handScores.Coins.Add(player, defensiveCoins * -2);
                 else if (player == Partner)
-                    dict.Add(player, defensiveHandPoints * -1);
+                    handScores.Coins.Add(player, defensiveCoins * -1);
                 else
-                    dict.Add(player, defensiveHandPoints);
+                    handScores.Coins.Add(player, defensiveCoins);
             }
-            return dict;
+            return handScores;
         }
 
-        private Dictionary<IPlayer, int> LeasterPoints()
+        private HandScores LeasterPoints()
         {
-            var trickWinners = Tricks.Select(t => t.Winner());
-            var leastPoints = trickWinners.GroupBy(t => t.Player).OrderBy(g => g.Sum(t => t.Points)).First();
-            var leastPointsPlayer = leastPoints.Select(g => g.Player).First();
-            var points = new Dictionary<IPlayer, int>();
-            foreach (var player in this.Deck.Players)
-                points.Add(player, player == leastPointsPlayer ? Deck.PlayerCount - 1 : -1 );
-            return points;
+            var trickPoints = Tricks.Select(t => t.Winner())
+                                    .GroupBy(t => t.Player)
+                                    .ToDictionary(g => g.Key, g => g.Sum(wd => wd.Points));
+
+            var leasterWinner = trickPoints.OrderBy(c => c.Value).First().Key;
+            var trickCoins = Deck.Players.ToDictionary(p => p, p => p == leasterWinner ? Deck.PlayerCount - 1 : -1 );
+
+            return new HandScores()
+            {
+                Coins = trickCoins,
+                Points = trickPoints
+            };
         }
 
         public bool IsComplete()
@@ -204,7 +224,7 @@ namespace Sheepshead.Models
         int[] PartnerCardPlayed { get; }
         List<ITrick> Tricks { get; }
         void AddTrick(ITrick trick);
-        Dictionary<IPlayer, int> Scores();
+        HandScores Scores();
         bool IsComplete();
         bool Leasters { get; }
         int PlayerCount { get; }
@@ -214,6 +234,12 @@ namespace Sheepshead.Models
         event EventHandler<EventArgs> OnHandEnd;
         string Summary();
         void SetPartner(IPlayer partner, ITrick trick);
+    }
+
+    public class HandScores
+    {
+        public Dictionary<IPlayer, int> Coins { get; set; }
+        public Dictionary<IPlayer, int> Points { get; set; }
     }
 
     public class DeckHasHandException : ApplicationException

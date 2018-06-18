@@ -346,7 +346,7 @@ namespace Sheepshead.Tests
                 game.RecordTurn((IHumanPlayer)players[2], SheepCard.N7_HEARTS);
                 Assert.Fail("An exception should have been thrown because it is not the player's turn.");
             }
-            catch (NotPlayersTurnException ex)
+            catch (NotPlayersTurnException)
             {
                 Assert.IsTrue(true, "Not Players turn.");
             }

@@ -163,11 +163,17 @@ namespace Sheepshead.Models
             };
         }
 
-        public List<string> GetTrickWinners()
+        public TrickResults GetTrickWinners()
         {
-            var currentDeck = _gameStateDesciber.CurrentDeck;
+            var currentDeck = Decks.LastOrDefault(d => d.Hand != null);
             var tricks = currentDeck?.Hand?.Tricks ?? new List<ITrick>();
-            return tricks.Where(t => t.PlayersWithoutTurn.Count == 0).Select(t => t?.Winner()?.Player?.Name).ToList();
+            var winners = tricks.Where(t => t.PlayersWithoutTurn.Count == 0).Select(t => t?.Winner()?.Player?.Name).ToList();
+            return new TrickResults()
+            {
+                Picker = currentDeck?.Hand?.Picker?.Name,
+                Partner = currentDeck?.Hand?.Partner?.Name,
+                TrickWinners = winners
+            };
         }
     }
 
@@ -176,6 +182,13 @@ namespace Sheepshead.Models
         public SheepCard? TrickCard { get; set; }
         public bool? WillPick { get; set; }
         public SheepCard[] BuryCards { get; set; }
+    }
+
+    public class TrickResults
+    {
+        public string Picker { get; set; }
+        public string Partner { get; set; }
+        public List<string> TrickWinners { get; set; }
     }
 
     public class TooManyPlayersException : ApplicationException
@@ -222,6 +235,6 @@ namespace Sheepshead.Models
         void RecordTurn(IHumanPlayer player, SheepCard card);
         void MaybeGiveComputerPlayersNames();
         PlayState PlayState(Guid requestingPlayerId);
-        List<string> GetTrickWinners();
+        TrickResults GetTrickWinners();
     }
 }

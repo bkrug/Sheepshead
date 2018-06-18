@@ -7,6 +7,8 @@ import ActionPane from './ActionPane';
 
 export interface PlayPaneState {
     gameId: string;
+    picker: string;
+    partner: string;
     trickWinners: string[];
 }
 
@@ -15,6 +17,8 @@ export class PlayPane extends React.Component<RouteComponentProps<{}>, PlayPaneS
         super(props);
         this.state = {
             gameId: IdUtils.getGameId(props),
+            picker: '',
+            partner: '',
             trickWinners: []
         };
         this.trickEnd = this.trickEnd.bind(this);
@@ -26,6 +30,8 @@ export class PlayPane extends React.Component<RouteComponentProps<{}>, PlayPaneS
             'Game/GetTrickResults?gameId=' + self.state.gameId,
             function (json: any): void {
                 self.setState({
+                    picker: json.picker,
+                    partner: json.partner,
                     trickWinners: json.trickWinners
                 });
             });
@@ -37,6 +43,8 @@ export class PlayPane extends React.Component<RouteComponentProps<{}>, PlayPaneS
                 <GameDetails gameId={this.state.gameId} />
                 <div>
                     <h4>Hand Details</h4>
+                    <div>Picker: {this.state.picker}</div>
+                    <div>Partner: {this.state.partner}</div>
                     {
                         this.state.trickWinners.map((playerName: string, i: number) =>
                             <div key={i}><b>Trick {i+1}</b> {playerName}</div>

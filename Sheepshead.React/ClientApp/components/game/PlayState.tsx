@@ -24,3 +24,13 @@ export class CardSummary {
     filename: string;
     legalMove: boolean | null;
 }
+
+export interface GameScore {
+    name: string;
+    score: number;
+}
+
+export class HandScores {
+    coins: GameScore[];
+    points: GameScore[];
+}

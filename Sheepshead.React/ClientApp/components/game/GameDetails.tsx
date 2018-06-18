@@ -2,11 +2,7 @@
 import { RouteComponentProps } from 'react-router';
 import { IdUtils } from '../IdUtils';
 import { FetchUtils } from '../FetchUtils';
-
-export interface GameScore {
-    name: string;
-    score: number;
-}
+import { GameScore } from './PlayState';
 
 export interface GameDetailsState {
     gameId: string;

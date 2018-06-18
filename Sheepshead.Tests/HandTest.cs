@@ -83,7 +83,7 @@ namespace Sheepshead.Tests
                 var players = GetPlayers();
                 PopulateTricks(ref trickMocks, players, scoreTests[a]);
                 var hand = GetHand(trickMocks, players, players[1], players[3]);
-                var actualScores = hand.Scores();
+                var actualScores = hand.Scores().Coins;
                 //Assert.AreEqual(0, actualScores.Sum(kvp => kvp.Value), "Player's scores add to zero.  (This is really a test of the test, not the code.) Running Test " + a);
                 for (var b = 0; b < 5; ++b)
                 {
@@ -118,7 +118,7 @@ namespace Sheepshead.Tests
                 var players = GetPlayers();
                 PopulateTricks(ref trickMocks, players, scoreTests[a]);
                 var hand = GetHand(trickMocks, players, null, null);
-                var actualScores = hand.Scores();
+                var actualScores = hand.Scores().Coins;
                 //Assert.AreEqual(0, actualScores.Sum(kvp => kvp.Value), "Player's scores add to zero.  (This is really a test of the test, not the code.) Running Test " + a);
                 for (var b = 0; b < 5; ++b)
                 {
