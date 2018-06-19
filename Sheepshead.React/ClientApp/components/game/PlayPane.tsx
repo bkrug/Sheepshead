@@ -32,9 +32,12 @@ export class PlayPane extends React.Component<RouteComponentProps<{}>, PlayPaneS
         var self = this;
         FetchUtils.get(
             'Game/GameSummary?gameId=' + self.state.gameId,
-            function (json: any): void {
+            function (json: GameScore[]): void {
                 self.setState({
-                    coins: json
+                    coins: json,
+                    picker: '',
+                    partner: '',
+                    trickWinners: []
                 });
             });
     }
