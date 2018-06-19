@@ -21,6 +21,7 @@ export interface ActionPaneState {
 export interface ActionPaneProps extends React.Props<any> {
     gameId: string;
     onTrickEnd: () => void;
+    onHandEnd: () => void;
 }
 
 export default class ActionPane extends React.Component<ActionPaneProps, ActionPaneState> {
@@ -79,6 +80,7 @@ export default class ActionPane extends React.Component<ActionPaneProps, ActionP
     }
 
     private onSummaryPhaseComplete(): void {
+        this.props.onHandEnd();
         this.loadPlayState();
         var self = this;
         FetchUtils.get(
@@ -122,7 +124,7 @@ export default class ActionPane extends React.Component<ActionPaneProps, ActionP
                 return (
                     <div>
                         <h4>Other Phase</h4>
-                        This is not a Pick or Bury or Trick phase.
+                        This is not a recognized phase.
                     </div>);
         }
     }

@@ -4,12 +4,14 @@ import { IdUtils } from '../IdUtils';
 import { FetchUtils } from '../FetchUtils';
 import GameDetails from './GameDetails';
 import ActionPane from './ActionPane';
+import { GameScore } from 'ClientApp/components/game/PlayState';
 
 export interface PlayPaneState {
     gameId: string;
     picker: string;
     partner: string;
     trickWinners: string[];
+    coins: GameScore[];
 }
 
 export class PlayPane extends React.Component<RouteComponentProps<{}>, PlayPaneState> {
@@ -19,9 +21,22 @@ export class PlayPane extends React.Component<RouteComponentProps<{}>, PlayPaneS
             gameId: IdUtils.getGameId(props),
             picker: '',
             partner: '',
-            trickWinners: []
+            trickWinners: [],
+            coins: []
         };
         this.trickEnd = this.trickEnd.bind(this);
+        this.handEnd = this.handEnd.bind(this);
+    }
+
+    private handEnd(): void {
+        var self = this;
+        FetchUtils.get(
+            'Game/GameSummary?gameId=' + self.state.gameId,
+            function (json: any): void {
+                self.setState({
+                    coins: json
+                });
+            });
     }
 
     private trickEnd(): void {
@@ -40,7 +55,18 @@ export class PlayPane extends React.Component<RouteComponentProps<{}>, PlayPaneS
     public render() {
         return (
             <div className="playPane">
-                <GameDetails gameId={this.state.gameId} />
+                <div>
+                    <h4>Game Details</h4>
+                    {
+                        this.state.coins.map((coinScore: GameScore, i: number) =>
+                            <div key={i} style={{ display: 'inline-flex', margin: '0px 20px', textAlign: 'center' }}>
+                                {coinScore.name}
+                                <br />
+                                {coinScore.score || '-'}
+                            </div>
+                        )
+                    }
+                </div>
                 <div>
                     <h4>Hand Details</h4>
                     <div>Picker: {this.state.picker}</div>
@@ -51,7 +77,9 @@ export class PlayPane extends React.Component<RouteComponentProps<{}>, PlayPaneS
                         )
                     }
                 </div>
-                <ActionPane gameId={this.state.gameId} onTrickEnd={this.trickEnd} />
+                <ActionPane gameId={this.state.gameId}
+                    onHandEnd={this.handEnd}
+                    onTrickEnd={this.trickEnd} />
             </div>
         );
     }

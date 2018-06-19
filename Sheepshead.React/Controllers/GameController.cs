@@ -18,21 +18,15 @@ namespace Sheepshead.React.Controllers
         }
 
         [HttpGet]
-        public IActionResult Summary(string gameId)
+        public IActionResult GameSummary(string gameId)
         {
             IGame game = GetGame(gameId);
-            var hand = game.Decks.LastOrDefault(d => d.Hand != null)?.Hand;
-            if (hand == null)
-                return Json(game.Players.Select(p => new
-                                {
-                                    name = p.Name
-                                }));
-            else
-                return Json(hand.Scores().Coins.Select(s => new
-                                {
-                                    name = s.Key.Name,
-                                    score = s.Value
-                                }));
+            var coins = game.Decks.Where(d => d.Hand != null).Select(d => d.Hand.Scores().Coins);
+            var totalCoins = game.Players.Select(p => new {
+                name = p.Name,
+                score = coins.Sum(c => c[p])
+            });
+            return Json(totalCoins);
         }
         
         [HttpGet]
