@@ -9,6 +9,14 @@ namespace Sheepshead.React.Controllers
 {
     public class GameController : Controller
     {
+        public IActionResult StartDeck(string gameId, string playerId)
+        {
+            IGame game = GetGame(gameId);
+            if (game.TurnState.TurnType == TurnType.BeginDeck)
+                new Deck(game);
+            return GetPlayState(gameId, playerId);
+        }
+
         [HttpGet]
         public IActionResult Summary(string gameId)
         {

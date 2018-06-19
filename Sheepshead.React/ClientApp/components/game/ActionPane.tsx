@@ -47,6 +47,7 @@ export default class ActionPane extends React.Component<ActionPaneProps, ActionP
         this.onPickComplete = this.onPickComplete.bind(this);
         this.onBuryComplete = this.onBuryComplete.bind(this);
         this.onTrickPhaseComplete = this.onTrickPhaseComplete.bind(this);
+        this.onSummaryPhaseComplete = this.onSummaryPhaseComplete.bind(this);
         this.loadPlayState = this.loadPlayState.bind(this);
         this.loadPlayState();
     }
@@ -77,6 +78,21 @@ export default class ActionPane extends React.Component<ActionPaneProps, ActionP
         this.loadPlayState();
     }
 
+    private onSummaryPhaseComplete(): void {
+        this.loadPlayState();
+        var self = this;
+        FetchUtils.get(
+            'Game/StartDeck?gameId=' + this.state.gameId + '&playerId=' + this.state.playerId,
+            function (json: PlayState): void {
+                self.phaseToDisplay = json.turnType == 'BeginDeck' ? 'ReportHand' : json.turnType;
+                self.setState({
+                    playState: json,
+                    pickChoices: json.pickChoices,
+                    turnType: json.turnType
+                });
+            });
+    }
+
     public selectRenderPhase() {
         var displayPhase = this.phaseToDisplay;
         switch (displayPhase) {
@@ -98,7 +114,8 @@ export default class ActionPane extends React.Component<ActionPaneProps, ActionP
                     onTrickPhaseComplete={this.onTrickPhaseComplete}
                     trickCount={6} playerCount={5} />);
             case 'ReportHand':
-                return (<HandSummaryPane gameId={this.state.gameId} />);
+                return (<HandSummaryPane gameId={this.state.gameId}
+                    onSummaryPhaseComplete={this.onSummaryPhaseComplete} />);
             case 'BeginDeck':
                 return (<div>Begin Deck Phase</div>);
             default:

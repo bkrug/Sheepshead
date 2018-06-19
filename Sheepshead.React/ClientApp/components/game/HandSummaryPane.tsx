@@ -15,6 +15,7 @@ export interface HandSummaryPaneState {
 
 export interface HandSummaryPaneProps extends React.Props<any> {
     gameId: string;
+    onSummaryPhaseComplete: () => void;
 }
 
 export default class HandSummaryPane extends React.Component<HandSummaryPaneProps, HandSummaryPaneState> {
@@ -71,6 +72,7 @@ export default class HandSummaryPane extends React.Component<HandSummaryPaneProp
                     <h4>Coins from this Hand</h4>
                     {coinList}
                 </div>
+                <button onClick={this.props.onSummaryPhaseComplete}>Continue</button>
             </div>
         );
     }
