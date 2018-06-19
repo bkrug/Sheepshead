@@ -2,7 +2,6 @@
 import { RouteComponentProps } from 'react-router';
 import { IdUtils } from '../IdUtils';
 import { FetchUtils } from '../FetchUtils';
-import GameDetails from './GameDetails';
 import ActionPane from './ActionPane';
 import { GameScore } from 'ClientApp/components/game/PlayState';
 
