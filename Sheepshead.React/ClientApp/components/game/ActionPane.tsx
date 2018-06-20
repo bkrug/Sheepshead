@@ -46,6 +46,8 @@ export default class ActionPane extends React.Component<ActionPaneProps, ActionP
                 self.setState({
                     turnType: json == 'BeginDeck' ? 'ReportHand' : json
                 });
+                if (json == 'PlayTrick')
+                    self.props.onTrickEnd();
             });
     }
 
