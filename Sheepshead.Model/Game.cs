@@ -150,16 +150,34 @@ namespace Sheepshead.Models
                 HumanTurn = humanPlayer != null,
                 RequestingPlayerTurn = humanPlayer?.Id == requestingPlayerId,
                 Blinds = turnType == TurnType.Bury ? currentDeck?.Blinds?.Select(b => CardUtil.GetCardSummary(b))?.ToList() : null,
-                PickChoices = 
-                    currentDeck?.PlayersRefusingPick.Select(p => new Tuple<string, bool>(p.Name, false))
-                    .Union(new List<Tuple<string, bool>> { new Tuple<string, bool>(currentDeck?.Hand?.Picker?.Name, true) })
-                    .Where(p => p.Item1 != null)
-                    .ToList(),
                 CardsPlayed = tricks.Select(t => t.CardsPlayed
                                                   .Select(cp => new Tuple<string, CardSummary>(cp.Key.Name, CardUtil.GetCardSummary(cp.Value)))
                                                   .ToList()
                                            )?.ToList(),
                 PlayerCards = requestingPlayer?.Cards?.Select(c => CardUtil.GetCardSummary(c, currentTrick?.IsLegalAddition(c, requestingPlayer)))?.ToList()
+            };
+        }
+
+        public PlayState PickState(Guid requestingPlayerId)
+        {
+            var turnType = TurnType;
+            var currentDeck = _gameStateDesciber.CurrentDeck;
+            var currentPlayer = 
+                turnType == TurnType.Pick 
+                ? currentDeck?.PlayersWithoutPickTurn?.FirstOrDefault() 
+                : null;
+            var humanPlayer = currentPlayer as IHumanPlayer;
+            var requestingPlayer = Players.OfType<IHumanPlayer>().SingleOrDefault(p => p.Id == requestingPlayerId);
+            return new PlayState
+            {
+                TurnType = turnType.ToString(),
+                RequestingPlayerTurn = humanPlayer?.Id == requestingPlayerId,
+                PickChoices =
+                    currentDeck?.PlayersRefusingPick.Select(p => new Tuple<string, bool>(p.Name, false))
+                    .Union(new List<Tuple<string, bool>> { new Tuple<string, bool>(currentDeck?.Hand?.Picker?.Name, true) })
+                    .Where(p => p.Item1 != null)
+                    .ToList(),
+                PlayerCards = requestingPlayer?.Cards?.Select(c => CardUtil.GetCardSummary(c))?.ToList()
             };
         }
 
@@ -235,6 +253,7 @@ namespace Sheepshead.Models
         void RecordTurn(IHumanPlayer player, SheepCard card);
         void MaybeGiveComputerPlayersNames();
         PlayState PlayState(Guid requestingPlayerId);
+        PlayState PickState(Guid requestingPlayerId);
         TrickResults GetTrickWinners();
     }
 }

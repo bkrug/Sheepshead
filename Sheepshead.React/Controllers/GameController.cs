@@ -78,6 +78,19 @@ namespace Sheepshead.React.Controllers
         }
 
         [HttpGet]
+        public IActionResult GetPickState(string gameId, string playerId)
+        {
+            IGame game = GetGame(gameId);
+            var playState = game.PickState(Guid.Parse(playerId));
+            if (game.TurnType == TurnType.Pick && playState.HumanTurn)
+            {
+                game.PlayNonHumanPickTurns();
+                playState = game.PlayState(Guid.Parse(playerId));
+            }
+            return Json(playState);
+        }
+
+        [HttpGet]
         public IActionResult GetTrickResults(string gameId)
         {
             var game = GetGame(gameId);

@@ -37,7 +37,7 @@ export default class PickPane extends React.Component<PickPaneProps, PickPaneSta
     private initializePlayStatePinging(): void {
         var self = this;
         FetchUtils.repeatGet(
-            'Game/GetPlayState?gameId=' + this.state.gameId + '&playerId=' + this.state.playerId,
+            'Game/GetPickState?gameId=' + this.state.gameId + '&playerId=' + this.state.playerId,
             function (json: PlayState): void {
                 self.setState({
                     pickChoices: json.pickChoices,
