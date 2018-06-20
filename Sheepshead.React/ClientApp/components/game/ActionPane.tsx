@@ -25,8 +25,6 @@ export interface ActionPaneProps extends React.Props<any> {
 }
 
 export default class ActionPane extends React.Component<ActionPaneProps, ActionPaneState> {
-    phaseToDisplay: string;
-
     constructor(props: ActionPaneProps) {
         super(props);
         this.state = {
@@ -58,11 +56,10 @@ export default class ActionPane extends React.Component<ActionPaneProps, ActionP
         FetchUtils.get(
             'Game/GetPlayState?gameId=' + this.state.gameId + '&playerId=' + this.state.playerId,
             function (json: PlayState): void {
-                self.phaseToDisplay = json.turnType == 'BeginDeck' ? 'ReportHand' : json.turnType;
                 self.setState({
                     playState: json,
                     pickChoices: json.pickChoices,
-                    turnType: json.turnType
+                    turnType: json.turnType == 'BeginDeck' ? 'ReportHand' : json.turnType
                 });
             });
     }
@@ -86,18 +83,16 @@ export default class ActionPane extends React.Component<ActionPaneProps, ActionP
         FetchUtils.get(
             'Game/StartDeck?gameId=' + this.state.gameId + '&playerId=' + this.state.playerId,
             function (json: PlayState): void {
-                self.phaseToDisplay = json.turnType == 'BeginDeck' ? 'ReportHand' : json.turnType;
                 self.setState({
                     playState: json,
                     pickChoices: json.pickChoices,
-                    turnType: json.turnType
+                    turnType: json.turnType == 'BeginDeck' ? 'ReportHand' : json.turnType
                 });
             });
     }
 
     public selectRenderPhase() {
-        var displayPhase = this.phaseToDisplay;
-        switch (displayPhase) {
+        switch (this.state.turnType) {
             case 'Pick':
                 return (<PickPane gameId={this.state.gameId}
                     pickChoices={this.state.pickChoices}
