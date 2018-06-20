@@ -16,8 +16,6 @@ export interface PickPaneState {
 
 export interface PickPaneProps extends React.Props<any> {
     gameId: string;
-    playerCards: CardSummary[];
-    requestingPlayerTurn: boolean;
     onBury: () => void;
 }
 
@@ -29,8 +27,8 @@ export default class PickPane extends React.Component<PickPaneProps, PickPaneSta
         this.state = {
             gameId: props.gameId,
             playerId: IdUtils.getPlayerId(props.gameId) || '',
-            playerCards: props.playerCards,
-            requestingPlayerTurn: props.requestingPlayerTurn,
+            playerCards: [],
+            requestingPlayerTurn: false,
             buryCards: []
         };
         this.buryChoice = this.buryChoice.bind(this);
@@ -42,9 +40,10 @@ export default class PickPane extends React.Component<PickPaneProps, PickPaneSta
     private initializePlayStatePinging(): void {
         var self = this;
         FetchUtils.repeatGet(
-            'Game/GetPlayState?gameId=' + this.state.gameId + '&playerId=' + this.state.playerId,
+            'Game/GetBuryState?gameId=' + this.state.gameId + '&playerId=' + this.state.playerId,
             function (json: PlayState): void {
                 self.setState({
+                    playerCards: json.playerCards,
                     requestingPlayerTurn: json.requestingPlayerTurn
                 });
                 if (json.turnType != "Bury")

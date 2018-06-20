@@ -137,9 +137,8 @@ namespace Sheepshead.Models
             var currentDeck = _gameStateDesciber.CurrentDeck;
             var currentTrick = currentDeck?.Hand != null ? _gameStateDesciber.CurrentTrick : null;
             var currentPlayer =
-                turnType == TurnType.Pick ? currentDeck?.PlayersWithoutPickTurn?.FirstOrDefault()
-                : turnType == TurnType.Bury ? currentDeck?.Hand?.Picker
-                : turnType == TurnType.PlayTrick ? currentTrick?.PlayersWithoutTurn?.FirstOrDefault()
+                turnType == TurnType.PlayTrick 
+                ? currentTrick?.PlayersWithoutTurn?.FirstOrDefault()
                 : null;
             var tricks = this.Decks.Where(d => d.Hand != null).LastOrDefault()?.Hand?.Tricks ?? new List<ITrick>();
             var humanPlayer = currentPlayer as IHumanPlayer;
@@ -149,7 +148,6 @@ namespace Sheepshead.Models
                 TurnType = turnType.ToString(),
                 HumanTurn = humanPlayer != null,
                 RequestingPlayerTurn = humanPlayer?.Id == requestingPlayerId,
-                Blinds = turnType == TurnType.Bury ? currentDeck?.Blinds?.Select(b => CardUtil.GetCardSummary(b))?.ToList() : null,
                 CardsPlayed = tricks.Select(t => t.CardsPlayed
                                                   .Select(cp => new Tuple<string, CardSummary>(cp.Key.Name, CardUtil.GetCardSummary(cp.Value)))
                                                   .ToList()
@@ -177,6 +175,25 @@ namespace Sheepshead.Models
                     .Union(new List<Tuple<string, bool>> { new Tuple<string, bool>(currentDeck?.Hand?.Picker?.Name, true) })
                     .Where(p => p.Item1 != null)
                     .ToList(),
+                PlayerCards = requestingPlayer?.Cards?.Select(c => CardUtil.GetCardSummary(c))?.ToList()
+            };
+        }
+
+        public PlayState BuryState(Guid requestingPlayerId)
+        {
+            var turnType = TurnType;
+            var currentDeck = _gameStateDesciber.CurrentDeck;
+            var currentPlayer =
+                turnType == TurnType.Bury 
+                ? currentDeck?.Hand?.Picker
+                : null;
+            var humanPlayer = currentPlayer as IHumanPlayer;
+            var requestingPlayer = Players.OfType<IHumanPlayer>().SingleOrDefault(p => p.Id == requestingPlayerId);
+            return new PlayState
+            {
+                TurnType = turnType.ToString(),
+                RequestingPlayerTurn = humanPlayer?.Id == requestingPlayerId,
+                Blinds = turnType == TurnType.Bury ? currentDeck?.Blinds?.Select(b => CardUtil.GetCardSummary(b))?.ToList() : null,
                 PlayerCards = requestingPlayer?.Cards?.Select(c => CardUtil.GetCardSummary(c))?.ToList()
             };
         }
@@ -254,6 +271,7 @@ namespace Sheepshead.Models
         void MaybeGiveComputerPlayersNames();
         PlayState PlayState(Guid requestingPlayerId);
         PlayState PickState(Guid requestingPlayerId);
+        PlayState BuryState(Guid requestingPlayerId);
         TrickResults GetTrickWinners();
     }
 }

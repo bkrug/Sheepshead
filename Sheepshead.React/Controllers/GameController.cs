@@ -91,6 +91,14 @@ namespace Sheepshead.React.Controllers
         }
 
         [HttpGet]
+        public IActionResult GetBuryState(string gameId, string playerId)
+        {
+            IGame game = GetGame(gameId);
+            var playState = game.BuryState(Guid.Parse(playerId));
+            return Json(playState);
+        }
+
+        [HttpGet]
         public IActionResult GetTrickResults(string gameId)
         {
             var game = GetGame(gameId);

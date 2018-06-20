@@ -100,8 +100,6 @@ export default class ActionPane extends React.Component<ActionPaneProps, ActionP
             case 'Bury':
                 return (<BuryPane
                     gameId={this.state.gameId}
-                    playerCards={this.state.playState.playerCards}
-                    requestingPlayerTurn={this.state.playState.requestingPlayerTurn}
                     onBury={this.onBuryComplete} />);
             case 'PlayTrick':
                 return (<TrickPane
