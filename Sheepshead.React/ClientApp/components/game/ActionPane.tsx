@@ -94,24 +94,25 @@ export default class ActionPane extends React.Component<ActionPaneProps, ActionP
     public selectRenderPhase() {
         switch (this.state.turnType) {
             case 'Pick':
-                return (<PickPane gameId={this.state.gameId}
-                    pickChoices={this.state.pickChoices}
-                    playerCards={this.state.playState.playerCards}
-                    requestingPlayerTurn={this.state.playState.requestingPlayerTurn}
+                return (<PickPane
+                    gameId={this.state.gameId}
                     onPick={this.onPickComplete} />);
             case 'Bury':
-                return (<BuryPane gameId={this.state.gameId}
+                return (<BuryPane
+                    gameId={this.state.gameId}
                     playerCards={this.state.playState.playerCards}
                     requestingPlayerTurn={this.state.playState.requestingPlayerTurn}
                     onBury={this.onBuryComplete} />);
             case 'PlayTrick':
-                return (<TrickPane gameId={this.state.gameId}
+                return (<TrickPane
+                    gameId={this.state.gameId}
                     playerCards={this.state.playState.playerCards}
                     onTrickEnd={this.props.onTrickEnd}
                     onTrickPhaseComplete={this.onTrickPhaseComplete}
                     trickCount={6} playerCount={5} />);
             case 'ReportHand':
-                return (<HandSummaryPane gameId={this.state.gameId}
+                return (<HandSummaryPane
+                    gameId={this.state.gameId}
                     onSummaryPhaseComplete={this.onSummaryPhaseComplete} />);
             case 'BeginDeck':
                 return (<div>Begin Deck Phase</div>);

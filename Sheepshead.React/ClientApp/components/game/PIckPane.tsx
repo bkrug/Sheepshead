@@ -16,9 +16,6 @@ export interface PickPaneState {
 
 export interface PickPaneProps extends React.Props<any> {
     gameId: string;
-    pickChoices: PickChoice[];
-    playerCards: CardSummary[];
-    requestingPlayerTurn: boolean;
     onPick: () => void;
 }
 
@@ -28,9 +25,9 @@ export default class PickPane extends React.Component<PickPaneProps, PickPaneSta
         this.state = {
             gameId: props.gameId,
             playerId: IdUtils.getPlayerId(props.gameId) || '',
-            pickChoices: props.pickChoices,
-            playerCards: props.playerCards,
-            requestingPlayerTurn: props.requestingPlayerTurn
+            pickChoices: [],
+            playerCards: [],
+            requestingPlayerTurn: false
         };
         this.pickChoice = this.pickChoice.bind(this);
         this.initializePlayStatePinging = this.initializePlayStatePinging.bind(this);
@@ -44,7 +41,8 @@ export default class PickPane extends React.Component<PickPaneProps, PickPaneSta
             function (json: PlayState): void {
                 self.setState({
                     pickChoices: json.pickChoices,
-                    requestingPlayerTurn: json.requestingPlayerTurn
+                    requestingPlayerTurn: json.requestingPlayerTurn,
+                    playerCards: json.playerCards
                 });
                 if (json.turnType != "Pick")
                     self.props.onPick();
