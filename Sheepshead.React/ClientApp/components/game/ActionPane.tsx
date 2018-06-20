@@ -13,8 +13,6 @@ import { PlayState, PickChoice } from './PlayState';
 export interface ActionPaneState {
     gameId: string;
     playerId: string;
-    playState: PlayState;
-    pickChoices: any[];
     turnType: string;
 }
 
@@ -30,17 +28,6 @@ export default class ActionPane extends React.Component<ActionPaneProps, ActionP
         this.state = {
             gameId: props.gameId,
             playerId: IdUtils.getPlayerId(props.gameId) || '',
-            playState: {
-                turnType: '',
-                humanTurn: false,
-                requestingPlayerTurn: false,
-                blinds: [],
-                pickChoices: [],
-                cardsPlayed: [],
-                playerCards: [],
-                trickWinners: []
-            },
-            pickChoices: [],
             turnType: '',
         };
         this.onPickComplete = this.onPickComplete.bind(this);
@@ -54,12 +41,10 @@ export default class ActionPane extends React.Component<ActionPaneProps, ActionP
     private loadPlayState(): void {
         var self = this;
         FetchUtils.get(
-            'Game/GetPlayState?gameId=' + this.state.gameId + '&playerId=' + this.state.playerId,
-            function (json: PlayState): void {
+            'Game/GetTurnType?gameId=' + this.state.gameId + '&playerId=' + this.state.playerId,
+            function (json: string): void {
                 self.setState({
-                    playState: json,
-                    pickChoices: json.pickChoices,
-                    turnType: json.turnType == 'BeginDeck' ? 'ReportHand' : json.turnType
+                    turnType: json == 'BeginDeck' ? 'ReportHand' : json
                 });
             });
     }
@@ -80,12 +65,10 @@ export default class ActionPane extends React.Component<ActionPaneProps, ActionP
         this.props.onHandEnd();
         this.loadPlayState();
         var self = this;
-        FetchUtils.get(
+        FetchUtils.post(
             'Game/StartDeck?gameId=' + this.state.gameId + '&playerId=' + this.state.playerId,
             function (json: PlayState): void {
                 self.setState({
-                    playState: json,
-                    pickChoices: json.pickChoices,
                     turnType: json.turnType == 'BeginDeck' ? 'ReportHand' : json.turnType
                 });
             });
@@ -104,7 +87,6 @@ export default class ActionPane extends React.Component<ActionPaneProps, ActionP
             case 'PlayTrick':
                 return (<TrickPane
                     gameId={this.state.gameId}
-                    playerCards={this.state.playState.playerCards}
                     onTrickEnd={this.props.onTrickEnd}
                     onTrickPhaseComplete={this.onTrickPhaseComplete}
                     trickCount={6} playerCount={5} />);

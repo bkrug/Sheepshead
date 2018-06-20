@@ -9,14 +9,6 @@ namespace Sheepshead.React.Controllers
 {
     public class GameController : Controller
     {
-        public IActionResult StartDeck(string gameId, string playerId)
-        {
-            IGame game = GetGame(gameId);
-            if (game.TurnState.TurnType == TurnType.BeginDeck)
-                new Deck(game);
-            return GetPlayState(gameId, playerId);
-        }
-
         [HttpGet]
         public IActionResult GameSummary(string gameId)
         {
@@ -55,26 +47,10 @@ namespace Sheepshead.React.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetPlayState(string gameId, string playerId)
+        public IActionResult GetTurnType(string gameId, string playerId)
         {
             IGame game = GetGame(gameId);
-            var playState = game.PlayState(Guid.Parse(playerId));
-            if (!playState.HumanTurn)
-            {
-                switch (game.TurnType) {
-                    case TurnType.Pick:
-                        game.PlayNonHumanPickTurns();
-                        playState = game.PlayState(Guid.Parse(playerId));
-                        break;
-                    case TurnType.PlayTrick:
-                        game.PlayNonHumansInTrick();
-                        playState = game.PlayState(Guid.Parse(playerId));
-                        break;
-                    default:
-                        break;
-                }
-            }
-            return Json(playState);
+            return Json(game.TurnType.ToString());
         }
 
         [HttpGet]
@@ -82,10 +58,10 @@ namespace Sheepshead.React.Controllers
         {
             IGame game = GetGame(gameId);
             var playState = game.PickState(Guid.Parse(playerId));
-            if (game.TurnType == TurnType.Pick && playState.HumanTurn)
+            if (game.TurnType == TurnType.Pick && !playState.HumanTurn)
             {
                 game.PlayNonHumanPickTurns();
-                playState = game.PlayState(Guid.Parse(playerId));
+                playState = game.PickState(Guid.Parse(playerId));
             }
             return Json(playState);
         }
@@ -99,10 +75,33 @@ namespace Sheepshead.React.Controllers
         }
 
         [HttpGet]
+        public IActionResult GetPlayState(string gameId, string playerId)
+        {
+            IGame game = GetGame(gameId);
+            var playState = game.PlayState(Guid.Parse(playerId));
+            if (game.TurnType == TurnType.PlayTrick && !playState.HumanTurn)
+            {
+                game.PlayNonHumansInTrick();
+                playState = game.PlayState(Guid.Parse(playerId));
+            }
+            return Json(playState);
+        }
+
+        [HttpGet]
         public IActionResult GetTrickResults(string gameId)
         {
             var game = GetGame(gameId);
             return Json(game.GetTrickWinners());
+        }
+
+        [HttpPost]
+        public IActionResult StartDeck(string gameId, string playerId)
+        {
+            IGame game = GetGame(gameId);
+            if (game.TurnState.TurnType == TurnType.BeginDeck)
+                new Deck(game);
+            var playState = game.PlayState(Guid.Parse(playerId));
+            return Json(playState);
         }
 
         [HttpPost]

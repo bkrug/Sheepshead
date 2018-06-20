@@ -18,7 +18,6 @@ export interface TrickPaneState {
 
 export interface TrickPaneProps extends React.Props<any> {
     gameId: string;
-    playerCards: CardSummary[];
     onTrickEnd: () => void;
     onTrickPhaseComplete: () => void;
     playerCount: number;
@@ -36,7 +35,7 @@ export default class TrickPane extends React.Component<TrickPaneProps, TrickPane
             cardsPlayed: [],
             legalMoves: [],
             displayedCardsPlayed: [[]],
-            playerCards: props.playerCards,
+            playerCards: [],
             requestingPlayerTurn: false,
         };
         this.trickChoice = this.trickChoice.bind(this);
