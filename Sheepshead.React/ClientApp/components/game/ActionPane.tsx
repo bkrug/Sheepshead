@@ -52,28 +52,24 @@ export default class ActionPane extends React.Component<ActionPaneProps, ActionP
     }
 
     private onPickComplete(): void {
-        this.loadPlayState();
+        this.setState({ turnType: 'Bury' });
     }
 
     private onBuryComplete(): void {
-        this.loadPlayState();
+        this.setState({ turnType: 'PlayTrick' });
+        this.props.onTrickEnd();
     }
 
     private onTrickPhaseComplete(): void {
-        this.loadPlayState();
+        this.setState({ turnType: 'ReportHand' });
     }
 
     private onSummaryPhaseComplete(): void {
         this.props.onHandEnd();
-        this.loadPlayState();
-        var self = this;
         FetchUtils.post(
             'Game/StartDeck?gameId=' + this.state.gameId + '&playerId=' + this.state.playerId,
-            function (json: PlayState): void {
-                self.setState({
-                    turnType: json.turnType == 'BeginDeck' ? 'ReportHand' : json.turnType
-                });
-            });
+            function (json: PlayState): void { });
+        this.setState({ turnType: 'Pick' });
     }
 
     public selectRenderPhase() {
@@ -96,8 +92,6 @@ export default class ActionPane extends React.Component<ActionPaneProps, ActionP
                 return (<HandSummaryPane
                     gameId={this.state.gameId}
                     onSummaryPhaseComplete={this.onSummaryPhaseComplete} />);
-            case 'BeginDeck':
-                return (<div>Begin Deck Phase</div>);
             default:
                 return (
                     <div>

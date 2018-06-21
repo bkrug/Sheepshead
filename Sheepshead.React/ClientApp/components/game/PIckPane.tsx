@@ -44,11 +44,11 @@ export default class PickPane extends React.Component<PickPaneProps, PickPaneSta
                     requestingPlayerTurn: json.requestingPlayerTurn,
                     playerCards: json.playerCards
                 });
-                if (json.turnType != "Pick")
+                if (json.turnType == "Bury" || json.turnType == "PlayTrick")
                     self.props.onPick();
             },
             function (json: PlayState): boolean {
-                return json.requestingPlayerTurn == false && json.turnType == "Pick";
+                return json.requestingPlayerTurn == false && (json.turnType == "Pick" || json.turnType == "BeginDeck");
             },
             1000);
     }

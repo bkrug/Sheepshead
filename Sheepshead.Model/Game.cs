@@ -174,7 +174,8 @@ namespace Sheepshead.Models
                     currentDeck?.PlayersRefusingPick.Select(p => new Tuple<string, bool>(p.Name, false))
                     .Union(new List<Tuple<string, bool>> { new Tuple<string, bool>(currentDeck?.Hand?.Picker?.Name, true) })
                     .Where(p => p.Item1 != null)
-                    .ToList(),
+                    .ToList()
+                    ?? new List<Tuple<string, bool>>(),
                 PlayerCards = requestingPlayer?.Cards?.Select(c => CardUtil.GetCardSummary(c))?.ToList(),
                 HumanTurn = humanPlayer != null,
                 Blinds = new List<CardSummary>(),
