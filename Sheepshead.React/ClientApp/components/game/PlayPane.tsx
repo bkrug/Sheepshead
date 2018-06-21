@@ -25,6 +25,7 @@ export class PlayPane extends React.Component<RouteComponentProps<{}>, PlayPaneS
         };
         this.trickEnd = this.trickEnd.bind(this);
         this.handEnd = this.handEnd.bind(this);
+        this.handEnd();
     }
 
     private handEnd(): void {
