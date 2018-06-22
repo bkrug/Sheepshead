@@ -55,7 +55,7 @@ namespace Sheepshead.Models
         {
             _cards.Add(player, card);
             player.Cards.Remove(card);
-            if (CardUtil.GetStandardSuit(_hand.PartnerCard) == CardUtil.GetStandardSuit(card) && CardUtil.GetFace(_hand.PartnerCard) == CardUtil.GetFace(card))
+            if (_hand.PartnerCard == card)
                 _hand.SetPartner(player, this);
             OnMoveHandler(player, card);
             if (IsComplete())
@@ -144,7 +144,7 @@ namespace Sheepshead.Models
             get { return Hand.Tricks.IndexOf(this); }
         }
 
-        public SheepCard PartnerCard { get { return Hand.PartnerCard; } }
+        public SheepCard? PartnerCard { get { return Hand.PartnerCard; } }
 
         public List<IPlayer> PlayersInTurnOrder => PickPlayerOrderer.PlayersInTurnOrder(Players, StartingPlayer);
         public List<IPlayer> PlayersWithoutTurn => PickPlayerOrderer.PlayersWithoutTurn(PlayersInTurnOrder, CardsPlayed.Keys.ToList());
@@ -176,7 +176,7 @@ namespace Sheepshead.Models
         int QueueRankOfPicker { get; }
         int? QueueRankOfPartner { get; }
         int IndexInHand { get; }
-        SheepCard PartnerCard { get; }
+        SheepCard? PartnerCard { get; }
         List<KeyValuePair<IPlayer, SheepCard>> OrderedMoves { get; }
         event EventHandler<EventArgs> OnTrickEnd;
         List<IPlayer> PlayersWithoutTurn { get; }

@@ -53,7 +53,7 @@ namespace Sheepshead.Models.Players
         private SheepCard GetLeadCard(ITrick trick, IEnumerable<SheepCard> legalCards)
         {
             IEnumerable<SheepCard> cardsOfPreferedSuite;
-            if (trick.Hand.Picker == this || this.Cards.Any(c => CardUtil.GetStandardSuit(c) == CardUtil.GetStandardSuit(trick.Hand.PartnerCard) && CardUtil.GetFace(c) == CardUtil.GetFace(trick.Hand.PartnerCard)))
+            if (trick.Hand.Picker == this || this.Cards.Any(c => c == trick.Hand.PartnerCard))
                 cardsOfPreferedSuite = legalCards.Where(c => CardUtil.GetSuit(c) == Suit.TRUMP).ToList();
             else
                 cardsOfPreferedSuite = legalCards.Where(c => CardUtil.GetSuit(c) != Suit.TRUMP).ToList();

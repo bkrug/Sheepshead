@@ -11,7 +11,7 @@ namespace Sheepshead.Models
         public IDeck Deck { get; private set; }
         public IPlayer Picker { get; private set; }
         public IPlayer Partner { get; private set; }
-        public SheepCard PartnerCard { get; private set; }
+        public SheepCard? PartnerCard { get; private set; }
         public int[] PartnerCardPlayed { get; private set; }
         private List<ITrick> _tricks = new List<ITrick>();
         public List<ITrick> Tricks { get { return _tricks.ToList(); } }
@@ -32,7 +32,8 @@ namespace Sheepshead.Models
             {
                 picker.Cards.AddRange(deck.Blinds.Where(c => !picker.Cards.Contains(c)));
                 picker.Cards.Where(c => droppedCards.Contains(c)).ToList().ForEach(c => picker.Cards.Remove(c));
-                PartnerCard = ChoosePartnerCard(picker);
+                if (Deck.PlayerCount == 5)
+                    PartnerCard = ChoosePartnerCard(picker);
             }
             PartnerCardPlayed = null;
         }
@@ -185,15 +186,13 @@ namespace Sheepshead.Models
         protected virtual void OnAddTrickHandler()
         {
             var e = new EventArgs();
-            if (OnAddTrick != null)
-                OnAddTrick(this, e);
+            OnAddTrick?.Invoke(this, e);
         }
 
         protected virtual void OnHandEndHandler()
         {
             var e = new EventArgs();
-            if (OnHandEnd != null)
-                OnHandEnd(this, e);
+            OnHandEnd?.Invoke(this, e);
         }
 
         public void SetPartner(IPlayer partner, ITrick trick)
@@ -220,7 +219,7 @@ namespace Sheepshead.Models
         IDeck Deck { get; }
         IPlayer Picker { get; }
         IPlayer Partner { get; }
-        SheepCard PartnerCard { get; }
+        SheepCard? PartnerCard { get; }
         int[] PartnerCardPlayed { get; }
         List<ITrick> Tricks { get; }
         void AddTrick(ITrick trick);

@@ -13,7 +13,9 @@ namespace Sheepshead.React.Controllers
         public IActionResult GameSummary(string gameId)
         {
             IGame game = GetGame(gameId);
-            var coins = game.Decks.Where(d => d.Hand != null).Select(d => d.Hand.Scores().Coins);
+            var coins = game.Decks
+                .Where(d => d?.Hand?.Tricks?.Count == game.TrickCount)
+                .Select(d => d.Hand.Scores().Coins);
             var totalCoins = game.Players.Select(p => new {
                 name = p.Name,
                 score = coins.Sum(c => c[p])
@@ -54,7 +56,7 @@ namespace Sheepshead.React.Controllers
             {
                 turnType = game.TurnType.ToString(),
                 playerCount = game.PlayerCount,
-                trickCount = (int)Math.Floor((decimal)32/game.PlayerCount)
+                trickCount = game.TrickCount
             });
         }
 

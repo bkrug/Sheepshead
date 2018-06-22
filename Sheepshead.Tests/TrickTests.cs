@@ -139,6 +139,7 @@ namespace Sheepshead.Tests
             var mockHand = new Mock<IHand>();
             mockHand.Setup(m => m.PartnerCard).Returns(SheepCard.QUEEN_DIAMONDS);
             mockHand.Setup(m => m.PlayerCount).Returns(5);
+            mockHand.Setup(m => m.Deck.Game.PlayerCount).Returns(5);
             mockHand.Setup(m => m.Players).Returns(new List<IPlayer>());
             mockHand.Setup(m => m.Tricks).Returns(trickList);
             mockHand.Setup(m => m.AddTrick(It.IsAny<ITrick>())).Callback((ITrick newTrick) => { trickList.Add(newTrick); });
@@ -245,6 +246,7 @@ namespace Sheepshead.Tests
             handMock.Setup(m => m.Tricks).Returns(trickList);
             handMock.Setup(m => m.Players).Returns(playerList);
             handMock.Setup(m => m.PlayerCount).Returns(playerList.Count);
+            handMock.Setup(m => m.Deck.Game.PlayerCount).Returns(playerList.Count);
             return handMock;
         }
 
