@@ -215,6 +215,17 @@ namespace Sheepshead.Models
                 TrickWinners = winners
             };
         }
+
+        public List<GameCoins> GameCoins()
+        {
+            var coins = Decks
+                .Where(d => d?.Hand?.Tricks?.Count == TrickCount)
+                .Select(d => d.Hand.Scores().Coins);
+            return Players.Select(p => new GameCoins() {
+                Name = p.Name,
+                Coins = coins.Sum(c => c[p])
+            }).ToList();
+        }
     }
 
     public class HumanMove
@@ -229,6 +240,12 @@ namespace Sheepshead.Models
         public string Picker { get; set; }
         public string Partner { get; set; }
         public List<string> TrickWinners { get; set; }
+    }
+
+    public class GameCoins
+    {
+        public string Name { get; set; }
+        public int Coins { get; set; }
     }
 
     public class TooManyPlayersException : ApplicationException
@@ -275,6 +292,7 @@ namespace Sheepshead.Models
         void PlayNonHumansInTrick();
         void RecordTurn(IHumanPlayer player, SheepCard card);
         void MaybeGiveComputerPlayersNames();
+        List<GameCoins> GameCoins();
         PlayState PlayState(Guid requestingPlayerId);
         PlayState PickState(Guid requestingPlayerId);
         PlayState BuryState(Guid requestingPlayerId);

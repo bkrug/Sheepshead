@@ -12,15 +12,11 @@ namespace Sheepshead.React.Controllers
         [HttpGet]
         public IActionResult GameSummary(string gameId)
         {
-            IGame game = GetGame(gameId);
-            var coins = game.Decks
-                .Where(d => d?.Hand?.Tricks?.Count == game.TrickCount)
-                .Select(d => d.Hand.Scores().Coins);
-            var totalCoins = game.Players.Select(p => new {
+            var gameCoins = GetGame(gameId).GameCoins();
+            return Json(gameCoins.Select(p => new {
                 name = p.Name,
-                score = coins.Sum(c => c[p])
-            });
-            return Json(totalCoins);
+                score = p.Coins
+            }));
         }
         
         [HttpGet]
