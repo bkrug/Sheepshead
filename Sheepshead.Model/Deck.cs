@@ -49,20 +49,41 @@ namespace Sheepshead.Models
 
         private void DealCards(Queue<SheepCard> cards) 
         {
+            Blinds = new List<SheepCard>();
             foreach (var player in Game.Players)
                 player.Cards.RemoveAll(c => true);
-            var totalTricks = (int)(Sheepshead.Models.Game.CARDS_IN_DECK / Game.PlayerCount);
-            var totalRounds = totalTricks / 2;
-            Blinds = new List<SheepCard>();
-            for (var round = 0; round < totalRounds; ++round)
+            switch (Game.PlayerCount)
             {
-                if (round > 0)
-                    Blinds.Add(cards.Dequeue());
-                foreach (var player in Game.Players)
-                {
-                    player.Cards.Add(cards.Dequeue());
-                    player.Cards.Add(cards.Dequeue());
-                }
+                case 3:
+                    DealTwoCardsPerPlayer(cards);
+                    DealTwoCardsPerPlayer(cards);
+                    DealOneBlind(cards);
+                    DealTwoCardsPerPlayer(cards);
+                    DealOneBlind(cards);
+                    DealTwoCardsPerPlayer(cards);
+                    DealTwoCardsPerPlayer(cards);
+                    break;
+                case 5:
+                    DealTwoCardsPerPlayer(cards);
+                    DealOneBlind(cards);
+                    DealTwoCardsPerPlayer(cards);
+                    DealOneBlind(cards);
+                    DealTwoCardsPerPlayer(cards);
+                    break;
+            }
+        }
+
+        private void DealOneBlind(Queue<SheepCard> cards)
+        {
+            Blinds.Add(cards.Dequeue());
+        }
+
+        private void DealTwoCardsPerPlayer(Queue<SheepCard> cards)
+        {
+            foreach (var player in Game.Players)
+            {
+                player.Cards.Add(cards.Dequeue());
+                player.Cards.Add(cards.Dequeue());
             }
         }
 

@@ -50,7 +50,12 @@ namespace Sheepshead.React.Controllers
         public IActionResult GetTurnType(string gameId, string playerId)
         {
             IGame game = GetGame(gameId);
-            return Json(game.TurnType.ToString());
+            return Json(new
+            {
+                turnType = game.TurnType.ToString(),
+                playerCount = game.PlayerCount,
+                trickCount = (int)Math.Floor((decimal)32/game.PlayerCount)
+            });
         }
 
         [HttpGet]

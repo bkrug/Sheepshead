@@ -14,12 +14,20 @@ export interface ActionPaneState {
     gameId: string;
     playerId: string;
     turnType: string;
+    trickCount: number;
+    playerCount: number;
 }
 
 export interface ActionPaneProps extends React.Props<any> {
     gameId: string;
     onTrickEnd: () => void;
     onHandEnd: () => void;
+}
+
+export interface GameType {
+    turnType: string;
+    trickCount: number;
+    playerCount: number;
 }
 
 export default class ActionPane extends React.Component<ActionPaneProps, ActionPaneState> {
@@ -29,6 +37,8 @@ export default class ActionPane extends React.Component<ActionPaneProps, ActionP
             gameId: props.gameId,
             playerId: IdUtils.getPlayerId(props.gameId) || '',
             turnType: '',
+            trickCount: 0,
+            playerCount: 0
         };
         this.onPickComplete = this.onPickComplete.bind(this);
         this.onBuryComplete = this.onBuryComplete.bind(this);
@@ -42,11 +52,13 @@ export default class ActionPane extends React.Component<ActionPaneProps, ActionP
         var self = this;
         FetchUtils.get(
             'Game/GetTurnType?gameId=' + this.state.gameId + '&playerId=' + this.state.playerId,
-            function (json: string): void {
+            function (json: GameType): void {
                 self.setState({
-                    turnType: json == 'BeginDeck' ? 'ReportHand' : json
+                    turnType: json.turnType == 'BeginDeck' ? 'ReportHand' : json.turnType,
+                    playerCount: json.playerCount,
+                    trickCount: json.trickCount
                 });
-                if (json == 'PlayTrick')
+                if (json.turnType == 'PlayTrick')
                     self.props.onTrickEnd();
             });
     }
@@ -87,7 +99,8 @@ export default class ActionPane extends React.Component<ActionPaneProps, ActionP
                     gameId={this.state.gameId}
                     onTrickEnd={this.props.onTrickEnd}
                     onTrickPhaseComplete={this.onTrickPhaseComplete}
-                    trickCount={6} playerCount={5} />);
+                    trickCount={this.state.trickCount}
+                    playerCount={this.state.playerCount} />);
             case 'ReportHand':
                 return (<HandSummaryPane
                     gameId={this.state.gameId}
