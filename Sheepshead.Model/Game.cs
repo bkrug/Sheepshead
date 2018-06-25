@@ -214,6 +214,7 @@ namespace Sheepshead.Models
             {
                 Picker = currentDeck?.Hand?.Picker?.Name,
                 Partner = currentDeck?.Hand?.Partner?.Name,
+                PartnerCard = currentDeck?.Hand?.PartnerCard == null ? null : CardUtil.ToAbbr(currentDeck.Hand.PartnerCard.Value),
                 TrickWinners = winners
             };
         }
@@ -241,6 +242,7 @@ namespace Sheepshead.Models
     {
         public string Picker { get; set; }
         public string Partner { get; set; }
+        public string PartnerCard { get; set; }
         public List<string> TrickWinners { get; set; }
     }
 
