@@ -10,8 +10,10 @@ export interface PickPaneState {
     gameId: string;
     playerId: string;
     pickChoices: PickChoice[];
+    displayedPickChoices: PickChoice[];
     playerCards: CardSummary[];
     requestingPlayerTurn: boolean;
+    turnType: string;
 }
 
 export interface PickPaneProps extends React.Props<any> {
@@ -20,6 +22,8 @@ export interface PickPaneProps extends React.Props<any> {
 }
 
 export default class PickPane extends React.Component<PickPaneProps, PickPaneState> {
+    displayInterval: number;
+
     constructor(props: PickPaneProps) {
         super(props);
         this.state = {
@@ -27,11 +31,15 @@ export default class PickPane extends React.Component<PickPaneProps, PickPaneSta
             playerId: IdUtils.getPlayerId(props.gameId) || '',
             pickChoices: [],
             playerCards: [],
-            requestingPlayerTurn: false
+            requestingPlayerTurn: false,
+            displayedPickChoices: [],
+            turnType: ''
         };
         this.pickChoice = this.pickChoice.bind(this);
         this.initializePlayStatePinging = this.initializePlayStatePinging.bind(this);
         this.initializePlayStatePinging();
+        this.displayOneMorePlay = this.displayOneMorePlay.bind(this);
+        this.displayInterval = setInterval(this.displayOneMorePlay, 500);
     }
 
     private initializePlayStatePinging(): void {
@@ -42,10 +50,9 @@ export default class PickPane extends React.Component<PickPaneProps, PickPaneSta
                 self.setState({
                     pickChoices: json.pickChoices,
                     requestingPlayerTurn: json.requestingPlayerTurn,
-                    playerCards: json.playerCards
+                    playerCards: json.playerCards,
+                    turnType: json.turnType
                 });
-                if (json.turnType == "Bury" || json.turnType == "PlayTrick")
-                    self.props.onPick();
             },
             function (json: PlayState): boolean {
                 return json.requestingPlayerTurn == false && (json.turnType == "Pick" || json.turnType == "BeginDeck");
@@ -53,13 +60,32 @@ export default class PickPane extends React.Component<PickPaneProps, PickPaneSta
             1000);
     }
 
+    private displayOneMorePlay(): void {
+        var picksToDisplay = this.state.displayedPickChoices.length + 1;
+
+        var picks = this.state.pickChoices.slice(0, picksToDisplay);
+        this.setState({
+            displayedPickChoices: picks
+        });
+
+        console.log(this.state.displayedPickChoices.length + '  ' + this.state.pickChoices.length + '   ' + this.state.turnType);
+        var allChoicesDisplayed = this.state.displayedPickChoices.length >= this.state.pickChoices.length;
+        var pickPhaseComplete = this.state.turnType == "Bury" || this.state.turnType == "PlayTrick";
+        if (allChoicesDisplayed && pickPhaseComplete) {
+            this.props.onPick();
+            clearInterval(this.displayInterval);
+        }
+    }
+
     private pickChoice(willPick: boolean): void {
         var self = this;
         FetchUtils.post(
             'Game/RecordPickChoice?gameId=' + this.state.gameId + '&playerId=' + this.state.playerId + '&willPick=' + willPick,
             function (json: number[]): void {
-                if (willPick)
+                if (willPick) {
                     self.props.onPick();
+                    clearInterval(self.displayInterval);
+                }
                 else
                     self.initializePlayStatePinging();
             }
@@ -67,19 +93,20 @@ export default class PickPane extends React.Component<PickPaneProps, PickPaneSta
     }
 
     public render() {
+        var allChoicesDisplayed = this.state.displayedPickChoices.length >= this.state.pickChoices.length;
         return (
             <div>
                 <h4>Pick Phase</h4>
                 {
-                    Object.keys(this.state.pickChoices).map((playerName, i) => (
+                    Object.keys(this.state.displayedPickChoices).map((playerName, i) => (
                             <div key={i}>
-                            <p>{this.state.pickChoices[i].item1 + (this.state.pickChoices[i].item2 ? ' picked.' : ' refused.')}</p>
+                            <p>{this.state.displayedPickChoices[i].item1 + (this.state.displayedPickChoices[i].item2 ? ' picked.' : ' refused.')}</p>
                             </div>
                     ))
                 }
                 <div>
                     {
-                        this.state.requestingPlayerTurn
+                        this.state.requestingPlayerTurn && allChoicesDisplayed
                             ? <div>
                                 <b>Do you want to pick?</b>
                                 <button onClick={() => this.pickChoice(true)}>Yes</button>
