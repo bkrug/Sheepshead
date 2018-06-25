@@ -39,7 +39,7 @@ export default class PickPane extends React.Component<PickPaneProps, PickPaneSta
         this.initializePlayStatePinging = this.initializePlayStatePinging.bind(this);
         this.initializePlayStatePinging();
         this.displayOneMorePlay = this.displayOneMorePlay.bind(this);
-        this.displayInterval = setInterval(this.displayOneMorePlay, 500);
+        this.displayInterval = setInterval(this.displayOneMorePlay, 1000);
     }
 
     private initializePlayStatePinging(): void {
@@ -68,13 +68,10 @@ export default class PickPane extends React.Component<PickPaneProps, PickPaneSta
             displayedPickChoices: picks
         });
 
-        console.log(this.state.displayedPickChoices.length + '  ' + this.state.pickChoices.length + '   ' + this.state.turnType);
         var allChoicesDisplayed = this.state.displayedPickChoices.length >= this.state.pickChoices.length;
         var pickPhaseComplete = this.state.turnType == "Bury" || this.state.turnType == "PlayTrick";
-        if (allChoicesDisplayed && pickPhaseComplete) {
-            this.props.onPick();
-            clearInterval(this.displayInterval);
-        }
+        if (allChoicesDisplayed && pickPhaseComplete)
+            this.finishPickPhase();
     }
 
     private pickChoice(willPick: boolean): void {
@@ -82,14 +79,17 @@ export default class PickPane extends React.Component<PickPaneProps, PickPaneSta
         FetchUtils.post(
             'Game/RecordPickChoice?gameId=' + this.state.gameId + '&playerId=' + this.state.playerId + '&willPick=' + willPick,
             function (json: number[]): void {
-                if (willPick) {
-                    self.props.onPick();
-                    clearInterval(self.displayInterval);
-                }
+                if (willPick)
+                    self.finishPickPhase();
                 else
                     self.initializePlayStatePinging();
             }
         );
+    }
+
+    private finishPickPhase(): void {
+        clearInterval(this.displayInterval);
+        setTimeout(this.props.onPick, 2000);
     }
 
     public render() {

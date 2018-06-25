@@ -25,8 +25,6 @@ export interface TrickPaneProps extends React.Props<any> {
 }
 
 export default class TrickPane extends React.Component<TrickPaneProps, TrickPaneState> {
-    displayInterval: number;
-
     constructor(props: TrickPaneProps) {
         super(props);
         this.state = {
@@ -42,7 +40,7 @@ export default class TrickPane extends React.Component<TrickPaneProps, TrickPane
         this.displayOneMorePlay = this.displayOneMorePlay.bind(this);
         this.initializePlayStatePinging = this.initializePlayStatePinging.bind(this);
         this.initializePlayStatePinging();
-        this.displayInterval = setInterval(this.displayOneMorePlay, 500);
+        setTimeout(this.displayOneMorePlay, 500);
     }
 
     private initializePlayStatePinging(): void {
@@ -70,7 +68,9 @@ export default class TrickPane extends React.Component<TrickPaneProps, TrickPane
     private displayOneMorePlay(): void {
         var tricksToDisplay = this.state.displayedCardsPlayed.length;
         var playsToDisplay = this.state.displayedCardsPlayed[tricksToDisplay - 1].length + 1;
-        if (playsToDisplay > this.state.cardsPlayed[tricksToDisplay - 1].length && tricksToDisplay < this.state.cardsPlayed.length) {
+        var allPlaysNowDisplayed = playsToDisplay > this.state.cardsPlayed[tricksToDisplay - 1].length;
+        var notAllTricksDisplayed = tricksToDisplay < this.state.cardsPlayed.length;
+        if (allPlaysNowDisplayed && notAllTricksDisplayed) {
             ++tricksToDisplay;
             playsToDisplay = 0;
         }
@@ -83,11 +83,13 @@ export default class TrickPane extends React.Component<TrickPaneProps, TrickPane
 
         if (this.state.displayedCardsPlayed[tricksToDisplay - 1].length >= this.props.playerCount) {
             this.props.onTrickEnd();
-            if (this.state.displayedCardsPlayed.length >= this.props.trickCount) {
-                this.props.onTrickPhaseComplete();
-                clearInterval(this.displayInterval);
-            }
+            if (this.state.displayedCardsPlayed.length >= this.props.trickCount)
+                setTimeout(this.props.onTrickPhaseComplete, 2000);
+            else
+                setTimeout(this.displayOneMorePlay, 2000);
         }
+        else
+            setTimeout(this.displayOneMorePlay, 500);
     }
 
     private trickChoice(card: DraggableCard): void {
