@@ -148,6 +148,7 @@ namespace Sheepshead.Models
             {
                 TurnType = turnType.ToString(),
                 HumanTurn = humanPlayer != null,
+                CurrentTurn = currentPlayer?.Name,
                 RequestingPlayerTurn = humanPlayer?.Id == requestingPlayerId,
                 CardsPlayed = tricks.Select(t => t.CardsPlayed
                                                   .Select(cp => new Tuple<string, CardSummary>(cp.Key.Name, CardUtil.GetCardSummary(cp.Value)))
@@ -179,6 +180,7 @@ namespace Sheepshead.Models
                     ?? new List<Tuple<string, bool>>(),
                 PlayerCards = requestingPlayer?.Cards?.Select(c => CardUtil.GetCardSummary(c))?.ToList(),
                 HumanTurn = humanPlayer != null,
+                CurrentTurn = currentPlayer?.Name,
                 Blinds = new List<CardSummary>(),
                 CardsPlayed = new List<List<Tuple<string, CardSummary>>>()
             };

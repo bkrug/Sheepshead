@@ -24,6 +24,7 @@ namespace Sheepshead.Models
     {
         public string TurnType { get; set; }
         public bool HumanTurn { get; set; }
+        public string CurrentTurn { get; set; }
         public bool RequestingPlayerTurn { get; set; }
         public List<CardSummary> Blinds { get; set; }
         //Player name and whether or not the picked

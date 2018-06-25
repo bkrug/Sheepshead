@@ -1,6 +1,6 @@
 ﻿export class PlayState {
     turnType: string;
-    humanTurn: boolean;
+    currentTurn: string;
     requestingPlayerTurn: boolean;
     blinds: CardSummary[];
     pickChoices: PickChoice[];

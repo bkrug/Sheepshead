@@ -14,6 +14,7 @@ export interface TrickPaneState {
     displayedCardsPlayed: TrickChoice[][];
     playerCards: CardSummary[];
     requestingPlayerTurn: boolean;
+    currentTurn: string;
 }
 
 export interface TrickPaneProps extends React.Props<any> {
@@ -35,6 +36,7 @@ export default class TrickPane extends React.Component<TrickPaneProps, TrickPane
             displayedCardsPlayed: [[]],
             playerCards: [],
             requestingPlayerTurn: false,
+            currentTurn: ''
         };
         this.trickChoice = this.trickChoice.bind(this);
         this.displayOneMorePlay = this.displayOneMorePlay.bind(this);
@@ -54,9 +56,10 @@ export default class TrickPane extends React.Component<TrickPaneProps, TrickPane
                     cardsPlayed: json.cardsPlayed,
                     requestingPlayerTurn: json.requestingPlayerTurn,
                     playerCards: json.playerCards,
+                    currentTurn: json.currentTurn,
                     legalMoves: json.playerCards.map((value: CardSummary, index: number) => {
                         return value.legalMove;
-                    }),
+                    })
                 });
             },
             function (json: PlayState): boolean {
@@ -118,11 +121,24 @@ export default class TrickPane extends React.Component<TrickPaneProps, TrickPane
     }
 
     public render() {
+        var waitingForAnotherPlayer =
+            this.state.displayedCardsPlayed.length == this.state.cardsPlayed.length
+            && this.state.displayedCardsPlayed.slice(-1).length == this.state.cardsPlayed.slice(-1).length
+            && this.state.currentTurn
+            && !this.state.requestingPlayerTurn;
+
         return (
             <div>
                 <h4>Trick Phase</h4>
                 <b>Trick {this.state.displayedCardsPlayed.length}</b>
-                { this.renderOneTrick(this.state.displayedCardsPlayed[this.state.displayedCardsPlayed.length - 1]) }
+                {this.renderOneTrick(this.state.displayedCardsPlayed[this.state.displayedCardsPlayed.length - 1])}
+                <div>
+                    {
+                        waitingForAnotherPlayer
+                            ? 'This is the turn for ' + this.state.currentTurn + '.'
+                            : ''
+                    }
+                </div>
                 <div>
                     {
                         this.state.requestingPlayerTurn

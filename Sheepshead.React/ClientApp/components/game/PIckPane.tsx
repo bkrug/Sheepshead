@@ -14,6 +14,7 @@ export interface PickPaneState {
     playerCards: CardSummary[];
     requestingPlayerTurn: boolean;
     turnType: string;
+    currentTurn: string;
 }
 
 export interface PickPaneProps extends React.Props<any> {
@@ -33,7 +34,8 @@ export default class PickPane extends React.Component<PickPaneProps, PickPaneSta
             playerCards: [],
             requestingPlayerTurn: false,
             displayedPickChoices: [],
-            turnType: ''
+            turnType: '',
+            currentTurn: ''
         };
         this.pickChoice = this.pickChoice.bind(this);
         this.initializePlayStatePinging = this.initializePlayStatePinging.bind(this);
@@ -51,7 +53,8 @@ export default class PickPane extends React.Component<PickPaneProps, PickPaneSta
                     pickChoices: json.pickChoices,
                     requestingPlayerTurn: json.requestingPlayerTurn,
                     playerCards: json.playerCards,
-                    turnType: json.turnType
+                    turnType: json.turnType,
+                    currentTurn: json.currentTurn
                 });
             },
             function (json: PlayState): boolean {
@@ -71,7 +74,7 @@ export default class PickPane extends React.Component<PickPaneProps, PickPaneSta
         var allChoicesDisplayed = this.state.displayedPickChoices.length >= this.state.pickChoices.length;
         var pickPhaseComplete = this.state.turnType == "Bury" || this.state.turnType == "PlayTrick";
         if (allChoicesDisplayed && pickPhaseComplete)
-            this.finishPickPhase();
+            this.finishPickPhase(2000);
     }
 
     private pickChoice(willPick: boolean): void {
@@ -80,20 +83,25 @@ export default class PickPane extends React.Component<PickPaneProps, PickPaneSta
             'Game/RecordPickChoice?gameId=' + this.state.gameId + '&playerId=' + this.state.playerId + '&willPick=' + willPick,
             function (json: number[]): void {
                 if (willPick)
-                    self.finishPickPhase();
+                    self.finishPickPhase(0);
                 else
                     self.initializePlayStatePinging();
             }
         );
     }
 
-    private finishPickPhase(): void {
+    private finishPickPhase(timeout: number): void {
         clearInterval(this.displayInterval);
-        setTimeout(this.props.onPick, 2000);
+        setTimeout(this.props.onPick, timeout);
     }
 
     public render() {
         var allChoicesDisplayed = this.state.displayedPickChoices.length >= this.state.pickChoices.length;
+        var waitingForAnotherPlayer =
+            this.state.displayedPickChoices.length == this.state.pickChoices.length
+            && this.state.currentTurn
+            && !this.state.requestingPlayerTurn;
+
         return (
             <div>
                 <h4>Pick Phase</h4>
@@ -104,6 +112,13 @@ export default class PickPane extends React.Component<PickPaneProps, PickPaneSta
                             </div>
                     ))
                 }
+                <div>
+                {
+                    waitingForAnotherPlayer                
+                        ? this.state.currentTurn + ' is deciding whether to pick.'
+                        : ''
+                }
+                </div>
                 <div>
                     {
                         this.state.requestingPlayerTurn && allChoicesDisplayed
