@@ -70,8 +70,8 @@ export default class TrickPane extends React.Component<TrickPaneProps, TrickPane
 
     private displayOneMorePlay(): void {
         var tricksToDisplay = this.state.displayedCardsPlayed.length;
-        var playsToDisplay = this.state.displayedCardsPlayed[tricksToDisplay - 1].length + 1;
-        var allPlaysNowDisplayed = playsToDisplay > this.state.cardsPlayed[tricksToDisplay - 1].length;
+        var playsToDisplay = tricksToDisplay == 0 ? 1 : this.state.displayedCardsPlayed[tricksToDisplay - 1].length + 1;
+        var allPlaysNowDisplayed = tricksToDisplay == 0 || this.state.cardsPlayed.length == 0 || playsToDisplay > this.state.cardsPlayed[tricksToDisplay - 1].length;
         var notAllTricksDisplayed = tricksToDisplay < this.state.cardsPlayed.length;
         if (allPlaysNowDisplayed && notAllTricksDisplayed) {
             ++tricksToDisplay;
@@ -121,10 +121,11 @@ export default class TrickPane extends React.Component<TrickPaneProps, TrickPane
     }
 
     public render() {
-        var waitingForAnotherPlayer =
+        var allCardsDisplayed =
             this.state.displayedCardsPlayed.length == this.state.cardsPlayed.length
-            && this.state.displayedCardsPlayed.slice(-1).length == this.state.cardsPlayed.slice(-1).length
-            && this.state.currentTurn
+            && this.state.displayedCardsPlayed.slice(-1)[0].length == this.state.cardsPlayed.slice(-1)[0].length;
+        var waitingForAnotherPlayer =            
+            this.state.currentTurn
             && !this.state.requestingPlayerTurn;
 
         return (
@@ -134,14 +135,14 @@ export default class TrickPane extends React.Component<TrickPaneProps, TrickPane
                 {this.renderOneTrick(this.state.displayedCardsPlayed[this.state.displayedCardsPlayed.length - 1])}
                 <div>
                     {
-                        waitingForAnotherPlayer
-                            ? 'This is the turn for ' + this.state.currentTurn + '.'
+                        allCardsDisplayed && waitingForAnotherPlayer
+                            ? 'Waiting for ' + this.state.currentTurn + ' to take his or her turn.'
                             : ''
                     }
                 </div>
                 <div>
                     {
-                        this.state.requestingPlayerTurn
+                        allCardsDisplayed && this.state.requestingPlayerTurn
                             ? <div><b>What card will you play?</b></div>
                             : <div></div>
                     }
