@@ -108,6 +108,8 @@ namespace Sheepshead.Models
                 defensiveCoins = -2;
             else if (defensePoints <= 59)
                 defensiveCoins = -1;
+            else if (defensePoints < 90)
+                defensiveCoins = 1;
             else
                 defensiveCoins = 2;
 
