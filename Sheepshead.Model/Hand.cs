@@ -85,13 +85,14 @@ namespace Sheepshead.Models
 
             handScores.Points.Add(Picker, Deck.Buried.Sum(c => CardUtil.GetPoints(c)));
             var defensePoints = 0;
+            var challengersWonOneTrick = false;
             foreach (var trick in _tricks)
             {
                 var winnerData = trick.Winner();
                 if (winnerData?.Player != Picker && winnerData?.Player != Partner)
-                {
                     defensePoints += winnerData.Points;
-                }
+                else
+                    challengersWonOneTrick = true;
                 if (winnerData?.Player != null)
                 {
                     if (handScores.Points.ContainsKey(winnerData.Player))
@@ -99,6 +100,14 @@ namespace Sheepshead.Models
                     else
                         handScores.Points.Add(winnerData.Player, winnerData.Points);
                 }
+            }
+
+            if (!challengersWonOneTrick)
+            {
+                Deck.Players.ForEach(p => handScores.Coins[p] = 3);
+                handScores.Coins[Picker] = -9;
+                handScores.Coins[Partner] = 0;
+                return handScores;
             }
 
             int defensiveCoins;

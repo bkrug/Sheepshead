@@ -298,7 +298,40 @@ namespace Sheepshead.Tests
         [TestMethod]
         public void Hand_Scores_JackDiamondsPartner_DefenseWinsThreeCoins()
         {
+            var deckMock = new Mock<IDeck>();
+            var pickerMock = new Mock<IPlayer>();
+            var partnerMock = new Mock<IPlayer>();
+            var player1Mock = new Mock<IPlayer>();
+            var player2Mock = new Mock<IPlayer>();
+            var player3Mock = new Mock<IPlayer>();
+            pickerMock.Setup(p => p.Cards).Returns(new List<SheepCard>());
+            deckMock.Setup(d => d.Blinds).Returns(new List<SheepCard>() { SheepCard.N8_HEARTS, SheepCard.JACK_HEARTS });
+            deckMock.Setup(d => d.PlayerCount).Returns(5);
+            deckMock.Setup(d => d.Players).Returns(new List<IPlayer>() { partnerMock.Object, player1Mock.Object, pickerMock.Object, player2Mock.Object, player3Mock.Object });
+            deckMock.Setup(d => d.Buried).Returns(new List<SheepCard>() { SheepCard.ACE_SPADES, SheepCard.ACE_HEARTS });
 
+            var hand = new Hand(deckMock.Object, pickerMock.Object, deckMock.Object.Buried);
+            hand.SetPartner(partnerMock.Object, null);
+            MockTrickWinners(hand, player1Mock, 10);
+            MockTrickWinners(hand, player1Mock, 6);
+            MockTrickWinners(hand, player2Mock, 20);
+            MockTrickWinners(hand, player2Mock, 28);
+            MockTrickWinners(hand, player3Mock, 19);
+            MockTrickWinners(hand, player3Mock, 15);
+
+            var scores = hand.Scores();
+
+            Assert.AreEqual(22, scores.Points[pickerMock.Object], "Picker recieves the blind");
+            Assert.IsFalse(scores.Points.ContainsKey(partnerMock.Object));
+            Assert.AreEqual(16, scores.Points[player1Mock.Object]);
+            Assert.AreEqual(48, scores.Points[player2Mock.Object]);
+            Assert.AreEqual(34, scores.Points[player3Mock.Object]);
+
+            Assert.AreEqual(-9, scores.Coins[pickerMock.Object]);
+            Assert.AreEqual(0, scores.Coins[partnerMock.Object]);
+            Assert.AreEqual(3, scores.Coins[player1Mock.Object]);
+            Assert.AreEqual(3, scores.Coins[player2Mock.Object]);
+            Assert.AreEqual(3, scores.Coins[player3Mock.Object]);
         }
 
         [TestMethod]
