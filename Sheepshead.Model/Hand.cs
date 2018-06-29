@@ -83,6 +83,7 @@ namespace Sheepshead.Models
                 Coins = new Dictionary<IPlayer, int>()
             };
 
+            handScores.Points.Add(Picker, Deck.Buried.Sum(c => CardUtil.GetPoints(c)));
             var defensePoints = 0;
             foreach (var trick in _tricks)
             {
@@ -198,6 +199,8 @@ namespace Sheepshead.Models
         public void SetPartner(IPlayer partner, ITrick trick)
         {
             Partner = partner;
+            if (trick == null)
+                return;
             PartnerCardPlayed = new[] { -1, -1 };
             PartnerCardPlayed[0] = Tricks.IndexOf(trick);
             PartnerCardPlayed[1] = trick.QueueRankOfPartner.Value;
