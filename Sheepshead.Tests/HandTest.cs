@@ -335,15 +335,79 @@ namespace Sheepshead.Tests
         }
 
         [TestMethod]
-        public void Hand_Scores_CalledAcePartner()
+        public void Hand_Scores_NoPartner()
         {
+            var deckMock = new Mock<IDeck>();
+            var pickerMock = new Mock<IPlayer>();
+            var player1Mock = new Mock<IPlayer>();
+            var player2Mock = new Mock<IPlayer>();
+            var player3Mock = new Mock<IPlayer>();
+            var player4Mock = new Mock<IPlayer>();
+            pickerMock.Setup(p => p.Cards).Returns(new List<SheepCard>());
+            deckMock.Setup(d => d.Blinds).Returns(new List<SheepCard>() { SheepCard.N8_CLUBS, SheepCard.N7_CLUBS });
+            deckMock.Setup(d => d.PlayerCount).Returns(5);
+            deckMock.Setup(d => d.Players).Returns(new List<IPlayer>() { player4Mock.Object, player1Mock.Object, pickerMock.Object, player2Mock.Object, player3Mock.Object });
+            deckMock.Setup(d => d.Buried).Returns(new List<SheepCard>() { SheepCard.ACE_CLUBS, SheepCard.N10_SPADES });
 
+            var hand = new Hand(deckMock.Object, pickerMock.Object, deckMock.Object.Buried);
+            MockTrickWinners(hand, pickerMock, 21);
+            MockTrickWinners(hand, pickerMock, 12);
+            MockTrickWinners(hand, pickerMock, 14);
+            MockTrickWinners(hand, player1Mock, 17);
+            MockTrickWinners(hand, player2Mock, 7);
+            MockTrickWinners(hand, player3Mock, 28);
+
+            var scores = hand.Scores();
+
+            Assert.AreEqual(21 + 12 + 14 + 21, scores.Points[pickerMock.Object], "Picker recieves the blind");
+            Assert.AreEqual(17, scores.Points[player1Mock.Object]);
+            Assert.AreEqual(7, scores.Points[player2Mock.Object]);
+            Assert.AreEqual(28, scores.Points[player3Mock.Object]);
+            Assert.IsFalse(scores.Points.ContainsKey(player4Mock.Object));
+
+            Assert.AreEqual(4, scores.Coins[pickerMock.Object]);
+            Assert.AreEqual(-1, scores.Coins[player1Mock.Object]);
+            Assert.AreEqual(-1, scores.Coins[player2Mock.Object]);
+            Assert.AreEqual(-1, scores.Coins[player3Mock.Object]);
+            Assert.AreEqual(-1, scores.Coins[player4Mock.Object]);
         }
 
         [TestMethod]
-        public void Hand_Scores_NoPartner()
+        public void Hand_Scores_NoPartner_PickerWinsNoTricks()
         {
+            var deckMock = new Mock<IDeck>();
+            var pickerMock = new Mock<IPlayer>();
+            var player1Mock = new Mock<IPlayer>();
+            var player2Mock = new Mock<IPlayer>();
+            var player3Mock = new Mock<IPlayer>();
+            var player4Mock = new Mock<IPlayer>();
+            pickerMock.Setup(p => p.Cards).Returns(new List<SheepCard>());
+            deckMock.Setup(d => d.Blinds).Returns(new List<SheepCard>() { SheepCard.N8_CLUBS, SheepCard.N7_CLUBS });
+            deckMock.Setup(d => d.PlayerCount).Returns(5);
+            deckMock.Setup(d => d.Players).Returns(new List<IPlayer>() { player4Mock.Object, player1Mock.Object, pickerMock.Object, player2Mock.Object, player3Mock.Object });
+            deckMock.Setup(d => d.Buried).Returns(new List<SheepCard>() { SheepCard.ACE_CLUBS, SheepCard.N10_SPADES });
 
+            var hand = new Hand(deckMock.Object, pickerMock.Object, deckMock.Object.Buried);
+            MockTrickWinners(hand, player1Mock, 12);
+            MockTrickWinners(hand, player1Mock, 17);
+            MockTrickWinners(hand, player2Mock, 21);
+            MockTrickWinners(hand, player2Mock, 7);
+            MockTrickWinners(hand, player3Mock, 28);
+            MockTrickWinners(hand, player4Mock, 14);
+
+            var scores = hand.Scores();
+
+            Assert.AreEqual(21, scores.Points[pickerMock.Object], "Picker recieves the blind");
+            Assert.AreEqual(29, scores.Points[player1Mock.Object]);
+            Assert.AreEqual(28, scores.Points[player2Mock.Object]);
+            Assert.AreEqual(28, scores.Points[player3Mock.Object]);
+            Assert.AreEqual(14, scores.Points[player4Mock.Object]);
+
+            Assert.AreEqual(-12, scores.Coins[pickerMock.Object]);
+            Assert.AreEqual(3, scores.Coins[player1Mock.Object]);
+            Assert.AreEqual(3, scores.Coins[player2Mock.Object]);
+            Assert.AreEqual(3, scores.Coins[player3Mock.Object]);
+            Assert.AreEqual(3, scores.Coins[player4Mock.Object]);
         }
 
         [TestMethod]

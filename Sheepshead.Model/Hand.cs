@@ -105,8 +105,15 @@ namespace Sheepshead.Models
             if (!challengersWonOneTrick)
             {
                 Deck.Players.ForEach(p => handScores.Coins[p] = 3);
-                handScores.Coins[Picker] = -9;
-                handScores.Coins[Partner] = 0;
+                if (Partner == null)
+                {
+                    handScores.Coins[Picker] = -12;
+                }
+                else
+                {
+                    handScores.Coins[Picker] = -9;
+                    handScores.Coins[Partner] = 0;
+                }
                 return handScores;
             }
 
@@ -124,7 +131,9 @@ namespace Sheepshead.Models
 
             foreach (var player in Deck.Players)
             {
-                if (player == Picker)
+                if (player == Picker && Partner == null)
+                    handScores.Coins.Add(player, defensiveCoins * -4);
+                else if (player == Picker)
                     handScores.Coins.Add(player, defensiveCoins * -2);
                 else if (player == Partner)
                     handScores.Coins.Add(player, defensiveCoins * -1);
