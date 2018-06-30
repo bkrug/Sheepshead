@@ -3,7 +3,7 @@ import { RouteComponentProps } from 'react-router';
 import { IdUtils } from '../IdUtils';
 import { FetchUtils } from '../FetchUtils';
 import { render } from 'react-dom';
-import DraggableCard from './DraggableCard';
+import Card from './Card';
 import { PlayState, TrickChoice, CardSummary } from './PlayState';
 
 export interface TrickPaneState {
@@ -95,7 +95,7 @@ export default class TrickPane extends React.Component<TrickPaneProps, TrickPane
             setTimeout(this.displayOneMorePlay, 500);
     }
 
-    private trickChoice(card: DraggableCard): void {
+    private trickChoice(card: Card): void {
         var self = this;
         FetchUtils.post(
             'Game/RecordTrickChoice?gameId=' + this.state.gameId + '&playerId=' + this.state.playerId + '&card=' + card.props.cardSummary.name,
@@ -112,7 +112,7 @@ export default class TrickPane extends React.Component<TrickPaneProps, TrickPane
                     Object.keys(playsInTrick).map((playerName, i) => (
                         <div key={i} style={{ display: "inline-block" }}>
                             <p>{playsInTrick[i].item1}</p>
-                            <DraggableCard key={i} cardSummary={playsInTrick[i].item2} />
+                            <Card key={i} cardSummary={playsInTrick[i].item2} />
                         </div>
                     ))
                 }
@@ -149,7 +149,7 @@ export default class TrickPane extends React.Component<TrickPaneProps, TrickPane
                 </div>
                 {
                     this.state.playerCards.map((card: CardSummary, i: number) =>
-                        <DraggableCard key={i} cardSummary={card} onClick={this.trickChoice} />
+                        <Card key={i} cardSummary={card} onClick={this.trickChoice} />
                     )
                 }
             </div>

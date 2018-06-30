@@ -3,7 +3,6 @@ import { RouteComponentProps } from 'react-router';
 import { IdUtils } from '../IdUtils';
 import { FetchUtils } from '../FetchUtils';
 import { render } from 'react-dom';
-import DraggableCard from './DraggableCard';
 import PickPane from './PickPane';
 import BuryPane from './BuryPane';
 import TrickPane from './TrickPane';

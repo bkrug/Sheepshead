@@ -3,7 +3,7 @@ import { RouteComponentProps } from 'react-router';
 import { IdUtils } from '../IdUtils';
 import { FetchUtils } from '../FetchUtils';
 import { render } from 'react-dom';
-import DraggableCard from './DraggableCard';
+import Card from './Card';
 import { PlayState, PickChoice, CardSummary } from './PlayState';
 
 export interface PickPaneState {
@@ -55,7 +55,7 @@ export default class PickPane extends React.Component<PickPaneProps, PickPaneSta
             1000);
     }
 
-    private buryChoice(card: DraggableCard): void {
+    private buryChoice(card: Card): void {
         var buryList = this.state.buryCards;
         buryList.push(card.props.cardSummary);
 
@@ -95,7 +95,7 @@ export default class PickPane extends React.Component<PickPaneProps, PickPaneSta
                         <div style={this.cardContainerStyle}>
                         {
                             this.state.playerCards.map((card: CardSummary, i: number) =>
-                                <DraggableCard key={i} cardSummary={card} onClick={this.buryChoice} />
+                                <Card key={i} cardSummary={card} onClick={this.buryChoice} />
                             )
                         }
                         </div>
@@ -103,7 +103,7 @@ export default class PickPane extends React.Component<PickPaneProps, PickPaneSta
                         <div style={this.cardContainerStyle}>
                             {
                                 this.state.buryCards.map((card: CardSummary, i: number) =>
-                                    <DraggableCard key={i} cardSummary={card} />
+                                    <Card key={i} cardSummary={card} />
                                 )
                             }
                         </div>

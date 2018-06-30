@@ -25,7 +25,7 @@
     <None Remove="ClientApp\components\FetchUtils.tsx" />
     <None Remove="ClientApp\components\game\ActionPane.tsx" />
     <None Remove="ClientApp\components\game\BuryPane.tsx" />
-    <None Remove="ClientApp\components\game\DraggableCard.tsx" />
+    <None Remove="ClientApp\components\game\Card.tsx" />
     <None Remove="ClientApp\components\game\HandSummaryPane.tsx" />
     <None Remove="ClientApp\components\game\PIckPane.tsx" />
     <None Remove="ClientApp\components\game\PlayPane.tsx" />
@@ -115,7 +115,7 @@
     <TypeScriptCompile Include="ClientApp\components\game\TrickPane.tsx" />
     <TypeScriptCompile Include="ClientApp\components\game\PickPane.tsx" />
     <TypeScriptCompile Include="ClientApp\components\game\ActionPane.tsx" />
-    <TypeScriptCompile Include="ClientApp\components\game\DraggableCard.tsx" />
+    <TypeScriptCompile Include="ClientApp\components\game\Card.tsx" />
     <TypeScriptCompile Include="ClientApp\components\game\PlayPane.tsx" />
     <TypeScriptCompile Include="ClientApp\components\FetchUtils.tsx" />
     <TypeScriptCompile Include="ClientApp\components\game\PlayState.tsx" />

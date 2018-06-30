@@ -3,14 +3,14 @@ import { CardSummary } from 'ClientApp/components/game/PlayState';
 
 export interface CardProps {
     cardSummary: CardSummary,
-    onClick?: (card: DraggableCard) => void
+    onClick?: (card: Card) => void
 }
 
 export interface CardState {
     illegalNotification: boolean;
 }
 
-export default class DraggableCard extends React.Component<CardProps, CardState> {
+export default class Card extends React.Component<CardProps, CardState> {
     constructor(props: CardProps) {
         super(props);
         this.state = {
