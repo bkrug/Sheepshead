@@ -411,6 +411,150 @@ namespace Sheepshead.Tests
         }
 
         [TestMethod]
+        public void Hand_Scores_3Player_DefenseWinsThreeCoins()
+        {
+            var deckMock = new Mock<IDeck>();
+            var pickerMock = new Mock<IPlayer>();
+            var player1Mock = new Mock<IPlayer>();
+            var player2Mock = new Mock<IPlayer>();
+            pickerMock.Setup(p => p.Cards).Returns(new List<SheepCard>());
+            deckMock.Setup(d => d.Blinds).Returns(new List<SheepCard>() { SheepCard.N8_CLUBS, SheepCard.N7_CLUBS });
+            deckMock.Setup(d => d.PlayerCount).Returns(3);
+            deckMock.Setup(d => d.Players).Returns(new List<IPlayer>() { player1Mock.Object, pickerMock.Object, player2Mock.Object });
+            deckMock.Setup(d => d.Buried).Returns(new List<SheepCard>() { SheepCard.ACE_CLUBS, SheepCard.ACE_DIAMONDS });
+
+            var hand = new Hand(deckMock.Object, pickerMock.Object, deckMock.Object.Buried);
+            MockTrickWinners(hand, player1Mock, 15);
+            MockTrickWinners(hand, player1Mock, 16);
+            MockTrickWinners(hand, player1Mock, 7);
+            MockTrickWinners(hand, player1Mock, 4);
+            MockTrickWinners(hand, player1Mock, 13);
+            MockTrickWinners(hand, player2Mock, 4);
+            MockTrickWinners(hand, player2Mock, 14);
+            MockTrickWinners(hand, player2Mock, 4);
+            MockTrickWinners(hand, player2Mock, 11);
+            MockTrickWinners(hand, player2Mock, 10);
+
+            var scores = hand.Scores();
+
+            Assert.AreEqual(22, scores.Points[pickerMock.Object], "Picker recieves the blind");
+            Assert.AreEqual(55, scores.Points[player1Mock.Object]);
+            Assert.AreEqual(43, scores.Points[player2Mock.Object]);
+
+            Assert.AreEqual(-6, scores.Coins[pickerMock.Object]);
+            Assert.AreEqual(3, scores.Coins[player1Mock.Object]);
+            Assert.AreEqual(3, scores.Coins[player2Mock.Object]);
+        }
+
+        [TestMethod]
+        public void Hand_Scores_3Player_DefenseWinsOneCoins()
+        {
+            var deckMock = new Mock<IDeck>();
+            var pickerMock = new Mock<IPlayer>();
+            var player1Mock = new Mock<IPlayer>();
+            var player2Mock = new Mock<IPlayer>();
+            pickerMock.Setup(p => p.Cards).Returns(new List<SheepCard>());
+            deckMock.Setup(d => d.Blinds).Returns(new List<SheepCard>() { SheepCard.N10_HEARTS, SheepCard.N7_CLUBS });
+            deckMock.Setup(d => d.PlayerCount).Returns(3);
+            deckMock.Setup(d => d.Players).Returns(new List<IPlayer>() { player1Mock.Object, pickerMock.Object, player2Mock.Object });
+            deckMock.Setup(d => d.Buried).Returns(new List<SheepCard>() { SheepCard.ACE_CLUBS, SheepCard.KING_SPADES });
+
+            var hand = new Hand(deckMock.Object, pickerMock.Object, deckMock.Object.Buried);
+            MockTrickWinners(hand, pickerMock, 11);
+            MockTrickWinners(hand, pickerMock, 22);
+            MockTrickWinners(hand, pickerMock, 10);
+            MockTrickWinners(hand, player1Mock, 4);
+            MockTrickWinners(hand, player1Mock, 4);
+            MockTrickWinners(hand, player1Mock, 16);
+            MockTrickWinners(hand, player1Mock, 7);
+            MockTrickWinners(hand, player2Mock, 14);
+            MockTrickWinners(hand, player2Mock, 13);
+            MockTrickWinners(hand, player2Mock, 4);
+
+            var scores = hand.Scores();
+
+            Assert.AreEqual(58, scores.Points[pickerMock.Object], "Picker recieves the blind");
+            Assert.AreEqual(31, scores.Points[player1Mock.Object]);
+            Assert.AreEqual(31, scores.Points[player2Mock.Object]);
+
+            Assert.AreEqual(-2, scores.Coins[pickerMock.Object]);
+            Assert.AreEqual(1, scores.Coins[player1Mock.Object]);
+            Assert.AreEqual(1, scores.Coins[player2Mock.Object]);
+        }
+
+        [TestMethod]
+        public void Hand_Scores_3Player_DefenseLoosesOneCoins()
+        {
+            var deckMock = new Mock<IDeck>();
+            var pickerMock = new Mock<IPlayer>();
+            var player1Mock = new Mock<IPlayer>();
+            var player2Mock = new Mock<IPlayer>();
+            pickerMock.Setup(p => p.Cards).Returns(new List<SheepCard>());
+            deckMock.Setup(d => d.Blinds).Returns(new List<SheepCard>() { SheepCard.N10_HEARTS, SheepCard.N7_CLUBS });
+            deckMock.Setup(d => d.PlayerCount).Returns(3);
+            deckMock.Setup(d => d.Players).Returns(new List<IPlayer>() { player1Mock.Object, pickerMock.Object, player2Mock.Object });
+            deckMock.Setup(d => d.Buried).Returns(new List<SheepCard>() { SheepCard.ACE_CLUBS, SheepCard.KING_SPADES });
+
+            var hand = new Hand(deckMock.Object, pickerMock.Object, deckMock.Object.Buried);
+            MockTrickWinners(hand, pickerMock, 11);
+            MockTrickWinners(hand, pickerMock, 22);
+            MockTrickWinners(hand, pickerMock, 10);
+            MockTrickWinners(hand, pickerMock, 7);
+            MockTrickWinners(hand, player1Mock, 4);
+            MockTrickWinners(hand, player1Mock, 4);
+            MockTrickWinners(hand, player1Mock, 16);
+            MockTrickWinners(hand, player2Mock, 14);
+            MockTrickWinners(hand, player2Mock, 13);
+            MockTrickWinners(hand, player2Mock, 4);
+
+            var scores = hand.Scores();
+
+            Assert.AreEqual(65, scores.Points[pickerMock.Object], "Picker recieves the blind");
+            Assert.AreEqual(24, scores.Points[player1Mock.Object]);
+            Assert.AreEqual(31, scores.Points[player2Mock.Object]);
+
+            Assert.AreEqual(2, scores.Coins[pickerMock.Object]);
+            Assert.AreEqual(-1, scores.Coins[player1Mock.Object]);
+            Assert.AreEqual(-1, scores.Coins[player2Mock.Object]);
+        }
+
+        [TestMethod]
+        public void Hand_Scores_3Player_DefenseLoosesThreeCoins()
+        {
+            var deckMock = new Mock<IDeck>();
+            var pickerMock = new Mock<IPlayer>();
+            var player1Mock = new Mock<IPlayer>();
+            var player2Mock = new Mock<IPlayer>();
+            pickerMock.Setup(p => p.Cards).Returns(new List<SheepCard>());
+            deckMock.Setup(d => d.Blinds).Returns(new List<SheepCard>() { SheepCard.N10_HEARTS, SheepCard.N7_CLUBS });
+            deckMock.Setup(d => d.PlayerCount).Returns(3);
+            deckMock.Setup(d => d.Players).Returns(new List<IPlayer>() { player1Mock.Object, pickerMock.Object, player2Mock.Object });
+            deckMock.Setup(d => d.Buried).Returns(new List<SheepCard>() { SheepCard.ACE_CLUBS, SheepCard.KING_SPADES });
+
+            var hand = new Hand(deckMock.Object, pickerMock.Object, deckMock.Object.Buried);
+            MockTrickWinners(hand, pickerMock, 11);
+            MockTrickWinners(hand, pickerMock, 22);
+            MockTrickWinners(hand, pickerMock, 10);
+            MockTrickWinners(hand, pickerMock, 7);
+            MockTrickWinners(hand, pickerMock, 4);
+            MockTrickWinners(hand, pickerMock, 4);
+            MockTrickWinners(hand, pickerMock, 16);
+            MockTrickWinners(hand, pickerMock, 14);
+            MockTrickWinners(hand, pickerMock, 13);
+            MockTrickWinners(hand, pickerMock, 4);
+
+            var scores = hand.Scores();
+
+            Assert.AreEqual(120, scores.Points[pickerMock.Object], "Picker recieves the blind");
+            Assert.IsFalse(scores.Points.ContainsKey(player1Mock.Object));
+            Assert.IsFalse(scores.Points.ContainsKey(player2Mock.Object));
+
+            Assert.AreEqual(6, scores.Coins[pickerMock.Object]);
+            Assert.AreEqual(-3, scores.Coins[player1Mock.Object]);
+            Assert.AreEqual(-3, scores.Coins[player2Mock.Object]);
+        }
+
+        [TestMethod]
         public void Hand_Scores_Leasters_WithoutBlind()
         {
             
