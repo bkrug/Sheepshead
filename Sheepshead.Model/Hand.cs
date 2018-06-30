@@ -40,7 +40,7 @@ namespace Sheepshead.Models
             PartnerCardPlayed = null;
         }
 
-        private SheepCard ChoosePartnerCard(IPlayer picker)
+        private SheepCard? ChoosePartnerCard(IPlayer picker)
         {
             var potentialPartnerCards = new[] {
                 SheepCard.JACK_DIAMONDS,
@@ -49,7 +49,8 @@ namespace Sheepshead.Models
                 SheepCard.JACK_CLUBS,
                 SheepCard.QUEEN_DIAMONDS,
                 SheepCard.QUEEN_HEARTS,
-                SheepCard.QUEEN_SPADES
+                SheepCard.QUEEN_SPADES,
+                SheepCard.QUEEN_CLUBS
             };
             if (!picker.Cards.Any())
             {
@@ -57,7 +58,9 @@ namespace Sheepshead.Models
             if (!potentialPartnerCards.Any(c => !picker.Cards.Contains(c)))
             {
             }
-            var partnerCard = potentialPartnerCards.First(c => !picker.Cards.Contains(c));
+            SheepCard? partnerCard = potentialPartnerCards.Any(c => !picker.Cards.Contains(c))
+                ? potentialPartnerCards.First(c => !picker.Cards.Contains(c))
+                : (SheepCard?)null;
             return partnerCard;
         }
 

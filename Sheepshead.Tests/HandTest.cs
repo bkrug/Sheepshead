@@ -665,31 +665,52 @@ namespace Sheepshead.Tests
         }
 
         [TestMethod]
-        public void Hand_Constructor()
+        public void Hand_Constructor_PartnerCard_PickerWithoutJackDiamonds()
         {
-            var blinds = new List<SheepCard>() { SheepCard.KING_DIAMONDS, SheepCard.ACE_CLUBS };
             {
+                var blinds = new List<SheepCard>() { SheepCard.KING_DIAMONDS, SheepCard.ACE_CLUBS };
                 var mockDeck = new Mock<IDeck>();
                 mockDeck.Setup(m => m.Blinds).Returns(blinds);
                 mockDeck.Setup(m => m.PlayerCount).Returns(5);
                 var mockPicker = new Mock<IPlayer>();
                 var originalPickerCards = new List<SheepCard>() { SheepCard.N7_SPADES, SheepCard.N8_SPADES, SheepCard.N9_SPADES, SheepCard.N10_SPADES };
                 mockPicker.Setup(f => f.Cards).Returns(originalPickerCards);
-                var droppedCards = new List<SheepCard>() { SheepCard.N7_SPADES, SheepCard.N8_SPADES};
+                var droppedCards = new List<SheepCard>() { SheepCard.N7_SPADES, SheepCard.N8_SPADES };
                 var hand = new Hand(mockDeck.Object, mockPicker.Object, droppedCards);
                 Assert.AreEqual(SheepCard.JACK_DIAMONDS, hand.PartnerCard, "Jack of diamonds should be partner card right now");
                 var expectedPickerCards = new List<SheepCard>() { SheepCard.KING_DIAMONDS, SheepCard.ACE_CLUBS, SheepCard.N9_SPADES, SheepCard.N10_SPADES };
                 Assert.IsTrue(SameContents(expectedPickerCards, mockPicker.Object.Cards), "Picker dropped some cards to pick the blinds.");
             }
-            {
-                var mockDeck = new Mock<IDeck>();
-                mockDeck.Setup(m => m.Blinds).Returns(blinds);
-                mockDeck.Setup(m => m.PlayerCount).Returns(5);
-                var mockPicker = new Mock<IPlayer>();
-                mockPicker.Setup(m => m.Cards).Returns(new List<SheepCard>() { SheepCard.JACK_DIAMONDS });
-                var hand = new Hand(mockDeck.Object, mockPicker.Object, new List<SheepCard>());
-                Assert.AreEqual(SheepCard.JACK_HEARTS, hand.PartnerCard, "Jack of diamonds should be partner card right now");
-            }
+        }
+
+        [TestMethod]
+        public void Hand_Constructor_PartnerCard_PickerHasJackDiamonds()
+        {
+            var blinds = new List<SheepCard>() { SheepCard.JACK_DIAMONDS, SheepCard.JACK_HEARTS };
+            var mockDeck = new Mock<IDeck>();
+            mockDeck.Setup(m => m.Blinds).Returns(blinds);
+            mockDeck.Setup(m => m.PlayerCount).Returns(5);
+            var mockPicker = new Mock<IPlayer>();
+            mockPicker.Setup(m => m.Cards).Returns(new List<SheepCard>() {
+                SheepCard.JACK_SPADES, SheepCard.JACK_CLUBS, SheepCard.QUEEN_DIAMONDS, SheepCard.N7_CLUBS, SheepCard.QUEEN_SPADES, SheepCard.QUEEN_CLUBS
+            });
+            var hand = new Hand(mockDeck.Object, mockPicker.Object, new List<SheepCard>());
+            Assert.AreEqual(SheepCard.QUEEN_HEARTS, hand.PartnerCard, "Queen of hearts should be partner card right now");
+        }
+
+        [TestMethod]
+        public void Hand_Constructor_PartnerCard_PickerHasAllQueensJacks()
+        {
+            var blinds = new List<SheepCard>() { SheepCard.JACK_DIAMONDS, SheepCard.JACK_HEARTS };
+            var mockDeck = new Mock<IDeck>();
+            mockDeck.Setup(m => m.Blinds).Returns(blinds);
+            mockDeck.Setup(m => m.PlayerCount).Returns(5);
+            var mockPicker = new Mock<IPlayer>();
+            mockPicker.Setup(m => m.Cards).Returns(new List<SheepCard>() {
+                SheepCard.JACK_SPADES, SheepCard.JACK_CLUBS, SheepCard.QUEEN_DIAMONDS, SheepCard.QUEEN_HEARTS, SheepCard.QUEEN_SPADES, SheepCard.QUEEN_CLUBS
+            });
+            var hand = new Hand(mockDeck.Object, mockPicker.Object, new List<SheepCard>());
+            Assert.IsNull(hand.PartnerCard, "There should be no partner card.");
         }
 
         [TestMethod]
