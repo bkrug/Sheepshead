@@ -261,12 +261,35 @@ namespace Sheepshead.Tests
             var deckMock = new Mock<IDeck>();
             deckMock.Setup(m => m.Buried).Returns(buried);
             deckMock.Setup(m => m.Hand.Picker).Returns(humanMock.Object);
+            deckMock.Setup(m => m.Hand.GoItAlone()).Callback(() => Assert.Fail("Should not have tried to go it alone"));
 
-            new PickProcessor().BuryCards(deckMock.Object, humanMock.Object, toBury);
+            new PickProcessor().BuryCards(deckMock.Object, humanMock.Object, toBury, false);
 
             Assert.AreEqual(0, playerCards.Count(), "The buried cards were removed from the picker's hand.");
             Assert.IsTrue(buried.Contains(toBury[0]));
             Assert.IsTrue(buried.Contains(toBury[1]));
+        }
+
+        [TestMethod]
+        public void PickProcessorOuter_BuryCards_GoItAlone()
+        {
+            var toBury = new List<SheepCard>() { 0, (SheepCard)1 };
+            var playerCards = toBury.ToList();
+            var buried = new List<SheepCard>();
+            var humanMock = new Mock<IHumanPlayer>();
+            humanMock.Setup(m => m.Cards).Returns(playerCards);
+            var goItAloneSet = false;
+            var deckMock = new Mock<IDeck>();
+            deckMock.Setup(m => m.Buried).Returns(buried);
+            deckMock.Setup(m => m.Hand.Picker).Returns(humanMock.Object);
+            deckMock.Setup(m => m.Hand.GoItAlone()).Callback(() => goItAloneSet = true);
+
+            new PickProcessor().BuryCards(deckMock.Object, humanMock.Object, toBury, true);
+
+            Assert.AreEqual(0, playerCards.Count(), "The buried cards were removed from the picker's hand.");
+            Assert.IsTrue(buried.Contains(toBury[0]));
+            Assert.IsTrue(buried.Contains(toBury[1]));
+            Assert.IsTrue(goItAloneSet);
         }
 
         [TestMethod]
@@ -280,7 +303,7 @@ namespace Sheepshead.Tests
 
             var threwException = false;
             try {
-                new PickProcessor().BuryCards(deckMock.Object, humanMock.Object, new List<SheepCard>());
+                new PickProcessor().BuryCards(deckMock.Object, humanMock.Object, new List<SheepCard>(), false);
             }
             catch(NotPlayersTurnException)
             {

@@ -67,17 +67,15 @@ export default class PickPane extends React.Component<PickPaneProps, PickPaneSta
             buryCards: buryList,
             playerCards: heldList
         });
-        
-        if (this.state.buryCards.length >= 2)
-            this.recordBuryChoice();
     }
 
-    private recordBuryChoice(): void {
+    private recordBuryChoice(goItAlone: boolean): void {
         var self = this;
         var url = 'Game/RecordBury?gameId=' + this.state.gameId
             + '&playerId=' + this.state.playerId
             + '&cards=' + this.state.buryCards[0].name
-            + '&cards=' + this.state.buryCards[1].name;
+            + '&cards=' + this.state.buryCards[1].name
+            + '&goItAlone=' + goItAlone;
         FetchUtils.post(url,
             function (json: number[]): void {
                 self.props.onBury();
@@ -106,6 +104,10 @@ export default class PickPane extends React.Component<PickPaneProps, PickPaneSta
                                     <Card key={i} cardSummary={card} />
                                 )
                             }
+                        </div>
+                        <div style={{ display: (this.state.buryCards.length == 2 ? 'block' : 'none') }}>
+                            <button onClick={() => this.recordBuryChoice(false)}>Play with Partner</button>
+                            <button onClick={() => this.recordBuryChoice(true)}>Go It Alone</button>
                         </div>
                     </div>
                     : <div><h4>Bury Phase</h4>Waiting for Picker to bury cards.</div>

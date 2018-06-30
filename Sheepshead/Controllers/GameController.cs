@@ -74,7 +74,7 @@ namespace Sheepshead.Controllers
                     Pick(game, willPick.Value);
                     break;
                 case TurnType.Bury:
-                    Bury(game, buriedCardIndicies);
+                    Bury(game, buriedCardIndicies, false);
                     break;
                 case TurnType.PlayTrick:
                     if (indexOfCard.HasValue)
@@ -90,12 +90,12 @@ namespace Sheepshead.Controllers
             var hand = game.ContinueFromHumanPickTurn(human, willPick);
         }
 
-        private void Bury(IGame game, string buriedCardsIndicies)
+        private void Bury(IGame game, string buriedCardsIndicies, bool goItAlone)
         {
             var human = game.Players.OfType<IHumanPlayer>().First();
             var buriedCardsIndex = buriedCardsIndicies.Split(';').Select(c => Int16.Parse(c)).ToArray();
             var buriedCards = buriedCardsIndex.Select(i => human.Cards[i]).ToList();
-            game.BuryCards(human, buriedCards);
+            game.BuryCards(human, buriedCards, goItAlone);
         }
 
         private void PlayTrick(IGame game, int indexOfCard)

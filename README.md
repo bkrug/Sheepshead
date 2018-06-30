@@ -5,8 +5,6 @@ Sheepshead
 
 ToDo:
 
-* Take away click option from cards that are not playable (not the player's turn, the list of already played cards).
-* Give pickers the option of going it alone.
 * Create modal popup that displays a sheepshead cheatsheet.
 * Create a new "illegal move" card.
 * At start of game, give the user the option of jack-of-diamonds vs. called-ace partner card.

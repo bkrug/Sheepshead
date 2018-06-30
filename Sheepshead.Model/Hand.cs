@@ -18,6 +18,8 @@ namespace Sheepshead.Models
         public IPlayer StartingPlayer { get { return Deck.StartingPlayer; } }
         public event EventHandler<EventArgs> OnAddTrick;
         public event EventHandler<EventArgs> OnHandEnd;
+        public int PlayerCount => Deck.PlayerCount;
+        public List<IPlayer> Players => Deck.Players;
 
         public bool Leasters { get { return Picker == null; } }
 
@@ -232,14 +234,9 @@ namespace Sheepshead.Models
             PartnerCardPlayed[1] = trick.QueueRankOfPartner.Value;
         }
 
-        public int PlayerCount
+        public void GoItAlone()
         {
-            get { return Deck.PlayerCount; }
-        }
-
-        public List<IPlayer> Players
-        {
-            get { return Deck.Players; }
+            PartnerCard = null;
         }
     }
 
@@ -249,6 +246,7 @@ namespace Sheepshead.Models
         IPlayer Picker { get; }
         IPlayer Partner { get; }
         SheepCard? PartnerCard { get; }
+        void GoItAlone();
         int[] PartnerCardPlayed { get; }
         List<ITrick> Tricks { get; }
         void AddTrick(ITrick trick);

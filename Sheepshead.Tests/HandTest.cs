@@ -66,7 +66,7 @@ namespace Sheepshead.Tests
         }
 
         [TestMethod]
-        public void Hand_Scores_JackDiamondsPartner_DefenseLooseOneCoin()
+        public void Hand_Scores_5Player_DefenseLooseOneCoin()
         {
             var deckMock = new Mock<IDeck>();
             var pickerMock = new Mock<IPlayer>();
@@ -105,7 +105,7 @@ namespace Sheepshead.Tests
         }
 
         [TestMethod]
-        public void Hand_Scores_JackDiamondsPartner_DefenseLooseTwoCoins()
+        public void Hand_Scores_5Player_DefenseLooseTwoCoins()
         {
             var deckMock = new Mock<IDeck>();
             var pickerMock = new Mock<IPlayer>();
@@ -144,7 +144,7 @@ namespace Sheepshead.Tests
         }
 
         [TestMethod]
-        public void Hand_Scores_JackDiamondsPartner_DefenseLooseThreeCoins()
+        public void Hand_Scores_5Player_DefenseLooseThreeCoins()
         {
             var deckMock = new Mock<IDeck>();
             var pickerMock = new Mock<IPlayer>();
@@ -183,7 +183,7 @@ namespace Sheepshead.Tests
         }
 
         [TestMethod]
-        public void Hand_Scores_JackDiamondsPartner_DefenseWinsOneCoin()
+        public void Hand_Scores_5Player_DefenseWinsOneCoin()
         {
             var deckMock = new Mock<IDeck>();
             var pickerMock = new Mock<IPlayer>();
@@ -222,7 +222,7 @@ namespace Sheepshead.Tests
         }
 
         [TestMethod]
-        public void Hand_Scores_JackDiamondsPartner_DefenseWinsTwoCoins()
+        public void Hand_Scores_5Player_DefenseWinsTwoCoins()
         {
             var deckMock = new Mock<IDeck>();
             var pickerMock = new Mock<IPlayer>();
@@ -261,7 +261,7 @@ namespace Sheepshead.Tests
         }
 
         [TestMethod]
-        public void Hand_Scores_JackDiamondsPartner_DefenseWinsThreeCoins()
+        public void Hand_Scores_5Player_DefenseWinsThreeCoins()
         {
             var deckMock = new Mock<IDeck>();
             var pickerMock = new Mock<IPlayer>();
@@ -300,7 +300,7 @@ namespace Sheepshead.Tests
         }
 
         [TestMethod]
-        public void Hand_Scores_NoPartner()
+        public void Hand_Scores_5Player_NoPartner()
         {
             var deckMock = new Mock<IDeck>();
             var pickerMock = new Mock<IPlayer>();
@@ -338,7 +338,7 @@ namespace Sheepshead.Tests
         }
 
         [TestMethod]
-        public void Hand_Scores_NoPartner_PickerWinsNoTricks()
+        public void Hand_Scores_5Player_NoPartner_PickerWinsNoTricks()
         {
             var deckMock = new Mock<IDeck>();
             var pickerMock = new Mock<IPlayer>();
@@ -693,7 +693,7 @@ namespace Sheepshead.Tests
         }
 
         [TestMethod]
-        public void Hand_Constructor_NoPartner()
+        public void Hand_Constructor_NoPartner_3Player()
         {
             var blinds = new List<SheepCard>() { SheepCard.KING_DIAMONDS, SheepCard.ACE_CLUBS };
             var mockDeck = new Mock<IDeck>();
