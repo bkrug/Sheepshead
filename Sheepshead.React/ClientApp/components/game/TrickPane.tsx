@@ -69,6 +69,9 @@ export default class TrickPane extends React.Component<TrickPaneProps, TrickPane
     }
 
     private displayOneMorePlay(): void {
+        if (!this.state.displayedCardsPlayed[0] || !this.state.cardsPlayed[0])
+            setTimeout(this.displayOneMorePlay, 500);
+
         var tricksToDisplay = this.state.displayedCardsPlayed.length;
         var playsToDisplay = tricksToDisplay == 0 ? 1 : this.state.displayedCardsPlayed[tricksToDisplay - 1].length + 1;
         var allPlaysNowDisplayed = tricksToDisplay == 0 || this.state.cardsPlayed.length == 0 || playsToDisplay > this.state.cardsPlayed[tricksToDisplay - 1].length;
@@ -149,7 +152,9 @@ export default class TrickPane extends React.Component<TrickPaneProps, TrickPane
                 </div>
                 {
                     this.state.playerCards.map((card: CardSummary, i: number) =>
-                        <Card key={i} cardSummary={card} onClick={this.trickChoice} />
+                        (allCardsDisplayed && this.state.requestingPlayerTurn)
+                            ? <Card key={i} cardSummary={card} onClick={this.trickChoice} />
+                            : <Card key={i} cardSummary={card} />
                     )
                 }
             </div>
