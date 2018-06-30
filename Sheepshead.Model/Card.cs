@@ -22,10 +22,10 @@ namespace Sheepshead.Models
     public enum SheepCard
     {
         QUEEN_CLUBS, QUEEN_SPADES, QUEEN_HEARTS, QUEEN_DIAMONDS,
-        JACK_CLUBS, JACK_SPADES, JACK_HEARTS, JACK_DIAMONDS,
-        ACE_CLUBS, ACE_SPADES, ACE_HEARTS, ACE_DIAMONDS,
-        N10_CLUBS, N10_SPADES, N10_HEARTS, N10_DIAMONDS,
-        KING_CLUBS, KING_SPADES, KING_HEARTS, KING_DIAMONDS,
+        JACK_CLUBS,  JACK_SPADES,  JACK_HEARTS,  JACK_DIAMONDS,
+        ACE_CLUBS,   ACE_SPADES,   ACE_HEARTS,   ACE_DIAMONDS,
+        N10_CLUBS,   N10_SPADES,   N10_HEARTS,   N10_DIAMONDS,
+        KING_CLUBS,  KING_SPADES,  KING_HEARTS,  KING_DIAMONDS,
         N9_CLUBS, N9_SPADES, N9_HEARTS, N9_DIAMONDS,
         N8_CLUBS, N8_SPADES, N8_HEARTS, N8_DIAMONDS,
         N7_CLUBS, N7_SPADES, N7_HEARTS, N7_DIAMONDS
@@ -173,7 +173,7 @@ namespace Sheepshead.Models
 
         public static Dictionary<StandardSuite, string> SuiteLetter { get; } = new Dictionary<StandardSuite, string>()
         {
-            { StandardSuite.CLUBS, "C" }, { StandardSuite.DIAMONDS, "D" }, { StandardSuite.HEARTS, "H" }, { StandardSuite.SPADES, "S" }
+            { StandardSuite.CLUBS, "♣" }, { StandardSuite.DIAMONDS, "♦" }, { StandardSuite.HEARTS, "♥" }, { StandardSuite.SPADES, "♠" }
         };
 
         public static Dictionary<CardType, string> CardTypeLetter { get; } = new Dictionary<CardType, string>()
