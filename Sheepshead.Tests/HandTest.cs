@@ -58,41 +58,6 @@ namespace Sheepshead.Tests
             return hand;
         }
 
-        [TestMethod]
-        public void Hand_Scores_Leasters1()
-        {
-            var scoreTests = new List<int[,]>()
-            {
-                new int[,] { { 1, 14 }, { 2, 30 }, { 1, 17 }, { 4, 40 }, { 5, 19 } },
-                new int[,] { { 1, 11 }, { 2, 30 }, { 2, 30 }, { 4, 40 }, { 5, 9  } },
-                new int[,] { { 2, 14 }, { 2, 30 }, { 2, 17 }, { 4, 40 }, { 4, 19 } },
-                new int[,] { { 1, 20 }, { 2, 20 }, { 3, 30 }, { 4, 0  }, { 5, 50 } },
-                new int[,] { { 2, 14 }, { 2, 30 }, { 2, 17 }, { 2, 40 }, { 2, 19 } }
-            };
-            var expectedCoins = new List<int[]>() 
-            {
-                new int[] { -1, -1, -1, -1, 4 },
-                new int[] { -1, -1, -1, -1, 4 },
-                new int[] { -1, -1, -1, 4, -1 },
-                new int[] { -1, -1, -1, 4, -1 },
-                new int[] { -1, 4, -1, -1, -1 }
-            };
-            for (var a = 0; a < scoreTests.Count; ++a)
-            {
-                var trickMocks = GetTrickMocks();
-                var players = GetPlayers();
-                PopulateTricks(ref trickMocks, players, scoreTests[a]);
-                var hand = GetHand(trickMocks, players, null, null);
-                var actualCoins = hand.Scores().Coins;
-                //Assert.AreEqual(0, actualScores.Sum(kvp => kvp.Value), "Player's scores add to zero.  (This is really a test of the test, not the code.) Running Test " + a);
-                for (var b = 0; b < 5; ++b)
-                {
-                    var player = players[b];
-                    Assert.AreEqual(expectedCoins[a][b], actualCoins[player], "Matching player scores.  Running Test " + a + ", player " + (b + 1));
-                }
-            }
-        }
-
         private void MockTrickWinners(IHand hand, Mock<IPlayer> player, int points)
         {
             var trickMock = new Mock<ITrick>();
@@ -555,9 +520,109 @@ namespace Sheepshead.Tests
         }
 
         [TestMethod]
-        public void Hand_Scores_Leasters_WithoutBlind()
+        public void Hand_Scores_Leasters_5Player_WithoutBlind()
         {
-            
+            var deckMock = new Mock<IDeck>();
+            var player1Mock = new Mock<IPlayer>();
+            var player2Mock = new Mock<IPlayer>();
+            var player3Mock = new Mock<IPlayer>();
+            var player4Mock = new Mock<IPlayer>();
+            var player5Mock = new Mock<IPlayer>();
+            deckMock.Setup(d => d.Blinds).Returns(new List<SheepCard>() { SheepCard.N8_CLUBS, SheepCard.N7_CLUBS });
+            deckMock.Setup(d => d.PlayerCount).Returns(5);
+            deckMock.Setup(d => d.Players).Returns(new List<IPlayer>() { player4Mock.Object, player1Mock.Object, player5Mock.Object, player2Mock.Object, player3Mock.Object });
+
+            var hand = new Hand(deckMock.Object, null, null);
+            MockTrickWinners(hand, player1Mock, 12);
+            MockTrickWinners(hand, player1Mock, 17);
+            MockTrickWinners(hand, player2Mock, 21);
+            MockTrickWinners(hand, player2Mock, 7);
+            MockTrickWinners(hand, player3Mock, 28);
+            MockTrickWinners(hand, player4Mock, 14);
+
+            var scores = hand.Scores();
+
+            Assert.AreEqual(29, scores.Points[player1Mock.Object]);
+            Assert.AreEqual(28, scores.Points[player2Mock.Object]);
+            Assert.AreEqual(28, scores.Points[player3Mock.Object]);
+            Assert.AreEqual(14, scores.Points[player4Mock.Object]);
+            Assert.IsFalse(scores.Points.ContainsKey(player5Mock.Object));
+
+            Assert.AreEqual(-1, scores.Coins[player1Mock.Object]);
+            Assert.AreEqual(-1, scores.Coins[player2Mock.Object]);
+            Assert.AreEqual(-1, scores.Coins[player3Mock.Object]);
+            Assert.AreEqual(4, scores.Coins[player4Mock.Object]);
+            Assert.AreEqual(-1, scores.Coins[player5Mock.Object]);
+        }
+
+        [TestMethod]
+        public void Hand_Scores_Leasters_5Player_AllTricksToOnePlayer_WithoutBlind()
+        {
+            var deckMock = new Mock<IDeck>();
+            var player1Mock = new Mock<IPlayer>();
+            var player2Mock = new Mock<IPlayer>();
+            var player3Mock = new Mock<IPlayer>();
+            var player4Mock = new Mock<IPlayer>();
+            var player5Mock = new Mock<IPlayer>();
+            deckMock.Setup(d => d.Blinds).Returns(new List<SheepCard>() { SheepCard.N8_CLUBS, SheepCard.N7_CLUBS });
+            deckMock.Setup(d => d.PlayerCount).Returns(5);
+            deckMock.Setup(d => d.Players).Returns(new List<IPlayer>() { player4Mock.Object, player1Mock.Object, player5Mock.Object, player2Mock.Object, player3Mock.Object });
+
+            var hand = new Hand(deckMock.Object, null, null);
+            MockTrickWinners(hand, player2Mock, 12);
+            MockTrickWinners(hand, player2Mock, 17);
+            MockTrickWinners(hand, player2Mock, 21);
+            MockTrickWinners(hand, player2Mock, 7);
+            MockTrickWinners(hand, player2Mock, 28);
+            MockTrickWinners(hand, player2Mock, 14);
+
+            var scores = hand.Scores();
+
+            Assert.IsFalse(scores.Points.ContainsKey(player1Mock.Object));
+            Assert.AreEqual(12 + 17 + 21 + 7 + 28 + 14, scores.Points[player2Mock.Object]);
+            Assert.IsFalse(scores.Points.ContainsKey(player3Mock.Object));
+            Assert.IsFalse(scores.Points.ContainsKey(player4Mock.Object));
+            Assert.IsFalse(scores.Points.ContainsKey(player5Mock.Object));
+
+            Assert.AreEqual(-1, scores.Coins[player1Mock.Object]);
+            Assert.AreEqual(4, scores.Coins[player2Mock.Object]);
+            Assert.AreEqual(-1, scores.Coins[player3Mock.Object]);
+            Assert.AreEqual(-1, scores.Coins[player4Mock.Object]);
+            Assert.AreEqual(-1, scores.Coins[player5Mock.Object]);
+        }
+
+        [TestMethod]
+        public void Hand_Scores_Leasters_3Player_WithoutBlind()
+        {
+            var deckMock = new Mock<IDeck>();
+            var player1Mock = new Mock<IPlayer>();
+            var player2Mock = new Mock<IPlayer>();
+            var player3Mock = new Mock<IPlayer>();
+            deckMock.Setup(d => d.Blinds).Returns(new List<SheepCard>() { SheepCard.N10_HEARTS, SheepCard.N7_CLUBS });
+            deckMock.Setup(d => d.PlayerCount).Returns(3);
+            deckMock.Setup(d => d.Players).Returns(new List<IPlayer>() { player1Mock.Object, player3Mock.Object, player2Mock.Object });
+
+            var hand = new Hand(deckMock.Object, null, null);
+            MockTrickWinners(hand, player1Mock, 11);
+            MockTrickWinners(hand, player1Mock, 22);
+            MockTrickWinners(hand, player1Mock, 10);
+            MockTrickWinners(hand, player2Mock, 7);
+            MockTrickWinners(hand, player2Mock, 4);
+            MockTrickWinners(hand, player3Mock, 4);
+            MockTrickWinners(hand, player3Mock, 16);
+            MockTrickWinners(hand, player3Mock, 14);
+            MockTrickWinners(hand, player3Mock, 13);
+            MockTrickWinners(hand, player3Mock, 4);
+
+            var scores = hand.Scores();
+
+            Assert.AreEqual(11 + 22 + 10, scores.Points[player1Mock.Object]);
+            Assert.AreEqual(7 + 4, scores.Points[player2Mock.Object]);
+            Assert.AreEqual(4 + 16 + 14 + 13 + 4, scores.Points[player3Mock.Object]);
+
+            Assert.AreEqual(-1, scores.Coins[player1Mock.Object]);
+            Assert.AreEqual(2, scores.Coins[player2Mock.Object]);
+            Assert.AreEqual(-1, scores.Coins[player3Mock.Object]);
         }
 
         [TestMethod]
