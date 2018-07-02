@@ -12,7 +12,7 @@ namespace Sheepshead.React.Controllers
         {
             var repository = new GameRepository(GameDictionary.Instance.Dictionary);
             var game = repository.Create(humanCount, newbieCount, basicCount);
-            return RedirectToAction("RegisterHuman", new { id = game.Id });
+            return RedirectToAction("RegisterHuman", "Setup", new { id = game.Id });
         }
 
         [HttpPost]
