@@ -1,10 +1,8 @@
 ﻿.modalDialog {
     position: fixed;
     font-family: Arial, Helvetica, sans-serif;
-    top: 100px;
-    right: 100px;
-    bottom: 100px;
-    left: 100px;
+    top: 70px;
+    left: 70px;
     background: rgba(0,0,0,0.8);
     z-index: 99999;
     -webkit-transition: opacity 400ms ease-in;
@@ -19,6 +17,7 @@
 
 .modalDialog > div {
     width: 96%;
+    max-width: 550px;
     position: relative;
     margin: 2% auto;
     padding: 5px 20px 13px 20px;
@@ -27,4 +26,29 @@
     background: -moz-linear-gradient(#fff, #999);
     background: -webkit-linear-gradient(#fff, #999);
     background: -o-linear-gradient(#fff, #999);
+}
+
+.modalDialog p {
+    margin: 0 0 0 10px;
+}
+
+.redCard {
+    color: red;
+}
+
+tr.borderless td,
+td.borderless {
+    border: none;
+}
+
+td:first-child {
+    padding-right: 6px;
+}
+
+td:not(:first-child) {
+    border-width: 1px;
+    border-style: solid;
+    border-color: black;
+    text-align: center;
+    width: 30px;
 }

@@ -5,7 +5,6 @@ Sheepshead
 
 ToDo:
 
-* Create modal popup that displays a sheepshead cheatsheet.
 * Create a new "illegal move" card.
 * At start of game, give the user the option of jack-of-diamonds vs. called-ace partner card.
 * At start of game, give the user the option of including blinds in leaster points.
