@@ -4,6 +4,7 @@ import { IdUtils } from '../IdUtils';
 import { FetchUtils } from '../FetchUtils';
 import ActionPane from './ActionPane';
 import { GameScore } from 'ClientApp/components/game/PlayState';
+import { CheatSheet } from './CheatSheet';
 
 export interface PlayPaneState {
     gameId: string;
@@ -62,6 +63,7 @@ export class PlayPane extends React.Component<RouteComponentProps<{}>, PlayPaneS
     public render() {
         return (
             <div className="playPane">
+                <CheatSheet />
                 <div>
                     <h4>Game Details</h4>
                     {

@@ -25,6 +25,7 @@
     <None Remove="ClientApp\components\game\ActionPane.tsx" />
     <None Remove="ClientApp\components\game\BuryPane.tsx" />
     <None Remove="ClientApp\components\game\Card.tsx" />
+    <None Remove="ClientApp\components\game\CheatSheet.tsx" />
     <None Remove="ClientApp\components\game\HandSummaryPane.tsx" />
     <None Remove="ClientApp\components\game\PIckPane.tsx" />
     <None Remove="ClientApp\components\game\PlayPane.tsx" />
@@ -110,6 +111,7 @@
 
   <ItemGroup>
     <TypeScriptCompile Include="ClientApp\components\game\BuryPane.tsx" />
+    <TypeScriptCompile Include="ClientApp\components\game\CheatSheet.tsx" />
     <TypeScriptCompile Include="ClientApp\components\game\HandSummaryPane.tsx" />
     <TypeScriptCompile Include="ClientApp\components\game\TrickPane.tsx" />
     <TypeScriptCompile Include="ClientApp\components\game\PickPane.tsx" />
