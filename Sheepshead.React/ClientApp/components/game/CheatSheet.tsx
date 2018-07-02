@@ -90,20 +90,12 @@ export class CheatSheet extends React.Component<CheatProps, CheatState> {
                         </tr>
                         <tr>
                             <td><b>Points</b></td>
-                            <td>3</td>
-                            <td>3</td>
-                            <td>3</td>
-                            <td>3</td>
-                            <td>2</td>
-                            <td>2</td>
-                            <td>2</td>
-                            <td>2</td>
+                            <td colSpan={4}>3</td>
+                            <td colSpan={4}>2</td>
                             <td>11</td>
                             <td>10</td>
                             <td>4</td>
-                            <td>0</td>
-                            <td>0</td>
-                            <td>0</td>
+                            <td colSpan={3}>0</td>
                         </tr>
                     </table>
                     <h4>Power vs. Points</h4>
@@ -111,7 +103,8 @@ export class CheatSheet extends React.Component<CheatProps, CheatState> {
                     <p>The trick winner gets the points of all of the cards played in that trick.</p>
                     <h4>Suit Power</h4>
                     <p>Trump cards are always more powerful than Fail cards (Clubs, Spades, Hearts).</p>
-                    <p>Within a trick, the suit of the first card played is more powerful than a card of any other Fail suits.</p>
+                    <p>Within a trick, the suit of the first card played is more powerful than a card of any other Fail suit.</p>
+                    <p>Trump can also lead a suit.</p>
                 </div>
             </div>
         );
