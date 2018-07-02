@@ -110,7 +110,7 @@ export class CheatSheet extends React.Component<CheatProps, CheatState> {
                     <p>The most powerful card is the one that determines the trick winner.</p>
                     <p>The trick winner gets the points of all of the cards played in that trick.</p>
                     <h4>Suit Power</h4>
-                    <p>Trump cards are always more powerful than Fail cards (Clubs, Spades, Hears).</p>
+                    <p>Trump cards are always more powerful than Fail cards (Clubs, Spades, Hearts).</p>
                     <p>Within a trick, the suit of the first card played is more powerful than a card of any other Fail suits.</p>
                 </div>
             </div>
