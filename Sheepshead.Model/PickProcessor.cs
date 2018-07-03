@@ -52,6 +52,9 @@ namespace Sheepshead.Models
             return handFactory.GetHand(deck, picker, buriedCards);
         }
 
+        /// <summary>
+        /// Use this method to bury cards in a Jack-of-Diamonds game.
+        /// </summary>
         public void BuryCards(IDeck deck, IHumanPlayer picker, List<SheepCard> cardsToBury, bool goItAlone)
         {
             if (deck.Hand?.Picker != picker)
@@ -61,6 +64,22 @@ namespace Sheepshead.Models
             if (goItAlone)
                 deck.Hand.GoItAlone();
         }
+
+        /// <summary>
+        /// Use this method to bury cards in a Called-Ace game.
+        /// </summary>
+        public void BuryCards(IDeck deck, IHumanPlayer picker, List<SheepCard> cardsToBury, bool goItAlone, SheepCard partnerCard)
+        {
+            if (picker.Cards.Contains(partnerCard))
+                throw new ArgumentException("Picker has the parner card");
+            if (!picker.Cards.Any(c => CardUtil.GetSuit(c) == CardUtil.GetSuit(partnerCard)))
+                throw new ArgumentException($"Picker does not have a card in the {CardUtil.GetSuit(partnerCard).ToString()} suit");
+            if (!_validCalledAceCards.Contains(partnerCard))
+                throw new ArgumentException($"{CardUtil.ToAbbr(partnerCard)} is not a valid partner card.");
+            deck.Hand.SetPartnerCard(partnerCard);
+            BuryCards(deck, picker, cardsToBury, goItAlone);
+        }
+        private static List<SheepCard> _validCalledAceCards = new List<SheepCard>() { SheepCard.ACE_CLUBS, SheepCard.ACE_HEARTS, SheepCard.ACE_SPADES };
 
         public IHand ContinueFromHumanPickTurn(IHumanPlayer human, bool willPick, IDeck deck, IHandFactory handFactory, IPickProcessor pickProcessorOuter)
         {

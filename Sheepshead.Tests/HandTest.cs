@@ -810,13 +810,14 @@ namespace Sheepshead.Tests
             //List cards for the fifth trick.
             //If we say that player A is the player who had the first turn during the first trick, 
             //then player A's card is shown first for each of the following trick, even if a different player lead those turns.
-            var expectedSummary = "7HJD,3ASTC,JDKC8H7SAH,AD9H8DQS8S,9CTHKSACJH,7HJSQDKH7C,KDTS7DJC9D,8CQH9SQCTD";
+            //♣♦♥♠
+            var expectedSummary = "7♥J♦,3A♠T♣,J♦K♣8♥7♠A♥,A♦9♥8♦Q♠8♠,9♣T♥K♠A♣J♥,7♥J♠Q♦K♥7♣,K♦T♠7♦J♣9♦,8♣Q♥9♠Q♣T♦";
             Assert.AreEqual(expectedSummary, hand.Summary(), "Test output for normal hand.");
 
             deckMock.Setup(m => m.Buried).Returns(new List<SheepCard>() {  });
             var leastersHand = new Hand(deckMock.Object, null, null);
             GetTricks(playerList, leastersHand);
-            var leastersSummary = "7HJD,,JDKC8H7SAH,AD9H8DQS8S,9CTHKSACJH,7HJSQDKH7C,KDTS7DJC9D,8CQH9SQCTD";
+            var leastersSummary = "7♥J♦,,J♦K♣8♥7♠A♥,A♦9♥8♦Q♠8♠,9♣T♥K♠A♣J♥,7♥J♠Q♦K♥7♣,K♦T♠7♦J♣9♦,8♣Q♥9♠Q♣T♦";
             Assert.AreEqual(leastersSummary, leastersHand.Summary(), "Test output for a leasters hand.");
         }
 

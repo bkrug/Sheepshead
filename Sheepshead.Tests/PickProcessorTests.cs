@@ -311,5 +311,105 @@ namespace Sheepshead.Tests
             }
             Assert.IsTrue(threwException);
         }
+
+        [TestMethod]
+        public void PickProcessorOuter_BuryCards_CalledAce_WithinRules()
+        {
+            var pickerMock = new Mock<IHumanPlayer>();
+            SheepCard innerPartnerCard = SheepCard.ACE_CLUBS;
+            var deckMock = new Mock<IDeck>();
+            deckMock.Setup(m => m.Hand.PartnerCard).Returns(() => innerPartnerCard);
+            deckMock.Setup(m => m.Hand.SetPartnerCard(It.IsAny<SheepCard>())).Callback((SheepCard sc) => innerPartnerCard = sc);
+            deckMock.Setup(m => m.Hand.Picker).Returns(pickerMock.Object);
+            deckMock.Setup(m => m.Buried).Returns(new List<SheepCard>());
+            var pickerCards = new List<SheepCard>() { SheepCard.ACE_CLUBS, SheepCard.KING_DIAMONDS, SheepCard.QUEEN_CLUBS, SheepCard.N7_HEARTS, SheepCard.N10_SPADES, SheepCard.QUEEN_HEARTS, SheepCard.JACK_HEARTS, SheepCard.N9_DIAMONDS };
+            pickerMock.Setup(m => m.Cards).Returns(pickerCards);
+            var cardsToBury = new List<SheepCard>() { SheepCard.N7_HEARTS, SheepCard.N10_SPADES };
+            var partnerCard = SheepCard.ACE_HEARTS;
+
+            new PickProcessor().BuryCards(deckMock.Object, pickerMock.Object, cardsToBury, false, partnerCard);
+
+            var expectedCards = pickerCards.Except(cardsToBury).ToList();
+            CollectionAssert.AreEquivalent(expectedCards, pickerCards);
+            Assert.AreEqual(SheepCard.ACE_HEARTS, deckMock.Object.Hand.PartnerCard);
+        }
+
+        [TestMethod]
+        public void PickProcessorOuter_BuryCards_CalledAce_PickerHasCard()
+        {
+            var pickerMock = new Mock<IHumanPlayer>();
+            SheepCard innerPartnerCard = SheepCard.ACE_CLUBS;
+            var deckMock = new Mock<IDeck>();
+            deckMock.Setup(m => m.Hand.PartnerCard).Returns(() => innerPartnerCard);
+            deckMock.Setup(m => m.Hand.SetPartnerCard(It.IsAny<SheepCard>())).Callback((SheepCard sc) => innerPartnerCard = sc);
+            deckMock.Setup(m => m.Hand.Picker).Returns(pickerMock.Object);
+            deckMock.Setup(m => m.Buried).Returns(new List<SheepCard>());
+            var pickerCards = new List<SheepCard>() { SheepCard.ACE_CLUBS, SheepCard.KING_DIAMONDS, SheepCard.QUEEN_CLUBS, SheepCard.N7_HEARTS, SheepCard.N10_SPADES, SheepCard.QUEEN_HEARTS, SheepCard.JACK_HEARTS, SheepCard.N9_DIAMONDS };
+            pickerMock.Setup(m => m.Cards).Returns(pickerCards);
+            var cardsToBury = new List<SheepCard>() { SheepCard.N7_HEARTS, SheepCard.N10_SPADES };
+            var partnerCard = SheepCard.ACE_CLUBS;
+
+            try
+            {
+                new PickProcessor().BuryCards(deckMock.Object, pickerMock.Object, cardsToBury, false, partnerCard);
+                Assert.Fail("Should have thrown an exception");
+            }
+            catch (ArgumentException ex)
+            {
+                Assert.IsTrue(ex.Message.Contains("Picker has the parner card"));
+            }
+        }
+
+        [TestMethod]
+        public void PickProcessorOuter_BuryCards_CalledAce_PickerDoesNotHaveSuit()
+        {
+            var pickerMock = new Mock<IHumanPlayer>();
+            SheepCard innerPartnerCard = SheepCard.ACE_CLUBS;
+            var deckMock = new Mock<IDeck>();
+            deckMock.Setup(m => m.Hand.PartnerCard).Returns(() => innerPartnerCard);
+            deckMock.Setup(m => m.Hand.SetPartnerCard(It.IsAny<SheepCard>())).Callback((SheepCard sc) => innerPartnerCard = sc);
+            deckMock.Setup(m => m.Hand.Picker).Returns(pickerMock.Object);
+            deckMock.Setup(m => m.Buried).Returns(new List<SheepCard>());
+            var pickerCards = new List<SheepCard>() { SheepCard.KING_SPADES, SheepCard.KING_DIAMONDS, SheepCard.QUEEN_CLUBS, SheepCard.N7_HEARTS, SheepCard.N10_SPADES, SheepCard.QUEEN_HEARTS, SheepCard.JACK_HEARTS, SheepCard.N9_DIAMONDS };
+            pickerMock.Setup(m => m.Cards).Returns(pickerCards);
+            var cardsToBury = new List<SheepCard>() { SheepCard.N7_HEARTS, SheepCard.N10_SPADES };
+            var partnerCard = SheepCard.ACE_CLUBS;
+
+            try
+            {
+                new PickProcessor().BuryCards(deckMock.Object, pickerMock.Object, cardsToBury, false, partnerCard);
+                Assert.Fail("Should have thrown an exception");
+            }
+            catch (ArgumentException ex)
+            {
+                Assert.IsTrue(ex.Message.Contains("Picker does not have a card in the CLUBS"));
+            }
+        }
+
+        [TestMethod]
+        public void PickProcessorOuter_BuryCards_CalledAce_InvalidCard()
+        {
+            var pickerMock = new Mock<IHumanPlayer>();
+            SheepCard innerPartnerCard = SheepCard.ACE_CLUBS;
+            var deckMock = new Mock<IDeck>();
+            deckMock.Setup(m => m.Hand.PartnerCard).Returns(() => innerPartnerCard);
+            deckMock.Setup(m => m.Hand.SetPartnerCard(It.IsAny<SheepCard>())).Callback((SheepCard sc) => innerPartnerCard = sc);
+            deckMock.Setup(m => m.Hand.Picker).Returns(pickerMock.Object);
+            deckMock.Setup(m => m.Buried).Returns(new List<SheepCard>());
+            var pickerCards = new List<SheepCard>() { SheepCard.ACE_CLUBS, SheepCard.KING_DIAMONDS, SheepCard.QUEEN_CLUBS, SheepCard.N7_HEARTS, SheepCard.N10_SPADES, SheepCard.QUEEN_HEARTS, SheepCard.JACK_HEARTS, SheepCard.N9_DIAMONDS };
+            pickerMock.Setup(m => m.Cards).Returns(pickerCards);
+            var cardsToBury = new List<SheepCard>() { SheepCard.N7_HEARTS, SheepCard.N10_SPADES };
+            var partnerCard = SheepCard.N8_CLUBS;
+
+            try
+            {
+                new PickProcessor().BuryCards(deckMock.Object, pickerMock.Object, cardsToBury, false, partnerCard);
+                Assert.Fail("Should have thrown an exception");
+            }
+            catch (ArgumentException ex)
+            {
+                Assert.IsTrue(ex.Message.Contains("is not a valid partner card"));
+            }
+        }
     }
 }

@@ -22,6 +22,7 @@ namespace Sheepshead.Models
         private IHandFactory _handFactory;
         private IGameStateDescriber _gameStateDesciber;
         public TurnType TurnType => _gameStateDesciber.GetTurnType();
+        public PartnerMethod PartnerMethod { get; }
         public TurnState TurnState => new TurnState
         {
             GameId = Id,
@@ -29,7 +30,7 @@ namespace Sheepshead.Models
             TurnType = TurnType
         };
 
-        public Game(List<IPlayer> players) : this(players, null, null, null)
+        public Game(List<IPlayer> players, PartnerMethod partnerMethod) : this(players, partnerMethod, null, null, null)
         {
 
         }
@@ -38,9 +39,10 @@ namespace Sheepshead.Models
         /// <summary>
         /// This constructor is for passing in Mocks in unit tests.
         /// </summary>
-        public Game(List<IPlayer> players, IRandomWrapper random, IHandFactory handFactory, IGameStateDescriber gameStateDescriber)
+        public Game(List<IPlayer> players, PartnerMethod partnerMethod, IRandomWrapper random, IHandFactory handFactory, IGameStateDescriber gameStateDescriber)
         {
             Players = players;
+            PartnerMethod = partnerMethod;
             _random = random ?? new RandomWrapper();
             _handFactory = handFactory ?? new HandFactory();
             _gameStateDesciber = gameStateDescriber ?? new GameStateDescriber();
@@ -252,6 +254,11 @@ namespace Sheepshead.Models
         public int Coins { get; set; }
     }
 
+    public enum PartnerMethod
+    {
+        JackOfDiamonds, CalledAce
+    }
+
     public class TooManyPlayersException : ApplicationException
     {
         public TooManyPlayersException(string message) : base(message) { }
@@ -288,6 +295,7 @@ namespace Sheepshead.Models
         List<IDeck> Decks { get; }
         TurnType TurnType { get; }
         TurnState TurnState { get; }
+        PartnerMethod PartnerMethod { get; }
         void RearrangePlayers();
         bool LastDeckIsComplete();
         IHand ContinueFromHumanPickTurn(IHumanPlayer human, bool willPick);
