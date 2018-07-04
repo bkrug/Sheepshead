@@ -21,5 +21,23 @@ namespace Sheepshead.Models.Players
         {
             return Cards.OrderByDescending(c => CardUtil.GetRank(c)).Take(2).ToList();
         }
+
+        public override SheepCard? ChooseCalledAce(IDeck deck)
+        {
+            var acceptableSuits = LegalCalledAceSuits(deck).Select(g => g.Key);
+            if (!acceptableSuits.Any())
+                return null;
+            var selectedSuit = acceptableSuits.First();
+            switch (selectedSuit)
+            {
+                case Suit.CLUBS:
+                    return SheepCard.ACE_CLUBS;
+                case Suit.HEARTS:
+                    return SheepCard.ACE_HEARTS;
+                case Suit.SPADES:
+                default:
+                    return SheepCard.ACE_SPADES;
+            }
+        }
     }
 }

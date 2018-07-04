@@ -149,6 +149,7 @@ namespace Sheepshead.Tests
             var deckMock = new Mock<IDeck>();
             deckMock.Setup(m => m.PlayersWithoutPickTurn).Returns(unplayedPlayers);
             deckMock.Setup(m => m.PlayersRefusingPick).Returns(refusingPick);
+            deckMock.Setup(m => m.Game.PartnerMethod);
             var handFactoryMock = new Mock<IHandFactory>();
             handFactoryMock
                 .Setup(m => m.GetHand(It.IsAny<IDeck>(), expectedPicker, It.IsAny<List<SheepCard>>()))

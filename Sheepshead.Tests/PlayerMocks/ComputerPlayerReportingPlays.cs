@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Sheepshead.Models;
 using Sheepshead.Models.Players;
 
@@ -45,6 +42,11 @@ namespace Sheepshead.Tests.PlayerMocks
         }
 
         public bool WillPick(IDeck deck)
+        {
+            throw new NotImplementedException();
+        }
+
+        public SheepCard? ChooseCalledAce(IDeck deck)
         {
             throw new NotImplementedException();
         }

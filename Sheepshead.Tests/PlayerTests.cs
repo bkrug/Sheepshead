@@ -108,5 +108,55 @@ namespace Sheepshead.Tests
             Assert.IsTrue(cardsToDrop.Contains(SheepCard.N7_CLUBS), "Drop 7 of Clubs since it is only club.");
             Assert.IsTrue(cardsToDrop.Contains(SheepCard.N8_SPADES), "Drop 8 of Spades since it is only club.");
         }
+
+        [TestMethod]
+        public void NewbiePlayer_ChooseCalledAce()
+        {
+            var picker = new BasicPlayer();
+            picker.Cards.AddRange(new List<SheepCard>()
+            {
+                SheepCard.N7_DIAMONDS,
+                SheepCard.QUEEN_SPADES,
+                SheepCard.JACK_CLUBS,
+                SheepCard.N10_HEARTS,
+                SheepCard.N7_HEARTS,
+                SheepCard.N8_HEARTS
+            });
+            var deckMock = new Mock<IDeck>();
+            deckMock.Setup(m => m.Blinds).Returns(new List<SheepCard>() {
+                SheepCard.N7_CLUBS,
+                SheepCard.QUEEN_HEARTS
+            });
+            deckMock.Setup(m => m.Buried).Returns(new List<SheepCard>());
+
+            var partnerCard = picker.ChooseCalledAce(deckMock.Object);
+
+            Assert.IsTrue(partnerCard == SheepCard.ACE_CLUBS || partnerCard == SheepCard.ACE_HEARTS, "Partner card cannot be ace of spaces since picker has no spade.");
+        }
+
+        [TestMethod]
+        public void NewbiePlayer_ChooseCalledAce_GetNothing()
+        {
+            var picker = new BasicPlayer();
+            picker.Cards.AddRange(new List<SheepCard>()
+            {
+                SheepCard.ACE_CLUBS,
+                SheepCard.QUEEN_SPADES,
+                SheepCard.JACK_CLUBS,
+                SheepCard.N7_CLUBS,
+                SheepCard.N7_HEARTS,
+                SheepCard.N8_HEARTS
+            });
+            var deckMock = new Mock<IDeck>();
+            deckMock.Setup(m => m.Blinds).Returns(new List<SheepCard>() {
+                SheepCard.ACE_HEARTS,
+                SheepCard.QUEEN_HEARTS
+            });
+            deckMock.Setup(m => m.Buried).Returns(new List<SheepCard>());
+
+            var partnerCard = picker.ChooseCalledAce(deckMock.Object);
+
+            Assert.IsNull(partnerCard, "No ace can be called as the partner card at this point.");
+        }
     }
 }

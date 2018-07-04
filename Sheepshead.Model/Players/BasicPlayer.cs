@@ -104,8 +104,28 @@ namespace Sheepshead.Models.Players
                 Trick = trick,
                 Card = card
             };
-            if (OnMove != null)
-                OnMove(this, e);
+            OnMove?.Invoke(this, e);
+        }
+
+        public override SheepCard? ChooseCalledAce(IDeck deck)
+        {
+            var acceptableSuits = LegalCalledAceSuits(deck);
+            if (!acceptableSuits.Any())
+                return null;
+            var selectedSuit = acceptableSuits
+                .OrderBy(g => g.Count())
+                .First()
+                .Key;
+            switch (selectedSuit)
+            {
+                case Suit.CLUBS:
+                    return SheepCard.ACE_CLUBS;
+                case Suit.HEARTS:
+                    return SheepCard.ACE_HEARTS;
+                case Suit.SPADES:
+                default:
+                    return SheepCard.ACE_SPADES;
+            }
         }
     }
 }

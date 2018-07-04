@@ -46,5 +46,10 @@ namespace Sheepshead.Tests.PlayerMocks
         {
             return _doesPick;
         }
+
+        public SheepCard? ChooseCalledAce(IDeck deck)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

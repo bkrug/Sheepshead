@@ -117,6 +117,7 @@ namespace Sheepshead.Tests
             };
             var refusingPlayersOrig = refusingPlayers.ToList();
             deckMock.SetupGet(m => m.PlayersRefusingPick).Returns(refusingPlayers);
+            deckMock.Setup(m => m.Game.PartnerMethod);
 
             var unplayedPlayersOrig = new List<IPlayer>()
             {
@@ -154,6 +155,7 @@ namespace Sheepshead.Tests
             deckMock.Setup(m => m.Players).Returns(players);
             deckMock.SetupGet(m => m.PlayersWithoutPickTurn).Returns(playersWithoutTurn);
             deckMock.SetupGet(m => m.PlayersRefusingPick).Returns(new List<IPlayer>());
+            deckMock.Setup(m => m.Game.PartnerMethod);
 
             var handCreated = false;
             var handFactoryMock = new Mock<IHandFactory>();
