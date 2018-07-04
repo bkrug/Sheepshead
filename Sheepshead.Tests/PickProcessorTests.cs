@@ -139,6 +139,56 @@ namespace Sheepshead.Tests
         }
 
         [TestMethod]
+        public void PickProcessor_PlayNonHumanPickTurns_CalledAce_FindPicker_PickPartner()
+        {
+            SheepCard? _actualPartnerCard = null;
+            var deckMock = new Mock<IDeck>();
+            var refusingPlayers = new List<IPlayer>() {
+                new Mock<IComputerPlayer>().Object,
+                new Mock<IHumanPlayer>().Object
+            };
+            deckMock.SetupGet(m => m.PlayersRefusingPick).Returns(refusingPlayers);
+            deckMock.SetupGet(m => m.Game.PartnerMethod).Returns(PartnerMethod.CalledAce);
+            var unplayedPlayers = new List<IPlayer>()
+            {
+                new ComputerPlayerPickingMock(true, SheepCard.ACE_HEARTS),
+                new ComputerPlayerPickingMock(false),
+                new ComputerPlayerPickingMock(false)
+            };
+            deckMock.SetupGet(m => m.PlayersWithoutPickTurn).Returns(unplayedPlayers);
+
+            deckMock.Setup(m => m.Hand.SetPartnerCard(It.IsAny<SheepCard?>())).Callback((SheepCard? c) => _actualPartnerCard = c);
+            var picker = new PickProcessor().PlayNonHumanPickTurns(deckMock.Object, new Mock<IHandFactory>().Object);
+
+            Assert.AreEqual(SheepCard.ACE_HEARTS, _actualPartnerCard.Value);
+        }
+
+        [TestMethod]
+        public void PickProcessor_PlayNonHumanPickTurns_CalledAce_FindPicker_NoPartner()
+        {
+            SheepCard? _actualPartnerCard = SheepCard.N7_HEARTS;
+            var deckMock = new Mock<IDeck>();
+            var refusingPlayers = new List<IPlayer>() {
+                new Mock<IComputerPlayer>().Object,
+                new Mock<IHumanPlayer>().Object
+            };
+            deckMock.SetupGet(m => m.PlayersRefusingPick).Returns(refusingPlayers);
+            deckMock.SetupGet(m => m.Game.PartnerMethod).Returns(PartnerMethod.CalledAce);
+            var unplayedPlayers = new List<IPlayer>()
+            {
+                new ComputerPlayerPickingMock(true, null),
+                new ComputerPlayerPickingMock(false),
+                new ComputerPlayerPickingMock(false)
+            };
+            deckMock.SetupGet(m => m.PlayersWithoutPickTurn).Returns(unplayedPlayers);
+
+            deckMock.Setup(m => m.Hand.SetPartnerCard(It.IsAny<SheepCard?>())).Callback((SheepCard? c) => _actualPartnerCard = c);
+            var picker = new PickProcessor().PlayNonHumanPickTurns(deckMock.Object, new Mock<IHandFactory>().Object);
+
+            Assert.IsNull(_actualPartnerCard);
+        }
+
+        [TestMethod]
         public void PickProcessor_AcceptComputerPicker()
         {
             var players = new List<IPlayer>()
@@ -170,7 +220,7 @@ namespace Sheepshead.Tests
         }
 
         [TestMethod]
-        public void PickProcessorOuter2_ContinueFromHumanPickTurn_HumanPicks()
+        public void PickProcessor_ContinueFromHumanPickTurn_HumanPicks()
         {
             var humanCards = new List<SheepCard>();
             var humanMock = new Mock<IHumanPlayer>();
@@ -199,7 +249,7 @@ namespace Sheepshead.Tests
         }
 
         [TestMethod]
-        public void PickProcessorOuter2_ContinueFromHumanPickTurn_HumanDeclinesButCompterPicks()
+        public void PickProcessor_ContinueFromHumanPickTurn_HumanDeclinesButCompterPicks()
         {
             var humanMock = new Mock<IHumanPlayer>();
             var expectedPicker = new Mock<IComputerPlayer>().Object;
@@ -228,7 +278,7 @@ namespace Sheepshead.Tests
         }
 
         [TestMethod]
-        public void PickProcessorOuter2_ContinueFromHumanPickTurn_WrongTurn()
+        public void PickProcessor_ContinueFromHumanPickTurn_WrongTurn()
         {
             var humanMock = new Mock<IHumanPlayer>();
             humanMock.Setup(m => m.Cards).Returns(new List<SheepCard>());
@@ -253,7 +303,7 @@ namespace Sheepshead.Tests
         }
 
         [TestMethod]
-        public void PickProcessorOuter_BuryCards()
+        public void PickProcessor_BuryCards()
         {
             var toBury = new List<SheepCard>() { 0, (SheepCard)1 };
             var playerCards = toBury.ToList();
@@ -273,7 +323,7 @@ namespace Sheepshead.Tests
         }
 
         [TestMethod]
-        public void PickProcessorOuter_BuryCards_GoItAlone()
+        public void PickProcessor_BuryCards_GoItAlone()
         {
             var toBury = new List<SheepCard>() { 0, (SheepCard)1 };
             var playerCards = toBury.ToList();
@@ -295,7 +345,7 @@ namespace Sheepshead.Tests
         }
 
         [TestMethod]
-        public void PickProcessorOuter_BuryCards_NotPicker()
+        public void PickProcessor_BuryCards_NotPicker()
         {
             var humanMock = new Mock<IHumanPlayer>();
             humanMock.Setup(m => m.Cards).Returns(new List<SheepCard>());
@@ -315,13 +365,13 @@ namespace Sheepshead.Tests
         }
 
         [TestMethod]
-        public void PickProcessorOuter_BuryCards_CalledAce_WithinRules()
+        public void PickProcessor_BuryCards_CalledAce_WithinRules()
         {
             var pickerMock = new Mock<IHumanPlayer>();
-            SheepCard innerPartnerCard = SheepCard.ACE_CLUBS;
+            SheepCard? innerPartnerCard = SheepCard.ACE_CLUBS;
             var deckMock = new Mock<IDeck>();
             deckMock.Setup(m => m.Hand.PartnerCard).Returns(() => innerPartnerCard);
-            deckMock.Setup(m => m.Hand.SetPartnerCard(It.IsAny<SheepCard>())).Callback((SheepCard sc) => innerPartnerCard = sc);
+            deckMock.Setup(m => m.Hand.SetPartnerCard(It.IsAny<SheepCard?>())).Callback((SheepCard? sc) => innerPartnerCard = sc);
             deckMock.Setup(m => m.Hand.Picker).Returns(pickerMock.Object);
             deckMock.Setup(m => m.Buried).Returns(new List<SheepCard>());
             var pickerCards = new List<SheepCard>() { SheepCard.ACE_CLUBS, SheepCard.KING_DIAMONDS, SheepCard.QUEEN_CLUBS, SheepCard.N7_HEARTS, SheepCard.N10_SPADES, SheepCard.QUEEN_HEARTS, SheepCard.JACK_HEARTS, SheepCard.N9_DIAMONDS };
@@ -337,13 +387,13 @@ namespace Sheepshead.Tests
         }
 
         [TestMethod]
-        public void PickProcessorOuter_BuryCards_CalledAce_PickerHasCard()
+        public void PickProcessor_BuryCards_CalledAce_PickerHasCard()
         {
             var pickerMock = new Mock<IHumanPlayer>();
-            SheepCard innerPartnerCard = SheepCard.ACE_CLUBS;
+            SheepCard? innerPartnerCard = SheepCard.ACE_CLUBS;
             var deckMock = new Mock<IDeck>();
             deckMock.Setup(m => m.Hand.PartnerCard).Returns(() => innerPartnerCard);
-            deckMock.Setup(m => m.Hand.SetPartnerCard(It.IsAny<SheepCard>())).Callback((SheepCard sc) => innerPartnerCard = sc);
+            deckMock.Setup(m => m.Hand.SetPartnerCard(It.IsAny<SheepCard?>())).Callback((SheepCard? sc) => innerPartnerCard = sc);
             deckMock.Setup(m => m.Hand.Picker).Returns(pickerMock.Object);
             deckMock.Setup(m => m.Buried).Returns(new List<SheepCard>());
             var pickerCards = new List<SheepCard>() { SheepCard.ACE_CLUBS, SheepCard.KING_DIAMONDS, SheepCard.QUEEN_CLUBS, SheepCard.N7_HEARTS, SheepCard.N10_SPADES, SheepCard.QUEEN_HEARTS, SheepCard.JACK_HEARTS, SheepCard.N9_DIAMONDS };
@@ -363,13 +413,13 @@ namespace Sheepshead.Tests
         }
 
         [TestMethod]
-        public void PickProcessorOuter_BuryCards_CalledAce_PickerDoesNotHaveSuit()
+        public void PickProcessor_BuryCards_CalledAce_PickerDoesNotHaveSuit()
         {
             var pickerMock = new Mock<IHumanPlayer>();
-            SheepCard innerPartnerCard = SheepCard.ACE_CLUBS;
+            SheepCard? innerPartnerCard = SheepCard.ACE_CLUBS;
             var deckMock = new Mock<IDeck>();
             deckMock.Setup(m => m.Hand.PartnerCard).Returns(() => innerPartnerCard);
-            deckMock.Setup(m => m.Hand.SetPartnerCard(It.IsAny<SheepCard>())).Callback((SheepCard sc) => innerPartnerCard = sc);
+            deckMock.Setup(m => m.Hand.SetPartnerCard(It.IsAny<SheepCard?>())).Callback((SheepCard? sc) => innerPartnerCard = sc);
             deckMock.Setup(m => m.Hand.Picker).Returns(pickerMock.Object);
             deckMock.Setup(m => m.Buried).Returns(new List<SheepCard>());
             var pickerCards = new List<SheepCard>() { SheepCard.KING_SPADES, SheepCard.KING_DIAMONDS, SheepCard.QUEEN_CLUBS, SheepCard.N7_HEARTS, SheepCard.N10_SPADES, SheepCard.QUEEN_HEARTS, SheepCard.JACK_HEARTS, SheepCard.N9_DIAMONDS };
@@ -389,13 +439,13 @@ namespace Sheepshead.Tests
         }
 
         [TestMethod]
-        public void PickProcessorOuter_BuryCards_CalledAce_InvalidCard()
+        public void PickProcessor_BuryCards_CalledAce_InvalidCard()
         {
             var pickerMock = new Mock<IHumanPlayer>();
-            SheepCard innerPartnerCard = SheepCard.ACE_CLUBS;
+            SheepCard? innerPartnerCard = SheepCard.ACE_CLUBS;
             var deckMock = new Mock<IDeck>();
             deckMock.Setup(m => m.Hand.PartnerCard).Returns(() => innerPartnerCard);
-            deckMock.Setup(m => m.Hand.SetPartnerCard(It.IsAny<SheepCard>())).Callback((SheepCard sc) => innerPartnerCard = sc);
+            deckMock.Setup(m => m.Hand.SetPartnerCard(It.IsAny<SheepCard?>())).Callback((SheepCard? sc) => innerPartnerCard = sc);
             deckMock.Setup(m => m.Hand.Picker).Returns(pickerMock.Object);
             deckMock.Setup(m => m.Buried).Returns(new List<SheepCard>());
             var pickerCards = new List<SheepCard>() { SheepCard.ACE_CLUBS, SheepCard.KING_DIAMONDS, SheepCard.QUEEN_CLUBS, SheepCard.N7_HEARTS, SheepCard.N10_SPADES, SheepCard.QUEEN_HEARTS, SheepCard.JACK_HEARTS, SheepCard.N9_DIAMONDS };

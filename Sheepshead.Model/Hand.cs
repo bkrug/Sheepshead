@@ -242,7 +242,7 @@ namespace Sheepshead.Models
             PartnerCard = null;
         }
 
-        public void SetPartnerCard(SheepCard sheepCard)
+        public void SetPartnerCard(SheepCard? sheepCard)
         {
             if (Deck.Game.PartnerMethod != PartnerMethod.CalledAce)
                 throw new InvalidOperationException("Can only set partner card if partner method is 'called ace'.");
@@ -270,7 +270,7 @@ namespace Sheepshead.Models
         event EventHandler<EventArgs> OnHandEnd;
         string Summary();
         void SetPartner(IPlayer partner, ITrick trick);
-        void SetPartnerCard(SheepCard sheepCard);
+        void SetPartnerCard(SheepCard? sheepCard);
     }
 
     public class HandScores

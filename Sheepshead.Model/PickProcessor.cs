@@ -47,14 +47,15 @@ namespace Sheepshead.Models
 
         private IHand AcceptComputerPicker(IDeck deck, IComputerPlayer picker, IHandFactory handFactory)
         {
+            var buriedCards = picker.DropCardsForPick(deck);
+            deck.Buried = buriedCards;
+            var hand = handFactory.GetHand(deck, picker, buriedCards);
             if (deck.Game.PartnerMethod == PartnerMethod.CalledAce)
             {
                 var partnerCard = picker.ChooseCalledAce(deck);
-                deck.Hand.SetPartnerCard(partnerCard.Value);
+                deck.Hand.SetPartnerCard(partnerCard);
             }
-            var buriedCards = picker.DropCardsForPick(deck);
-            deck.Buried = buriedCards;
-            return handFactory.GetHand(deck, picker, buriedCards);
+            return hand;
         }
 
         /// <summary>
