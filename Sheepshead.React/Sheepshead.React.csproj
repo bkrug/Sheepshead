@@ -35,6 +35,7 @@
     <None Remove="ClientApp\components\IdUtils.tsx" />
     <None Remove="ClientApp\components\setup\GameFull.tsx" />
     <None Remove="ClientApp\components\setup\GameSetup.tsx" />
+    <None Remove="ClientApp\components\setup\OnOffRadio.tsx" />
     <None Remove="ClientApp\components\setup\PlayerCountRadio.tsx" />
     <None Remove="ClientApp\components\setup\RegisterHuman.tsx" />
     <None Remove="wwwroot\img\1.png" />
@@ -119,6 +120,7 @@
     <TypeScriptCompile Include="ClientApp\components\game\Card.tsx" />
     <TypeScriptCompile Include="ClientApp\components\game\PlayPane.tsx" />
     <TypeScriptCompile Include="ClientApp\components\game\PlayState.tsx" />
+    <TypeScriptCompile Include="ClientApp\components\setup\OnOffRadio.tsx" />
     <TypeScriptCompile Include="ClientApp\components\setup\RegistrationWait.tsx" />
     <TypeScriptCompile Include="ClientApp\components\IdUtils.tsx" />
     <TypeScriptCompile Include="ClientApp\components\setup\GameFull.tsx" />
