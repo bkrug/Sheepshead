@@ -81,11 +81,14 @@ namespace Sheepshead.Models
             return new PickProcessor().PlayNonHumanPickTurns(_gameStateDesciber.CurrentDeck, _handFactory);
         }
 
-        public void BuryCards(IHumanPlayer player, List<SheepCard> cards, bool goItAlone)
+        public void BuryCards(IHumanPlayer player, List<SheepCard> cards, bool goItAlone, SheepCard? partnerCard)
         {
             if (TurnType != TurnType.Bury)
                 throw new WrongGamePhaseExcpetion("Game must be in the Bury phase.");
-            new PickProcessor().BuryCards(Decks.Last(), player, cards, goItAlone);
+            if (PartnerMethod == PartnerMethod.JackOfDiamonds || !partnerCard.HasValue)
+                new PickProcessor().BuryCards(Decks.Last(), player, cards, goItAlone);
+            else
+                new PickProcessor().BuryCards(Decks.Last(), player, cards, goItAlone, partnerCard.Value);
         }
 
         public void PlayNonHumansInTrick()
@@ -300,7 +303,7 @@ namespace Sheepshead.Models
         bool LastDeckIsComplete();
         IHand ContinueFromHumanPickTurn(IHumanPlayer human, bool willPick);
         IComputerPlayer PlayNonHumanPickTurns(bool returnNullIfHumanNext = false);
-        void BuryCards(IHumanPlayer player, List<SheepCard> cards, bool goItAlone);
+        void BuryCards(IHumanPlayer player, List<SheepCard> cards, bool goItAlone, SheepCard? parnterCard);
         void PlayNonHumansInTrick();
         void RecordTurn(IHumanPlayer player, SheepCard card);
         void MaybeGiveComputerPlayersNames();

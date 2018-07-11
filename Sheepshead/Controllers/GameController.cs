@@ -95,7 +95,7 @@ namespace Sheepshead.Controllers
             var human = game.Players.OfType<IHumanPlayer>().First();
             var buriedCardsIndex = buriedCardsIndicies.Split(';').Select(c => Int16.Parse(c)).ToArray();
             var buriedCards = buriedCardsIndex.Select(i => human.Cards[i]).ToList();
-            game.BuryCards(human, buriedCards, goItAlone);
+            game.BuryCards(human, buriedCards, goItAlone, null);
         }
 
         private void PlayTrick(IGame game, int indexOfCard)
