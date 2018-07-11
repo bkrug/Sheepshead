@@ -12,6 +12,7 @@ export interface PickPaneState {
     playerCards: CardSummary[];
     requestingPlayerTurn: boolean;
     buryCards: CardSummary[];
+    partnerCard: CardSummary | null;
 }
 
 export interface PickPaneProps extends React.Props<any> {
@@ -29,7 +30,8 @@ export default class PickPane extends React.Component<PickPaneProps, PickPaneSta
             playerId: IdUtils.getPlayerId(props.gameId) || '',
             playerCards: [],
             requestingPlayerTurn: false,
-            buryCards: []
+            buryCards: [],
+            partnerCard: null
         };
         this.buryChoice = this.buryChoice.bind(this);
         this.recordBuryChoice = this.recordBuryChoice.bind(this);

@@ -118,11 +118,12 @@ namespace Sheepshead.React.Controllers
         }
 
         [HttpPost]
-        public IActionResult RecordBury(string gameId, string playerId, string[] cards, bool goItAlone)
+        public IActionResult RecordBury(string gameId, string playerId, string[] cards, bool goItAlone, string partnerCard)
         {
             GetGameAndHuman(gameId, playerId, out var game, out var human);
             var buriedCards = cards.Select(c => Enum.Parse<SheepCard>(c)).ToList();
-            game.BuryCards(human, buriedCards, goItAlone);
+            var partnerCardVal = !string.IsNullOrEmpty(partnerCard) ? (SheepCard?)Enum.Parse<SheepCard>(partnerCard): null;
+            game.BuryCards(human, buriedCards, goItAlone, partnerCardVal);
             return Json(new { buryRecorded = true });
         }
 

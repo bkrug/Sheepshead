@@ -1,9 +1,11 @@
 ﻿import * as React from 'react';
 import { RouteComponentProps } from 'react-router';
 import PlayerCountRadio from './PlayerCountRadio';
+import OnOffRadio from './OnOffRadio';
 
 export interface GameSetupState {
     value: number;
+    partnerCard: boolean;
     remaining: number;
     gameName: string;
     selections: { [index: string]: number };
@@ -19,8 +21,9 @@ export class GameSetup extends React.Component<RouteComponentProps<{}>, GameSetu
         super();
         let selections: { [index: string]: number } = {};
         selections[this.HUMANS] = selections[this.NEWBIE] = selections[this.BASIC] = 0;
-        this.state = { value: 0, remaining: this.MAX_PLAYERS, gameName: '', selections: selections };
+        this.state = { value: 0, partnerCard: true, remaining: this.MAX_PLAYERS, gameName: '', selections: selections };
         this.handleChange = this.handleChange.bind(this);
+        this.handlePartnerCardChange = this.handlePartnerCardChange.bind(this);
     }
 
     handleChange(radioGroup: string, radioValue: number) {
@@ -31,6 +34,13 @@ export class GameSetup extends React.Component<RouteComponentProps<{}>, GameSetu
                 + this.state.selections[this.BASIC];
             this.setState({ value: newTotal, remaining: this.MAX_PLAYERS - newTotal });
         }
+    }
+
+    handlePartnerCardChange(radioGroup: string, radioValue: boolean) {
+        console.log(radioGroup + ': ' + radioValue);
+        this.setState({
+            partnerCard: radioValue
+        });
     }
 
     playerCountValidityStyle() {
@@ -54,6 +64,7 @@ export class GameSetup extends React.Component<RouteComponentProps<{}>, GameSetu
                         <span className={"totalPlayers " + this.playerCountValidityStyle()}>{this.state.value}</span>
                     </div>
                     <input type="hidden" className="remaining" value={this.state.remaining} />
+                    <OnOffRadio name="partnerCard" title="Partner Card" onText="Jack of Hearts" offText="Called Ace" defaultValue={true} disabled={this.state.value != 5} onChange={this.handlePartnerCardChange} />
                     <input type="submit" value="Play" disabled={!this.validPlayerCount()} />
                 </form>
             </div>
