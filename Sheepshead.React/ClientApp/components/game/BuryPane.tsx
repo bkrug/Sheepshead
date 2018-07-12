@@ -4,7 +4,7 @@ import { IdUtils } from '../IdUtils';
 import { FetchUtils } from '../FetchUtils';
 import { render } from 'react-dom';
 import Card from './Card';
-import { PlayState, PickChoice, CardSummary } from './PlayState';
+import { BuryState, PickChoice, CardSummary } from './PlayState';
 
 export interface PickPaneState {
     gameId: string;
@@ -13,6 +13,8 @@ export interface PickPaneState {
     requestingPlayerTurn: boolean;
     buryCards: CardSummary[];
     partnerCard: CardSummary | null;
+    partnerMethod: string | null;
+    legalCalledAces: CardSummary[]
 }
 
 export interface PickPaneProps extends React.Props<any> {
@@ -31,7 +33,9 @@ export default class PickPane extends React.Component<PickPaneProps, PickPaneSta
             playerCards: [],
             requestingPlayerTurn: false,
             buryCards: [],
-            partnerCard: null
+            partnerCard: null,
+            partnerMethod: null,
+            legalCalledAces: []
         };
         this.buryChoice = this.buryChoice.bind(this);
         this.recordBuryChoice = this.recordBuryChoice.bind(this);
@@ -43,15 +47,17 @@ export default class PickPane extends React.Component<PickPaneProps, PickPaneSta
         var self = this;
         FetchUtils.repeatGet(
             'Game/GetBuryState?gameId=' + this.state.gameId + '&playerId=' + this.state.playerId,
-            function (json: PlayState): void {
+            function (json: BuryState): void {
                 self.setState({
                     playerCards: json.playerCards,
-                    requestingPlayerTurn: json.requestingPlayerTurn
+                    requestingPlayerTurn: json.requestingPlayerTurn,
+                    partnerMethod: json.partnerMethod,
+                    legalCalledAces: json.legalCalledAces
                 });
                 if (json.turnType != "Bury")
                     self.props.onBury();
             },
-            function (json: PlayState): boolean {
+            function (json: BuryState): boolean {
                 return json.requestingPlayerTurn == false && json.turnType == "Bury";
             },
             1000);
@@ -118,8 +124,22 @@ export default class PickPane extends React.Component<PickPaneProps, PickPaneSta
     private renderPartnerOption() {
         return (
             <div style={{ display: (this.state.buryCards.length == 2 ? 'block' : 'none') }}>
-                <button onClick={() => this.recordBuryChoice(false)}>Play with Partner</button>
-                <button onClick={() => this.recordBuryChoice(true)}>Go It Alone</button>
+                <b>Call an Ace as the partner card</b>
+                <div style={{ display: (this.state.partnerMethod == 'CalledAce' ? 'block' : 'none') }}>
+                    <div style={this.cardContainerStyle}>
+                        {
+                            this.state.legalCalledAces.map((card: CardSummary, i: number) =>
+                                <Card key={i} cardSummary={card} />
+                            )
+                        }
+                    </div>
+                    --OR--
+                    <button onClick={() => this.recordBuryChoice(true)}>Go It Alone</button>
+                </div>
+                <div style={{ display: (this.state.partnerMethod != 'CalledAce' ? 'block' : 'none') }}>
+                    <button onClick={() => this.recordBuryChoice(false)}>Play with Partner</button>
+                    <button onClick={() => this.recordBuryChoice(true)}>Go It Alone</button>
+                </div>
             </div>
         )
     }

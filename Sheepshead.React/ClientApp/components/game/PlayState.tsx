@@ -9,6 +9,15 @@
     trickWinners: string[];
 }
 
+export class BuryState {
+    turnType: string;
+    requestingPlayerTurn: boolean;
+    blinds: CardSummary[];
+    playerCards: CardSummary[];
+    legalCalledAces: CardSummary[];
+    partnerMethod: string;
+}
+
 export class PickChoice {
     item1: string;
     item2: boolean;
