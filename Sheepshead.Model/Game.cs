@@ -191,7 +191,7 @@ namespace Sheepshead.Models
             };
         }
 
-        public PlayState BuryState(Guid requestingPlayerId)
+        public BuryState BuryState(Guid requestingPlayerId)
         {
             var turnType = TurnType;
             var currentDeck = _gameStateDesciber.CurrentDeck;
@@ -201,12 +201,14 @@ namespace Sheepshead.Models
                 : null;
             var humanPlayer = currentPlayer as IHumanPlayer;
             var requestingPlayer = Players.OfType<IHumanPlayer>().SingleOrDefault(p => p.Id == requestingPlayerId);
-            return new PlayState
+            return new BuryState
             {
                 TurnType = turnType.ToString(),
                 RequestingPlayerTurn = humanPlayer?.Id == requestingPlayerId,
                 Blinds = turnType == TurnType.Bury ? currentDeck?.Blinds?.Select(b => CardUtil.GetCardSummary(b))?.ToList() : null,
-                PlayerCards = requestingPlayer?.Cards?.Select(c => CardUtil.GetCardSummary(c))?.ToList()
+                PlayerCards = requestingPlayer?.Cards?.Select(c => CardUtil.GetCardSummary(c))?.ToList(),
+                PartnerMethod = PartnerMethod.ToString(),
+                LegalCalledAces = humanPlayer.LegalCalledAces(currentDeck).Select(c => CardUtil.GetCardSummary(c)).ToList()
             };
         }
 
@@ -310,7 +312,7 @@ namespace Sheepshead.Models
         List<GameCoins> GameCoins();
         PlayState PlayState(Guid requestingPlayerId);
         PlayState PickState(Guid requestingPlayerId);
-        PlayState BuryState(Guid requestingPlayerId);
+        BuryState BuryState(Guid requestingPlayerId);
         TrickResults GetTrickWinners();
     }
 }

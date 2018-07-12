@@ -116,16 +116,7 @@ namespace Sheepshead.Models.Players
                 .OrderBy(g => g.Count())
                 .First()
                 .Key;
-            switch (selectedSuit)
-            {
-                case Suit.CLUBS:
-                    return SheepCard.ACE_CLUBS;
-                case Suit.HEARTS:
-                    return SheepCard.ACE_HEARTS;
-                case Suit.SPADES:
-                default:
-                    return SheepCard.ACE_SPADES;
-            }
+            return GetAceOfSuit(selectedSuit);
         }
     }
 }

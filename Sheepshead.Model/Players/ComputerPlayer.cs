@@ -21,26 +21,6 @@ namespace Sheepshead.Models.Players
         }
 
         protected abstract List<SheepCard> DropCardsForPickInternal(IDeck deck);
-
-        protected IEnumerable<IGrouping<Suit, SheepCard>> LegalCalledAceSuits(IDeck deck)
-        {
-            var allCards = Cards
-                .Union(deck.Blinds)
-                .Union(deck.Buried)
-                .ToList();
-            var suitsOfAcesInHand =
-                new List<SheepCard>() { SheepCard.ACE_CLUBS, SheepCard.ACE_HEARTS, SheepCard.ACE_SPADES }
-                .Where(sc => allCards.Contains(sc))
-                .Select(sc => CardUtil.GetSuit(sc))
-                .ToList();
-            var acceptableSuits = allCards
-                .Where(c => {
-                    var suit = CardUtil.GetSuit(c);
-                    return suit != Suit.TRUMP && !suitsOfAcesInHand.Contains(suit);
-                })
-                .GroupBy(c => CardUtil.GetSuit(c));
-            return acceptableSuits;
-        }
     }
 
     public interface IComputerPlayer : IPlayer

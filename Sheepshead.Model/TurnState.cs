@@ -34,4 +34,15 @@ namespace Sheepshead.Models
         //Filename number for the player's cards.
         public List<CardSummary> PlayerCards { get; set; }
     }
+
+    public class BuryState
+    {
+        public string TurnType { get; set; }
+        public bool RequestingPlayerTurn { get; set; }
+        public List<CardSummary> Blinds { get; set; }
+        //Filename number for the player's cards.
+        public List<CardSummary> PlayerCards { get; set; }
+        public List<CardSummary> LegalCalledAces { get; set; }
+        public string PartnerMethod { get; set; }
+    }
 }
