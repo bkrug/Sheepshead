@@ -208,7 +208,7 @@ namespace Sheepshead.Models
                 Blinds = turnType == TurnType.Bury ? currentDeck?.Blinds?.Select(b => CardUtil.GetCardSummary(b))?.ToList() : null,
                 PlayerCards = requestingPlayer?.Cards?.Select(c => CardUtil.GetCardSummary(c))?.ToList(),
                 PartnerMethod = PartnerMethod.ToString(),
-                LegalCalledAces = humanPlayer.LegalCalledAces(currentDeck).Select(c => CardUtil.GetCardSummary(c)).ToList()
+                LegalCalledAces = humanPlayer?.LegalCalledAces(currentDeck).Select(c => CardUtil.GetCardSummary(c)).ToList()
             };
         }
 
@@ -231,10 +231,13 @@ namespace Sheepshead.Models
             var coins = Decks
                 .Where(d => d?.Hand?.Tricks?.Count == TrickCount)
                 .Select(d => d.Hand.Scores().Coins);
-            return Players.Select(p => new GameCoins() {
-                Name = p.Name,
-                Coins = coins.Sum(c => c[p])
-            }).ToList();
+            return Players
+                .ToList()
+                .Select(p => new GameCoins() {
+                    Name = p.Name,
+                    Coins = coins.Sum(c => c[p])
+                })
+                .ToList();
         }
     }
 

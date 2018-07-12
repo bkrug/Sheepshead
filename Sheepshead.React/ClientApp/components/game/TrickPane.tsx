@@ -147,7 +147,7 @@ export default class TrickPane extends React.Component<TrickPaneProps, TrickPane
                     {
                         allCardsDisplayed && this.state.requestingPlayerTurn
                             ? <div><b>What card will you play?</b></div>
-                            : <div></div>
+                            : <div>Cards in your hand.</div>
                     }
                 </div>
                 {
