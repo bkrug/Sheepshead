@@ -125,22 +125,35 @@ export default class PickPane extends React.Component<PickPaneProps, PickPaneSta
     private renderPartnerOption() {
         return (
             <div style={{ display: (this.state.buryCards.length == 2 ? 'block' : 'none') }}>
-                <b>Call an Ace as the partner card</b>
-                <div style={{ display: (this.state.partnerMethod == 'CalledAce' ? 'block' : 'none') }}>
-                    <div style={this.cardContainerStyle}>
-                        {
-                            this.state.legalCalledAces.map((card: CardSummary, i: number) =>
-                                <Card key={i} cardSummary={card} onClick={() => this.recordBuryChoice(false, card.name)} />
-                            )
-                        }
-                    </div>
-                    --OR--
-                    <button onClick={() => this.recordBuryChoice(true, '')}>Go It Alone</button>
-                </div>
-                <div style={{ display: (this.state.partnerMethod != 'CalledAce' ? 'block' : 'none') }}>
-                    <button onClick={() => this.recordBuryChoice(false, '')}>Play with Partner</button>
-                    <button onClick={() => this.recordBuryChoice(true, '')}>Go It Alone</button>
-                </div>
+                {
+                    this.state.partnerMethod == 'CalledAce'
+                    ?
+                        <div>
+                            {
+                                this.state.legalCalledAces.length > 0
+                                ?
+                                    <div>
+                                        <b>Call an Ace as the partner card</b>
+                                        <div style={this.cardContainerStyle}>
+                                            {
+                                                this.state.legalCalledAces.map((card: CardSummary, i: number) =>
+                                                    <Card key={i} cardSummary={card} onClick={() => this.recordBuryChoice(false, card.name)} />
+                                                )
+                                            }
+                                        </div>
+                                        --OR--
+                                    </div>
+                                :
+                                    <div>No called ace is legal. You may not have a partner.</div>
+                            }
+                            <button onClick={() => this.recordBuryChoice(true, '')}>Go It Alone</button>
+                        </div>
+                    :
+                        <div style={{ display: (this.state.partnerMethod != 'CalledAce' ? 'block' : 'none') }}>
+                            <button onClick={() => this.recordBuryChoice(false, '')}>Play with Partner</button>
+                            <button onClick={() => this.recordBuryChoice(true, '')}>Go It Alone</button>
+                        </div>
+                }
             </div>
         )
     }
