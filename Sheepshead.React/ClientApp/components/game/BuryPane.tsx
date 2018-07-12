@@ -85,32 +85,54 @@ export default class PickPane extends React.Component<PickPaneProps, PickPaneSta
         );
     }
 
+    private renderHeldCards() {
+        return (
+            <div>
+                <b>Held Cards</b>
+                <div style={this.cardContainerStyle}>
+                {
+                    this.state.playerCards.map((card: CardSummary, i: number) =>
+                        <Card key={i} cardSummary={card} onClick={this.buryChoice} />
+                    )
+                }
+                </div>
+            </div>
+        )
+    }
+
+    private renderCardMarkedForBury() {
+        return (
+            <div>
+                <b>Cards to Bury</b>
+                <div style={this.cardContainerStyle}>
+                    {
+                        this.state.buryCards.map((card: CardSummary, i: number) =>
+                            <Card key={i} cardSummary={card} />
+                        )
+                    }
+                </div>
+            </div>
+        );
+    }
+
+    private renderPartnerOption() {
+        return (
+            <div style={{ display: (this.state.buryCards.length == 2 ? 'block' : 'none') }}>
+                <button onClick={() => this.recordBuryChoice(false)}>Play with Partner</button>
+                <button onClick={() => this.recordBuryChoice(true)}>Go It Alone</button>
+            </div>
+        )
+    }
+
     public render() {
         return (
             <div>
                 {this.state.requestingPlayerTurn
                     ? <div>
                         <h4>Pick cards to bury</h4>
-                        <b>Held Cards</b>
-                        <div style={this.cardContainerStyle}>
-                        {
-                            this.state.playerCards.map((card: CardSummary, i: number) =>
-                                <Card key={i} cardSummary={card} onClick={this.buryChoice} />
-                            )
-                        }
-                        </div>
-                        <b>Cards to Bury</b>
-                        <div style={this.cardContainerStyle}>
-                            {
-                                this.state.buryCards.map((card: CardSummary, i: number) =>
-                                    <Card key={i} cardSummary={card} />
-                                )
-                            }
-                        </div>
-                        <div style={{ display: (this.state.buryCards.length == 2 ? 'block' : 'none') }}>
-                            <button onClick={() => this.recordBuryChoice(false)}>Play with Partner</button>
-                            <button onClick={() => this.recordBuryChoice(true)}>Go It Alone</button>
-                        </div>
+                        {this.renderHeldCards()}
+                        {this.renderCardMarkedForBury()}
+                        {this.renderPartnerOption()}
                     </div>
                     : <div><h4>Bury Phase</h4>Waiting for Picker to bury cards.</div>
                 }
