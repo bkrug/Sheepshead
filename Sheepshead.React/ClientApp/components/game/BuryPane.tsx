@@ -77,13 +77,14 @@ export default class PickPane extends React.Component<PickPaneProps, PickPaneSta
         });
     }
 
-    private recordBuryChoice(goItAlone: boolean): void {
+    private recordBuryChoice(goItAlone: boolean, calledAce: string): void {
         var self = this;
         var url = 'Game/RecordBury?gameId=' + this.state.gameId
             + '&playerId=' + this.state.playerId
             + '&cards=' + this.state.buryCards[0].name
             + '&cards=' + this.state.buryCards[1].name
-            + '&goItAlone=' + goItAlone;
+            + '&goItAlone=' + goItAlone
+            + '&partnerCard=' + calledAce;
         FetchUtils.post(url,
             function (json: number[]): void {
                 self.props.onBury();
@@ -129,16 +130,16 @@ export default class PickPane extends React.Component<PickPaneProps, PickPaneSta
                     <div style={this.cardContainerStyle}>
                         {
                             this.state.legalCalledAces.map((card: CardSummary, i: number) =>
-                                <Card key={i} cardSummary={card} />
+                                <Card key={i} cardSummary={card} onClick={() => this.recordBuryChoice(false, card.name)} />
                             )
                         }
                     </div>
                     --OR--
-                    <button onClick={() => this.recordBuryChoice(true)}>Go It Alone</button>
+                    <button onClick={() => this.recordBuryChoice(true, '')}>Go It Alone</button>
                 </div>
                 <div style={{ display: (this.state.partnerMethod != 'CalledAce' ? 'block' : 'none') }}>
-                    <button onClick={() => this.recordBuryChoice(false)}>Play with Partner</button>
-                    <button onClick={() => this.recordBuryChoice(true)}>Go It Alone</button>
+                    <button onClick={() => this.recordBuryChoice(false, '')}>Play with Partner</button>
+                    <button onClick={() => this.recordBuryChoice(true, '')}>Go It Alone</button>
                 </div>
             </div>
         )
