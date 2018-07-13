@@ -129,6 +129,11 @@ namespace Sheepshead.Tests
             {
                 throw new NotImplementedException();
             }
+
+            public List<SheepCard> LegalCalledAces(IDeck deck)
+            {
+                throw new NotImplementedException();
+            }
         }
 
         [TestMethod]

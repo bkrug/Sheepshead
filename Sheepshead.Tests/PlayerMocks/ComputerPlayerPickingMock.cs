@@ -50,5 +50,10 @@ namespace Sheepshead.Tests.PlayerMocks
         {
             return _calledAceCard;
         }
+
+        public List<SheepCard> LegalCalledAces(IDeck deck)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
