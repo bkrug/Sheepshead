@@ -17,6 +17,7 @@ namespace Sheepshead.Tests
             handMock.Setup(m => m.Tricks).Returns(trickList);
             handMock.Setup(m => m.PartnerCard).Returns(SheepCard.KING_CLUBS);
             handMock.Setup(m => m.AddTrick(It.IsAny<ITrick>())).Callback((ITrick newTrick) => { trickList.Add(newTrick); });
+            handMock.Setup(m => m.Deck.Game.PartnerMethod).Returns(PartnerMethod.JackOfDiamonds);
             return handMock.Object;
         }
 
@@ -28,43 +29,115 @@ namespace Sheepshead.Tests
         }
 
         [TestMethod]
-        public void Trick_IsLegal()
+        public void Trick_IsLegal_MustMatchStartingCard()
         {
             var firstPlayerMock = new Mock<IPlayer>();
             var firstPlayer = firstPlayerMock.Object;
-            {
-                firstPlayerMock.Setup(m => m.Cards).Returns(new List<SheepCard>() { SheepCard.N9_HEARTS });
-                var hand = new List<SheepCard>() {
-                    SheepCard.KING_HEARTS, SheepCard.N7_HEARTS, SheepCard.QUEEN_DIAMONDS, SheepCard.N8_CLUBS
-                };
-                var player = GetPlayer(hand);
-                var trick = new Trick(GetHand());
-                trick.Add(firstPlayer, SheepCard.N9_HEARTS);
-                Assert.IsTrue(trick.IsLegalAddition(SheepCard.N7_HEARTS, player), "A hearts is part of the same suite.");
-                Assert.IsFalse(trick.IsLegalAddition(SheepCard.N8_CLUBS, player), "A clubs is not part of the same suite.");
-                Assert.IsFalse(trick.IsLegalAddition(SheepCard.QUEEN_DIAMONDS, player), "A trump is not part of the same suite.");
-                Assert.IsFalse(trick.IsLegalAddition(SheepCard.N10_CLUBS, player), "A card outside of the hand is not legal.");
-            }
-            {
-                firstPlayerMock.Setup(m => m.Cards).Returns(new List<SheepCard>() { SheepCard.N9_SPADES });
-                var hand = new List<SheepCard>() {
-                    SheepCard.KING_HEARTS, SheepCard.N7_HEARTS, SheepCard.QUEEN_CLUBS, SheepCard.N8_CLUBS
-                };
-                var player = GetPlayer(hand);
-                var trick = new Trick(GetHand());
-                trick.Add(firstPlayer, SheepCard.N9_SPADES);
-                Assert.IsTrue(trick.IsLegalAddition(SheepCard.N7_HEARTS, player), "There is no spades in the hand. Hearts is fine.");
-                Assert.IsTrue(trick.IsLegalAddition(SheepCard.N8_CLUBS, player), "There is no spades in the hand. Clubs is fine.");
-                Assert.IsTrue(trick.IsLegalAddition(SheepCard.QUEEN_CLUBS, player), "There is no spades in the hand. Trump is fine.");
-            }
-            {
-                var trick = new Trick(GetHand());
-                var hand = new List<SheepCard>() {
-                    SheepCard.KING_HEARTS, SheepCard.N7_HEARTS, SheepCard.QUEEN_CLUBS, SheepCard.N8_CLUBS
-                };
-                var player = GetPlayer(hand);
-                Assert.IsTrue(trick.IsLegalAddition(SheepCard.N7_HEARTS, player), "Adding a card to an empty trick is always okay.");
-            }
+            firstPlayerMock.Setup(m => m.Cards).Returns(new List<SheepCard>() { SheepCard.N9_HEARTS });
+            var hand = new List<SheepCard>() {
+                SheepCard.KING_HEARTS, SheepCard.N7_HEARTS, SheepCard.QUEEN_DIAMONDS, SheepCard.N8_CLUBS
+            };
+            var player = GetPlayer(hand);
+            var trick = new Trick(GetHand());
+            trick.Add(firstPlayer, SheepCard.N9_HEARTS);
+            Assert.IsTrue(trick.IsLegalAddition(SheepCard.N7_HEARTS, player), "A hearts is part of the same suite.");
+            Assert.IsFalse(trick.IsLegalAddition(SheepCard.N8_CLUBS, player), "A clubs is not part of the same suite.");
+            Assert.IsFalse(trick.IsLegalAddition(SheepCard.QUEEN_DIAMONDS, player), "A trump is not part of the same suite.");
+            Assert.IsFalse(trick.IsLegalAddition(SheepCard.N10_CLUBS, player), "A card outside of the hand is not legal.");
+        }
+
+        [TestMethod]
+        public void Trick_IsLegal_PlayerDoesNotHaveSuit()
+        {
+            var firstPlayerMock = new Mock<IPlayer>();
+            var firstPlayer = firstPlayerMock.Object;
+            firstPlayerMock.Setup(m => m.Cards).Returns(new List<SheepCard>() { SheepCard.N9_SPADES });
+            var hand = new List<SheepCard>() {
+                SheepCard.KING_HEARTS, SheepCard.N7_HEARTS, SheepCard.QUEEN_CLUBS, SheepCard.N8_CLUBS
+            };
+            var player = GetPlayer(hand);
+            var trick = new Trick(GetHand());
+            trick.Add(firstPlayer, SheepCard.N9_SPADES);
+            Assert.IsTrue(trick.IsLegalAddition(SheepCard.N7_HEARTS, player), "There is no spades in the hand. Hearts is fine.");
+            Assert.IsTrue(trick.IsLegalAddition(SheepCard.N8_CLUBS, player), "There is no spades in the hand. Clubs is fine.");
+            Assert.IsTrue(trick.IsLegalAddition(SheepCard.QUEEN_CLUBS, player), "There is no spades in the hand. Trump is fine.");
+        }
+
+        [TestMethod]
+        public void Trick_IsLegal_FirstCardInSuit()
+        {
+            var firstPlayerMock = new Mock<IPlayer>();
+            var firstPlayer = firstPlayerMock.Object;
+            var trick = new Trick(GetHand());
+            var hand = new List<SheepCard>() {
+                SheepCard.KING_HEARTS, SheepCard.N7_HEARTS, SheepCard.QUEEN_CLUBS, SheepCard.N8_CLUBS
+            };
+            var player = GetPlayer(hand);
+            Assert.IsTrue(trick.IsLegalAddition(SheepCard.N7_HEARTS, player), "Adding a card to an empty trick is always okay.");
+        }
+
+        [TestMethod]
+        public void Trick_IsLegal_PickerCannotLeadWithLastCardOfCalledSuit()
+        {
+            var picker = new Mock<IPlayer>();
+            picker.Setup(m => m.Cards).Returns(new List<SheepCard>() { SheepCard.N9_HEARTS, SheepCard.N9_DIAMONDS, SheepCard.QUEEN_HEARTS, SheepCard.N9_CLUBS, SheepCard.ACE_CLUBS, SheepCard.KING_CLUBS });
+            var hand = new Mock<IHand>();
+            hand.Setup(m => m.Deck.Buried).Returns(new List<SheepCard>() { SheepCard.N10_CLUBS, SheepCard.N10_SPADES });
+            hand.Setup(m => m.Deck.Game.PartnerMethod).Returns(PartnerMethod.CalledAce);
+            hand.Setup(m => m.PartnerCard).Returns(SheepCard.ACE_HEARTS);
+            hand.Setup(m => m.Picker).Returns(picker.Object);
+            var calculator = new Mock<IStartingPlayerCalculator>();
+            calculator.Setup(m => m.GetStartingPlayer(hand.Object, It.IsAny<ITrick>())).Returns(picker.Object);
+            var trick = new Trick(hand.Object, calculator.Object);
+            Assert.IsFalse(trick.IsLegalAddition(SheepCard.N9_HEARTS, picker.Object), "Picker has no other hearts, so this cannot be the lead card.");
+        }
+
+        [TestMethod]
+        public void Trick_IsLegal_PickerCanLeadWithCardOfCalledSuit()
+        {
+            var hand = new Mock<IHand>();
+            hand.Setup(m => m.Deck.Game.PartnerMethod).Returns(PartnerMethod.CalledAce);
+            hand.Setup(m => m.PartnerCard).Returns(SheepCard.ACE_HEARTS);
+            hand.Setup(m => m.Deck.Buried).Returns(new List<SheepCard>() { SheepCard.N10_HEARTS, SheepCard.N10_SPADES });
+            var picker = new Mock<IPlayer>();
+            picker.Setup(m => m.Cards).Returns(new List<SheepCard>() { SheepCard.N9_DIAMONDS, SheepCard.QUEEN_HEARTS, SheepCard.N9_HEARTS, SheepCard.N9_CLUBS, SheepCard.ACE_CLUBS, SheepCard.KING_CLUBS });
+            var calculator = new Mock<IStartingPlayerCalculator>();
+            calculator.Setup(m => m.GetStartingPlayer(hand.Object, It.IsAny<ITrick>())).Returns(picker.Object);
+            var trick = new Trick(hand.Object, calculator.Object);
+            Assert.IsTrue(trick.IsLegalAddition(SheepCard.N9_HEARTS, picker.Object), "Picker has a remaining heart, so this is legal.");
+        }
+
+        [TestMethod]
+        public void Trick_IsLegal_PickerCanLeadWithCardOfCalledSuit1()
+        {
+            var hand = new Mock<IHand>();
+            hand.Setup(m => m.Deck.Game.PartnerMethod).Returns(PartnerMethod.CalledAce);
+            hand.Setup(m => m.PartnerCard).Returns(SheepCard.ACE_HEARTS);
+            hand.Setup(m => m.Deck.Buried).Returns(new List<SheepCard>() { SheepCard.N8_SPADES, SheepCard.N10_SPADES });
+            var picker = new Mock<IPlayer>();
+            picker.Setup(m => m.Cards).Returns(new List<SheepCard>() { SheepCard.N9_DIAMONDS, SheepCard.QUEEN_HEARTS, SheepCard.N8_HEARTS, SheepCard.ACE_CLUBS, SheepCard.KING_CLUBS, SheepCard.N9_HEARTS, });
+            var calculator = new Mock<IStartingPlayerCalculator>();
+            calculator.Setup(m => m.GetStartingPlayer(hand.Object, It.IsAny<ITrick>())).Returns(picker.Object);
+            var trick = new Trick(hand.Object, calculator.Object);
+            Assert.IsTrue(trick.IsLegalAddition(SheepCard.N9_HEARTS, picker.Object), "Picker has a remaining heart, so this is legal.");
+        }
+
+        [TestMethod]
+        public void Trick_IsLegal_PickerCanFollowWithLastCardOfCalledSuit()
+        {
+            var startingPlayer = new Mock<IPlayer>();
+            startingPlayer.Setup(m => m.Cards).Returns(new List<SheepCard>());
+            var hand = new Mock<IHand>();
+            hand.Setup(m => m.Deck.Game.PartnerMethod).Returns(PartnerMethod.CalledAce);
+            hand.Setup(m => m.PartnerCard).Returns(SheepCard.ACE_HEARTS);
+            hand.Setup(m => m.Deck.Buried).Returns(new List<SheepCard>() { SheepCard.N8_SPADES, SheepCard.N10_SPADES });
+            var picker = new Mock<IPlayer>();
+            picker.Setup(m => m.Cards).Returns(new List<SheepCard>() { SheepCard.N9_DIAMONDS, SheepCard.QUEEN_HEARTS, SheepCard.N9_HEARTS, SheepCard.ACE_CLUBS, SheepCard.KING_CLUBS, SheepCard.N7_SPADES });
+            var calculator = new Mock<IStartingPlayerCalculator>();
+            calculator.Setup(m => m.GetStartingPlayer(hand.Object, It.IsAny<ITrick>())).Returns(startingPlayer.Object);
+            var trick = new Trick(hand.Object, calculator.Object);
+            trick.Add(startingPlayer.Object, SheepCard.N10_HEARTS);
+            Assert.IsTrue(trick.IsLegalAddition(SheepCard.N9_HEARTS, picker.Object), "Picker has a remaining heart, so this is legal.");
         }
 
         [TestMethod]

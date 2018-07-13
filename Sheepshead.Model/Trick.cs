@@ -32,23 +32,15 @@ namespace Sheepshead.Models
             } 
         }
 
-        private Trick()
+        public Trick(IHand hand) : this (hand, new StartingPlayerCalculator())
         {
         }
 
-        public Trick(IHand hand)
+        public Trick(IHand hand, IStartingPlayerCalculator startingPlayerCalculator)
         {
             _hand = hand;
             _hand.AddTrick(this);
-            SetStartingPlayer();
-        }
-
-        private void SetStartingPlayer()
-        {
-            var index = Hand.Tricks.IndexOf(this);
-            StartingPlayer = (index == 0)
-                ? Hand.StartingPlayer
-                : Hand.Tricks[index - 1].Winner().Player;
+            StartingPlayer = startingPlayerCalculator.GetStartingPlayer(hand, this);
         }
 
         public void Add(IPlayer player, SheepCard card)
@@ -65,11 +57,21 @@ namespace Sheepshead.Models
         public bool IsLegalAddition(SheepCard card, IPlayer player)
         {
             if (!_cards.Any())
+            {
+                if (Hand.Deck.Game.PartnerMethod == PartnerMethod.JackOfDiamonds)
+                    return true;
+                //Picker cannot lead with last card of Called Ace's suit
+                var suitOfAce = CardUtil.GetSuit(Hand.PartnerCard.Value);
+                if (Hand.PartnerCard != null 
+                    && player == Hand.Picker
+                    && CardUtil.GetSuit(card) == suitOfAce
+                    && player.Cards.Union(Hand.Deck.Buried).ToList().Count(c => CardUtil.GetSuit(c) == suitOfAce) == 1)
+                        return false;
                 return true;
-            var hand = player.Cards;
+            }
             var firstCard = _cards.First().Value;
-            return hand.Contains(card) 
-                && (CardUtil.GetSuit(card) == CardUtil.GetSuit(firstCard) || !hand.Any(c => CardUtil.GetSuit(c) == CardUtil.GetSuit(firstCard)));
+            return player.Cards.Contains(card) 
+                && (CardUtil.GetSuit(card) == CardUtil.GetSuit(firstCard) || !player.Cards.Any(c => CardUtil.GetSuit(c) == CardUtil.GetSuit(firstCard)));
         }
 
         public TrickWinner Winner()
@@ -103,15 +105,13 @@ namespace Sheepshead.Models
                 Player = player,
                 Card = card
             };
-            if (OnMove != null)
-                OnMove(this, e);
+            OnMove?.Invoke(this, e);
         }
 
         protected virtual void OnTrickEndHandler()
         {
             var e = new EventArgs();
-            if (OnTrickEnd != null)
-                OnTrickEnd(this, e);
+            OnTrickEnd?.Invoke(this, e);
         }
 
         public bool IsComplete()
