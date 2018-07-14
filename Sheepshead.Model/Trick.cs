@@ -67,6 +67,9 @@ namespace Sheepshead.Models
                     && CardUtil.GetSuit(card) == suitOfAce
                     && player.Cards.Union(Hand.Deck.Buried).ToList().Count(c => CardUtil.GetSuit(c) == suitOfAce) == 1)
                         return false;
+                if (Hand.PartnerCard == card
+                    && player.Cards.Contains(Hand.PartnerCard.Value))
+                        return false;
                 return true;
             }
             var firstCard = _cards.First().Value;
