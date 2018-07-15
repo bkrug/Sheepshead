@@ -9,10 +9,9 @@ namespace Sheepshead.Models
     public class Trick : ITrick
     {
         private Dictionary<IPlayer, SheepCard> _cards = new Dictionary<IPlayer, SheepCard>();
-        private IHand _hand;
 
-        public IHand Hand { get { return _hand; } }
-        public IGame Game { get { return _hand.Deck.Game; } }
+        public IHand Hand { get; private set; }
+        public IGame Game { get { return Hand.Deck.Game; } }
         public IPlayer StartingPlayer { get; private set; }
         public Dictionary<IPlayer, SheepCard> CardsPlayed { get { return new Dictionary<IPlayer, SheepCard>(_cards); } }
         public event EventHandler<EventArgs> OnTrickEnd;
@@ -38,8 +37,8 @@ namespace Sheepshead.Models
 
         public Trick(IHand hand, IStartingPlayerCalculator startingPlayerCalculator)
         {
-            _hand = hand;
-            _hand.AddTrick(this);
+            Hand = hand;
+            Hand.AddTrick(this);
             StartingPlayer = startingPlayerCalculator.GetStartingPlayer(hand, this);
         }
 
@@ -47,8 +46,8 @@ namespace Sheepshead.Models
         {
             _cards.Add(player, card);
             player.Cards.Remove(card);
-            if (_hand.PartnerCard == card)
-                _hand.SetPartner(player, this);
+            if (Hand.PartnerCard == card)
+                Hand.SetPartner(player, this);
             OnMoveHandler(player, card);
             if (IsComplete())
                 OnTrickEndHandler();
