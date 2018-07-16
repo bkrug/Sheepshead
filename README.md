@@ -5,7 +5,6 @@ Sheepshead
 
 ToDo:
 
-* Add more logic to ensure that picker and partner do not play illegal cards in a called-ace game.
 * Create a new "illegal move" card.
 * As start of game, allow user to disable leasters.
 * At end-of-hand, let users hover over a score and see what cards were used in each trick.

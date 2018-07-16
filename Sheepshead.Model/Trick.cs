@@ -55,27 +55,38 @@ namespace Sheepshead.Models
 
         public bool IsLegalAddition(SheepCard card, IPlayer player)
         {
+            //In the last trick, anything is legal.
             if (player.Cards.Count() == 1)
                 return true;
+
+            //There are some rules for the lead card in a trick.
             if (!_cards.Any())
-            {
-                if (Hand.Deck.Game.PartnerMethod == PartnerMethod.JackOfDiamonds)
-                    return true;
-                //Picker cannot lead with last card of Called Ace's suit
-                var suitOfAce = CardUtil.GetSuit(Hand.PartnerCard.Value);
-                if (Hand.PartnerCard != null 
-                    && player == Hand.Picker
-                    && CardUtil.GetSuit(card) == suitOfAce
-                    && player.Cards.Union(Hand.Deck.Buried).ToList().Count(c => CardUtil.GetSuit(c) == suitOfAce) == 1)
-                        return false;
-                if (Hand.PartnerCard == card
-                    && player.Cards.Contains(Hand.PartnerCard.Value))
-                        return false;
-                return true;
-            }
+                return Hand.Deck.Game.PartnerMethod == PartnerMethod.JackOfDiamonds 
+                    || Hand.PartnerCard == null
+                    || IsLegalStartingCardInCalledAceGame(card, player);
+
+            //Other cards must follow suit.
             var firstCard = _cards.First().Value;
             return player.Cards.Contains(card) 
                 && (CardUtil.GetSuit(card) == CardUtil.GetSuit(firstCard) || !player.Cards.Any(c => CardUtil.GetSuit(c) == CardUtil.GetSuit(firstCard)));
+        }
+
+        private bool IsLegalStartingCardInCalledAceGame(SheepCard card, IPlayer player)
+        {
+            var suitOfPartnerCard = CardUtil.GetSuit(Hand.PartnerCard.Value);
+            //Once suit of partner card is lead, picker and partner may lead with that suit.
+            if (Hand.Tricks != null
+                && Hand.Tricks.Any(t => t != this && t.CardsPlayed.Any() && CardUtil.GetSuit(t.CardsPlayed.First().Value) == suitOfPartnerCard))
+                return true;
+            //Picker cannot lead with last card of Called Ace's suit.
+            if (player == Hand.Picker
+                && CardUtil.GetSuit(card) == suitOfPartnerCard
+                && player.Cards.Union(Hand.Deck.Buried).ToList().Count(c => CardUtil.GetSuit(c) == suitOfPartnerCard) == 1)
+                return false;
+            //Partner cannot lead with partner card.
+            if (Hand.PartnerCard == card)
+                return false;
+            return true;
         }
 
         public TrickWinner Winner()
