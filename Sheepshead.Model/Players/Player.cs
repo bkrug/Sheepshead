@@ -30,29 +30,46 @@ namespace Sheepshead.Models.Players
         public List<SheepCard> LegalCalledAces(IDeck deck)
         {
             var suits = LegalCalledAceSuits(deck);
-            return suits.Select(g => GetAceOfSuit(g.Key)).ToList();
+            return suits.LegalSuits.Select(g => GetCardOfSuit(suits.CardType, g.Key)).ToList();
         }
 
-        protected IEnumerable<IGrouping<Suit, SheepCard>> LegalCalledAceSuits(IDeck deck)
+        protected LegalCalledAces LegalCalledAceSuits(IDeck deck)
         {
-            var allCards = Cards
+            var allPickersCards = Cards
                 .Union(deck.Blinds)
                 .Union(deck.Buried)
                 .ToList();
-            var suitsOfAcesInHand =
-                new List<SheepCard>() { SheepCard.ACE_CLUBS, SheepCard.ACE_HEARTS, SheepCard.ACE_SPADES }
-                .Where(sc => allCards.Contains(sc))
+            var allAces = new List<SheepCard>() { SheepCard.ACE_CLUBS, SheepCard.ACE_HEARTS, SheepCard.ACE_SPADES };
+            var allTens = new List<SheepCard>() { SheepCard.N10_CLUBS, SheepCard.N10_HEARTS, SheepCard.N10_SPADES };
+            var pickerHasAllAces = allAces.All(c => allPickersCards.Contains(c));
+
+            var potentialPartnerCards = pickerHasAllAces ? allTens : allAces;
+            var illegalSuits =
+                potentialPartnerCards
+                .Where(sc => allPickersCards.Contains(sc))
                 .Select(sc => CardUtil.GetSuit(sc))
+                .Union(new List<Suit>() { Suit.TRUMP })
                 .ToList();
-            var acceptableSuits = allCards
-                .Where(c => {
+
+            var acceptableSuits = allPickersCards
+                .Where(c =>
+                {
                     var suit = CardUtil.GetSuit(c);
-                    return suit != Suit.TRUMP && !suitsOfAcesInHand.Contains(suit);
+                    return !illegalSuits.Contains(suit);
                 })
                 .GroupBy(c => CardUtil.GetSuit(c));
-            return acceptableSuits;
+            return new LegalCalledAces()
+            {
+                LegalSuits = acceptableSuits,
+                CardType = pickerHasAllAces ? CardType.N10 : CardType.ACE
+            };
         }
 
+        protected static SheepCard GetCardOfSuit(CardType cardType, Suit key)
+        {
+            return cardType == CardType.ACE ? GetAceOfSuit(key) : GetTenOfSuit(key);
+        }
+        
         protected static SheepCard GetAceOfSuit(Suit key)
         {
             switch (key)
@@ -66,6 +83,26 @@ namespace Sheepshead.Models.Players
                     return SheepCard.ACE_SPADES;
             }
         }
+
+        protected static SheepCard GetTenOfSuit(Suit key)
+        {
+            switch (key)
+            {
+                case Suit.CLUBS:
+                    return SheepCard.N10_CLUBS;
+                case Suit.HEARTS:
+                    return SheepCard.N10_HEARTS;
+                case Suit.SPADES:
+                default:
+                    return SheepCard.N10_SPADES;
+            }
+        }
+    }
+
+    public class LegalCalledAces
+    {
+        public IEnumerable<IGrouping<Suit, SheepCard>> LegalSuits { get; set; }
+        public CardType CardType { get; set; }
     }
 
     public interface IPlayer

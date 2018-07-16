@@ -110,13 +110,13 @@ namespace Sheepshead.Models.Players
         public override SheepCard? ChooseCalledAce(IDeck deck)
         {
             var acceptableSuits = LegalCalledAceSuits(deck);
-            if (!acceptableSuits.Any())
+            if (!acceptableSuits.LegalSuits.Any())
                 return null;
-            var selectedSuit = acceptableSuits
+            var selectedSuit = acceptableSuits.LegalSuits
                 .OrderBy(g => g.Count())
                 .First()
                 .Key;
-            return GetAceOfSuit(selectedSuit);
+            return GetCardOfSuit(acceptableSuits.CardType, selectedSuit);
         }
     }
 }

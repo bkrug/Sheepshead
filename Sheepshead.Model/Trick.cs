@@ -55,6 +55,8 @@ namespace Sheepshead.Models
 
         public bool IsLegalAddition(SheepCard card, IPlayer player)
         {
+            if (player.Cards.Count() == 1)
+                return true;
             if (!_cards.Any())
             {
                 if (Hand.Deck.Game.PartnerMethod == PartnerMethod.JackOfDiamonds)

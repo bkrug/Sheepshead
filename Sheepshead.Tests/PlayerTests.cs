@@ -158,5 +158,47 @@ namespace Sheepshead.Tests
 
             Assert.IsNull(partnerCard, "No ace can be called as the partner card at this point.");
         }
+
+        [TestMethod]
+        public void Player_LegalCalledAces_TwoAcesAreLegal()
+        {
+            var deckMock = new Mock<IDeck>();
+            deckMock.Setup(m => m.Buried).Returns(new List<SheepCard>());
+            deckMock.Setup(m => m.Blinds).Returns(new List<SheepCard>() { SheepCard.N9_CLUBS, SheepCard.N9_SPADES });
+            var player = new HumanPlayer();
+            player.Cards.AddRange(new List<SheepCard>() { SheepCard.JACK_DIAMONDS, SheepCard.N8_CLUBS, SheepCard.N8_SPADES, SheepCard.N8_HEARTS, SheepCard.ACE_HEARTS, SheepCard.QUEEN_HEARTS });
+
+            var actual = player.LegalCalledAces(deckMock.Object);
+
+            CollectionAssert.AreEquivalent(new List<SheepCard>() { SheepCard.ACE_CLUBS, SheepCard.ACE_SPADES }, actual);
+        }
+
+        [TestMethod]
+        public void Player_LegalCalledAces_TwoTensAreLegal()
+        {
+            var deckMock = new Mock<IDeck>();
+            deckMock.Setup(m => m.Buried).Returns(new List<SheepCard>());
+            deckMock.Setup(m => m.Blinds).Returns(new List<SheepCard>() { SheepCard.ACE_CLUBS, SheepCard.N10_SPADES });
+            var player = new HumanPlayer();
+            player.Cards.AddRange(new List<SheepCard>() { SheepCard.JACK_DIAMONDS, SheepCard.N8_CLUBS, SheepCard.N8_SPADES, SheepCard.N8_HEARTS, SheepCard.ACE_HEARTS, SheepCard.ACE_SPADES });
+
+            var actual = player.LegalCalledAces(deckMock.Object);
+
+            CollectionAssert.AreEquivalent(new List<SheepCard>() { SheepCard.N10_CLUBS, SheepCard.N10_HEARTS }, actual);
+        }
+
+        [TestMethod]
+        public void Player_LegalCalledAces_TwoNothingIsLegal()
+        {
+            var deckMock = new Mock<IDeck>();
+            deckMock.Setup(m => m.Buried).Returns(new List<SheepCard>());
+            deckMock.Setup(m => m.Blinds).Returns(new List<SheepCard>() { SheepCard.QUEEN_CLUBS, SheepCard.JACK_SPADES });
+            var player = new HumanPlayer();
+            player.Cards.AddRange(new List<SheepCard>() { SheepCard.JACK_DIAMONDS, SheepCard.N8_CLUBS, SheepCard.ACE_CLUBS, SheepCard.N9_CLUBS, SheepCard.QUEEN_HEARTS, SheepCard.QUEEN_DIAMONDS });
+
+            var actual = player.LegalCalledAces(deckMock.Object);
+
+            CollectionAssert.AreEquivalent(new List<SheepCard>(), actual);
+        }
     }
 }

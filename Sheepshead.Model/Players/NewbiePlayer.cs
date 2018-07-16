@@ -24,10 +24,11 @@ namespace Sheepshead.Models.Players
 
         public override SheepCard? ChooseCalledAce(IDeck deck)
         {
-            var acceptableSuits = LegalCalledAceSuits(deck).Select(g => g.Key);
+            var legalCards = LegalCalledAceSuits(deck);
+            var acceptableSuits = legalCards.LegalSuits.Select(g => g.Key);
             if (!acceptableSuits.Any())
                 return null;
-            return GetAceOfSuit(acceptableSuits.First());
+            return GetCardOfSuit(legalCards.CardType, acceptableSuits.First());
         }
     }
 }

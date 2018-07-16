@@ -173,6 +173,20 @@ namespace Sheepshead.Tests
         }
 
         [TestMethod]
+        public void Trick_IsLegal_LastCardLeft()
+        {
+            var partner = new Mock<IPlayer>();
+            partner.Setup(m => m.Cards).Returns(new List<SheepCard>() { SheepCard.ACE_SPADES });
+            var hand = new Mock<IHand>();
+            hand.Setup(m => m.Deck.Game.PartnerMethod).Returns(PartnerMethod.CalledAce);
+            hand.Setup(m => m.PartnerCard).Returns(SheepCard.ACE_SPADES);
+            var calculator = new Mock<IStartingPlayerCalculator>();
+            calculator.Setup(m => m.GetStartingPlayer(hand.Object, It.IsAny<ITrick>())).Returns(partner.Object);
+            var trick = new Trick(hand.Object, calculator.Object);
+            Assert.IsTrue(trick.IsLegalAddition(SheepCard.ACE_SPADES, partner.Object), "Cannt normally lead with the partner card, but can do so for last trick.");
+        }
+
+        [TestMethod]
         public void Trick_Winner()
         {
             var player1 = new MockPlayer();
