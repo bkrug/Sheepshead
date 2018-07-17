@@ -28,7 +28,7 @@ export default class Card extends React.Component<CardProps, CardState> {
         if (this.userCouldClick() && this.props.cardSummary.legalMove == false) {
             this.setState({ illegalNotification: true });
             var self = this;
-            setTimeout(function () { self.setState({ illegalNotification: false }); }, 3000);
+            setTimeout(function () { self.setState({ illegalNotification: false }); }, 500);
         }
         else if (this.props.onClick)
             this.props.onClick(this);
@@ -39,7 +39,7 @@ export default class Card extends React.Component<CardProps, CardState> {
         var cursorType = this.userCouldClick() ? 'pointer' : 'not-allowed';
         if (this.state.illegalNotification)
             return (
-                <div style={{ height: '96px', width: '72px', backgroundColor: 'red', textAlign: 'center', display: 'inline-block' }} >ILLEGAL MOVE</div>
+                <img src={'./img/illegal.png'} alt={'illegal move'} style={{ cursor: cursorType }} />
             )
         else
             return (
