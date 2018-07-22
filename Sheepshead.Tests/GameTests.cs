@@ -20,7 +20,7 @@ namespace Sheepshead.Tests
             var mockPlayer1 = new Mock<IPlayer>();
             var mockPlayer2 = new Mock<IPlayer>();
             var mockPlayer3 = new Mock<IPlayer>();
-            var game = new Game(new List<IPlayer>() { mockPlayer1.Object, mockPlayer2.Object, mockPlayer3.Object }, PartnerMethod.JackOfDiamonds);
+            var game = new Game(new List<IPlayer>() { mockPlayer1.Object, mockPlayer2.Object, mockPlayer3.Object }, PartnerMethod.JackOfDiamonds, true);
             Assert.AreEqual(3, game.PlayerCount, "Returned correct number of players");
             Assert.AreEqual(3, game.Players.Count, "Returned correct number of players");
         }
@@ -181,6 +181,7 @@ namespace Sheepshead.Tests
             var deckMock = new Mock<IDeck>();
             deckMock.SetupGet(m => m.PlayersWithoutPickTurn).Returns(unplayedPlayers);
             deckMock.SetupGet(m => m.PlayersRefusingPick).Returns(refusingPick);
+            deckMock.SetupGet(m => m.Game.LeastersEnabled).Returns(true);
             var handFactoryMock = new Mock<IHandFactory>();
             handFactoryMock.Setup(m => m.GetHand(deckMock.Object, null, It.IsAny<List<SheepCard>>()))
                 .Callback(() => handCreated = true)
@@ -222,7 +223,7 @@ namespace Sheepshead.Tests
                 human1.Object,
                 new Mock<IPlayer>().Object,
                 human2.Object
-            }, PartnerMethod.JackOfDiamonds);
+            }, PartnerMethod.JackOfDiamonds, true);
             Assert.AreEqual(2, game.UnassignedPlayers.Count);
             Assert.IsTrue(game.UnassignedPlayers.Contains(human1.Object));
             Assert.IsTrue(game.UnassignedPlayers.Contains(human2.Object));
@@ -241,7 +242,7 @@ namespace Sheepshead.Tests
                 human1.Object,
                 new Mock<IPlayer>().Object,
                 human2.Object
-            }, PartnerMethod.JackOfDiamonds);
+            }, PartnerMethod.JackOfDiamonds, true);
             Assert.AreEqual(1, game.UnassignedPlayers.Count);
             Assert.IsTrue(game.UnassignedPlayers.Contains(human1.Object));
         }

@@ -15,6 +15,7 @@ namespace Sheepshead.Models
         public int TrickCount => (int)Math.Floor(32d / PlayerCount);
         public int Blind => CARDS_IN_DECK % Players.Count();
         public int HumanPlayerCount => Players.Count(p => p is IHumanPlayer);
+        public bool LeastersEnabled { get; }
         public List<IPlayer> Players { get; }
         public List<IHumanPlayer> UnassignedPlayers => Players.OfType<IHumanPlayer>().Where(p => !p.AssignedToClient).ToList();
         public List<IDeck> Decks => _gameStateDesciber.Decks;
@@ -30,9 +31,9 @@ namespace Sheepshead.Models
             TurnType = TurnType
         };
 
-        public Game(List<IPlayer> players, PartnerMethod partnerMethod) : this(players, partnerMethod, null, null, null)
+        public Game(List<IPlayer> players, PartnerMethod partnerMethod, bool enableLeasters) : this(players, partnerMethod, null, null, null)
         {
-
+            LeastersEnabled = enableLeasters;
         }
 
         //TODO: Make this internal except to test project
@@ -163,7 +164,7 @@ namespace Sheepshead.Models
             };
         }
 
-        public PlayState PickState(Guid requestingPlayerId)
+        public PickState PickState(Guid requestingPlayerId)
         {
             var turnType = TurnType;
             var currentDeck = _gameStateDesciber.CurrentDeck;
@@ -173,7 +174,7 @@ namespace Sheepshead.Models
                 : null;
             var humanPlayer = currentPlayer as IHumanPlayer;
             var requestingPlayer = Players.OfType<IHumanPlayer>().SingleOrDefault(p => p.Id == requestingPlayerId);
-            return new PlayState
+            return new PickState
             {
                 TurnType = turnType.ToString(),
                 RequestingPlayerTurn = humanPlayer?.Id == requestingPlayerId,
@@ -186,8 +187,7 @@ namespace Sheepshead.Models
                 PlayerCards = requestingPlayer?.Cards?.Select(c => CardUtil.GetCardSummary(c))?.ToList(),
                 HumanTurn = humanPlayer != null,
                 CurrentTurn = currentPlayer?.Name,
-                Blinds = new List<CardSummary>(),
-                CardsPlayed = new List<List<Tuple<string, CardSummary>>>()
+                MustRedeal = Decks.LastOrDefault()?.MustRedeal ?? false
             };
         }
 
@@ -298,6 +298,7 @@ namespace Sheepshead.Models
         int HumanPlayerCount { get; }
         int PlayerCount { get; }
         int TrickCount { get; }
+        bool LeastersEnabled { get; }
         List<IPlayer> Players { get; }
         List<IHumanPlayer> UnassignedPlayers { get; }
         List<IDeck> Decks { get; }
@@ -314,7 +315,7 @@ namespace Sheepshead.Models
         void MaybeGiveComputerPlayersNames();
         List<GameCoins> GameCoins();
         PlayState PlayState(Guid requestingPlayerId);
-        PlayState PickState(Guid requestingPlayerId);
+        PickState PickState(Guid requestingPlayerId);
         BuryState BuryState(Guid requestingPlayerId);
         TrickResults GetTrickWinners();
     }

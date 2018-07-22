@@ -23,6 +23,7 @@ namespace Sheepshead.Tests
             };
             var refusingPlayersOrig = refusingPlayers.ToList();
             deckMock.SetupGet(m => m.PlayersRefusingPick).Returns(refusingPlayers);
+            deckMock.SetupGet(m => m.Game.LeastersEnabled).Returns(true);
 
             var unplayedPlayersOrig = new List<IPlayer>()
             {

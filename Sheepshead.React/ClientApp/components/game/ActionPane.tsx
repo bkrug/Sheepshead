@@ -62,8 +62,11 @@ export default class ActionPane extends React.Component<ActionPaneProps, ActionP
             });
     }
 
-    private onPickComplete(): void {
-        this.setState({ turnType: 'Bury' });
+    private onPickComplete(mustRedeal: boolean): void {
+        if (mustRedeal)
+            this.setState({ turnType: 'ReportHand' });
+        else
+            this.setState({ turnType: 'Bury' });
     }
 
     private onBuryComplete(): void {

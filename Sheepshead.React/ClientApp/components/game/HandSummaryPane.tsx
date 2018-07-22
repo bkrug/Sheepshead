@@ -3,13 +3,14 @@ import { RouteComponentProps } from 'react-router';
 import { IdUtils } from '../IdUtils';
 import { FetchUtils } from '../FetchUtils';
 import { render } from 'react-dom';
-import { PlayState, TrickChoice, CardSummary, GameScore, HandScores } from './PlayState';
+import { PlayState, TrickChoice, CardSummary, GameScore, HandScores, HandSummary } from './PlayState';
 
 export interface HandSummaryPaneState {
     gameId: string;
     playerId: string;
     points: GameScore[];
     coins: GameScore[];
+    mustRedeal: boolean;
 }
 
 export interface HandSummaryPaneProps extends React.Props<any> {
@@ -26,12 +27,13 @@ export default class HandSummaryPane extends React.Component<HandSummaryPaneProp
             gameId: props.gameId,
             playerId: IdUtils.getPlayerId(props.gameId) || '',
             points: [],
-            coins: []
+            coins: [],
+            mustRedeal: false
         };
         var self = this;
         FetchUtils.get(
             'Game/HandSummary?gameId=' + this.state.gameId,
-            function (json: any): void {
+            function (json: HandSummary): void {
                 var pointsArray: GameScore[] = [];
                 for (var key in json.points)
                     pointsArray.push({ name: key, score: json.points[key] });
@@ -42,7 +44,8 @@ export default class HandSummaryPane extends React.Component<HandSummaryPaneProp
 
                 self.setState({
                     coins: coinsArray,
-                    points: pointsArray
+                    points: pointsArray,
+                    mustRedeal: json.mustRedeal
                 });
             }
         );
@@ -63,14 +66,19 @@ export default class HandSummaryPane extends React.Component<HandSummaryPaneProp
 
         return (
             <div>
-                <div>
-                    <h4>Points from this Hand</h4>
-                    {pointList}
-                </div>
-                <div>
-                    <h4>Coins from this Hand</h4>
-                    {coinList}
-                </div>
+                { this.state.mustRedeal
+                    ? <h3>Must re-deal. There was no picker. </h3>
+                    : <div>
+                        <div>
+                            <h4>Points from this Hand</h4>
+                            {pointList}
+                        </div>
+                        <div>
+                            <h4>Coins from this Hand</h4>
+                            {coinList}
+                        </div>
+                    </div>
+                }
                 <button onClick={this.props.onSummaryPhaseComplete}>Continue</button>
             </div>
         );

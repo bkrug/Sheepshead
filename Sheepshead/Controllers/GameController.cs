@@ -36,7 +36,7 @@ namespace Sheepshead.Controllers
         public ActionResult Create(GameModel model)
         {
             var repository = new GameRepository(GameDictionary.Instance.Dictionary);
-            var newGame = repository.Create(1, model.NewbiewCount, model.BasicCount, PartnerMethod.JackOfDiamonds);
+            var newGame = repository.Create(1, model.NewbiewCount, model.BasicCount, PartnerMethod.JackOfDiamonds, true);
             return RedirectToAction("Play", new { id = newGame.Id });
         }
 

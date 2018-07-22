@@ -21,11 +21,10 @@ namespace Sheepshead.Models
         public IComputerPlayer PlayNonHumanPickTurns(IDeck deck, IHandFactory handFactory)
         {
             var picker = PlayNonHumanPickTurns(deck);
-            IHand hand = null;
             if (picker != null)
-                hand = AcceptComputerPicker(deck, picker, handFactory);
+                AcceptComputerPicker(deck, picker, handFactory);
             else if (picker == null && !deck.PlayersWithoutPickTurn.Any())
-                hand = handFactory.GetHand(deck, picker, new List<SheepCard>());
+                AcceptLeasters(deck, handFactory);
             return picker;
         }
 
@@ -45,17 +44,22 @@ namespace Sheepshead.Models
             return null;
         }
 
-        private IHand AcceptComputerPicker(IDeck deck, IComputerPlayer picker, IHandFactory handFactory)
+        private void AcceptComputerPicker(IDeck deck, IComputerPlayer picker, IHandFactory handFactory)
         {
             var buriedCards = picker.DropCardsForPick(deck);
             deck.Buried = buriedCards;
-            var hand = handFactory.GetHand(deck, picker, buriedCards);
+            handFactory.GetHand(deck, picker, buriedCards);
             if (deck.Game.PartnerMethod == PartnerMethod.CalledAce)
             {
                 var partnerCard = picker.ChooseCalledAce(deck);
                 deck.Hand.SetPartnerCard(partnerCard);
             }
-            return hand;
+        }
+
+        private void AcceptLeasters(IDeck deck, IHandFactory handFactory)
+        {
+            if (deck.Game.LeastersEnabled)
+                handFactory.GetHand(deck, null, new List<SheepCard>());
         }
 
         /// <summary>

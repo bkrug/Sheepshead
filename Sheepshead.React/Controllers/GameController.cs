@@ -23,12 +23,14 @@ namespace Sheepshead.React.Controllers
         public IActionResult HandSummary(string gameId)
         {
             IGame game = GetGame(gameId);
+            var mustRedeal = game.Decks.LastOrDefault(d => d.IsComplete)?.MustRedeal;
             var hand = game.Decks.LastOrDefault(d => d.Hand != null)?.Hand;
             var scores = hand?.Scores();
             return Json(new
             {
                 points = scores?.Points?.ToDictionary(k => k.Key.Name, k => k.Value),
-                coins = scores?.Coins?.ToDictionary(k => k.Key.Name, k => k.Value)
+                coins = scores?.Coins?.ToDictionary(k => k.Key.Name, k => k.Value),
+                mustRedeal = mustRedeal
             });
         }
 
@@ -101,7 +103,8 @@ namespace Sheepshead.React.Controllers
         public IActionResult StartDeck(string gameId, string playerId)
         {
             IGame game = GetGame(gameId);
-            if (game.TurnState.TurnType == TurnType.BeginDeck)
+            var mustRedeal = game.Decks.LastOrDefault()?.MustRedeal ?? false;
+            if (game.TurnState.TurnType == TurnType.BeginDeck || mustRedeal)
                 new Deck(game);
             var playState = game.PlayState(Guid.Parse(playerId));
             return Json(playState);

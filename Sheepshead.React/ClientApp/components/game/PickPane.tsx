@@ -4,7 +4,7 @@ import { IdUtils } from '../IdUtils';
 import { FetchUtils } from '../FetchUtils';
 import { render } from 'react-dom';
 import Card from './Card';
-import { PlayState, PickChoice, CardSummary } from './PlayState';
+import { PickState, PickChoice, CardSummary } from './PlayState';
 
 export interface PickPaneState {
     gameId: string;
@@ -15,11 +15,12 @@ export interface PickPaneState {
     requestingPlayerTurn: boolean;
     turnType: string;
     currentTurn: string;
+    mustRedeal: boolean;
 }
 
 export interface PickPaneProps extends React.Props<any> {
     gameId: string;
-    onPick: () => void;
+    onPick: (mustRedeal: boolean) => void;
 }
 
 export default class PickPane extends React.Component<PickPaneProps, PickPaneState> {
@@ -35,7 +36,8 @@ export default class PickPane extends React.Component<PickPaneProps, PickPaneSta
             requestingPlayerTurn: false,
             displayedPickChoices: [],
             turnType: '',
-            currentTurn: ''
+            currentTurn: '',
+            mustRedeal: false
         };
         this.pickChoice = this.pickChoice.bind(this);
         this.initializePlayStatePinging = this.initializePlayStatePinging.bind(this);
@@ -48,17 +50,18 @@ export default class PickPane extends React.Component<PickPaneProps, PickPaneSta
         var self = this;
         FetchUtils.repeatGet(
             'Game/GetPickState?gameId=' + this.state.gameId + '&playerId=' + this.state.playerId,
-            function (json: PlayState): void {
+            function (json: PickState): void {
                 self.setState({
                     pickChoices: json.pickChoices,
                     requestingPlayerTurn: json.requestingPlayerTurn,
                     playerCards: json.playerCards,
                     turnType: json.turnType,
-                    currentTurn: json.currentTurn
+                    currentTurn: json.currentTurn,
+                    mustRedeal: json.mustRedeal
                 });
             },
-            function (json: PlayState): boolean {
-                return json.requestingPlayerTurn == false && (json.turnType == "Pick" || json.turnType == "BeginDeck");
+            function (json: PickState): boolean {
+                return json.requestingPlayerTurn == false && (json.turnType == "Pick" || json.turnType == "BeginDeck") && !json.mustRedeal;
             },
             1000);
     }
@@ -73,8 +76,8 @@ export default class PickPane extends React.Component<PickPaneProps, PickPaneSta
 
         var allChoicesDisplayed = this.state.displayedPickChoices.length >= this.state.pickChoices.length;
         var pickPhaseComplete = this.state.turnType == "Bury" || this.state.turnType == "PlayTrick";
-        if (allChoicesDisplayed && pickPhaseComplete)
-            this.finishPickPhase(2000);
+        if (allChoicesDisplayed && pickPhaseComplete || this.state.mustRedeal)
+            this.finishPickPhase(2000, this.state.mustRedeal);
     }
 
     private pickChoice(willPick: boolean): void {
@@ -83,16 +86,17 @@ export default class PickPane extends React.Component<PickPaneProps, PickPaneSta
             'Game/RecordPickChoice?gameId=' + this.state.gameId + '&playerId=' + this.state.playerId + '&willPick=' + willPick,
             function (json: number[]): void {
                 if (willPick)
-                    self.finishPickPhase(0);
+                    self.finishPickPhase(0, false);
                 else
                     self.initializePlayStatePinging();
             }
         );
     }
 
-    private finishPickPhase(timeout: number): void {
+    private finishPickPhase(timeout: number, mustRedeal: boolean): void {
         clearInterval(this.displayInterval);
-        setTimeout(this.props.onPick, timeout);
+        var self = this;
+        setTimeout(function () { self.props.onPick(mustRedeal); }, timeout);
     }
 
     public render() {

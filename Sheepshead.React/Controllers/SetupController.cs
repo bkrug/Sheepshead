@@ -8,13 +8,14 @@ namespace Sheepshead.React.Controllers
     public class SetupController : Controller
     {
         [HttpPost]
-        public IActionResult Create(int humanCount, int newbieCount, int basicCount, string partnerCard)
+        public IActionResult Create(int humanCount, int newbieCount, int basicCount, string partnerCard, string leastersGame)
         {
             var repository = new GameRepository(GameDictionary.Instance.Dictionary);
             var partnerMethod = partnerCard.Equals("Jack of Hearts", StringComparison.OrdinalIgnoreCase) 
                 ? PartnerMethod.JackOfDiamonds 
                 : PartnerMethod.CalledAce;
-            var game = repository.Create(humanCount, newbieCount, basicCount, partnerMethod);
+            var leastersOn = leastersGame.Equals("On", StringComparison.OrdinalIgnoreCase);
+            var game = repository.Create(humanCount, newbieCount, basicCount, partnerMethod, leastersOn);
             return RedirectToAction("RegisterHuman", "Setup", new { id = game.Id });
         }
 

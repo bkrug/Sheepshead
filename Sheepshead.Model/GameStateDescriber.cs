@@ -47,7 +47,7 @@ namespace Sheepshead.Model
         public bool LastDeckIsComplete()
         {
             var lastDeck = Decks.LastOrDefault();
-            return lastDeck == null || lastDeck.Hand != null && lastDeck.Hand.IsComplete();
+            return lastDeck == null || lastDeck.IsComplete;
         }
     }
 }

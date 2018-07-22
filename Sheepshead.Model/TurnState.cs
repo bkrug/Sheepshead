@@ -35,6 +35,19 @@ namespace Sheepshead.Models
         public List<CardSummary> PlayerCards { get; set; }
     }
 
+    public class PickState
+    {
+        public string TurnType { get; set; }
+        public bool HumanTurn { get; set; }
+        public string CurrentTurn { get; set; }
+        public bool RequestingPlayerTurn { get; set; }
+        //Player name and whether or not the picked
+        public List<Tuple<string, bool>> PickChoices { get; set; }
+        //Filename number for the player's cards.
+        public List<CardSummary> PlayerCards { get; set; }
+        public bool MustRedeal { get; set; }
+    }
+
     public class BuryState
     {
         public string TurnType { get; set; }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Collections.Generic;
 using Sheepshead.Models.Players;
 using Sheepshead.Models.Wrappers;
@@ -14,6 +15,11 @@ namespace Sheepshead.Models
         public List<IPlayer> PlayersRefusingPick { get; } = new List<IPlayer>();
         public IPlayer StartingPlayer { get; private set; }
         public IRandomWrapper _random { get; private set; }
+        /// <summary>
+        /// Returns true when there is no picker and Leasters is off.
+        /// </summary>
+        public bool MustRedeal => !Game.LeastersEnabled && Hand == null && !PlayersWithoutPickTurn.Any();
+        public bool IsComplete => Hand != null && Hand.IsComplete() || MustRedeal;
 
         public Deck(IGame game) : this(game, new RandomWrapper())
         {
@@ -135,6 +141,8 @@ namespace Sheepshead.Models
         List<IPlayer> Players { get; }
         List<IPlayer> PlayersWithoutPickTurn { get; }
         IPlayerOrderer PickPlayerOrderer { get; }
+        bool MustRedeal { get; }
+        bool IsComplete { get; }
     }
 
     public class PreviousDeckIncompleteException : Exception
