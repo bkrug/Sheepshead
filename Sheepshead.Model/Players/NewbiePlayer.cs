@@ -14,7 +14,6 @@ namespace Sheepshead.Models.Players
 
         public override bool WillPick(IDeck deck)
         {
-            return false;
             return QueueRankInDeck(deck) == deck.PlayerCount;
         }
 

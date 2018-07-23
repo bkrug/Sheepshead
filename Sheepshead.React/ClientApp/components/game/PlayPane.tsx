@@ -13,6 +13,7 @@ export interface PlayPaneState {
     partnerCard: string;
     trickWinners: string[];
     coins: GameScore[];
+    leastersHand: boolean;
 }
 
 export class PlayPane extends React.Component<RouteComponentProps<{}>, PlayPaneState> {
@@ -24,7 +25,8 @@ export class PlayPane extends React.Component<RouteComponentProps<{}>, PlayPaneS
             partner: '',
             partnerCard: '',
             trickWinners: [],
-            coins: []
+            coins: [],
+            leastersHand: false
         };
         this.trickEnd = this.trickEnd.bind(this);
         this.handEnd = this.handEnd.bind(this);
@@ -55,7 +57,8 @@ export class PlayPane extends React.Component<RouteComponentProps<{}>, PlayPaneS
                     picker: json.picker,
                     partner: json.partner,
                     partnerCard: json.partnerCard,
-                    trickWinners: json.trickWinners
+                    trickWinners: json.trickWinners,
+                    leastersHand: json.leastersHand
                 });
             });
     }
@@ -81,6 +84,7 @@ export class PlayPane extends React.Component<RouteComponentProps<{}>, PlayPaneS
                     <div>Picker: {this.state.picker}</div>
                     <div>Partner: {this.state.partner}</div>
                     <div>Partner Card: {this.state.partnerCard}</div>
+                    {this.state.leastersHand ? <b>Leasters Hand</b> : ''}
                     {
                         this.state.trickWinners.map((playerName: string, i: number) =>
                             <div key={i}><b>Trick {i+1}</b> {playerName}</div>
