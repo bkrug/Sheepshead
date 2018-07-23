@@ -69,14 +69,17 @@ export default class PickPane extends React.Component<PickPaneProps, PickPaneSta
     private displayOneMorePlay(): void {
         var picksToDisplay = this.state.displayedPickChoices.length + 1;
 
+        console.log('pickChoices length ' + this.state.pickChoices.length);
+        console.log('pickesToDisplay ' + picksToDisplay);
         var picks = this.state.pickChoices.slice(0, picksToDisplay);
+        console.log('pick length ' + picks.length);
         this.setState({
             displayedPickChoices: picks
         });
 
         var allChoicesDisplayed = this.state.displayedPickChoices.length >= this.state.pickChoices.length;
-        var pickPhaseComplete = this.state.turnType == "Bury" || this.state.turnType == "PlayTrick";
-        if (allChoicesDisplayed && pickPhaseComplete || this.state.mustRedeal)
+        var pickPhaseComplete = this.state.turnType == "Bury" || this.state.turnType == "PlayTrick" || this.state.mustRedeal;
+        if (allChoicesDisplayed && pickPhaseComplete)
             this.finishPickPhase(2000, this.state.mustRedeal);
     }
 

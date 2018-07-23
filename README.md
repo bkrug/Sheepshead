@@ -5,8 +5,6 @@ Sheepshead
 
 ToDo:
 
-* Create a new "illegal move" card.
-* As start of game, allow user to disable leasters.
 * At end-of-hand, let users hover over a score and see what cards were used in each trick.
 * Create an additional level of computer player difficulty.
 * Going to need to do more stylization improvements, but I'm not sure what.

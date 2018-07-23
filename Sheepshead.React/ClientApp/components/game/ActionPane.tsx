@@ -119,6 +119,7 @@ export default class ActionPane extends React.Component<ActionPaneProps, ActionP
     public render() {
         return (
             <div>
+                <h1>{this.state.turnType}</h1>
                 { this.selectRenderPhase() }
             </div>
         );

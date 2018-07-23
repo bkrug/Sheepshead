@@ -167,7 +167,7 @@ namespace Sheepshead.Models
         public PickState PickState(Guid requestingPlayerId)
         {
             var turnType = TurnType;
-            var currentDeck = _gameStateDesciber.CurrentDeck;
+            var currentDeck = Decks.LastOrDefault();
             var currentPlayer = 
                 turnType == TurnType.Pick 
                 ? currentDeck?.PlayersWithoutPickTurn?.FirstOrDefault() 
@@ -187,7 +187,7 @@ namespace Sheepshead.Models
                 PlayerCards = requestingPlayer?.Cards?.Select(c => CardUtil.GetCardSummary(c))?.ToList(),
                 HumanTurn = humanPlayer != null,
                 CurrentTurn = currentPlayer?.Name,
-                MustRedeal = Decks.LastOrDefault()?.MustRedeal ?? false
+                MustRedeal = currentDeck?.MustRedeal ?? false
             };
         }
 
