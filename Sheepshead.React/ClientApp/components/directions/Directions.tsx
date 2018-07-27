@@ -24,7 +24,7 @@ export class Directions extends React.Component<RouteComponentProps<{}>, Directi
                 </div>
                 <div className="page" style={{ backgroundColor: '#ae5' }}>
                     <div className="content">
-                        <h2>Preparation</h2>
+                        <h3>Preparation</h3>
                         <p>Sheepshead is played with 7-8-9-10-J-Q-K-A in four suits, for a total of 32 cards. This is also known as a Piquet deck, as opposed to the 52 or 54 present in a full French deck (also known as a Poker deck, or a regular deck of playing cards). A sheepshead deck is made by removing all of the jokers, sixes, fives, fours, threes, and twos from a standard deck. </p>
                     </div>
                 </div>

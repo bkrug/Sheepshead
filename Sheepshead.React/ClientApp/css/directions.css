@@ -28,3 +28,25 @@
 .directions-film .page h3:first-child {
     margin-top: 0px;
 }
+
+.page .content p {
+    font-size: 3vmin;
+}
+.page .content h1 {
+    font-size: 7vmin;
+}
+.page .content h2 {
+    font-size: 6vmin;
+}
+.page .content h3 {
+    font-size: 5vmin;
+}
+.page .content h4 {
+    font-size: 4vmin;
+}
+.page .content h5 {
+    font-size: 3vmin;
+}
+.page .content h6 {
+    font-size: 2vmin;
+}
