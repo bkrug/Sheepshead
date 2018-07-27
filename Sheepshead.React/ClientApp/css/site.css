@@ -64,3 +64,8 @@
         text-overflow: ellipsis;
     }
 }
+
+.row>div {
+    padding-left: 15px;
+    padding-right: 15px;
+}

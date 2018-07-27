@@ -21,7 +21,12 @@ export class GameSetup extends React.Component<RouteComponentProps<{}>, GameSetu
         super();
         let selections: { [index: string]: number } = {};
         selections[this.HUMANS] = selections[this.NEWBIE] = selections[this.BASIC] = 0;
-        this.state = { value: 0, partnerCard: true, remaining: this.MAX_PLAYERS, gameName: '', selections: selections };
+        this.state = {
+            value: 0,
+            partnerCard: true,
+            remaining: this.MAX_PLAYERS,
+            gameName: '', selections: selections
+        };
         this.handleChange = this.handleChange.bind(this);
     }
 

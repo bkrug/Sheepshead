@@ -22,6 +22,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Remove="ClientApp\components\directions\Directions.tsx" />
     <None Remove="ClientApp\components\game\ActionPane.tsx" />
     <None Remove="ClientApp\components\game\BuryPane.tsx" />
     <None Remove="ClientApp\components\game\Card.tsx" />
@@ -111,6 +112,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <TypeScriptCompile Include="ClientApp\components\directions\Directions.tsx" />
     <TypeScriptCompile Include="ClientApp\components\game\BuryPane.tsx" />
     <TypeScriptCompile Include="ClientApp\components\game\CheatSheet.tsx" />
     <TypeScriptCompile Include="ClientApp\components\game\HandSummaryPane.tsx" />
