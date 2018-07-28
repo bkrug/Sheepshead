@@ -1,12 +1,14 @@
 ﻿import '../../css/directions.css';
 import * as React from 'react';
 import { RouteComponentProps } from 'react-router';
+import { Offsetter } from './Offsetter';
 
 export interface DirectionsState {
-    linearDocumentOffset: number;
 }
 
 export class Directions extends React.Component<RouteComponentProps<{}>, DirectionsState> {
+    private _offsetter: Offsetter = new Offsetter();
+
     constructor(props: any) {
         super(props);
         this.state = {
@@ -15,49 +17,11 @@ export class Directions extends React.Component<RouteComponentProps<{}>, Directi
         this.onWheel = this.onWheel.bind(this);
     }
 
-    private lazyMaxOffset: number | null;
-    private maxOffset(): number {
-        if (this.lazyMaxOffset == null) {
-            var body = document.body,
-                html = document.documentElement;
-            var documentHeight = Math.max(body.scrollHeight, body.offsetHeight, html.clientHeight, html.scrollHeight, html.offsetHeight);
-            this.lazyMaxOffset = documentHeight - window.innerHeight;
-        }
-        return this.lazyMaxOffset;
-    }
-
     //The linear offset is the offset that would be used if we scrolled by a consistent amount with each wheel event.
     //The eased offset causes the document to scroll very slowly when we are near the edge of a page of directions and quickly otherwise.
     private onWheel(e: any) {
-        var newOffset = this.calculateLinearOffset(e);
-        window.scroll(0, this.calculateEasedOffset(newOffset));
-    }
-
-    private calculateLinearOffset(e: any) {
-        var scrollAmount = (e.deltaY > 0 ? 1 : -1) * window.innerHeight / 3;
-        var newOffset = this.state.linearDocumentOffset + scrollAmount;
-        newOffset = Math.max(newOffset, 0);
-        newOffset = Math.min(newOffset, this.maxOffset());
-        this.setState({ linearDocumentOffset: newOffset });
-        return newOffset;
-    }
-
-    private calculateEasedOffset(linearOffset: number): number {
-        //The normalizedOffset imagins each page of directions to be 1.0 units in height.
-        var normalizedOffset = linearOffset / window.innerHeight;
-        var directionPage = normalizedOffset - normalizedOffset % 1;
-        //Re-calculate the distance past the top of a page of directions that we've scrolled.
-        var easedFraction = this.easeInOutCubicFraction(normalizedOffset);
-        //Create a new offset.
-        return (directionPage + easedFraction) * window.innerHeight;
-    }
-
-    private easeInOutCubicFraction(x: number) : number {
-        x = x % 1;
-        if (x <= 0.5)
-            return Math.pow(x * 2, 3) / 2;
-        else
-            return Math.pow(((x-1) * 2), 3) / 2 + 1;
+        var newOffset = this._offsetter.calculateLinearOffset(e.deltaY);
+        window.scroll(0, this._offsetter.calculateEasedOffset(newOffset));
     }
 
     public render() {
