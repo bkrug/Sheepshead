@@ -99,34 +99,49 @@ export class Directions extends React.Component<RouteComponentProps<{}>, Directi
                         <p>Go play a few hands, and come back to learn the game even better.</p>
                     </div>
                 </div>
-                <div className="slide">
+                <div className="slide advanced">
                     <div className="content">
                         <h3>COINS</h3>
                         <p>At the end of a hand each player wins or looses coins based on points they won. Coins accumulate over each hand, card points do not.</p>
                     </div>
                 </div>
-                <div className="slide">
+                <div className="slide advanced">
                     <div className="content">
                         <h3>COINS PER PLAYER</h3>
                         <p>In each hand, coins won by the offensive hand plus points by the defensive hand equals zero. This chart shows coins won or lost based on the points held by defensive side.</p>
                     </div>
                 </div>
-                <div className="slide">
+                <div className="slide advanced">
                     <div className="content">
                         <h3>LEASTERS</h3>
                         <p>When no one picks, a leasters round can start. In leasters, the player with the lowest number of points will win the round. The leasters winner must win at least one trick.</p>
                     </div>
                 </div>
-                <div className="slide">
+                <div className="slide advanced">
                     <div className="content">
                         <h3>LEASTERS WITH BLINDS</h3>
                         <p>In this edition of Sheepshead, blind cards are ignored in leasters. In many groups, house rules may assign the blinds the the player that wins the first leasters trick or the last leasters trick. In other groups, the dealer at the begining of the round, decides which trick will win the blinds along with the other cards in the trick.</p>
                     </div>
                 </div>
-                <div className="slide">
+                <div className="slide advanced">
                     <div className="content">
                         <h3>CALLED-ACE</h3>
                         <p>A second method to identify a partner is the called-ace. The picker can choose the ace of a fail suit, and that card identifies the partner. The picker must have a card of the same suit in his or her hand. The picker must not lead a trick with his or her last card of the called suit. The partner must not lead with the Ace of the called suit.</p>
+                    </div>
+                </div>
+                <div className="button-group">
+                    <div className="button-row">
+                        <div className="jump-button">
+                            1
+                        </div>
+                        <div className="jump-button">
+                            2
+                        </div>
+                    </div>
+                    <div className="button-row">
+                        <div className="jump-button">
+                            10
+                        </div>
                     </div>
                 </div>
             </div>

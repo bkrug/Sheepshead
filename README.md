@@ -8,3 +8,5 @@ ToDo:
 * At end-of-hand, let users hover over a score and see what cards were used in each trick.
 * Create an additional level of computer player difficulty.
 * Going to need to do more stylization improvements, but I'm not sure what.
+
+The startup projects within the solution are "Sheepshead" and "Sheepshead.React"
