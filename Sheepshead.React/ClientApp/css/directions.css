@@ -5,13 +5,15 @@
     overflow: hidden;
 }
 
-.page {
+.slide {
     margin: 0;
     height: 100vh;
     width: 100vw;
+    color: whitesmoke;
+    background-color: #307a18;
 }
 
-.page .content {
+.slide .content {
     vertical-align: middle;
     display: table-cell;
     height: 100vh;
@@ -24,30 +26,30 @@
     padding: 0px;
 }
 
-.directions-film .page p:first-child,
-.directions-film .page h2:first-child,
-.directions-film .page h3:first-child {
+.directions-film .slide p:first-child,
+.directions-film .slide h2:first-child,
+.directions-film .slide h3:first-child {
     margin-top: 0px;
 }
 
-.page .content p {
+.slide .content p {
     font-size: 3vmin;
 }
-.page .content h1 {
+.slide .content h1 {
     font-size: 7vmin;
 }
-.page .content h2 {
+.slide .content h2 {
     font-size: 6vmin;
 }
-.page .content h3 {
+.slide .content h3 {
     font-size: 5vmin;
 }
-.page .content h4 {
+.slide .content h4 {
     font-size: 4vmin;
 }
-.page .content h5 {
+.slide .content h5 {
     font-size: 3vmin;
 }
-.page .content h6 {
+.slide .content h6 {
     font-size: 2vmin;
 }

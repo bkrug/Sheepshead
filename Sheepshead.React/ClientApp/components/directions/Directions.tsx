@@ -27,45 +27,106 @@ export class Directions extends React.Component<RouteComponentProps<{}>, Directi
     public render() {
         return (
             <div className="directions-film" onWheel={this.onWheel}>
-                <div className="page" style={{ backgroundColor: '#5ae' }}>
+                <div className="slide">
                     <div className="content">
-                        <p>Sheepshead or Sheephead is a trick-taking card game related to the Skat family of games. It is the Americanized version of a card game that originated in Central Europe in the late 18th century under the German name Schafkopf. Sheepshead is most commonly played by five players,[1] but variants exist to allow for two to eight players. There are also many other variants to the game rules, and many slang terms used with the game.</p>
-                        <p>Although Schafkopf literally means "sheepshead," it has nothing to do with sheep; the term probably was derived and translated incorrectly from Middle High German and referred to playing cards on a barrel head (from kopf, meaning head, and Schaff, meaning a barrel).[2]</p>
-                        <p>In the United States, sheepshead is most commonly played in Wisconsin as well as the German counties in Southern Indiana, which has large German-American populations, and on the internet. Numerous tournaments are held throughout Wisconsin during the year, with the largest tournament being the "Nationals", held annually in the Wisconsin Dells during a weekend in September, October or November, and mini-tournaments held hourly throughout Germanfest in Milwaukee during the last weekend of each July.</p>
+                        <h2>IDEA</h2>
+                        <p>This version of sheepshead features 3 or 5 players. 1 "picker" against 2 other players, or 1 "picker" and (usually) 1 "partner" against 3 other players. Teams change each hand, and in the 5-player version it takes time to figure out who is on which team. </p>
                     </div>
                 </div>
-                <div className="page" style={{ backgroundColor: '#ae5' }}>
+                <div className="slide">
                     <div className="content">
-                        <h3>Preparation</h3>
-                        <p>Sheepshead is played with 7-8-9-10-J-Q-K-A in four suits, for a total of 32 cards. This is also known as a Piquet deck, as opposed to the 52 or 54 present in a full French deck (also known as a Poker deck, or a regular deck of playing cards). A sheepshead deck is made by removing all of the jokers, sixes, fives, fours, threes, and twos from a standard deck. </p>
+                        <h3>GOAL</h3>
+                        <p>The goal for each hand, is to win points for your team. One wins points, by winning tricks. (show two different tricks with different point values).</p>
                     </div>
                 </div>
-                <div className="page" style={{ backgroundColor: '#e5a' }}>
+                <div className="slide">
                     <div className="content">
-                        <h3>Card strength</h3>
-                        <p>Card strength in sheepshead is different from in most other games. It is one of the most difficult things for some beginners to grasp.[1]</p>
-                        <p>There are 14 cards in the trump suit: all four queens, all four jacks, and all of the diamonds. In order of strength from greatest to least:[1]</p>
-                        <p>Q♣ Q♠ Q♥ Q♦</p>
-                        <p>J♣ J♠ J♥ J♦</p>
-                        <p>    A♦ 10♦ K♦ 9♦ 8♦ 7♦ </p>
-                        <p>Also, there are 6 of each "fail" suit (18 total).[1]</p>
-                        <p>    A, 10, K, 9, 8, and 7 of ♣, ♠, and ♥</p>
-                        <p>Clubs, spades, and hearts take no precedence over other fail suits, unlike trump, which always take fail. (Notice how both aces and tens outrank kings; arguably the most confusing aspect of card strength). The lead suit must be followed if possible; if not, then any card may be played such as trump (which will take the trick), or a fail card. Playing a fail of a different suit is called "throwing off" and can be a way to clear up another suit. Additionally, throwing off a point card is called "schmearing." </p>
+                        <h3>CARDS</h3>
+                        <p>Sheepshead uses a 52-card deck, but throughs away the 2s, 3s, 4s, 5s, and 6s. There is a trump suit, and three fail suits (clubs, spades, and hearts).</p>
                     </div>
                 </div>
-                <div className="page" style={{ backgroundColor: '#ea5' }}>
+                <div className="slide">
                     <div className="content">
-                        Page 4
+                        <h3>SUITS</h3>
+                        <p>The trump suit includes all Queens, Jacks, and Diamonds, omitting cards we threw away. The heart suit includes all hearts except Queens, Jacks, and cards we threw away. The other fail suits are just like hearts.</p>
                     </div>
                 </div>
-                <div className="page" style={{ backgroundColor: '#5ea' }}>
+                <div className="slide">
                     <div className="content">
-                        Page 5
+                        <h3>TRICKS</h3>
+                        <p>At the beginning of a trick, the starting player plays a card of a given suit. Each following player must play a card of the same suit, if he or she has it. Otherwise, following players can play any card they like.</p>
                     </div>
                 </div>
-                <div className="page" style={{ backgroundColor: '#a5e' }}>
+                <div className="slide">
                     <div className="content">
-                        Page 6
+                        <h3>WINNING TRICKS</h3>
+                        <p>The trick winner is the person who played the most powerful card. That total points in the trick depends on what cards were in the trick. (show two tricks, one with a trump winning, one with fail winning)</p>
+                    </div>
+                </div>
+                <div className="slide">
+                    <div className="content">
+                        <h3>POWER AND POINTS</h3>
+                        <p>This graph shows you relative power and exact points for each card. The most powerful card in a trick is the most powerful trump, if any trump was played. If all card played were fail cards, then the most power card from the suit that led determines the trick winner. This chart will be available as you play the game as a "cheat sheet".</p>
+                    </div>
+                </div>
+                <div className="slide">
+                    <div className="content">
+                        <h3>DEAL</h3>
+                        <p>In a 5-player game, each player is dealt 6 cards. In a 3-player game, each player is dealt 10 cards. The two remaining cards are the blinds. The picker gets the blinds.</p>
+                    </div>
+                </div>
+                <div className="slide">
+                    <div className="content">
+                        <h3>PICKING</h3>
+                        <p>Each player gets a chance to decide to be or not to be a picker. Pickers are on the offense. Pickers get to take two extra blind cards and bury two cards. Pickers have the opportunity to earn more coins than the defensive players. Most pickers have several trump.</p>
+                    </div>
+                </div>
+                <div className="slide">
+                    <div className="content">
+                        <h3>PARTNERS</h3>
+                        <p>There is more than one way to determine the partner. We'll teach you the Jack-of-Diamonds method first. The partner normally is the person with Jack-of-Diamonds in his or her hand. If the picker has Jack-of-Diamonds in his or her hand (including blinds), then the partner has the first card in this list not in the picker's hand.</p>
+                    </div>
+                </div>
+                <div className="slide">
+                    <div className="content">
+                        <h3>WINNING A HAND</h3>
+                        <p>There are a total of 120 points in every hand. In order to win a hand, defenders must win at least 60 points. For offense to win a hand, they must have at least 61 points, including points in the buried cards.</p>
+                    </div>
+                </div>
+                <div className="slide">
+                    <div className="content">
+                        <h3>That's enough for now</h3>
+                        <p>Go play a few hands, and come back to learn the game even better.</p>
+                    </div>
+                </div>
+                <div className="slide">
+                    <div className="content">
+                        <h3>COINS</h3>
+                        <p>At the end of a hand each player wins or looses coins based on points they won. Coins accumulate over each hand, card points do not.</p>
+                    </div>
+                </div>
+                <div className="slide">
+                    <div className="content">
+                        <h3>COINS PER PLAYER</h3>
+                        <p>In each hand, coins won by the offensive hand plus points by the defensive hand equals zero. This chart shows coins won or lost based on the points held by defensive side.</p>
+                    </div>
+                </div>
+                <div className="slide">
+                    <div className="content">
+                        <h3>LEASTERS</h3>
+                        <p>When no one picks, a leasters round can start. In leasters, the player with the lowest number of points will win the round. The leasters winner must win at least one trick.</p>
+                    </div>
+                </div>
+                <div className="slide">
+                    <div className="content">
+                        <h3>LEASTERS WITH BLINDS</h3>
+                        <p>In this edition of Sheepshead, blind cards are ignored in leasters. In many groups, house rules may assign the blinds the the player that wins the first leasters trick or the last leasters trick. In other groups, the dealer at the begining of the round, decides which trick will win the blinds along with the other cards in the trick.</p>
+                    </div>
+                </div>
+                <div className="slide">
+                    <div className="content">
+                        <h3>CALLED-ACE</h3>
+                        <p>A second method to identify a partner is the called-ace. The picker can choose the ace of a fail suit, and that card identifies the partner. The picker must have a card of the same suit in his or her hand. The picker must not lead a trick with his or her last card of the called suit. The partner must not lead with the Ace of the called suit.</p>
                     </div>
                 </div>
             </div>
