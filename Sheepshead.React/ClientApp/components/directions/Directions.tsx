@@ -24,12 +24,34 @@ export class Directions extends React.Component<RouteComponentProps<{}>, Directi
         window.scroll(0, this._offsetter.calculateEasedOffset(newOffset));
     }
 
+    private renderNavigationButtons(rowOneCount: number, rowTwoCount: number) {
+        var rowOneButtons = [];
+        for (var buttonNumber = 1; buttonNumber < rowOneCount; ++buttonNumber)
+            rowOneButtons.push(<div className="jump-button">{buttonNumber}</div>);
+        rowOneButtons.push(<div className="jump-button">Play</div>)
+
+        var rowTwoButtons = [];
+        for (var buttonNumber = rowOneCount+1; buttonNumber <= rowOneCount + rowTwoCount; ++buttonNumber)
+            rowTwoButtons.push(<div className="jump-button">{buttonNumber}</div>);
+
+        return (
+            <div className="button-group">
+                <div className="button-row">
+                    {rowOneButtons}
+                </div>
+                <div className="button-row">
+                    {rowTwoButtons}
+                </div>
+            </div>
+            );
+    }
+
     public render() {
         return (
             <div className="directions-film" onWheel={this.onWheel}>
                 <div className="slide">
                     <div className="content">
-                        <h2>IDEA</h2>
+                        <h2>CONCEPT</h2>
                         <p>This version of sheepshead features 3 or 5 players. 1 "picker" against 2 other players, or 1 "picker" and (usually) 1 "partner" against 3 other players. Teams change each hand, and in the 5-player version it takes time to figure out who is on which team. </p>
                     </div>
                 </div>
@@ -129,21 +151,7 @@ export class Directions extends React.Component<RouteComponentProps<{}>, Directi
                         <p>A second method to identify a partner is the called-ace. The picker can choose the ace of a fail suit, and that card identifies the partner. The picker must have a card of the same suit in his or her hand. The picker must not lead a trick with his or her last card of the called suit. The partner must not lead with the Ace of the called suit.</p>
                     </div>
                 </div>
-                <div className="button-group">
-                    <div className="button-row">
-                        <div className="jump-button">
-                            1
-                        </div>
-                        <div className="jump-button">
-                            2
-                        </div>
-                    </div>
-                    <div className="button-row">
-                        <div className="jump-button">
-                            10
-                        </div>
-                    </div>
-                </div>
+                {this.renderNavigationButtons(12, 5)}
             </div>
         );
     }
