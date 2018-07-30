@@ -18,30 +18,30 @@ export class Directions extends React.Component<RouteComponentProps<{}>, Directi
                     <p>This version of sheepshead features 3 or 5 players. 
                         1 'picker' against 2 other players, 
                         or 1 'picker' and (usually) 1 'partner' against 3 other players.
-                        Teams change each hand, and in the 5-player version it takes time to figure out who is on which team.
+                        Teams change each hand, and in the 5-player version it takes time to figure out who the partner is.
                     </p>
                     <div className='scenarios'>
                         <div className='column' style={{ textAlign:'right' }}>
                             <div>
                                 <div className='player'>
-                                    <p>👤</p>
-                                    <p>Picker</p>
+                                    <div>👤</div>
+                                    <div>Picker</div>
                                 </div>
                             </div>
                             <div>
                                 <div className='player'>
-                                    <p>👤</p>
-                                    <p>Picker</p>
+                                    <div>👤</div>
+                                    <div>Picker</div>
                                 </div>
                                 <div className='player'>
-                                    <p>👤</p>
-                                    <p>Partner</p>
+                                    <div>👤</div>
+                                    <div>Partner</div>
                                 </div>
                             </div>
                             <div>
                                 <div className='player'>
-                                    <p>👤</p>
-                                    <p>Picker</p>
+                                    <div>👤</div>
+                                    <div>Picker</div>
                                 </div>
                             </div>
                         </div>
@@ -51,12 +51,12 @@ export class Directions extends React.Component<RouteComponentProps<{}>, Directi
                                     vs.
                                 </div>
                                 <div className='player'>
-                                    <p>👤</p>
-                                    <p>Defense</p>
+                                    <div>👤</div>
+                                    <div>Defense</div>
                                 </div>
                                 <div className='player'>
-                                    <p>👤</p>
-                                    <p>Defense</p>
+                                    <div>👤</div>
+                                    <div>Defense</div>
                                 </div>
                             </div>
                             <div>
@@ -64,16 +64,16 @@ export class Directions extends React.Component<RouteComponentProps<{}>, Directi
                                     vs.
                                 </div>
                                 <div className='player'>
-                                    <p>👤</p>
-                                    <p>Defense</p>
+                                    <div>👤</div>
+                                    <div>Defense</div>
                                 </div>
                                 <div className='player'>
-                                    <p>👤</p>
-                                    <p>Defense</p>
+                                    <div>👤</div>
+                                    <div>Defense</div>
                                 </div>
                                 <div className='player'>
-                                    <p>👤</p>
-                                    <p>Defense</p>
+                                    <div>👤</div>
+                                    <div>Defense</div>
                                 </div>
                             </div>
                             <div>
@@ -81,20 +81,20 @@ export class Directions extends React.Component<RouteComponentProps<{}>, Directi
                                     vs.
                                 </div>
                                 <div className='player'>
-                                    <p>👤</p>
-                                    <p>Defense</p>
+                                    <div>👤</div>
+                                    <div>Defense</div>
                                 </div>
                                 <div className='player'>
-                                    <p>👤</p>
-                                    <p>Defense</p>
+                                    <div>👤</div>
+                                    <div>Defense</div>
                                 </div>
                                 <div className='player'>
-                                    <p>👤</p>
-                                    <p>Defense</p>
+                                    <div>👤</div>
+                                    <div>Defense</div>
                                 </div>
                                 <div className='player'>
-                                    <p>👤</p>
-                                    <p>Defense</p>
+                                    <div>👤</div>
+                                    <div>Defense</div>
                                 </div>
                             </div>
                         </div>
@@ -105,21 +105,25 @@ export class Directions extends React.Component<RouteComponentProps<{}>, Directi
             (
                 <div>
                     <h3>GOAL</h3>
-                    <p>The goal for each hand, is to win points for your team. One wins points, by winning tricks. (show two different tricks with different point values).</p>
+                    <p>The goal for each hand, is to win points for your team. A player wins points by winning tricks. (show two different tricks with different point values).</p>
                 </div>
             ),
         cards:
             (
                 <div>
                     <h3>CARDS</h3>
-                    <p>Sheepshead uses a 52-card deck, but throughs away the 2s, 3s, 4s, 5s, and 6s. There is a trump suit, and three fail suits (clubs, spades, and hearts).</p>
+                    <p>Sheepshead uses a 52-card deck, but throws away the 2s, 3s, 4s, 5s, and 6s. There is a trump suit, and three fail suits (clubs, spades, and hearts).</p>
                 </div>
             ),
         suits:
             (
                 <div>
                     <h3>SUITS</h3>
-                    <p>The trump suit includes all Queens, Jacks, and Diamonds, omitting cards we threw away. The heart suit includes all hearts except Queens, Jacks, and cards we threw away. The other fail suits are just like hearts.</p>
+                    <p>
+                        The trump suit includes all Queens, Jacks, and Diamonds, omitting cards we threw away.
+                        The heart suit includes all hearts except Queens, Jacks, and cards we threw away.
+                        The other fail suits follow the same pattern as hearts.
+                    </p>
                 </div>
             ),
         tricks:
@@ -160,7 +164,14 @@ export class Directions extends React.Component<RouteComponentProps<{}>, Directi
             (
                 <div>
                     <h3>PICKING</h3>
-                    <p>Each player gets a chance to decide to be or not to be a picker. Pickers are on the offense. Pickers get to take two extra blind cards and bury two cards. Pickers have the opportunity to earn more coins than the defensive players. Most pickers have several trump.</p>
+                    <p>
+                        Each player gets a chance to decide to be or not to be a picker.
+                        Pickers are on the offense. 
+                        Pickers get to take the two blind cards into their hand.
+                        The picker must then select two cards to bury which may or may not include one or both blind cards.
+                        Pickers who win a hand recieve more benefits then a defensive player who wins a hand.
+                        Most pickers have several trump cards.
+                    </p>
                 </div>
             ),
         partners:
@@ -198,6 +209,17 @@ export class Directions extends React.Component<RouteComponentProps<{}>, Directi
                 <div>
                     <h3>COINS PER PLAYER</h3>
                     <p>In each hand, coins won by the offensive hand plus points by the defensive hand equals zero. This chart shows coins won or lost based on the points held by defensive side.</p>
+                </div>
+            ),
+        goingAlone:
+            (
+                <div>
+                    <h3>GOING IT ALONE</h3>
+                    <p>
+                        You can see now why someone would take the risk of picking 
+                        and why someone would take the risk of picking without accepting a partner, that is, "going it alone".
+                        Both decisions give the picker the opportunity to gain more coins.
+                    </p>
                 </div>
             ),
         leasters:
