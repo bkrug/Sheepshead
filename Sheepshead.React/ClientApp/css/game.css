@@ -32,6 +32,10 @@
     margin: 0 0 0 10px;
 }
 
+.blkCard {
+    color: black;
+}
+
 .redCard {
     color: red;
 }

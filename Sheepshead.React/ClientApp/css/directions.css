@@ -53,6 +53,9 @@
 .slide .content h6 {
     font-size: 2vmin;
 }
+.slide .content p {
+    text-align: justify;
+}
 
 .directions-film .button-group {
     position: fixed;
@@ -97,4 +100,19 @@
     text-align: center;
     margin: 1vmin 3vmin;
     font-style: italic;
+}
+
+/* Power and Points slide */
+.directions-film .powerAndPoints table {
+    color: black;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.directions-film .powerAndPoints td:not(:first-child) {
+    width: 6vmin;
+}
+
+.directions-film .powerAndPoints .redCard {
+    color: #8a0101;
 }

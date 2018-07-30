@@ -2,6 +2,7 @@
 import * as React from 'react';
 import { RouteComponentProps } from 'react-router';
 import { Offsetter } from './Offsetter';
+import { CheatSheet } from '../game/CheatSheet';
 
 export interface DirectionsState {
 }
@@ -139,7 +140,13 @@ export class Directions extends React.Component<RouteComponentProps<{}>, Directi
             (
                 <div>
                     <h3>POWER AND POINTS</h3>
-                    <p>This graph shows you relative power and exact points for each card. The most powerful card in a trick is the most powerful trump, if any trump was played. If all card played were fail cards, then the most power card from the suit that led determines the trick winner. This chart will be available as you play the game as a 'cheat sheet'.</p>
+                    <p>
+                        This graph shows you relative power and exact points for each card.
+                        The most powerful card in a trick is the most powerful trump, if any trump was played.
+                        If all card played were fail cards, then the most power card from the suit that led determines the trick winner.
+                        This chart will be available as you play the game as a 'cheat sheet'.
+                    </p>
+                    <CheatSheet />
                 </div>
             ),
         deal:
