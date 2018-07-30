@@ -14,7 +14,90 @@ export class Directions extends React.Component<RouteComponentProps<{}>, Directi
             (
                 <div>
                     <h2>CONCEPT</h2>
-                    <p>This version of sheepshead features 3 or 5 players. 1 'picker' against 2 other players, or 1 'picker' and (usually) 1 'partner' against 3 other players. Teams change each hand, and in the 5-player version it takes time to figure out who is on which team. </p>
+                    <p>This version of sheepshead features 3 or 5 players. 
+                        1 'picker' against 2 other players, 
+                        or 1 'picker' and (usually) 1 'partner' against 3 other players.
+                        Teams change each hand, and in the 5-player version it takes time to figure out who is on which team.
+                    </p>
+                    <div className='scenarios'>
+                        <div className='column' style={{ textAlign:'right' }}>
+                            <div>
+                                <div className='player'>
+                                    <p>👤</p>
+                                    <p>Picker</p>
+                                </div>
+                            </div>
+                            <div>
+                                <div className='player'>
+                                    <p>👤</p>
+                                    <p>Picker</p>
+                                </div>
+                                <div className='player'>
+                                    <p>👤</p>
+                                    <p>Partner</p>
+                                </div>
+                            </div>
+                            <div>
+                                <div className='player'>
+                                    <p>👤</p>
+                                    <p>Picker</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div className='column' style={{ textAlign: 'left' }}>
+                            <div>
+                                <div className='vs'>
+                                    vs.
+                                </div>
+                                <div className='player'>
+                                    <p>👤</p>
+                                    <p>Defense</p>
+                                </div>
+                                <div className='player'>
+                                    <p>👤</p>
+                                    <p>Defense</p>
+                                </div>
+                            </div>
+                            <div>
+                                <div className='vs'>
+                                    vs.
+                                </div>
+                                <div className='player'>
+                                    <p>👤</p>
+                                    <p>Defense</p>
+                                </div>
+                                <div className='player'>
+                                    <p>👤</p>
+                                    <p>Defense</p>
+                                </div>
+                                <div className='player'>
+                                    <p>👤</p>
+                                    <p>Defense</p>
+                                </div>
+                            </div>
+                            <div>
+                                <div className='vs'>
+                                    vs.
+                                </div>
+                                <div className='player'>
+                                    <p>👤</p>
+                                    <p>Defense</p>
+                                </div>
+                                <div className='player'>
+                                    <p>👤</p>
+                                    <p>Defense</p>
+                                </div>
+                                <div className='player'>
+                                    <p>👤</p>
+                                    <p>Defense</p>
+                                </div>
+                                <div className='player'>
+                                    <p>👤</p>
+                                    <p>Defense</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             ),
         goal:
@@ -167,7 +250,7 @@ export class Directions extends React.Component<RouteComponentProps<{}>, Directi
 
     private renderSlide(slideName: string, slideContent: JSX.Element) {
         return (
-            <div className='slide' name={slideName} ref={node => node !== null ? this._inputNodes[slideName] = node : 0} key={'slide-'+slideName}>
+            <div className={'slide ' + slideName} name={slideName} ref={node => node !== null ? this._inputNodes[slideName] = node : 0} key={'slide-'+slideName}>
                 <div className='content'>
                     {slideContent}
                 </div>

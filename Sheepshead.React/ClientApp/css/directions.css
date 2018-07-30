@@ -32,7 +32,7 @@
     margin-top: 0px;
 }
 
-.slide .content p {
+.slide .content {
     font-size: 3vmin;
 }
 .slide .content h1 {
@@ -75,4 +75,26 @@
     background-color: yellow;
     display: inline-block;
     font-size: 2vmin;
+}
+
+/* Concept slide */
+.directions-film .concept .scenarios {
+    text-align: center;
+}
+
+.directions-film .concept .column {
+    display: inline-block;
+}
+
+.directions-film .concept .player {
+    display: inline-block;
+    text-align: center;
+    margin: 1vmin;
+}
+
+.directions-film .concept .vs {
+    display: inline-block;
+    text-align: center;
+    margin: 1vmin 3vmin;
+    font-style: italic;
 }
