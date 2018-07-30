@@ -142,6 +142,10 @@ export class Directions extends React.Component<RouteComponentProps<{}>, Directi
         this.onLinkClick = this.onLinkClick.bind(this);
     }
 
+    componentDidMount() {
+        this.scrollToSlide(this.props.location.hash);
+    }
+
     //The linear offset is the offset that would be used if we scrolled by a consistent amount with each wheel event.
     //The eased offset causes the document to scroll very slowly when we are near the edge of a page of directions and quickly otherwise.
     private onWheel(e: any) {
@@ -152,7 +156,11 @@ export class Directions extends React.Component<RouteComponentProps<{}>, Directi
     private onLinkClick(e: any) {
         var parser = document.createElement('a');
         parser.href = e.target.href;
-        var slideName = parser.hash.substring(1);
+        this.scrollToSlide(parser.hash);
+    }
+
+    private scrollToSlide(hash: string) {
+        var slideName = hash.substring(1);
         this._inputNodes[slideName].scrollIntoView();
         this._offsetter.setLinearDocumentOffset(window.pageYOffset);
     }
