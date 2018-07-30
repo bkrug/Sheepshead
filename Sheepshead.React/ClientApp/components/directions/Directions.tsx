@@ -154,6 +154,7 @@ export class Directions extends React.Component<RouteComponentProps<{}>, Directi
         parser.href = e.target.href;
         var slideName = parser.hash.substring(1);
         this._inputNodes[slideName].scrollIntoView();
+        this._offsetter.setLinearDocumentOffset(window.pageYOffset);
     }
 
     private renderSlide(slideName: string, slideContent: JSX.Element) {
@@ -163,7 +164,7 @@ export class Directions extends React.Component<RouteComponentProps<{}>, Directi
                     {slideContent}
                 </div>
             </div>
-       );
+        );
     }
 
     private renderButton(slideName: string, buttonText: string) {
@@ -197,10 +198,10 @@ export class Directions extends React.Component<RouteComponentProps<{}>, Directi
                 { advancedSlides }
                 <div className='button-group'>
                     <div className='button-row'>
-                        {basicButtons}
+                        { basicButtons }
                     </div>
                     <div className='button-row'>
-                        {advancedButtons}
+                        { advancedButtons }
                     </div>
                 </div>
             </div>

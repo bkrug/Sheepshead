@@ -2,6 +2,10 @@
     private _linearDocumentOffset: number = 0;
     private _lazyMaxOffset: number | null;
 
+    public setLinearDocumentOffset(newOffset: number) {
+        this._linearDocumentOffset = newOffset;
+    }
+
     //
     //The linear offset is the offset that would be used if we scrolled by a consistent amount with each wheel event.
     //
