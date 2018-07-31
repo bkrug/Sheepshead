@@ -8,6 +8,39 @@ export interface DirectionsState {
 }
 
 export class Directions extends React.Component<RouteComponentProps<{}>, DirectionsState> {
+    private _AC: JSX.Element = (<img src={'./img/1.png'} alt='A♣' />);
+    private _AS: JSX.Element = (<img src={'./img/2.png'} alt='A♠' />);
+    private _AH: JSX.Element = (<img src={'./img/3.png'} alt='A♥' />);
+    private _AD: JSX.Element = (<img src={'./img/4.png'} alt='A♦' />);
+    private _KC: JSX.Element = (<img src={'./img/5.png'} alt='K♣' />);
+    private _KS: JSX.Element = (<img src={'./img/6.png'} alt='K♠' />);
+    private _KH: JSX.Element = (<img src={'./img/7.png'} alt='K♥' />);
+    private _KD: JSX.Element = (<img src={'./img/8.png'} alt='K♦' />);
+    private _QC: JSX.Element = (<img src={'./img/9.png'} alt='Q♣' />);
+    private _QS: JSX.Element = (<img src={'./img/10.png'} alt='Q♠' />);
+    private _QH: JSX.Element = (<img src={'./img/11.png'} alt='Q♥' />);
+    private _QD: JSX.Element = (<img src={'./img/12.png'} alt='Q♦' />);
+    private _JC: JSX.Element = (<img src={'./img/13.png'} alt='J♣' />);
+    private _JS: JSX.Element = (<img src={'./img/14.png'} alt='J♠' />);
+    private _JH: JSX.Element = (<img src={'./img/15.png'} alt='J♥' />);
+    private _JD: JSX.Element = (<img src={'./img/16.png'} alt='J♦' />);
+    private _10C: JSX.Element = (<img src={'./img/17.png'} alt='10♣' />);
+    private _10S: JSX.Element = (<img src={'./img/18.png'} alt='10♠' />);
+    private _10H: JSX.Element = (<img src={'./img/19.png'} alt='10♥' />);
+    private _10D: JSX.Element = (<img src={'./img/20.png'} alt='10♦' />);
+    private _9C: JSX.Element = (<img src={'./img/21.png'} alt='9♣' />);
+    private _9S: JSX.Element = (<img src={'./img/22.png'} alt='9♠' />);
+    private _9H: JSX.Element = (<img src={'./img/23.png'} alt='9♥' />);
+    private _9D: JSX.Element = (<img src={'./img/24.png'} alt='9♦' />);
+    private _8C: JSX.Element = (<img src={'./img/25.png'} alt='8♣' />);
+    private _8S: JSX.Element = (<img src={'./img/26.png'} alt='8♠' />);
+    private _8H: JSX.Element = (<img src={'./img/27.png'} alt='8♥' />);
+    private _8D: JSX.Element = (<img src={'./img/28.png'} alt='8♦' />);
+    private _7C: JSX.Element = (<img src={'./img/29.png'} alt='7♣' />);
+    private _7S: JSX.Element = (<img src={'./img/30.png'} alt='7♠' />);
+    private _7H: JSX.Element = (<img src={'./img/31.png'} alt='7♥' />);
+    private _7D: JSX.Element = (<img src={'./img/32.png'} alt='7♦' />);
+
     private _offsetter: Offsetter = new Offsetter();
     private _inputNodes: { [slideName: string]: HTMLDivElement } = {};
     private _basicSlides: { [slideName: string]: JSX.Element } = {
@@ -105,7 +138,41 @@ export class Directions extends React.Component<RouteComponentProps<{}>, Directi
             (
                 <div>
                     <h3>GOAL</h3>
-                    <p>The goal for each hand, is to win points for your team. A player wins points by winning tricks. (show two different tricks with different point values).</p>
+                    <p>
+                        The goal for each hand, is to win points for your team.
+                        A player wins points by winning tricks.
+                    </p>
+                    <div className='trickRow'>
+                        <div className='cardCol'>
+                            <div>{this._8S}</div>
+                            <div>0</div>
+                        </div>
+                        <div className='cardCol'>
+                            <div>{this._AS}</div>
+                            <div>11</div>
+                        </div>
+                        <div className='cardCol'>
+                            <div>{this._10S}</div>
+                            <div>10</div>
+                        </div>
+                        <div className='cardCol'>
+                            <div>{this._QD}</div>
+                            <div>3</div>
+                        </div>
+                        <div className='cardCol'>
+                            <div>{this._8H}</div>
+                            <div>0</div>
+                        </div>
+                        <div className='cardCol'>
+                            <div>{this._9S}</div>
+                            <div>0</div>
+                        </div>
+                        <div className='cardCol'>
+                            <div>Trick</div>
+                            <div>Points</div>
+                            <div>24</div>
+                        </div>
+                    </div>
                 </div>
             ),
         cards:

@@ -116,3 +116,19 @@
 .directions-film .powerAndPoints .redCard {
     color: #8a0101;
 }
+
+/* Goal slide */
+.directions-film .goal .trickRow {
+    text-align: center;
+}
+
+.directions-film .goal .cardCol {
+    display: inline-block;
+    text-align: center;
+    margin: 0 1vmin;
+}
+
+.directions-film .goal img {
+    height: 16vmin;
+    width: 12vmin;
+}
