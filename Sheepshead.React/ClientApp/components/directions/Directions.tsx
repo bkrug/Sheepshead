@@ -179,7 +179,10 @@ export class Directions extends React.Component<RouteComponentProps<{}>, Directi
             (
                 <div>
                     <h3>CARDS</h3>
-                    <p>Sheepshead uses a 52-card deck, but throws away the 2s, 3s, 4s, 5s, and 6s. There is a trump suit, and three fail suits (clubs, spades, and hearts).</p>
+                    <p>
+                        Sheepshead uses a 52-card deck, but throws away the 2s, 3s, 4s, 5s, and 6s.
+                        There is a trump suit, and three fail suits (clubs, spades, and hearts).
+                    </p>
                 </div>
             ),
         suits:
@@ -188,9 +191,47 @@ export class Directions extends React.Component<RouteComponentProps<{}>, Directi
                     <h3>SUITS</h3>
                     <p>
                         The trump suit includes all Queens, Jacks, and Diamonds, omitting cards we threw away.
-                        The heart suit includes all hearts except Queens, Jacks, and cards we threw away.
-                        The other fail suits follow the same pattern as hearts.
+                        The clubs suit includes all hearts except Queens, Jacks, and cards we threw away.
+                        The other fail suits follow the same pattern as clubs.
                     </p>
+                    <div className='cardRow'>
+                        <p className='label'>
+                            Trump
+                        </p>
+                        <div className='overlapCards'>
+                            {this._QC}
+                            {this._QS}
+                            {this._QH}
+                            {this._QD}
+                            {this._JC}
+                            {this._JS}
+                            {this._JH}
+                            {this._JD}
+                        </div>
+                        <div>
+                            {this._AD}
+                            {this._10D}
+                            {this._KD}
+                            {this._9D}
+                            {this._8D}
+                            {this._7D}
+                        </div>
+                    </div>
+                    <div className='cardRow'>
+                        <p className='label'>
+                            Fail
+                        </p>
+                        <div className='overlapCards'>
+                        </div>
+                        <div>
+                            {this._AC}
+                            {this._10C}
+                            {this._KC}
+                            {this._9C}
+                            {this._8C}
+                            {this._7C}
+                        </div>
+                    </div>
                 </div>
             ),
         tricks:
