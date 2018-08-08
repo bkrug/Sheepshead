@@ -186,3 +186,15 @@
     height: 16vmin;
     width: 12vmin;
 }
+
+/*Directions Partners slide*/
+.directions-film .partners .row {
+    text-align: center;
+    display: block;
+}
+
+.directions-film .partners img {
+    height: 16vmin;
+    width: 12vmin;
+    display: inline-block;
+}

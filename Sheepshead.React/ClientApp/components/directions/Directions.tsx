@@ -342,7 +342,23 @@ export class Directions extends React.Component<RouteComponentProps<{}>, Directi
             (
                 <div>
                     <h3>PARTNERS</h3>
-                    <p>There is more than one way to determine the partner. We'll teach you the Jack-of-Diamonds method first. The partner normally is the person with Jack-of-Diamonds in his or her hand. If the picker has Jack-of-Diamonds in his or her hand (including blinds), then the partner has the first card in this list not in the picker's hand.</p>
+                    <p>
+                        There is more than one way to determine the partner.
+                        We'll teach you the Jack-of-Diamonds method first.
+                        The partner normally is the person with Jack-of-Diamonds in his or her hand.
+                        If the picker has Jack-of-Diamonds in his or her hand (including blinds),
+                        then the partner is the player holding the first card in this list not in the picker's hand.
+                    </p>
+                    <div className="row">
+                        {this._JD}
+                        {this._JH}
+                        {this._JS}
+                        {this._JC}
+                        {this._QD}
+                        {this._QH}
+                        {this._QS}
+                        {this._QC}
+                    </div>
                 </div>
             ),
         winningHand:
