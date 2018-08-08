@@ -238,14 +238,70 @@ export class Directions extends React.Component<RouteComponentProps<{}>, Directi
             (
                 <div>
                     <h3>TRICKS</h3>
-                    <p>At the beginning of a trick, the starting player plays a card of a given suit. Each following player must play a card of the same suit, if he or she has it. Otherwise, following players can play any card they like.</p>
+                    <p>
+                        At the beginning of a trick, the starting player plays a card of a given suit.
+                        Each following player must play a card of the same suit, if he or she has it.
+                        Otherwise, following players can play any card they like.
+                    </p>
+                    <div className="row">
+                        <div>
+                            <div>{this._8S}</div>
+                            <div>Starting suit is Spades</div>
+                        </div>
+                        <div>
+                            <div>{this._10S}</div>
+                            <div>followed with Spades</div>
+                        </div>
+                        <div>
+                            <div>{this._QD}</div>
+                            <div>had no Spades</div>
+                        </div>
+                        <div>
+                            <div>{this._7C}</div>
+                            <div>had no Spades</div>
+                        </div>
+                        <div>
+                            <div>{this._QS}</div>
+                            <div>had no Spades (Queens are Trump)</div>
+                        </div>
+                        <div>
+                            <div>{this._AS}</div>
+                            <div>followed with Spades</div>
+                        </div>
+                    </div>
                 </div>
             ),
         winningTricks:
             (
                 <div>
                     <h3>WINNING TRICKS</h3>
-                    <p>The trick winner is the person who played the most powerful card. That total points in the trick depends on what cards were in the trick. (show two tricks, one with a trump winning, one with fail winning)</p>
+                    <p>
+                        The trick winner is the person who played the most powerful card.
+                        That total points in the trick depends on what cards were in the trick.
+                    </p>
+                    <div className="row">
+                        <div>
+                            <div>{this._8S}</div>
+                        </div>
+                        <div>
+                            <div>{this._10S}</div>
+                            <div>most powerful yet</div>
+                        </div>
+                        <div>
+                            <div>{this._QD}</div>
+                            <div>most powerful yet</div>
+                        </div>
+                        <div>
+                            <div>{this._7C}</div>
+                        </div>
+                        <div>
+                            <div>{this._QS}</div>
+                            <div>Won trick</div>
+                        </div>
+                        <div>
+                            <div>{this._AS}</div>
+                        </div>
+                    </div>
                 </div>
             ),
         powerAndPoints:

@@ -166,3 +166,23 @@
 .directions-film .suits .overlapCards img:last-child {
     margin-right: 0;
 }
+
+/*Directions Tricks and Winning Tricks slide*/
+.directions-film .tricks .row, 
+.directions-film .winningTricks .row {
+    text-align: center;
+    display: block;
+}
+
+.directions-film .tricks .row>div,
+.directions-film .winningTricks .row>div {
+    display: inline-block;
+    max-width: 16vmin;
+    vertical-align: top;
+}
+
+.directions-film .tricks img,
+.directions-film .winningTricks img {
+    height: 16vmin;
+    width: 12vmin;
+}
