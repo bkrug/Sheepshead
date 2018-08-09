@@ -349,7 +349,7 @@ export class Directions extends React.Component<RouteComponentProps<{}>, Directi
                         If the picker has Jack-of-Diamonds in his or her hand (including blinds),
                         then the partner is the player holding the first card in this list not in the picker's hand.
                     </p>
-                    <div className="row">
+                    <div className="diagram">
                         {this._JD}
                         {this._JH}
                         {this._JS}
@@ -370,10 +370,91 @@ export class Directions extends React.Component<RouteComponentProps<{}>, Directi
                         In order to win a hand, defenders must win at least 60 points.
                         For offense to win a hand, they must have at least 61 points, including points in the buried cards.
                     </p>
-                    <div className="content">
-                        <div className="trick">
+                    <div className="diagram">
+                        <div className="player">
+                            <h5>Picker</h5>
+                            <div className="trick">
+                                <div className="cards">
+                                    {this._JD}
+                                    {this._JH}
+                                    {this._JS}
+                                    {this._JC}
+                                    {this._QD}
+                                </div>
+                                <div className="score">
+                                    11
+                                </div>
+                            </div>
+                            <div className="trick">
+                                <div className="cards">
+                                    {this._JD}
+                                    {this._JH}
+                                    {this._JS}
+                                    {this._JC}
+                                    {this._QD}
+                                </div>
+                                <div className="score">
+                                    12
+                                </div>
+                            </div>
                         </div>
-                        <div className="trick">
+                        <div className="player">
+                            <h5>Partner</h5>
+                            <div className="trick">
+                                <div className="cards">
+                                    {this._JD}
+                                    {this._JH}
+                                    {this._JS}
+                                    {this._JC}
+                                    {this._QD}
+                                </div>
+                                <div className="score">
+                                    13
+                                </div>
+                            </div>
+                        </div>
+                        <div className="divider" />
+                        <div className="player">
+                            <h5>Defense</h5>
+                            <div className="trick">
+                                <div className="cards">
+                                    {this._JD}
+                                    {this._JH}
+                                    {this._JS}
+                                    {this._JC}
+                                    {this._QD}
+                                </div>
+                                <div className="score">
+                                    14
+                                </div>
+                            </div>
+                        </div>
+                        <div className="player">
+                            <h5>Defense</h5>
+                            <div className="trick">
+                                <div className="cards">
+                                    {this._JD}
+                                    {this._JH}
+                                    {this._JS}
+                                    {this._JC}
+                                    {this._QD}
+                                </div>
+                                <div className="score">
+                                    15
+                                </div>
+                            </div>
+                            <div className="trick">
+                                <div className="cards">
+                                    {this._JD}
+                                    {this._JH}
+                                    {this._JS}
+                                    {this._JC}
+                                    {this._QD}
+                                </div>
+                                <div className="score">
+                                    16
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>

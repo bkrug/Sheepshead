@@ -167,7 +167,7 @@
     margin-right: 0;
 }
 
-/*Directions Tricks and Winning Tricks slide*/
+/* Directions Tricks and Winning Tricks slide */
 .directions-film .tricks .row, 
 .directions-film .winningTricks .row {
     text-align: center;
@@ -187,8 +187,8 @@
     width: 12vmin;
 }
 
-/*Directions Partners slide*/
-.directions-film .partners .row {
+/* Directions Partners slide */
+.directions-film .partners .diagram {
     text-align: center;
     display: block;
 }
@@ -197,4 +197,32 @@
     height: 16vmin;
     width: 12vmin;
     display: inline-block;
+}
+
+/* Winning Hand */
+.directions-film .winningHand .diagram {
+    text-align: center;
+    display: block;
+}
+
+.directions-film .winningHand .player,
+.directions-film .winningHand .trick,
+.directions-film .winningHand .trick .cards,
+.directions-film .winningHand .trick .score,
+.directions-film .winningHand .divider {
+    display: inline-block;
+}
+
+.directions-film .winningHand .trick {
+    margin: 0 1vmin;
+}
+
+.directions-film .winningHand .divider {
+    width: 8vmin;
+}
+
+.directions-film .winningHand img {
+    height: 8vmin;
+    width: 6vmin;
+    display: block;
 }
