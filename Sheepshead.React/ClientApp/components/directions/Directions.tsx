@@ -365,7 +365,17 @@ export class Directions extends React.Component<RouteComponentProps<{}>, Directi
             (
                 <div>
                     <h3>WINNING A HAND</h3>
-                    <p>There are a total of 120 points in every hand. In order to win a hand, defenders must win at least 60 points. For offense to win a hand, they must have at least 61 points, including points in the buried cards.</p>
+                    <p>
+                        There are a total of 120 points in every hand.
+                        In order to win a hand, defenders must win at least 60 points.
+                        For offense to win a hand, they must have at least 61 points, including points in the buried cards.
+                    </p>
+                    <div className="content">
+                        <div className="trick">
+                        </div>
+                        <div className="trick">
+                        </div>
+                    </div>
                 </div>
             ),
         play:
