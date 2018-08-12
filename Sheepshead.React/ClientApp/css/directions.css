@@ -205,10 +205,19 @@
     display: block;
 }
 
+.directions-film .winningHand p {
+    margin: 0;
+}
+
+.directions-film .winningHand .trick {
+    vertical-align: top;
+}
+
 .directions-film .winningHand .player,
 .directions-film .winningHand .trick,
 .directions-film .winningHand .trick .cards,
 .directions-film .winningHand .trick .score,
+.directions-film .winningHand .trick .cards p,
 .directions-film .winningHand .divider {
     display: inline-block;
 }
@@ -224,5 +233,10 @@
 .directions-film .winningHand img {
     height: 8vmin;
     width: 6vmin;
+    display: block;
+}
+
+.directions-film .winningHand .score p {
+    line-height: 8vmin;
     display: block;
 }

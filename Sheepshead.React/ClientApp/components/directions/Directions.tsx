@@ -369,47 +369,68 @@ export class Directions extends React.Component<RouteComponentProps<{}>, Directi
                         There are a total of 120 points in every hand.
                         In order to win a hand, defenders must win at least 60 points.
                         For offense to win a hand, they must have at least 61 points, including points in the buried cards.
+                        Below offense has 56 points and defense has 64.
                     </p>
                     <div className="diagram">
                         <div className="player">
-                            <h5>Picker</h5>
+                            <h5>Picker and Partner</h5>
                             <div className="trick">
                                 <div className="cards">
-                                    {this._JD}
-                                    {this._JH}
-                                    {this._JS}
-                                    {this._JC}
-                                    {this._QD}
+                                    {this._7S}
+                                    {this._KS}
+                                    {this._9D}
+                                    {this._10S}
+                                    {this._7C}
                                 </div>
                                 <div className="score">
-                                    11
+                                    <p>0</p>
+                                    <p>4</p>
+                                    <p>0</p>
+                                    <p>10</p>
+                                    <p>0</p>
                                 </div>
                             </div>
                             <div className="trick">
                                 <div className="cards">
-                                    {this._JD}
-                                    {this._JH}
-                                    {this._JS}
-                                    {this._JC}
-                                    {this._QD}
+                                    {this._8C}
+                                    {this._9C}
+                                    {this._10C}
+                                    {this._AD}
+                                    {this._8H}
                                 </div>
                                 <div className="score">
-                                    12
+                                    <p>0</p>
+                                    <p>0</p>
+                                    <p>10</p>
+                                    <p>11</p>
+                                    <p>0</p>
                                 </div>
                             </div>
-                        </div>
-                        <div className="player">
-                            <h5>Partner</h5>
                             <div className="trick">
                                 <div className="cards">
-                                    {this._JD}
+                                    {this._KC}
+                                    {this._8S}
+                                    {this._AC}
                                     {this._JH}
-                                    {this._JS}
-                                    {this._JC}
-                                    {this._QD}
+                                    {this._KH}
                                 </div>
                                 <div className="score">
-                                    13
+                                    <p>4</p>
+                                    <p>0</p>
+                                    <p>11</p>
+                                    <p>3</p>
+                                    <p>4</p>
+                                </div>
+                            </div>
+                            <div className="trick">
+                                <div className="cards">
+                                    <span>Buried</span>
+                                    {this._7H}
+                                    {this._9H}
+                                </div>
+                                <div className="score">
+                                    <p>0</p>
+                                    <p>0</p>
                                 </div>
                             </div>
                         </div>
@@ -418,41 +439,50 @@ export class Directions extends React.Component<RouteComponentProps<{}>, Directi
                             <h5>Defense</h5>
                             <div className="trick">
                                 <div className="cards">
-                                    {this._JD}
-                                    {this._JH}
-                                    {this._JS}
-                                    {this._JC}
+                                    {this._KD}
+                                    {this._10D}
                                     {this._QD}
+                                    {this._7D}
+                                    {this._JS}
                                 </div>
                                 <div className="score">
-                                    14
-                                </div>
-                            </div>
-                        </div>
-                        <div className="player">
-                            <h5>Defense</h5>
-                            <div className="trick">
-                                <div className="cards">
-                                    {this._JD}
-                                    {this._JH}
-                                    {this._JS}
-                                    {this._JC}
-                                    {this._QD}
-                                </div>
-                                <div className="score">
-                                    15
+                                    <p>4</p>
+                                    <p>10</p>
+                                    <p>3</p>
+                                    <p>0</p>
+                                    <p>2</p>
                                 </div>
                             </div>
                             <div className="trick">
                                 <div className="cards">
                                     {this._JD}
-                                    {this._JH}
-                                    {this._JS}
+                                    {this._10H}
+                                    {this._QH}
+                                    {this._8D}
                                     {this._JC}
-                                    {this._QD}
                                 </div>
                                 <div className="score">
-                                    16
+                                    <p>2</p>
+                                    <p>10</p>
+                                    <p>3</p>
+                                    <p>0</p>
+                                    <p>2</p>
+                                </div>
+                            </div>
+                            <div className="trick">
+                                <div className="cards">
+                                    {this._QS}
+                                    {this._AH}
+                                    {this._QC}
+                                    {this._9S}
+                                    {this._AS}
+                                </div>
+                                <div className="score">
+                                    <p>3</p>
+                                    <p>11</p>
+                                    <p>3</p>
+                                    <p>0</p>
+                                    <p>11</p>
                                 </div>
                             </div>
                         </div>
