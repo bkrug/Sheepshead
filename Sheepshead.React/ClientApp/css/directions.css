@@ -80,6 +80,11 @@
     font-size: 2vmin;
 }
 
+.directions-film img.card {
+    height: 16vmin;
+    width: 12vmin;
+}
+
 /* Concept slide */
 .directions-film .concept .scenarios {
     text-align: center;
@@ -109,7 +114,20 @@
     margin-right: auto;
 }
 
+.directions-film .powerAndPoints tr.borderless td,
+.directions-film .powerAndPoints td.borderless {
+    border: none;
+}
+
+.directions-film .powerAndPoints td:first-child {
+    padding-right: 1.2vmin;
+}
+
 .directions-film .powerAndPoints td:not(:first-child) {
+    border-width: 1px;
+    border-style: solid;
+    border-color: black;
+    text-align: center;
     width: 6vmin;
 }
 
@@ -128,20 +146,10 @@
     margin: 0 1vmin;
 }
 
-.directions-film .goal img {
-    height: 16vmin;
-    width: 12vmin;
-}
-
 /* Suits slide */
 .directions-film .suits .cardRow {
     text-align: center;
     display: block;
-}
-
-.directions-film .suits img {
-    height: 16vmin;
-    width: 12vmin;
 }
 
 .directions-film .suits .label {
@@ -160,11 +168,11 @@
     display: inline-block;
 }
 
-.directions-film .suits .overlapCards img {
+.directions-film .suits .overlapCards img.card {
     margin-right: -8vmin;
 }
 
-.directions-film .suits .overlapCards img:last-child {
+.directions-film .suits .overlapCards img.card:last-child {
     margin-right: 0;
 }
 
@@ -182,21 +190,13 @@
     vertical-align: top;
 }
 
-.directions-film .tricks img,
-.directions-film .winningTricks img {
-    height: 16vmin;
-    width: 12vmin;
-}
-
 /* Directions Partners slide */
 .directions-film .partners .diagram {
     text-align: center;
     display: block;
 }
 
-.directions-film .partners img {
-    height: 16vmin;
-    width: 12vmin;
+.directions-film .partners .card {
     display: inline-block;
 }
 
@@ -225,7 +225,7 @@
     width: 8vmin;
 }
 
-.directions-film .winningHand img {
+.directions-film .winningHand img.card {
     height: 8vmin;
     width: 6vmin;
 }
@@ -243,9 +243,6 @@
 .directions-film .coinsPerPlayer td {
     width: 16%;
     font-size: 2vmin;
-}
-
-.directions-film .coinsPerPlayer td {
     border: none;
     border-right: #888 1px solid;
 }
@@ -253,4 +250,8 @@
 .directions-film .coinsPerPlayer td:first-child {
     width: 20%;
     border-right-width: 3px;
+}
+    
+.directions-film .coinsPerPlayer td:not(:first-child) {
+    text-align: center;
 }

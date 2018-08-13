@@ -40,16 +40,16 @@
     color: red;
 }
 
-tr.borderless td,
-td.borderless {
+.modalDialog tr.borderless td,
+.modalDialog td.borderless {
     border: none;
 }
 
-td:first-child {
+.modalDialog td:first-child {
     padding-right: 6px;
 }
 
-td:not(:first-child) {
+.modalDialog td:not(:first-child) {
     border-width: 1px;
     border-style: solid;
     border-color: black;
