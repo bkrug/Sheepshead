@@ -191,7 +191,7 @@ export class Directions extends React.Component<RouteComponentProps<{}>, Directi
                     <h3>SUITS</h3>
                     <p>
                         The trump suit includes all Queens, Jacks, and Diamonds, omitting cards we threw away.
-                        The clubs suit includes all hearts except Queens, Jacks, and cards we threw away.
+                        The clubs suit includes all clubs except Queens, Jacks, and cards we threw away.
                         The other fail suits follow the same pattern as clubs.
                     </p>
                     <div className='cardRow'>
@@ -462,8 +462,8 @@ export class Directions extends React.Component<RouteComponentProps<{}>, Directi
                     </p>
                     <table>
                         <tr>
-                            <td>Game Type</td>
-                            <td>All games</td>
+                            <td></td>
+                            <td></td>
                             <td>3 player game</td>
                             <td colSpan={2}>5 player game w/ Partner</td>
                             <td>5 player game wo/ Partner</td>

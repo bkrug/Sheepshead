@@ -233,14 +233,24 @@
 /* Coins Per Player */
 .directions-film .coinsPerPlayer table {
     width: 100%;
+    border: #888 1px solid;
 }
 
-.directions-film .coinsPerPlayer td:first-child {
-    width: 20%;
+.directions-film .coinsPerPlayer tr:nth-child(2) {
+    border-bottom: #888 1px solid;
 }
 
 .directions-film .coinsPerPlayer td {
     width: 16%;
-    border: #888 1px solid;
     font-size: 2vmin;
+}
+
+.directions-film .coinsPerPlayer td {
+    border: none;
+    border-right: #888 1px solid;
+}
+
+.directions-film .coinsPerPlayer td:first-child {
+    width: 20%;
+    border-right-width: 3px;
 }
