@@ -87,24 +87,28 @@ namespace Sheepshead.Models
                 Points = new Dictionary<IPlayer, int>(),
                 Coins = new Dictionary<IPlayer, int>()
             };
-            AssignNonLeasterPoints(handScores, out int defensePoints, out bool challengersWonOneTrick);
-            int defensiveCoins = CalculateDefensiveCoins(defensePoints, challengersWonOneTrick);
+            AssignNonLeasterPoints(handScores, out int defensePoints, out bool challengersWonOneTrick, out bool defenseWonOneTrick);
+            int defensiveCoins = CalculateDefensiveCoins(defensePoints, challengersWonOneTrick, defenseWonOneTrick);
             AssignNonLeasterCoins(handScores, challengersWonOneTrick, defensiveCoins);
             return handScores;
         }
 
-        private void AssignNonLeasterPoints(HandScores handScores, out int defensePoints, out bool challengersWonOneTrick)
+        private void AssignNonLeasterPoints(HandScores handScores, out int defensePoints, out bool challengersWonOneTrick, out bool defenseWonOneTrick)
         {
             handScores.Points.Add(Picker, Deck.Buried.Sum(c => CardUtil.GetPoints(c)));
             defensePoints = 0;
             challengersWonOneTrick = false;
+            defenseWonOneTrick = false;
             foreach (var trick in _tricks)
             {
                 var winnerData = trick.Winner();
-                if (winnerData?.Player != Picker && winnerData?.Player != Partner)
-                    defensePoints += winnerData.Points;
-                else
+                if (winnerData?.Player == Picker || winnerData?.Player == Partner)
                     challengersWonOneTrick = true;
+                else
+                {
+                    defensePoints += winnerData.Points;
+                    defenseWonOneTrick = true;
+                }
                 if (winnerData?.Player != null)
                 {
                     if (handScores.Points.ContainsKey(winnerData.Player))
@@ -115,7 +119,7 @@ namespace Sheepshead.Models
             }
         }
 
-        private static int CalculateDefensiveCoins(int defensePoints, bool challengersWonOneTrick)
+        private static int CalculateDefensiveCoins(int defensePoints, bool challengersWonOneTrick, bool defenseWonOneTrick)
         {
             int defensiveCoins;
             if (!challengersWonOneTrick)
@@ -126,7 +130,7 @@ namespace Sheepshead.Models
                 defensiveCoins = 1;
             else if (defensePoints >= 30)
                 defensiveCoins = -1;
-            else if (defensePoints > 0)
+            else if (defenseWonOneTrick)
                 defensiveCoins = -2;
             else
                 defensiveCoins = -3;
