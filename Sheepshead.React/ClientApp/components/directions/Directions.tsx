@@ -445,14 +445,85 @@ export class Directions extends React.Component<RouteComponentProps<{}>, Directi
             (
                 <div>
                     <h3>COINS</h3>
-                    <p>At the end of a hand each player wins or looses coins based on points they won. Coins accumulate over each hand, card points do not.</p>
+                    <p>
+                        At the end of a hand each player wins or looses coins based on points they won.
+                        Coins accumulate over each hand, card points do not.
+                    </p>
                 </div>
             ),
         coinsPerPlayer:
             (
                 <div>
                     <h3>COINS PER PLAYER</h3>
-                    <p>In each hand, coins won by the offensive hand plus points by the defensive hand equals zero. This chart shows coins won or lost based on the points held by defensive side.</p>
+                    <p>
+                        In each hand, coins won by the offensive side plus coins by the defensive side equals zero.
+                        This chart shows coins won or lost based on the points held by defensive side.
+                        The picker wins a different number of points depending on the number of offensive players and the existance of a partner.
+                    </p>
+                    <table>
+                        <tr>
+                            <td>Game Type</td>
+                            <td>All games</td>
+                            <td>3 player game</td>
+                            <td colSpan={2}>5 player game w/ Partner</td>
+                            <td>5 player game wo/ Partner</td>
+                        </tr>
+                        <tr>
+                            <td>Defensive Points</td>
+                            <td>Coins per defensive player</td>
+                            <td>Coins for Picker</td>
+                            <td>Coins for Picker</td>
+                            <td>Coins for Partner</td>
+                            <td>Coins for Picker</td>
+                        </tr>
+                        <tr>
+                            <td>Won no tricks</td>
+                            <td>-3</td>
+                            <td>6</td>
+                            <td>6</td>
+                            <td>3</td>
+                            <td>12</td>
+                        </tr>
+                        <tr>
+                            <td>0 - 29</td>
+                            <td>-2</td>
+                            <td>4</td>
+                            <td>4</td>
+                            <td>2</td>
+                            <td>8</td>
+                        </tr>
+                        <tr>
+                            <td>30 - 59</td>
+                            <td>-1</td>
+                            <td>2</td>
+                            <td>2</td>
+                            <td>1</td>
+                            <td>4</td>
+                        </tr>
+                        <tr>
+                            <td>60 - 89</td>
+                            <td>1</td>
+                            <td>-2</td>
+                            <td>-2</td>
+                            <td>-1</td>
+                            <td>-4</td>
+                        </tr>
+                        <tr>
+                            <td>90 - 120</td>
+                            <td>2</td>
+                            <td>-4</td>
+                            <td>-4</td>
+                            <td>-2</td>
+                            <td>-8</td>                        </tr>
+                        <tr>
+                            <td>Won all tricks</td>
+                            <td>3</td>
+                            <td>-6</td>
+                            <td>-9</td>
+                            <td>0</td>
+                            <td>-12</td>
+                        </tr>
+                    </table>
                 </div>
             ),
         goingAlone:
@@ -470,21 +541,35 @@ export class Directions extends React.Component<RouteComponentProps<{}>, Directi
             (
                 <div>
                     <h3>LEASTERS</h3>
-                    <p>When no one picks, a leasters round can start. In leasters, the player with the lowest number of points will win the round. The leasters winner must win at least one trick.</p>
+                    <p>
+                        When no one picks, a leasters round can start.
+                        In leasters, the player with the lowest number of points will win the round.
+                        The leasters winner must win at least one trick.
+                    </p>
                 </div>
             ),
         leastersWithBlinds:
             (
                 <div>
                     <h3>LEASTERS WITH BLINDS</h3>
-                    <p>In this edition of Sheepshead, blind cards are ignored in leasters. In many groups, house rules may assign the blinds the the player that wins the first leasters trick or the last leasters trick. In other groups, the dealer at the begining of the round, decides which trick will win the blinds along with the other cards in the trick.</p>
+                    <p>
+                        In this edition of Sheepshead, blind cards are ignored in leasters.
+                        In many groups, house rules may assign the blinds the the player that wins the first leasters trick or the last leasters trick.
+                        In other groups, the dealer at the begining of the round, decides which trick will win the blinds along with the other cards in the trick.
+                    </p>
                 </div>
             ),
         calledAce:
             (
                 <div>
                     <h3>CALLED-ACE</h3>
-                    <p>A second method to identify a partner is the called-ace. The picker can choose the ace of a fail suit, and that card identifies the partner. The picker must have a card of the same suit in his or her hand. The picker must not lead a trick with his or her last card of the called suit. The partner must not lead with the Ace of the called suit.</p>
+                    <p>
+                        A second method to identify a partner is the called-ace.
+                        The picker can choose the ace of a fail suit, and that card identifies the partner.
+                        The picker must have a card of the same suit in his or her hand.
+                        The picker must not lead a trick with his or her last card of the called suit.
+                        The partner must not lead with the Ace of the called suit.
+                    </p>
                 </div>
             )
     };
