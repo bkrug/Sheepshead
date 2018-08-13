@@ -378,69 +378,55 @@ export class Directions extends React.Component<RouteComponentProps<{}>, Directi
                         <div className="player">
                             <h5>Picker and Partner</h5>
                             <div className="trick">
-                                <div className="cards">
-                                    <div>{this._7S} 0</div>
-                                    <div>{this._KS} 4</div>
-                                    <div>{this._9D} 0</div>
-                                    <div>{this._10S} 10</div>
-                                    <div>{this._7C} 0</div>
-                                </div>
+                                <div>{this._7S} 0</div>
+                                <div>{this._KS} 4</div>
+                                <div>{this._9D} 0</div>
+                                <div>{this._10S} 10</div>
+                                <div>{this._7C} 0</div>
                             </div>
                             <div className="trick">
-                                <div className="cards">
-                                    <div>{this._8C} 0</div>
-                                    <div>{this._9C} 0</div>
-                                    <div>{this._10C} 10</div>
-                                    <div>{this._AD} 11</div>
-                                    <div>{this._8H} 0</div>
-                                </div>
+                                <div>{this._8C} 0</div>
+                                <div>{this._9C} 0</div>
+                                <div>{this._10C} 10</div>
+                                <div>{this._AD} 11</div>
+                                <div>{this._8H} 0</div>
                             </div>
                             <div className="trick">
-                                <div className="cards">
-                                    <div>{this._KC} 4</div>
-                                    <div>{this._8S} 0</div>
-                                    <div>{this._AC} 11</div>
-                                    <div>{this._JH} 3</div>
-                                    <div>{this._KH} 4</div>
-                                </div>
+                                <div>{this._KC} 4</div>
+                                <div>{this._8S} 0</div>
+                                <div>{this._AC} 11</div>
+                                <div>{this._JH} 3</div>
+                                <div>{this._KH} 4</div>
                             </div>
                             <div className="trick">
-                                <div className="cards">
-                                    <p>Buried</p>
-                                    <div>{this._7H} 0</div>
-                                    <div>{this._9H} 0</div>
-                                </div>
+                                <p>Buried</p>
+                                <div>{this._7H} 0</div>
+                                <div>{this._9H} 0</div>
                             </div>
                         </div>
                         <div className="divider" />
                         <div className="player">
                             <h5>Defense</h5>
                             <div className="trick">
-                                <div className="cards">
-                                    <div>{this._KD} 4</div>
-                                    <div>{this._10D} 10</div>
-                                    <div>{this._QD} 3</div>
-                                    <div>{this._7D} 0</div>
-                                    <div>{this._JS} 2</div>
-                                </div>
+                                <div>{this._KD} 4</div>
+                                <div>{this._10D} 10</div>
+                                <div>{this._QD} 3</div>
+                                <div>{this._7D} 0</div>
+                                <div>{this._JS} 2</div>
                             </div>
                             <div className="trick">
-                                <div className="cards">
-                                    <div>{this._JD} 2</div>
-                                    <div>{this._10H} 10</div>
-                                    <div>{this._QH} 3</div>
-                                    <div>{this._8D} 0</div>
-                                    <div>{this._JC} 2</div>
-                                </div>
+                                <div>{this._JD} 2</div>
+                                <div>{this._10H} 10</div>
+                                <div>{this._QH} 3</div>
+                                <div>{this._8D} 0</div>
+                                <div>{this._JC} 2</div>
                             </div>
                             <div className="trick">
-                                <div className="cards">
-                                    <div>{this._QS} 3</div>
-                                    <div>{this._AH} 11</div>
-                                    <div>{this._QC} 3</div>
-                                    <div>{this._9S} 0</div>
-                                    <div>{this._AS} 11</div>
-                                </div>
+                                <div>{this._QS} 3</div>
+                                <div>{this._AH} 11</div>
+                                <div>{this._QC} 3</div>
+                                <div>{this._9S} 0</div>
+                                <div>{this._AS} 11</div>
                             </div>
                         </div>
                     </div>
