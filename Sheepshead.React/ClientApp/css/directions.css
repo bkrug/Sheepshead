@@ -230,13 +230,19 @@
     width: 8vmin;
 }
 
+.directions-film .winningHand .trick .cards > div {
+    display: block;
+    text-align: left;
+}
+
 .directions-film .winningHand img {
     height: 8vmin;
     width: 6vmin;
-    display: block;
+    display: inline-block;
 }
 
 .directions-film .winningHand .score p {
     line-height: 8vmin;
     display: block;
+    padding-left: 1vmin;
 }
