@@ -208,7 +208,7 @@ export class Directions extends React.Component<RouteComponentProps<{}>, Directi
                             {this._JH}
                             {this._JD}
                         </div>
-                        <div>
+                        <div className='fullCards'>
                             {this._AD}
                             {this._10D}
                             {this._KD}
@@ -223,7 +223,7 @@ export class Directions extends React.Component<RouteComponentProps<{}>, Directi
                         </p>
                         <div className='overlapCards'>
                         </div>
-                        <div>
+                        <div className='fullCards'>
                             {this._AC}
                             {this._10C}
                             {this._KC}

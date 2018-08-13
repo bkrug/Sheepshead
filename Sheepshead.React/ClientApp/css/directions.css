@@ -151,12 +151,13 @@
     padding-top: 2vmin;
 }
 
-.directions-film .suits div {
+.directions-film .suits .overlapCards {
+    width: 42vmin;
     display: inline-block;
 }
 
-.directions-film .suits .overlapCards {
-    width: 42vmin;
+.directions-film .suits .fullCards {
+    display: inline-block;
 }
 
 .directions-film .suits .overlapCards img {
