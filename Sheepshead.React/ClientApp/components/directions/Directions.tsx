@@ -436,7 +436,10 @@ export class Directions extends React.Component<RouteComponentProps<{}>, Directi
             (
                 <div>
                     <h3>That's enough for now</h3>
-                    <p>Go play a few hands, and come back to learn the game even better.</p>
+                    <p>
+                        Go play a few hands, and come back to learn the game even better:
+                        <a href="/setup/create?leastersOn=false"> Play! </a>
+                    </p>
                 </div>
             )
     };
@@ -571,6 +574,15 @@ export class Directions extends React.Component<RouteComponentProps<{}>, Directi
                         The partner must not lead with the Ace of the called suit.
                     </p>
                 </div>
+            ),
+        play2:
+            (
+                <div>
+                    <h3>Play some more</h3>
+                    <p>
+                        <a href="/setup/create?leastersOn=true"> Play! </a>
+                    </p>
+                </div>
             )
     };
 
@@ -636,7 +648,7 @@ export class Directions extends React.Component<RouteComponentProps<{}>, Directi
         var advancedSlides = [];
         var advancedButtons = [];
         for (var slideName in this._advancedSlides) {
-            var buttonText = (buttonNumber++).toString();
+            var buttonText = slideName == 'play2' ? 'Play' : (buttonNumber++).toString();
             advancedButtons.push(this.renderButton(slideName, buttonText));
             advancedSlides.push(this.renderSlide(slideName, this._advancedSlides[slideName]));
         }

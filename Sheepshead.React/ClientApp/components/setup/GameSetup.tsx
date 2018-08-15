@@ -9,6 +9,7 @@ export interface GameSetupState {
     remaining: number;
     gameName: string;
     selections: { [index: string]: number };
+    leastersDefault: boolean;
 }
 
 export class GameSetup extends React.Component<RouteComponentProps<{}>, GameSetupState> {
@@ -17,17 +18,30 @@ export class GameSetup extends React.Component<RouteComponentProps<{}>, GameSetu
     readonly NEWBIE = "newbieCount";
     readonly BASIC = "basicCount";
 
-    constructor() {
-        super();
+    constructor(props: any) {
+        super(props);
+        console.log(props);
         let selections: { [index: string]: number } = {};
         selections[this.HUMANS] = selections[this.NEWBIE] = selections[this.BASIC] = 0;
         this.state = {
             value: 0,
             partnerCard: true,
             remaining: this.MAX_PLAYERS,
-            gameName: '', selections: selections
+            gameName: '',
+            selections: selections,
+            leastersDefault: this.getLeastersDefault(props)
         };
         this.handleChange = this.handleChange.bind(this);
+    }
+
+    private getLeastersDefault(props: any): boolean {
+        var queryParams = props.location.search
+            .replace('?', '')
+            .split('&')
+            .map(function (q: string) { return q.split('='); });
+        var leastersParam = queryParams.filter(function (kvp: string) { return kvp[0] == 'leastersOn' });
+        console.log(leastersParam);
+        return leastersParam.length == 0 ? true : leastersParam[0][1].toLowerCase() == 'true';
     }
 
     handleChange(radioGroup: string, radioValue: number) {
@@ -62,7 +76,7 @@ export class GameSetup extends React.Component<RouteComponentProps<{}>, GameSetu
                     </div>
                     <input type="hidden" className="remaining" value={this.state.remaining} />
                     <OnOffRadio name="partnerCard" title="Partner Card" onText="Jack of Hearts" offText="Called Ace" defaultValue={true} disabled={this.state.value != 5} />
-                    <OnOffRadio name="leastersGame" title="Leasters On" onText="on" offText="off" defaultValue={true} disabled={false} />
+                    <OnOffRadio name="leastersGame" title="Leasters On" onText="on" offText="off" defaultValue={this.state.leastersDefault} disabled={false} />
                     <input type="submit" value="Play" disabled={!this.validPlayerCount()} />
                 </form>
             </div>
