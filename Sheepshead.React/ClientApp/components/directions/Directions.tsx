@@ -40,6 +40,11 @@ export class Directions extends React.Component<RouteComponentProps<{}>, Directi
     private _7S: JSX.Element = (<img className='card' src={'./img/30.png'} alt='7♠' />);
     private _7H: JSX.Element = (<img className='card' src={'./img/31.png'} alt='7♥' />);
     private _7D: JSX.Element = (<img className='card' src={'./img/32.png'} alt='7♦' />);
+    private _6C: JSX.Element = (<img className='card' src={'./img/33.png'} alt='6♣' />);
+    private _5S: JSX.Element = (<img className='card' src={'./img/38.png'} alt='5♠' />);
+    private _4H: JSX.Element = (<img className='card' src={'./img/43.png'} alt='4♥' />);
+    private _3D: JSX.Element = (<img className='card' src={'./img/48.png'} alt='3♦' />);
+    private _2C: JSX.Element = (<img className='card' src={'./img/49.png'} alt='2♣' />);
 
     private _offsetter: Offsetter = new Offsetter();
     private _inputNodes: { [slideName: string]: HTMLDivElement } = {};
@@ -183,6 +188,18 @@ export class Directions extends React.Component<RouteComponentProps<{}>, Directi
                         Sheepshead uses a 52-card deck, but throws away the 2s, 3s, 4s, 5s, and 6s.
                         There is a trump suit, and three fail suits (clubs, spades, and hearts).
                     </p>
+                    <div className="card-group">
+                        <div>
+                            {this._6C}{this._5S}{this._4H}{this._3D}{this._2C}
+                        </div>
+                        <div className="prohibit-group">
+                            <img className='prohibit' src={'./img/prohibit.png'} alt='prohibit' />
+                            <img className='prohibit' src={'./img/prohibit.png'} alt='prohibit' />
+                            <img className='prohibit' src={'./img/prohibit.png'} alt='prohibit' />
+                            <img className='prohibit' src={'./img/prohibit.png'} alt='prohibit' />
+                            <img className='prohibit' src={'./img/prohibit.png'} alt='prohibit' />
+                        </div>
+                    </div>
                 </div>
             ),
         suits:
@@ -464,68 +481,71 @@ export class Directions extends React.Component<RouteComponentProps<{}>, Directi
                         The picker wins a different number of points depending on the number of offensive players and the existance of a partner.
                     </p>
                     <table>
-                        <tr>
-                            <td></td>
-                            <td></td>
-                            <td>3 player game</td>
-                            <td colSpan={2}>5 player game w/ Partner</td>
-                            <td>5 player game wo/ Partner</td>
-                        </tr>
-                        <tr>
-                            <td>Defensive Points</td>
-                            <td>Coins per defensive player</td>
-                            <td>Coins for Picker</td>
-                            <td>Coins for Picker</td>
-                            <td>Coins for Partner</td>
-                            <td>Coins for Picker</td>
-                        </tr>
-                        <tr>
-                            <td>Won no tricks</td>
-                            <td>-3</td>
-                            <td>6</td>
-                            <td>6</td>
-                            <td>3</td>
-                            <td>12</td>
-                        </tr>
-                        <tr>
-                            <td>0 - 29</td>
-                            <td>-2</td>
-                            <td>4</td>
-                            <td>4</td>
-                            <td>2</td>
-                            <td>8</td>
-                        </tr>
-                        <tr>
-                            <td>30 - 59</td>
-                            <td>-1</td>
-                            <td>2</td>
-                            <td>2</td>
-                            <td>1</td>
-                            <td>4</td>
-                        </tr>
-                        <tr>
-                            <td>60 - 89</td>
-                            <td>1</td>
-                            <td>-2</td>
-                            <td>-2</td>
-                            <td>-1</td>
-                            <td>-4</td>
-                        </tr>
-                        <tr>
-                            <td>90 - 120</td>
-                            <td>2</td>
-                            <td>-4</td>
-                            <td>-4</td>
-                            <td>-2</td>
-                            <td>-8</td>                        </tr>
-                        <tr>
-                            <td>Won all tricks</td>
-                            <td>3</td>
-                            <td>-6</td>
-                            <td>-9</td>
-                            <td>0</td>
-                            <td>-12</td>
-                        </tr>
+                        <tbody>
+                            <tr>
+                                <td></td>
+                                <td></td>
+                                <td>3 player game</td>
+                                <td colSpan={2}>5 player game w/ Partner</td>
+                                <td>5 player game wo/ Partner</td>
+                            </tr>
+                            <tr>
+                                <td>Defensive Points</td>
+                                <td>Coins per defensive player</td>
+                                <td>Coins for Picker</td>
+                                <td>Coins for Picker</td>
+                                <td>Coins for Partner</td>
+                                <td>Coins for Picker</td>
+                            </tr>
+                            <tr>
+                                <td>Won no tricks</td>
+                                <td>-3</td>
+                                <td>6</td>
+                                <td>6</td>
+                                <td>3</td>
+                                <td>12</td>
+                            </tr>
+                            <tr>
+                                <td>0 - 29</td>
+                                <td>-2</td>
+                                <td>4</td>
+                                <td>4</td>
+                                <td>2</td>
+                                <td>8</td>
+                            </tr>
+                            <tr>
+                                <td>30 - 59</td>
+                                <td>-1</td>
+                                <td>2</td>
+                                <td>2</td>
+                                <td>1</td>
+                                <td>4</td>
+                            </tr>
+                            <tr>
+                                <td>60 - 89</td>
+                                <td>1</td>
+                                <td>-2</td>
+                                <td>-2</td>
+                                <td>-1</td>
+                                <td>-4</td>
+                            </tr>
+                            <tr>
+                                <td>90 - 120</td>
+                                <td>2</td>
+                                <td>-4</td>
+                                <td>-4</td>
+                                <td>-2</td>
+                                <td>-8</td>
+                            </tr>
+                            <tr>
+                                <td>Won all tricks</td>
+                                <td>3</td>
+                                <td>-6</td>
+                                <td>-9</td>
+                                <td>0</td>
+                                <td>-12</td>
+                            </tr>
+                        </tbody>
                     </table>
                 </div>
             ),
