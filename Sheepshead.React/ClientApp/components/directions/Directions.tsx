@@ -45,6 +45,7 @@ export class Directions extends React.Component<RouteComponentProps<{}>, Directi
     private _4H: JSX.Element = (<img className='card' src={'./img/43.png'} alt='4♥' />);
     private _3D: JSX.Element = (<img className='card' src={'./img/48.png'} alt='3♦' />);
     private _2C: JSX.Element = (<img className='card' src={'./img/49.png'} alt='2♣' />);
+    private _back: JSX.Element = (<img className='card' src={'./img/b1fv.png'} alt='card-back' />);
 
     private _offsetter: Offsetter = new Offsetter();
     private _inputNodes: { [slideName: string]: HTMLDivElement } = {};
@@ -338,7 +339,58 @@ export class Directions extends React.Component<RouteComponentProps<{}>, Directi
             (
                 <div>
                     <h3>DEAL</h3>
-                    <p>In a 5-player game, each player is dealt 6 cards. In a 3-player game, each player is dealt 10 cards. The two remaining cards are the blinds. The picker gets the blinds.</p>
+                    <p>
+                        In a 5-player game, each player is dealt 6 cards.
+                        In a 3-player game, each player is dealt 10 cards.
+                        The two remaining cards are the blinds.
+                        The picker gets the blinds.
+                    </p>
+                    <div className='dealtHands'>
+                        <div className='overlapCards'>
+                            {this._back}
+                            {this._back}
+                        </div>
+                        <div className='overlapCards'>
+                            {this._back}
+                            {this._back}
+                            {this._back}
+                            {this._back}
+                            {this._back}
+                            {this._back}
+                        </div>
+                        <div className='overlapCards'>
+                            {this._back}
+                            {this._back}
+                            {this._back}
+                            {this._back}
+                            {this._back}
+                            {this._back}
+                        </div>
+                        <div className='overlapCards'>
+                            {this._back}
+                            {this._back}
+                            {this._back}
+                            {this._back}
+                            {this._back}
+                            {this._back}
+                        </div>
+                        <div className='overlapCards'>
+                            {this._back}
+                            {this._back}
+                            {this._back}
+                            {this._back}
+                            {this._back}
+                            {this._back}
+                        </div>
+                        <div className='overlapCards'>
+                            {this._back}
+                            {this._back}
+                            {this._back}
+                            {this._back}
+                            {this._back}
+                            {this._back}
+                        </div>
+                    </div>
                 </div>
             ),
         picking:

@@ -225,6 +225,24 @@
     display: inline-block;
 }
 
+/* Deal */
+.directions-film .deal .dealtHands {
+    text-align: center;
+}
+
+.directions-film .deal .dealtHands .overlapCards {
+    display: inline-block;
+    margin: 1vmin;
+}
+
+.directions-film .deal .overlapCards img.card {
+    margin-right: -9vmin;
+}
+
+.directions-film .deal .overlapCards img.card:last-child {
+    margin-right: 0;
+}
+
 /* Winning Hand */
 .directions-film .winningHand .diagram {
     text-align: center;
