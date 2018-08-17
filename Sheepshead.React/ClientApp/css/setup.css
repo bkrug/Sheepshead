@@ -23,3 +23,11 @@ input[disabled] {
 .invalid {
     color: red;
 }
+
+.directions-parent {
+    margin-top: 15px;
+}
+
+.directions-parent a {
+    font-size: large;
+}

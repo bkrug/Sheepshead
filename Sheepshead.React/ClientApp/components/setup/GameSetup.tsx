@@ -79,6 +79,9 @@ export class GameSetup extends React.Component<RouteComponentProps<{}>, GameSetu
                     <OnOffRadio name="leastersGame" title="Leasters On" onText="on" offText="off" defaultValue={this.state.leastersDefault} disabled={false} />
                     <input type="submit" value="Play" disabled={!this.validPlayerCount()} />
                 </form>
+                <div className="directions-parent">
+                    <a href="/directions">Directions</a>
+                </div>
             </div>
         );
     }

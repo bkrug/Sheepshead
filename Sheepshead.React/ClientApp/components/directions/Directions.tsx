@@ -557,9 +557,12 @@ export class Directions extends React.Component<RouteComponentProps<{}>, Directi
                 <div>
                     <h3>That's enough for now</h3>
                     <p>
-                        Go play a few hands, and come back to learn the game even better:
-                        <a href="/setup/create?leastersOn=false"> Play! </a>
+                        Go play a few hands, and come back to learn the game even better.
                     </p>
+                    <p>
+                        In your first game, we'll turn off a setting called "leasters".
+                    </p>
+                    <a href="/setup/create?leastersOn=false">Play!</a>
                 </div>
             )
     };
@@ -703,8 +706,9 @@ export class Directions extends React.Component<RouteComponentProps<{}>, Directi
                 <div>
                     <h3>Play some more</h3>
                     <p>
-                        <a href="/setup/create?leastersOn=true"> Play! </a>
+                        Let's turn leasters on now. You can also experiment with the called-ace partner method if you like.
                     </p>
+                    <a href="/setup/create?leastersOn=true"> Play! </a>
                 </div>
             )
     };
