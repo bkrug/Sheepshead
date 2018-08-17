@@ -243,6 +243,30 @@
     margin-right: 0;
 }
 
+/* Picking */
+.directions-film .picking .pickerCards {
+    text-align: center;
+}
+
+.directions-film .picking .stage {
+    display: inline-block;
+    vertical-align: middle;
+    margin: 0vmin 2vmin;
+}
+
+.directions-film .picking .arrow {
+    display: inline-block;
+    font-size: 10vmin;
+}
+
+.directions-film .picking .overlapCards img.card {
+    margin-right: calc(1.5vw - 12vmin);
+}
+
+.directions-film .picking .overlapCards img.card:last-child {
+    margin-right: 0;
+}
+
 /* Winning Hand */
 .directions-film .winningHand .diagram {
     text-align: center;

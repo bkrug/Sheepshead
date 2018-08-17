@@ -405,6 +405,57 @@ export class Directions extends React.Component<RouteComponentProps<{}>, Directi
                         Pickers who win a hand recieve more benefits then a defensive player who wins a hand.
                         Most pickers have several trump cards.
                     </p>
+                    <div className="pickerCards">
+                        <div className="stage">
+                            <div>Picker's hand</div>
+                            <div className='overlapCards'>
+                                {this._QC}
+                                {this._JD}
+                                {this._AS}
+                                {this._KH}
+                                {this._QS}
+                                {this._JS}
+                            </div>
+                            <div>Blinds</div>
+                            <div className='overlapCards'>
+                                {this._back}
+                                {this._back}
+                            </div>
+                        </div>
+                        <div className="arrow">➜</div>
+                        <div className="stage">
+                            <div>Picker's hand</div>
+                            <div>with blinds</div>
+                            <div className='overlapCards'>
+                                {this._QC}
+                                {this._JD}
+                                {this._AS}
+                                {this._KH}
+                                {this._QS}
+                                {this._JS}
+                                {this._QH}
+                                {this._AC}
+                            </div>
+                        </div>
+                        <div className="arrow">➜</div>
+                        <div className="stage">
+                            <div>Picker's hand after</div>
+                            <div>burying cards</div>
+                            <div className='overlapCards'>
+                                {this._QC}
+                                {this._JD}
+                                {this._KH}
+                                {this._QS}
+                                {this._JS}
+                                {this._QH}
+                            </div>
+                            <div>Buried cards</div>
+                            <div className='overlapCards'>
+                                {this._back}
+                                {this._back}
+                            </div>
+                        </div>
+                    </div>
                 </div>
             ),
         partners:
