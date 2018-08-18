@@ -1,13 +1,19 @@
-﻿body {
-    margin: 0; /* This is used to reset any browser-default margins */
-    height: 100vh; /* This is needed to overcome a Chrome bug. */
-    width: 100vw; /* As above. */
+﻿/*body {
+    margin: 0; /* This is used to reset any browser-default margins 
+    height: 100vh; /* This is needed to overcome a Chrome bug. 
+    width: 100vw; /* As above. 
     overflow: hidden;
+}*/
+body {
+    height: 1900vh; /* There are presumed to be 19 slides in the directions, each using 100% viewport height */
 }
 
 .row .directions-film {
     width: 100vw;
     padding: 0px;
+    position: fixed;
+    left: 0px;
+    top: 0px;
 }
 
 .directions-film .slide {

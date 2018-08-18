@@ -5,6 +5,7 @@ import { Offsetter } from './Offsetter';
 import { CheatSheet } from '../game/CheatSheet';
 
 export interface DirectionsState {
+    filmOffset: string;
 }
 
 export class Directions extends React.Component<RouteComponentProps<{}>, DirectionsState> {
@@ -54,13 +55,13 @@ export class Directions extends React.Component<RouteComponentProps<{}>, Directi
             (
                 <div>
                     <h2>CONCEPT</h2>
-                    <p>This version of sheepshead features 3 or 5 players. 
-                        1 'picker' against 2 other players, 
+                    <p>This version of sheepshead features 3 or 5 players.
+                        1 'picker' against 2 other players,
                         or 1 'picker' and (usually) 1 'partner' against 3 other players.
                         Teams change each hand, and in the 5-player version it takes time to figure out who the partner is.
                     </p>
                     <div className='scenarios'>
-                        <div className='column' style={{ textAlign:'right' }}>
+                        <div className='column' style={{ textAlign: 'right' }}>
                             <div>
                                 <div className='player'>
                                     <div>👤</div>
@@ -399,9 +400,9 @@ export class Directions extends React.Component<RouteComponentProps<{}>, Directi
                     <h3>PICKING</h3>
                     <p>
                         Each player gets a chance to decide to be or not to be a picker.
-                        Pickers are on the offense. 
+                        Pickers are on the offense.
                         Pickers get to take the two blind cards into their hand.
-                        The picker must then select two cards to bury which may or may not include one or both blind cards.
+                        The picker must then select two cards to bury, which may or may not include one or both blind cards.
                         Pickers who win a hand recieve more benefits then a defensive player who wins a hand.
                         Most pickers have several trump cards.
                     </p>
@@ -660,7 +661,7 @@ export class Directions extends React.Component<RouteComponentProps<{}>, Directi
                 <div>
                     <h3>GOING IT ALONE</h3>
                     <p>
-                        You can see now why someone would take the risk of picking 
+                        You can see now why someone would take the risk of picking
                         and why someone would take the risk of picking without accepting a partner, that is, "going it alone".
                         Both decisions give the picker the opportunity to gain more coins.
                     </p>
@@ -716,21 +717,22 @@ export class Directions extends React.Component<RouteComponentProps<{}>, Directi
     constructor(props: any) {
         super(props);
         this.state = {
-            linearDocumentOffset: 0
+            filmOffset: '0px'
         };
-        this.onWheel = this.onWheel.bind(this);
         this.onLinkClick = this.onLinkClick.bind(this);
+        this.scroll = this.scroll.bind(this);
+        window.setInterval(this.scroll, 33);
     }
 
     componentDidMount() {
         this.scrollToSlide(this.props.location.hash);
     }
 
-    //The linear offset is the offset that would be used if we scrolled by a consistent amount with each wheel event.
-    //The eased offset causes the document to scroll very slowly when we are near the edge of a page of directions and quickly otherwise.
-    private onWheel(e: any) {
-        var newOffset = this._offsetter.calculateLinearOffset(e.deltaY);
-        window.scroll(0, this._offsetter.calculateEasedOffset(newOffset));
+    private scroll() {
+        var doc = document.documentElement;
+        var windowOffset = (window.pageYOffset || doc.scrollTop) - (doc.clientTop || 0);
+        var easedOffset = -this._offsetter.calculateEasedOffset(windowOffset);
+        this.setState({ filmOffset: easedOffset + 'px' });
     }
 
     private onLinkClick(e: any) {
@@ -741,13 +743,12 @@ export class Directions extends React.Component<RouteComponentProps<{}>, Directi
 
     private scrollToSlide(hash: string) {
         var slideName = hash.substring(1);
-        this._inputNodes[slideName].scrollIntoView();
-        this._offsetter.setLinearDocumentOffset(window.pageYOffset);
+        window.scroll(0, this._inputNodes[slideName].offsetTop);
     }
 
     private renderSlide(slideName: string, slideContent: JSX.Element) {
         return (
-            <div className={'slide ' + slideName} name={slideName} ref={node => node !== null ? this._inputNodes[slideName] = node : 0} key={'slide-'+slideName}>
+            <div className={'slide ' + slideName} name={slideName} ref={node => node !== null ? this._inputNodes[slideName] = node : 0} key={'slide-' + slideName}>
                 <div className='content'>
                     {slideContent}
                 </div>
@@ -781,15 +782,15 @@ export class Directions extends React.Component<RouteComponentProps<{}>, Directi
         }
 
         return (
-            <div className='directions-film' onWheel={this.onWheel}>
-                { basicSlides }
-                { advancedSlides }
+            <div className='directions-film' style={{ top: this.state.filmOffset }}>
+                {basicSlides}
+                {advancedSlides}
                 <div className='button-group'>
                     <div className='button-row'>
-                        { basicButtons }
+                        {basicButtons}
                     </div>
                     <div className='button-row'>
-                        { advancedButtons }
+                        {advancedButtons}
                     </div>
                 </div>
             </div>
