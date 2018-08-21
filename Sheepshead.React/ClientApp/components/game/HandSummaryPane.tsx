@@ -4,6 +4,7 @@ import { IdUtils } from '../IdUtils';
 import { FetchUtils } from '../FetchUtils';
 import { render } from 'react-dom';
 import { PlayState, TrickChoice, CardSummary, GameScore, HandScores, HandSummary } from './PlayState';
+import Card from './Card';
 
 export interface HandSummaryPaneState {
     gameId: string;
@@ -11,6 +12,8 @@ export interface HandSummaryPaneState {
     points: GameScore[];
     coins: GameScore[];
     mustRedeal: boolean;
+    tricks: { key: string, value: CardSummary[] }[],
+    showGroupedTricks: boolean;
 }
 
 export interface HandSummaryPaneProps extends React.Props<any> {
@@ -28,9 +31,15 @@ export default class HandSummaryPane extends React.Component<HandSummaryPaneProp
             playerId: IdUtils.getPlayerId(props.gameId) || '',
             points: [],
             coins: [],
-            mustRedeal: false
+            mustRedeal: false,
+            tricks: [],
+            showGroupedTricks: false
         };
         var self = this;
+        this.showGroupedTricks = this.showGroupedTricks.bind(this);
+        this.hideGroupedTricks = this.hideGroupedTricks.bind(this);
+        this.renderModal = this.renderModal.bind(this);
+
         FetchUtils.get(
             'Game/HandSummary?gameId=' + this.state.gameId,
             function (json: HandSummary): void {
@@ -45,9 +54,41 @@ export default class HandSummaryPane extends React.Component<HandSummaryPaneProp
                 self.setState({
                     coins: coinsArray,
                     points: pointsArray,
-                    mustRedeal: json.mustRedeal
+                    mustRedeal: json.mustRedeal,
+                    tricks: json.tricks
                 });
             }
+        );
+    }
+
+    private showGroupedTricks() : void {
+        this.setState({
+            showGroupedTricks: true
+        });
+    }
+
+    private hideGroupedTricks() : void {
+        this.setState({
+            showGroupedTricks: false
+        });        
+    }
+
+    private renderModal() {
+        var self = this;
+        var playerList = this.state.tricks.map((trick: { key: string, value: CardSummary[] }, i: number) =>
+            <div key={i} className='trickSummary'>
+                <p>{trick.key}</p>
+                {trick.value.map((cardSummary: CardSummary, j: number) =>
+                    <p className={cardSummary.abbreviation.indexOf('♥') >= 0 || cardSummary.abbreviation.indexOf('♦') >= 0 ? 'redCard' : 'blkCard'}>{cardSummary.abbreviation}</p>
+                )}
+            </div>
+        );
+        return (
+            <div className="modalDialog">
+                <div>
+                    {playerList}
+                </div>
+            </div>
         );
     }
 
@@ -69,7 +110,7 @@ export default class HandSummaryPane extends React.Component<HandSummaryPaneProp
                 { this.state.mustRedeal
                     ? <h3>Must re-deal. There was no picker. </h3>
                     : <div>
-                        <div>
+                        <div onMouseOver={this.showGroupedTricks} onMouseOut={this.hideGroupedTricks}>
                             <h4>Points from this Hand</h4>
                             {pointList}
                         </div>
@@ -80,6 +121,7 @@ export default class HandSummaryPane extends React.Component<HandSummaryPaneProp
                     </div>
                 }
                 <button onClick={this.props.onSummaryPhaseComplete}>Continue</button>
+                {this.state.showGroupedTricks ? this.renderModal() : <div></div> }
             </div>
         );
     }

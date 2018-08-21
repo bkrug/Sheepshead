@@ -56,3 +56,23 @@
     text-align: center;
     width: 30px;
 }
+
+.trickSummary img {
+    width: 48px;
+    height: 64px;
+}
+
+.trickSummary {
+    width: calc(230px);
+}
+
+.trickSummary p {
+    width: 20px;
+    display: inline-block;
+    text-align: right;
+}
+
+.trickSummary p:first-child {
+    width: 50px;
+    text-align: left;
+}

@@ -171,6 +171,42 @@ namespace Sheepshead.Models
             { SheepCard.N7_DIAMONDS, "32" }
         };
 
+        //♣♠♥♦
+        private static Dictionary<SheepCard, string> list2 = new Dictionary<SheepCard, string>() {
+            { SheepCard.ACE_CLUBS, "A♣" },
+            { SheepCard.ACE_SPADES, "A♠" },
+            { SheepCard.ACE_HEARTS, "A♥" },
+            { SheepCard.ACE_DIAMONDS, "A♦" },
+            { SheepCard.KING_CLUBS, "K♣" },
+            { SheepCard.KING_SPADES, "K♠" },
+            { SheepCard.KING_HEARTS, "K♥" },
+            { SheepCard.KING_DIAMONDS, "K♦" },
+            { SheepCard.QUEEN_CLUBS, "Q♣" },
+            { SheepCard.QUEEN_SPADES, "Q♠" },
+            { SheepCard.QUEEN_HEARTS, "Q♥" },
+            { SheepCard.QUEEN_DIAMONDS, "Q♦" },
+            { SheepCard.JACK_CLUBS, "J♣" },
+            { SheepCard.JACK_SPADES, "J♠" },
+            { SheepCard.JACK_HEARTS, "J♥" },
+            { SheepCard.JACK_DIAMONDS, "J♦" },
+            { SheepCard.N10_CLUBS, "10♣" },
+            { SheepCard.N10_SPADES, "10♠" },
+            { SheepCard.N10_HEARTS, "10♥" },
+            { SheepCard.N10_DIAMONDS, "10♦" },
+            { SheepCard.N9_CLUBS, "9♣" },
+            { SheepCard.N9_SPADES, "9♠" },
+            { SheepCard.N9_HEARTS, "9♥" },
+            { SheepCard.N9_DIAMONDS, "9♦" },
+            { SheepCard.N8_CLUBS, "8♣" },
+            { SheepCard.N8_SPADES, "8♠" },
+            { SheepCard.N8_HEARTS, "8♥" },
+            { SheepCard.N8_DIAMONDS, "8♦" },
+            { SheepCard.N7_CLUBS, "7♣" },
+            { SheepCard.N7_SPADES, "7♠" },
+            { SheepCard.N7_HEARTS, "7♥" },
+            { SheepCard.N7_DIAMONDS, "7♥" }
+        };
+
         public static Dictionary<StandardSuite, string> SuiteLetter { get; } = new Dictionary<StandardSuite, string>()
         {
             { StandardSuite.CLUBS, "♣" }, { StandardSuite.DIAMONDS, "♦" }, { StandardSuite.HEARTS, "♥" }, { StandardSuite.SPADES, "♠" }
@@ -185,6 +221,11 @@ namespace Sheepshead.Models
         public static string GetPictureFilename(SheepCard card)
         {
             return list1[card];
+        }
+
+        public static string GetAbbreviation(SheepCard card)
+        {
+            return list2[card];
         }
 
         public static SheepCard GetCardFromFilename(string filename)
@@ -205,7 +246,8 @@ namespace Sheepshead.Models
             {
                 Name = card.ToString(),
                 Filename = GetPictureFilename(card),
-                LegalMove = legalMove
+                LegalMove = legalMove,
+                Abbreviation = GetAbbreviation(card)
             };
         }
     }
@@ -215,5 +257,6 @@ namespace Sheepshead.Models
         public string Name { get; set; }
         public string Filename { get; set; }
         public bool? LegalMove { get; set; }
+        public string Abbreviation { get; set; }
     }
 }

@@ -31,6 +31,7 @@ export class HandSummary {
     points: any;
     coins: any;
     mustRedeal: boolean;
+    tricks: { key: string, value: CardSummary[] }[];
 }
 
 export class PickChoice {
@@ -47,6 +48,7 @@ export class CardSummary {
     name: string;
     filename: string;
     legalMove: boolean | null;
+    abbreviation: string;
 }
 
 export interface GameScore {

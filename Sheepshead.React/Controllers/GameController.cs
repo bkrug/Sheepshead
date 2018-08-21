@@ -30,6 +30,13 @@ namespace Sheepshead.React.Controllers
             {
                 points = scores?.Points?.ToDictionary(k => k.Key.Name, k => k.Value),
                 coins = scores?.Coins?.ToDictionary(k => k.Key.Name, k => k.Value),
+                tricks = hand.Tricks
+                             .Select(trick =>
+                                new KeyValuePair<string, List<CardSummary>> (
+                                    trick.Winner().Player.Name,
+                                    trick.CardsPlayed.Select(c => CardUtil.GetCardSummary(c.Value)).ToList()
+                                )
+                             ),
                 mustRedeal = mustRedeal
             });
         }
