@@ -3,7 +3,7 @@ import { RouteComponentProps } from 'react-router';
 import { IdUtils } from '../IdUtils';
 import { FetchUtils } from '../FetchUtils';
 import ActionPane from './ActionPane';
-import { GameScore } from 'ClientApp/components/game/PlayState';
+import { GameScore, CardSummary } from 'ClientApp/components/game/PlayState';
 import { CheatSheetModal } from './CheatSheetModal';
 
 export interface PlayPaneState {
@@ -14,6 +14,8 @@ export interface PlayPaneState {
     trickWinners: string[];
     coins: GameScore[];
     leastersHand: boolean;
+    tricks: { key: string, value: CardSummary[] }[];
+    showGroupedTricks: boolean;
 }
 
 export class PlayPane extends React.Component<RouteComponentProps<{}>, PlayPaneState> {
@@ -26,10 +28,15 @@ export class PlayPane extends React.Component<RouteComponentProps<{}>, PlayPaneS
             partnerCard: '',
             trickWinners: [],
             coins: [],
-            leastersHand: false
+            leastersHand: false,
+            tricks: [],
+            showGroupedTricks: false
         };
         this.trickEnd = this.trickEnd.bind(this);
         this.handEnd = this.handEnd.bind(this);
+        this.showGroupedTricks = this.showGroupedTricks.bind(this);
+        this.hideGroupedTricks = this.hideGroupedTricks.bind(this);
+        this.renderModal = this.renderModal.bind(this);
         this.handEnd();
     }
 
@@ -42,8 +49,7 @@ export class PlayPane extends React.Component<RouteComponentProps<{}>, PlayPaneS
                     coins: json,
                     picker: '',
                     partner: '',
-                    partnerCard: '',
-                    trickWinners: []
+                    partnerCard: ''
                 });
             });
     }
@@ -58,14 +64,46 @@ export class PlayPane extends React.Component<RouteComponentProps<{}>, PlayPaneS
                     partner: json.partner,
                     partnerCard: json.partnerCard,
                     trickWinners: json.trickWinners,
-                    leastersHand: json.leastersHand
+                    leastersHand: json.leastersHand,
+                    tricks: json.tricks
                 });
             });
     }
 
+    private showGroupedTricks(): void {
+        this.setState({
+            showGroupedTricks: true
+        });
+    }
+
+    private hideGroupedTricks(): void {
+        this.setState({
+            showGroupedTricks: false
+        });
+    }
+
+    private renderModal() {
+        var self = this;
+        var playerList = this.state.tricks.map((trick: { key: string, value: CardSummary[] }, i: number) =>
+            <div key={i} className='trickSummary'>
+                <p>{trick.key}</p>
+                {trick.value.map((cardSummary: CardSummary, j: number) =>
+                    <p key={j} className={cardSummary.abbreviation.indexOf('♥') >= 0 || cardSummary.abbreviation.indexOf('♦') >= 0 ? 'redCard' : 'blkCard'}>{cardSummary.abbreviation}</p>
+                )}
+            </div>
+        );
+        return (
+            <div className="modalDialog">
+                <div>
+                    {playerList}
+                </div>
+            </div>
+        );
+    }
+
     public render() {
         return (
-            <div className="playPane">
+            <div className="playPane">l
                 <CheatSheetModal />
                 <div>
                     <h4>Game Details</h4>
@@ -79,7 +117,8 @@ export class PlayPane extends React.Component<RouteComponentProps<{}>, PlayPaneS
                         )
                     }
                 </div>
-                <div>
+                {this.state.showGroupedTricks ? this.renderModal() : <div></div> }
+                <div onMouseOver={this.showGroupedTricks} onMouseOut={this.hideGroupedTricks}>
                     <h4>Hand Details</h4>
                     <div>Picker: {this.state.picker}</div>
                     <div>Partner: {this.state.partner}</div>

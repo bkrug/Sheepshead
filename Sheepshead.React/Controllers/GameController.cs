@@ -104,13 +104,21 @@ namespace Sheepshead.React.Controllers
         {
             var game = GetGame(gameId);
             var trickWinner = game.GetTrickWinners();
+            var hand = game.Decks.LastOrDefault()?.Hand;
             return Json(new
             {
                 trickWinner.Picker,
                 trickWinner.Partner,
                 trickWinner.PartnerCard,
                 trickWinner.TrickWinners,
-                leastersHand = game.Decks.LastOrDefault(d => d.Hand != null)?.Hand?.Leasters ?? false
+                leastersHand = game.Decks.LastOrDefault(d => d.Hand != null)?.Hand?.Leasters ?? false,
+                tricks = hand?.Tricks
+                             ?.Select(trick =>
+                                new KeyValuePair<string, List<CardSummary>>(
+                                    trick.Winner()?.Player?.Name ?? "",
+                                    trick.CardsPlayed.Select(c => CardUtil.GetCardSummary(c.Value)).ToList()
+                                )
+                             ),
             });
         }
 
