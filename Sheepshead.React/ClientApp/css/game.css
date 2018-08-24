@@ -10,6 +10,11 @@
     transition: opacity 400ms ease-in;
 }
 
+.modalDialog.trick-cards {
+    top: 260px;
+    left: 40vw;
+}
+
 .modalDialog:target {
     opacity: 1;
     pointer-events: auto;
@@ -55,6 +60,14 @@
     border-color: black;
     text-align: center;
     width: 30px;
+}
+
+.play-pane .hand-data,
+.play-pane .trick-winners {
+    display: inline-block;
+    width: 50%;
+    height: 120px;
+    vertical-align: top;
 }
 
 .trickSummary img {

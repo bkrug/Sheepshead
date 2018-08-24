@@ -94,7 +94,7 @@ export class PlayPane extends React.Component<RouteComponentProps<{}>, PlayPaneS
             </div>
         );
         return (
-            <div className="modalDialog">
+            <div className="modalDialog trick-cards">
                 <div>
                     {playerList}
                 </div>
@@ -104,7 +104,7 @@ export class PlayPane extends React.Component<RouteComponentProps<{}>, PlayPaneS
 
     public render() {
         return (
-            <div className="playPane">
+            <div className="play-pane">
                 <CheatSheetModal />
                 <div>
                     <h4>Game Details</h4>
@@ -119,17 +119,21 @@ export class PlayPane extends React.Component<RouteComponentProps<{}>, PlayPaneS
                     }
                 </div>
                 {this.state.showGroupedTricks ? this.renderModal() : <div></div> }
-                <div onMouseOver={this.showGroupedTricks} onMouseOut={this.hideGroupedTricks}>
+                <div>
                     <h4>Hand Details</h4>
-                    <div>Picker: {this.state.picker}</div>
-                    <div>Partner: {this.state.partner}</div>
-                    <div>Partner Card: {this.state.partnerCard}</div>
-                    {this.state.leastersHand ? <b>Leasters Hand</b> : ''}
-                    {
-                        this.state.trickWinners.map((playerName: string, i: number) =>
-                            <div key={i}><b>Trick {i+1}</b> {playerName}</div>
-                        )
-                    }
+                    <div className={'hand-data'}>
+                        <div>Picker: {this.state.picker}</div>
+                        <div>Partner: {this.state.partner}</div>
+                        <div>Partner Card: {this.state.partnerCard}</div>
+                        {this.state.leastersHand ? <b>Leasters Hand</b> : ''}
+                    </div>
+                    <div className={'trick-winners'} onMouseOver={this.showGroupedTricks} onMouseOut={this.hideGroupedTricks}>
+                        {
+                            this.state.trickWinners.map((playerName: string, i: number) =>
+                                <div key={i}><b>Trick {i+1}</b> {playerName}</div>
+                            )
+                        }
+                    </div>
                 </div>
                 <ActionPane gameId={this.state.gameId}
                     onHandEnd={this.handEnd}
