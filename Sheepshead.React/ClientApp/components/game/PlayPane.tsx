@@ -71,7 +71,7 @@ export class PlayPane extends React.Component<RouteComponentProps<{}>, PlayPaneS
     }
 
     private showGroupedTricks(): void {
-        if (this.state.tricks.length > 0)
+        if (this.state.tricks.length > 0 && this.state.tricks[0].value.length > 0)
             this.setState({
                 showGroupedTricks: true
             });
