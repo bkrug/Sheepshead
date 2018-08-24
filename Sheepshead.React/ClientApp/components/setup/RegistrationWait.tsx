@@ -1,5 +1,7 @@
 ﻿import * as React from 'react';
 import { RouteComponentProps } from 'react-router';
+import ReactDOM from 'react-dom';
+import CopyToClipboard from 'react-copy-to-clipboard';
 import { IdUtils } from '../IdUtils';
 
 export interface RegistrationWaitState {
@@ -42,6 +44,9 @@ export class RegistrationWait extends React.Component<RouteComponentProps<{}>, R
                 <div hidden={this.state.allPlayersReady}>
                     <p>Waiting for other players.</p>
                     <p>Share this url with friends that you will play with: <b>{this.getUrl()}</b> </p>
+                    <CopyToClipboard text={this.getUrl()}>
+                        <button>Copy URL to clipboard</button>
+                    </CopyToClipboard>
                 </div>
                 <div hidden={!this.state.allPlayersReady}>
                     All players have registered.

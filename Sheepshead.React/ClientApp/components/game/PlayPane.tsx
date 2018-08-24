@@ -71,9 +71,10 @@ export class PlayPane extends React.Component<RouteComponentProps<{}>, PlayPaneS
     }
 
     private showGroupedTricks(): void {
-        this.setState({
-            showGroupedTricks: true
-        });
+        if (this.state.tricks.length > 0)
+            this.setState({
+                showGroupedTricks: true
+            });
     }
 
     private hideGroupedTricks(): void {
@@ -103,7 +104,7 @@ export class PlayPane extends React.Component<RouteComponentProps<{}>, PlayPaneS
 
     public render() {
         return (
-            <div className="playPane">l
+            <div className="playPane">
                 <CheatSheetModal />
                 <div>
                     <h4>Game Details</h4>

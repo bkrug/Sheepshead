@@ -31,5 +31,8 @@
     "webpack": "2.5.1",
     "webpack-hot-middleware": "2.18.2"
   },
-  "dependencies": {}
+  "dependencies": {
+    "react": "https://registry.npmjs.org/react/-/react-15.6.1.tgz",
+    "react-copy-to-clipboard": "^5.0.1"
+  }
 }
