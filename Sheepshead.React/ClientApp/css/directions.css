@@ -89,6 +89,10 @@
     color: deepskyblue;
 }
 
+.directions-film a.jump-button.pressed-button {
+    background-color: white;
+}
+
 /* Concept slide */
 .directions-film .concept .scenarios {
     text-align: center;

@@ -6,6 +6,7 @@ import { CheatSheet } from '../game/CheatSheet';
 
 export interface DirectionsState {
     filmOffset: string;
+    currentSlide: number;
 }
 
 export class Directions extends React.Component<RouteComponentProps<{}>, DirectionsState> {
@@ -55,7 +56,8 @@ export class Directions extends React.Component<RouteComponentProps<{}>, Directi
             (
                 <div>
                     <h2>CONCEPT</h2>
-                    <p>This version of sheepshead features 3 or 5 players.
+                    <p>
+                        This version of sheepshead features 3 or 5 players.
                         1 'picker' against 2 other players,
                         or 1 'picker' and (usually) 1 'partner' against 3 other players.
                         Teams change each hand, and in the 5-player version it takes time to figure out who the partner is.
@@ -717,7 +719,8 @@ export class Directions extends React.Component<RouteComponentProps<{}>, Directi
     constructor(props: any) {
         super(props);
         this.state = {
-            filmOffset: '0px'
+            filmOffset: '0px',
+            currentSlide: 0
         };
         this.onLinkClick = this.onLinkClick.bind(this);
         this.scroll = this.scroll.bind(this);
@@ -733,6 +736,10 @@ export class Directions extends React.Component<RouteComponentProps<{}>, Directi
         var windowOffset = (window.pageYOffset || doc.scrollTop) - (doc.clientTop || 0);
         var easedOffset = -this._offsetter.calculateEasedOffset(windowOffset);
         this.setState({ filmOffset: easedOffset + 'px' });
+
+        var virtualOffset = windowOffset / window.innerHeight + 0.33;
+        var slideNo = virtualOffset - virtualOffset % 1;
+        this.setState({ currentSlide: slideNo });
     }
 
     private onLinkClick(e: any) {
@@ -747,8 +754,12 @@ export class Directions extends React.Component<RouteComponentProps<{}>, Directi
     }
 
     private renderSlide(slideName: string, slideContent: JSX.Element) {
+        var self = this;
+        var getSlideElement = function (node: HTMLDivElement | null) { node !== null ? self._inputNodes[slideName] = node : 0 };
+        var slideClass = 'slide ' + slideName;
+        var slideKey = 'slide-' + slideName;
         return (
-            <div className={'slide ' + slideName} name={slideName} ref={node => node !== null ? this._inputNodes[slideName] = node : 0} key={'slide-' + slideName}>
+            <div className={slideClass} name={slideName} ref={node => getSlideElement(node)} key={slideClass}>
                 <div className='content'>
                     {slideContent}
                 </div>
@@ -756,9 +767,11 @@ export class Directions extends React.Component<RouteComponentProps<{}>, Directi
         );
     }
 
-    private renderButton(slideName: string, buttonText: string) {
+    private renderButton(slideName: string, buttonText: string, slideIndex: number) {
+        var pressedClass = slideIndex == this.state.currentSlide ? 'pressed-button' : '';
+        var className = 'jump-button ' + pressedClass;
         return (
-            <a className='jump-button' href={'directions#' + slideName} onClick={this.onLinkClick} key={'button-' + slideName}>{buttonText}</a>
+            <a className={className} href={'directions#' + slideName} onClick={this.onLinkClick} key={'button-' + slideName}>{buttonText}</a>
         );
     }
 
@@ -768,17 +781,19 @@ export class Directions extends React.Component<RouteComponentProps<{}>, Directi
         var basicSlides = [];
         var basicButtons = [];
         for (var slideName in this._basicSlides) {
-            var buttonText = slideName == 'play' ? 'Play' : (buttonNumber++).toString();
-            basicButtons.push(this.renderButton(slideName, buttonText));
+            var buttonText = slideName == 'play' ? 'Play' : buttonNumber.toString();
+            basicButtons.push(this.renderButton(slideName, buttonText, buttonNumber-1));
             basicSlides.push(this.renderSlide(slideName, this._basicSlides[slideName]));
+            ++buttonNumber;
         }
 
         var advancedSlides = [];
         var advancedButtons = [];
         for (var slideName in this._advancedSlides) {
-            var buttonText = slideName == 'play2' ? 'Play' : (buttonNumber++).toString();
-            advancedButtons.push(this.renderButton(slideName, buttonText));
+            var buttonText = slideName == 'play2' ? 'Play' : buttonNumber.toString();
+            advancedButtons.push(this.renderButton(slideName, buttonText, buttonNumber-1));
             advancedSlides.push(this.renderSlide(slideName, this._advancedSlides[slideName]));
+            ++buttonNumber;
         }
 
         return (
