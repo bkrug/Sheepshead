@@ -62,8 +62,8 @@ export class GameSetup extends React.Component<RouteComponentProps<{}>, GameSetu
 
     public render() {
         return (
-            <div className="game-setup">
-                <div className="setup-container">
+            <div className="game-setup page-contents">
+                <div className="centered-page-contents">
                     <h4>Setup Sheepshead Game</h4>
                     <form method="post">
                         <PlayerCountRadio name={this.HUMANS} title="Humans" onChange={this.handleChange} value={this.state.selections[this.HUMANS]} remaining={this.state.remaining} />

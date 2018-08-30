@@ -104,40 +104,42 @@ export class PlayPane extends React.Component<RouteComponentProps<{}>, PlayPaneS
 
     public render() {
         return (
-            <div className="play-pane">
-                <CheatSheetModal />
-                <div>
-                    <h4>Game Details</h4>
-                    {
-                        this.state.coins.map((coinScore: GameScore, i: number) =>
-                            <div key={i} style={{ display: 'inline-flex', margin: '0px 20px', textAlign: 'center' }}>
-                                {coinScore.name}
-                                <br />
-                                {coinScore.score || '-'}
-                            </div>
-                        )
-                    }
-                </div>
-                {this.state.showGroupedTricks ? this.renderModal() : <div></div> }
-                <div>
-                    <h4>Hand Details</h4>
-                    <div className={'hand-data'}>
-                        <div>Picker: {this.state.picker}</div>
-                        <div>Partner: {this.state.partner}</div>
-                        <div>Partner Card: {this.state.partnerCard}</div>
-                        {this.state.leastersHand ? <b>Leasters Hand</b> : ''}
-                    </div>
-                    <div className={'trick-winners'} onMouseOver={this.showGroupedTricks} onMouseOut={this.hideGroupedTricks}>
+            <div className="play-pane page-contents">
+                <div className="centered-page-contents">
+                    <CheatSheetModal />
+                    <div className="game-details">
+                        <h4>Game Details</h4>
                         {
-                            this.state.trickWinners.map((playerName: string, i: number) =>
-                                <div key={i}><b>Trick {i+1}</b> {playerName}</div>
+                            this.state.coins.map((coinScore: GameScore, i: number) =>
+                                <div key={i} style={{ display: 'inline-flex', margin: '0px 20px', textAlign: 'center' }}>
+                                    {coinScore.name}
+                                    <br />
+                                    {coinScore.score || '-'}
+                                </div>
                             )
                         }
                     </div>
+                    {this.state.showGroupedTricks ? this.renderModal() : <div></div> }
+                    <div>
+                        <h4>Hand Details</h4>
+                        <div className={'hand-data'}>
+                            <div>Picker: {this.state.picker}</div>
+                            <div>Partner: {this.state.partner}</div>
+                            <div>Partner Card: {this.state.partnerCard}</div>
+                            {this.state.leastersHand ? <b>Leasters Hand</b> : ''}
+                        </div>
+                        <div className={'trick-winners'} onMouseOver={this.showGroupedTricks} onMouseOut={this.hideGroupedTricks}>
+                            {
+                                this.state.trickWinners.map((playerName: string, i: number) =>
+                                    <div key={i}><b>Trick {i+1}</b> {playerName}</div>
+                                )
+                            }
+                        </div>
+                    </div>
+                    <ActionPane gameId={this.state.gameId}
+                        onHandEnd={this.handEnd}
+                        onTrickEnd={this.trickEnd} />
                 </div>
-                <ActionPane gameId={this.state.gameId}
-                    onHandEnd={this.handEnd}
-                    onTrickEnd={this.trickEnd} />
             </div>
         );
     }

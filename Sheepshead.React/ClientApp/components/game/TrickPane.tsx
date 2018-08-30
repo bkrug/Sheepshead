@@ -110,7 +110,7 @@ export default class TrickPane extends React.Component<TrickPaneProps, TrickPane
 
     private renderOneTrick(playsInTrick: TrickChoice[]) {
         return (
-            <div>
+            <div className="trick-cards">
                 {
                     Object.keys(playsInTrick).map((playerName, i) => (
                         <div key={i} style={{ display: "inline-block" }}>
@@ -132,7 +132,7 @@ export default class TrickPane extends React.Component<TrickPaneProps, TrickPane
             && !this.state.requestingPlayerTurn;
 
         return (
-            <div>
+            <div className="trick-pane">
                 <h4>Trick Phase</h4>
                 <b>Trick {this.state.displayedCardsPlayed.length}</b>
                 {this.renderOneTrick(this.state.displayedCardsPlayed[this.state.displayedCardsPlayed.length - 1])}
@@ -150,13 +150,15 @@ export default class TrickPane extends React.Component<TrickPaneProps, TrickPane
                             : <div>Cards in your hand.</div>
                     }
                 </div>
-                {
-                    this.state.playerCards.map((card: CardSummary, i: number) =>
-                        (allCardsDisplayed && this.state.requestingPlayerTurn)
-                            ? <Card key={i} cardSummary={card} onClick={this.trickChoice} />
-                            : <Card key={i} cardSummary={card} />
-                    )
-                }
+                <div className="player-cards">
+                    {
+                        this.state.playerCards.map((card: CardSummary, i: number) =>
+                            (allCardsDisplayed && this.state.requestingPlayerTurn)
+                                ? <Card key={i} cardSummary={card} onClick={this.trickChoice} />
+                                : <Card key={i} cardSummary={card} />
+                        )
+                    }
+                </div>
             </div>
         );
     }

@@ -69,10 +69,7 @@ export default class PickPane extends React.Component<PickPaneProps, PickPaneSta
     private displayOneMorePlay(): void {
         var picksToDisplay = this.state.displayedPickChoices.length + 1;
 
-        console.log('pickChoices length ' + this.state.pickChoices.length);
-        console.log('pickesToDisplay ' + picksToDisplay);
         var picks = this.state.pickChoices.slice(0, picksToDisplay);
-        console.log('pick length ' + picks.length);
         this.setState({
             displayedPickChoices: picks
         });
@@ -110,7 +107,7 @@ export default class PickPane extends React.Component<PickPaneProps, PickPaneSta
             && !this.state.requestingPlayerTurn;
 
         return (
-            <div>
+            <div className="pick-pane">
                 <h4>Pick Phase</h4>
                 {
                     Object.keys(this.state.displayedPickChoices).map((playerName, i) => (
@@ -137,11 +134,13 @@ export default class PickPane extends React.Component<PickPaneProps, PickPaneSta
                             : <div></div>
                     }
                 </div>
-                {
-                    this.state.playerCards.map((card: CardSummary, i: number) =>
-                        <Card key={i} cardSummary={card} />
-                    )
-                }
+                <div className="player-cards">
+                    {
+                        this.state.playerCards.map((card: CardSummary, i: number) =>
+                            <Card key={i} cardSummary={card} />
+                        )
+                    }
+                </div>
             </div>
         );
     }

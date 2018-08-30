@@ -70,22 +70,34 @@
     vertical-align: top;
 }
 
-.trickSummary img {
+.game-details,
+.trick-pane {
+    width: 492px; /* ( card-image width + margin ) x 6 */
+}
+
+.trick-pane .trick-cards img,
+.trick-pane .player-cards img,
+.pick-pane .player-cards img {
+    margin-right: 5px;
+    margin-left: 5px;
+}
+
+.trick-summary img {
     width: 48px;
     height: 64px;
 }
 
-.trickSummary {
+.trick-summary {
     width: calc(230px);
 }
 
-.trickSummary p {
+.trick-summary p {
     width: 20px;
     display: inline-block;
     text-align: right;
 }
 
-.trickSummary p:first-child {
+.trick-summary p:first-child {
     width: 50px;
     text-align: left;
 }
