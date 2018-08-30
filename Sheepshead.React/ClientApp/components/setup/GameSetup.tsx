@@ -20,7 +20,6 @@ export class GameSetup extends React.Component<RouteComponentProps<{}>, GameSetu
 
     constructor(props: any) {
         super(props);
-        console.log(props);
         let selections: { [index: string]: number } = {};
         selections[this.HUMANS] = selections[this.NEWBIE] = selections[this.BASIC] = 0;
         this.state = {
@@ -40,7 +39,6 @@ export class GameSetup extends React.Component<RouteComponentProps<{}>, GameSetu
             .split('&')
             .map(function (q: string) { return q.split('='); });
         var leastersParam = queryParams.filter(function (kvp: string) { return kvp[0] == 'leastersOn' });
-        console.log(leastersParam);
         return leastersParam.length == 0 ? true : leastersParam[0][1].toLowerCase() == 'true';
     }
 
@@ -64,23 +62,25 @@ export class GameSetup extends React.Component<RouteComponentProps<{}>, GameSetu
 
     public render() {
         return (
-            <div className="gameSetup">
-                <h4>Setup Sheepshead Game</h4>
-                <form method="post">
-                    <PlayerCountRadio name={this.HUMANS} title="Humans" onChange={this.handleChange} value={this.state.selections[this.HUMANS]} remaining={this.state.remaining} />
-                    <PlayerCountRadio name={this.NEWBIE} title="A.I. Simple" onChange={this.handleChange} value={this.state.selections[this.NEWBIE]} remaining={this.state.remaining} />
-                    <PlayerCountRadio name={this.BASIC} title="A.I. Basic" onChange={this.handleChange} value={this.state.selections[this.BASIC]} remaining={this.state.remaining} />
-                    <div>
-                        <span>Total Players:</span>
-                        <span className={"totalPlayers " + this.playerCountValidityStyle()}>{this.state.value}</span>
+            <div className="game-setup">
+                <div className="setup-container">
+                    <h4>Setup Sheepshead Game</h4>
+                    <form method="post">
+                        <PlayerCountRadio name={this.HUMANS} title="Humans" onChange={this.handleChange} value={this.state.selections[this.HUMANS]} remaining={this.state.remaining} />
+                        <PlayerCountRadio name={this.NEWBIE} title="A.I. Simple" onChange={this.handleChange} value={this.state.selections[this.NEWBIE]} remaining={this.state.remaining} />
+                        <PlayerCountRadio name={this.BASIC} title="A.I. Basic" onChange={this.handleChange} value={this.state.selections[this.BASIC]} remaining={this.state.remaining} />
+                        <div className="total-players">
+                            <span>Total Players:</span>
+                            <span className={"totalPlayers " + this.playerCountValidityStyle()}>{this.state.value}</span>
+                        </div>
+                        <input type="hidden" className="remaining" value={this.state.remaining} />
+                        <OnOffRadio name="partnerCard" title="Partner Card" onText="Jack of Hearts" offText="Called Ace" defaultValue={true} disabled={this.state.value != 5} />
+                        <OnOffRadio name="leastersGame" title="Leasters On" onText="on" offText="off" defaultValue={this.state.leastersDefault} disabled={false} />
+                        <input type="submit" value="Play" disabled={!this.validPlayerCount()} />
+                    </form>
+                    <div className="directions-parent">
+                        <a href="/directions">Directions</a>
                     </div>
-                    <input type="hidden" className="remaining" value={this.state.remaining} />
-                    <OnOffRadio name="partnerCard" title="Partner Card" onText="Jack of Hearts" offText="Called Ace" defaultValue={true} disabled={this.state.value != 5} />
-                    <OnOffRadio name="leastersGame" title="Leasters On" onText="on" offText="off" defaultValue={this.state.leastersDefault} disabled={false} />
-                    <input type="submit" value="Play" disabled={!this.validPlayerCount()} />
-                </form>
-                <div className="directions-parent">
-                    <a href="/directions">Directions</a>
                 </div>
             </div>
         );

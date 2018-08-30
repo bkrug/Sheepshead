@@ -31,3 +31,16 @@ input[disabled] {
 .directions-parent a {
     font-size: large;
 }
+
+.game-setup {
+    text-align: center;
+}
+
+.setup-container {
+    display: inline-block;
+    text-align: left;
+}
+
+.total-players {
+    text-align: right;
+}

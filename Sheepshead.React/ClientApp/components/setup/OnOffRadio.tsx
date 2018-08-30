@@ -39,6 +39,7 @@ export default class OnOffRadio extends React.Component<OnOffProps, OnOffState> 
                             type="radio"
                             name={this.props.name}
                             value={this.props.onText}
+                            onChange={() => function () { return; }}
                             onClick={() => this.handleClick(true)}
                             checked={this.state.value}
                             disabled={this.props.disabled}
@@ -49,6 +50,7 @@ export default class OnOffRadio extends React.Component<OnOffProps, OnOffState> 
                             type="radio"
                             name={this.props.name}
                             value={this.props.offText}
+                            onChange={() => function () { return; }}
                             onClick={() => this.handleClick(false)}
                             checked={!this.state.value}
                             disabled={this.props.disabled}
