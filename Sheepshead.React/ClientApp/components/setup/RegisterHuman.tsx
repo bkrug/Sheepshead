@@ -1,4 +1,5 @@
-﻿import * as React from 'react';
+﻿import '../../css/setup.css';
+import * as React from 'react';
 import { RouteComponentProps } from 'react-router';
 import { IdUtils } from '../IdUtils';
 import { FetchUtils } from '../FetchUtils';
@@ -38,13 +39,15 @@ export class RegisterHuman extends React.Component<RouteComponentProps<{}>, Regi
 
     public render() {
         return (
-            <div>
-                <h4>Register Player</h4>
-                <p>Share this page's URL with your friends to allow them to join the game.</p>
-                <label>Your name</label>
-                <input type="text" name="playerName" onChange={this.handleNameChange}/>
-                <input type="hidden" name="gameId" value={this.state.gameId} />
-                <input type="button" value="Play" disabled={!this.validName()} onClick={this.handleSubmit} />
+            <div className="page-contents">
+                <div className="centered-page-contents">
+                    <h4>Register Player</h4>
+                    <p>Share this page's URL with your friends to allow them to join the game.</p>
+                    <label>Your name</label>
+                    <input type="text" name="playerName" onChange={this.handleNameChange}/>
+                    <input type="hidden" name="gameId" value={this.state.gameId} />
+                    <input type="button" value="Play" disabled={!this.validName()} onClick={this.handleSubmit} />
+                </div>
             </div>
         );
     }

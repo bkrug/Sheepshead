@@ -1,4 +1,5 @@
-﻿import * as React from 'react';
+﻿import '../../css/setup.css';
+import * as React from 'react';
 import { RouteComponentProps } from 'react-router';
 import ReactDOM from 'react-dom';
 import CopyToClipboard from 'react-copy-to-clipboard';
@@ -39,17 +40,19 @@ export class RegistrationWait extends React.Component<RouteComponentProps<{}>, R
 
     public render() {
         return (
-            <div>
-                <h4>Play Sheepshead</h4>
-                <div hidden={this.state.allPlayersReady}>
-                    <p>Waiting for other players.</p>
-                    <p>Share this url with friends that you will play with: <b>{this.getUrl()}</b> </p>
-                    <CopyToClipboard text={this.getUrl()}>
-                        <button>Copy URL to clipboard</button>
-                    </CopyToClipboard>
-                </div>
-                <div hidden={!this.state.allPlayersReady}>
-                    All players have registered.
+            <div className="page-contents">
+                <div className="centered-page-contents">
+                    <h4>Play Sheepshead</h4>
+                    <div hidden={this.state.allPlayersReady}>
+                        <p>Waiting for other players.</p>
+                        <p>Share this url with friends that you will play with: <b>{this.getUrl()}</b> </p>
+                        <CopyToClipboard text={this.getUrl()}>
+                            <button>Copy URL to clipboard</button>
+                        </CopyToClipboard>
+                    </div>
+                    <div hidden={!this.state.allPlayersReady}>
+                        All players have registered.
+                    </div>
                 </div>
             </div>
         );

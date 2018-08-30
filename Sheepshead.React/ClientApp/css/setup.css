@@ -32,11 +32,13 @@ input[disabled] {
     font-size: large;
 }
 
-.game-setup {
+.game-setup,
+.page-contents {
     text-align: center;
 }
 
-.setup-container {
+.setup-container,
+.centered-page-contents {
     display: inline-block;
     text-align: left;
 }
