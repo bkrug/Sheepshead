@@ -1,4 +1,18 @@
-﻿.modalDialog {
+﻿body {
+    color: whitesmoke;
+    background-color: #307a18;
+}
+
+a {
+    color: deepskyblue;
+}
+
+input,
+button {
+    color: black;
+}
+
+.modal-dialog {
     position: fixed;
     font-family: Arial, Helvetica, sans-serif;
     top: 70px;
@@ -8,19 +22,20 @@
     -webkit-transition: opacity 400ms ease-in;
     -moz-transition: opacity 400ms ease-in;
     transition: opacity 400ms ease-in;
+    color: black;
 }
 
-.modalDialog.trick-cards {
+.modal-dialog.trick-cards {
     top: 260px;
     left: 40vw;
 }
 
-.modalDialog:target {
+.modal-dialog:target {
     opacity: 1;
     pointer-events: auto;
 }
 
-.modalDialog > div {
+.modal-dialog > div {
     width: 96%;
     max-width: 550px;
     position: relative;
@@ -33,7 +48,7 @@
     background: -o-linear-gradient(#fff, #999);
 }
 
-.modalDialog p {
+.modal-dialog p {
     margin: 0 0 0 10px;
 }
 
@@ -45,21 +60,25 @@
     color: red;
 }
 
-.modalDialog tr.borderless td,
-.modalDialog td.borderless {
+.modal-dialog tr.borderless td,
+.modal-dialog td.borderless {
     border: none;
 }
 
-.modalDialog td:first-child {
+.modal-dialog td:first-child {
     padding-right: 6px;
 }
 
-.modalDialog td:not(:first-child) {
+.modal-dialog td:not(:first-child) {
     border-width: 1px;
     border-style: solid;
     border-color: black;
     text-align: center;
     width: 30px;
+}
+
+.pick-option button {
+    margin: 0 0 6px 6px;
 }
 
 .play-pane .hand-data,
@@ -75,11 +94,27 @@
     width: 492px; /* ( card-image width + margin ) x 6 */
 }
 
+.trick-pane .trick-cards {
+    height: 128px;
+}
+
+.trick-pane .trick-cards p {
+    margin-left: 5px;
+    margin-right: 5px;
+    overflow: hidden;
+    width: 72px;
+    height: 20px;
+}
+
 .trick-pane .trick-cards img,
 .trick-pane .player-cards img,
 .pick-pane .player-cards img {
     margin-right: 5px;
     margin-left: 5px;
+}
+
+.trick-pane .text-row {
+    height: 20px;
 }
 
 .trick-summary img {

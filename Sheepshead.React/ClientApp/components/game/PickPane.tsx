@@ -126,7 +126,7 @@ export default class PickPane extends React.Component<PickPaneProps, PickPaneSta
                 <div>
                     {
                         this.state.requestingPlayerTurn && allChoicesDisplayed
-                            ? <div>
+                            ? <div className="pick-option">
                                 <b>Do you want to pick?</b>
                                 <button onClick={() => this.pickChoice(true)}>Yes</button>
                                 <button onClick={() => this.pickChoice(false)}>No</button>

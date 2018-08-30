@@ -34,7 +34,7 @@ export class CheatSheetModal extends React.Component<CheatProps, CheatState> {
 
     private renderModal() {
         return (
-            <div className="modalDialog">
+            <div className="modal-dialog">
                 <div>
                     <CheatSheet />
                     <h4>Power vs. Points</h4>

@@ -84,7 +84,7 @@ export default class HandSummaryPane extends React.Component<HandSummaryPaneProp
             </div>
         );
         return (
-            <div className="modalDialog">
+            <div className="modal-dialog">
                 <div>
                     {playerList}
                 </div>

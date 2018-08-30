@@ -86,20 +86,24 @@ export class PlayPane extends React.Component<RouteComponentProps<{}>, PlayPaneS
     private renderModal() {
         var self = this;
         var playerList = this.state.tricks.map((trick: { key: string, value: CardSummary[] }, i: number) =>
-            <div key={i} className='trickSummary'>
+            <div key={i} className='trick-summary'>
                 <p>{trick.key}</p>
                 {trick.value.map((cardSummary: CardSummary, j: number) =>
-                    <p key={j} className={cardSummary.abbreviation.indexOf('♥') >= 0 || cardSummary.abbreviation.indexOf('♦') >= 0 ? 'redCard' : 'blkCard'}>{cardSummary.abbreviation}</p>
+                    <p key={j} className={this.getCssClass(cardSummary)}>{cardSummary.abbreviation}</p>
                 )}
             </div>
         );
         return (
-            <div className="modalDialog trick-cards">
+            <div className="modal-dialog trick-cards">
                 <div>
                     {playerList}
                 </div>
             </div>
         );
+    }
+
+    private getCssClass(cardSummary: CardSummary): string {
+        return cardSummary.abbreviation.indexOf('♥') >= 0 || cardSummary.abbreviation.indexOf('♦') >= 0 ? 'redCard' : 'blkCard';
     }
 
     public render() {

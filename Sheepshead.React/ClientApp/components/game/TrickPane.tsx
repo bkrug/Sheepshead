@@ -136,14 +136,14 @@ export default class TrickPane extends React.Component<TrickPaneProps, TrickPane
                 <h4>Trick Phase</h4>
                 <b>Trick {this.state.displayedCardsPlayed.length}</b>
                 {this.renderOneTrick(this.state.displayedCardsPlayed[this.state.displayedCardsPlayed.length - 1])}
-                <div>
+                <div className="text-row">
                     {
                         allCardsDisplayed && waitingForAnotherPlayer
                             ? 'Waiting for ' + this.state.currentTurn + ' to take his or her turn.'
                             : ''
                     }
                 </div>
-                <div>
+                <div className="text-row">
                     {
                         allCardsDisplayed && this.state.requestingPlayerTurn
                             ? <div><b>What card will you play?</b></div>
