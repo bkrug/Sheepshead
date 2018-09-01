@@ -16,7 +16,9 @@ button {
     position: fixed;
     font-family: Arial, Helvetica, sans-serif;
     top: 70px;
-    left: 70px;
+    width: 540px;
+    margin-left: auto;
+    margin-right: auto;
     background: rgba(0,0,0,0.8);
     z-index: 99999;
     -webkit-transition: opacity 400ms ease-in;
@@ -26,8 +28,13 @@ button {
 }
 
 .modal-dialog.trick-cards {
-    top: 260px;
-    left: 40vw;
+    top: 220px;
+    width: 300px;
+}
+
+.modal-dialog.trick-summary {
+    top: 45px;
+    width: 300px;
 }
 
 .modal-dialog:target {
@@ -36,20 +43,14 @@ button {
 }
 
 .modal-dialog > div {
-    width: 96%;
-    max-width: 550px;
     position: relative;
-    margin: 2% auto;
+    margin: 2% 2%;
     padding: 5px 20px 13px 20px;
     border-radius: 10px;
     background: #fff;
     background: -moz-linear-gradient(#fff, #999);
     background: -webkit-linear-gradient(#fff, #999);
     background: -o-linear-gradient(#fff, #999);
-}
-
-.modal-dialog p {
-    margin: 0 0 0 10px;
 }
 
 .blkCard {
@@ -123,11 +124,11 @@ button {
 }
 
 .trick-summary {
-    width: calc(230px);
+    width: 230px;
 }
 
 .trick-summary p {
-    width: 20px;
+    width: 30px;
     display: inline-block;
     text-align: right;
 }

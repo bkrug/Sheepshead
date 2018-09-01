@@ -76,7 +76,7 @@ export default class HandSummaryPane extends React.Component<HandSummaryPaneProp
     private renderModal() {
         var self = this;
         var playerList = this.state.tricks.map((trick: { key: string, value: CardSummary[] }, i: number) =>
-            <div key={i} className='trick-summary'>
+            <div key={i}>
                 <p>{trick.key}</p>
                 {trick.value.map((cardSummary: CardSummary, j: number) =>
                     <p key={j} className={cardSummary.abbreviation.indexOf('♥') >= 0 || cardSummary.abbreviation.indexOf('♦') >= 0 ? 'redCard' : 'blkCard'}>{cardSummary.abbreviation}</p>
@@ -84,7 +84,7 @@ export default class HandSummaryPane extends React.Component<HandSummaryPaneProp
             </div>
         );
         return (
-            <div className="modal-dialog">
+            <div className="modal-dialog trick-summary">
                 <div>
                     {playerList}
                 </div>
