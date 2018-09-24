@@ -10,3 +10,16 @@ ToDo:
 * Going to need to do more stylization improvements, but I'm not sure what.
 
 The startup projects within the solution are "Sheepshead" and "Sheepshead.React"
+
+---
+
+Style changes:
+
+white not whitesmoke
+consistent approach to font size
+Add padding for directions. At least as much as the font size.
+Using a non-solid background can make things easier to read.
+Possible: Move navigation buttons to the side because you have more realestate there.
+Possible: See how other card games online deal with sections.
+Question: How do more experienced players achieve finality?
+Possible: Use sockets instead of repeated ajax calls.
