@@ -2,10 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 
-
 namespace Sheepshead.Models.Players
 {
-    public class BasicPlayer : ComputerPlayer
+    public class AdvancedPlayer : BasicPlayer
     {
         public override SheepCard GetMove(ITrick trick)
         {
@@ -16,6 +15,7 @@ namespace Sheepshead.Models.Players
             }
             else
             {
+                //TODO: Be more selective about which trick you want to win.
                 var previousWinners = trick.Hand.Tricks.Where(t => t != trick).Select(t => t.Winner());
                 var lowestTrick = previousWinners.Any() ? previousWinners.Min(w => w.Points) : -1;
                 if (previousWinners.Any(t => t.Player == this) || trick.CardsPlayed.Sum(c => CardUtil.GetPoints(c.Value)) > lowestTrick)
@@ -42,24 +42,8 @@ namespace Sheepshead.Models.Players
             return legalCards.OrderByDescending(l => CardUtil.GetRank(l)).First();
         }
 
-        protected SheepCard GetLeadCard(ITrick trick, IEnumerable<SheepCard> legalCards)
-        {
-            IEnumerable<SheepCard> cardsOfPreferedSuite = new List<SheepCard>();
-            if (trick.Hand.Picker == this || this.Cards.Any(c => c == trick.Hand.PartnerCard))
-                cardsOfPreferedSuite = legalCards.Where(c => CardUtil.GetSuit(c) == Suit.TRUMP).ToList();
-            else
-            {
-                if (trick.Game.PartnerMethod == PartnerMethod.CalledAce && trick.PartnerCard.HasValue)
-                    cardsOfPreferedSuite = legalCards.Where(c => CardUtil.GetSuit(c) == CardUtil.GetSuit(trick.PartnerCard.Value));
-                if (!cardsOfPreferedSuite.Any())
-                    cardsOfPreferedSuite = legalCards.Where(c => CardUtil.GetSuit(c) != Suit.TRUMP).ToList();
-            }
-            return legalCards.OrderBy(c => cardsOfPreferedSuite.Contains(c) ? 1 : 2)
-                             .OrderByDescending(c => CardUtil.GetRank(c))
-                             .ThenByDescending(c => CardUtil.GetPoints(c))
-                             .First();
-        }
-
+        //TODO: What if all of my opponents have already played?
+        //That will change my strategy.
         private SheepCard GetMiddleCard(ITrick trick, IEnumerable<SheepCard> legalCards)
         {
             return legalCards.OrderByDescending(c => CardUtil.GetRank(c))
@@ -67,6 +51,8 @@ namespace Sheepshead.Models.Players
                              .First();
         }
 
+        //TODO: What if I already know that my side is winning?
+        //I can just give away points then instead of trying to win the tick.
         private SheepCard GetFinishingCard(ITrick trick, IEnumerable<SheepCard> legalCards)
         {
             var highestPlayedCard = trick.CardsPlayed.OrderByDescending(d => CardUtil.GetRank(d.Value)).First().Value;
@@ -74,16 +60,7 @@ namespace Sheepshead.Models.Players
             return legalCards.OrderBy(c => winningCards.Contains(c) ? 1 : 2).ThenByDescending(c => CardUtil.GetRank(c)).First();
         }
 
-        public override bool WillPick(IDeck deck)
-        {
-            var middleQueueRankInTrick = (deck.Game.PlayerCount + 1) / 2;
-            var trumpCount = this.Cards.Count(c => CardUtil.GetSuit(c) == Suit.TRUMP);
-            var willPick = QueueRankInDeck(deck) > middleQueueRankInTrick && trumpCount >= 2
-                || QueueRankInDeck(deck) == middleQueueRankInTrick && trumpCount >= 3
-                || trumpCount >= 4;
-            return willPick;
-        }
-
+        //TODO: This player should, under certain circumstances, bury high-point cards
         protected override List<SheepCard> DropCardsForPickInternal(IDeck deck)
         {
             //get a list of cards for which there are no other cards in their suite.  Exclude Trump cards.
@@ -92,18 +69,6 @@ namespace Sheepshead.Models.Players
                 .Where(g => g.Count() == 1 && CardUtil.GetSuit(g.First()) != Suit.TRUMP)
                 .Select(g => g.First()).ToList();
             return Cards.OrderBy(c => soloCardsOfSuite.Contains(c) ? 1 : 2).ThenByDescending(c => CardUtil.GetRank(c)).Take(2).ToList();
-        }
-
-        public override SheepCard? ChooseCalledAce(IDeck deck)
-        {
-            var acceptableSuits = LegalCalledAceSuits(deck);
-            if (!acceptableSuits.LegalSuits.Any())
-                return null;
-            var selectedSuit = acceptableSuits.LegalSuits
-                .OrderBy(g => g.Count())
-                .First()
-                .Key;
-            return GetCardOfSuit(acceptableSuits.CardType, selectedSuit);
         }
     }
 }
