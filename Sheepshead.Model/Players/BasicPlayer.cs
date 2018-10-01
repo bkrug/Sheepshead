@@ -76,10 +76,11 @@ namespace Sheepshead.Models.Players
 
         public override bool WillPick(IDeck deck)
         {
-            var middleQueueRankInTrick = (deck.Game.PlayerCount + 1) / 2;
+            var playerQueueRankInTrick = QueueRankInDeck(deck);
+            var middleQueueRankInTrick = (deck.PlayerCount + 1) / 2;
             var trumpCount = this.Cards.Count(c => CardUtil.GetSuit(c) == Suit.TRUMP);
-            var willPick = QueueRankInDeck(deck) > middleQueueRankInTrick && trumpCount >= 2
-                || QueueRankInDeck(deck) == middleQueueRankInTrick && trumpCount >= 3
+            var willPick = playerQueueRankInTrick > middleQueueRankInTrick && trumpCount >= 2
+                || playerQueueRankInTrick == middleQueueRankInTrick && trumpCount >= 3
                 || trumpCount >= 4;
             return willPick;
         }

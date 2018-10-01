@@ -6,6 +6,19 @@ namespace Sheepshead.Models.Players
 {
     public class AdvancedPlayer : BasicPlayer
     {
+        public override bool WillPick(IDeck deck)
+        {
+            var highPointCards = Cards.Count(c => CardUtil.GetPoints(c) >= 10);
+            var avgRank = Cards.Average(c => CardUtil.GetRank(c));
+            var playerQueueRankInTrick = QueueRankInDeck(deck);
+            var middleQueueRankInTrick = (deck.PlayerCount + 1) / 2;
+
+            var willPick = avgRank <= 6
+                || avgRank <= 13 && highPointCards > 2
+                || avgRank <= 13 && playerQueueRankInTrick > middleQueueRankInTrick;
+            return willPick;
+        }
+
         public override SheepCard GetMove(ITrick trick)
         {
             SheepCard moveCard;

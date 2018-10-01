@@ -5,6 +5,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using Sheepshead.Models;
 using Sheepshead.Models.Players;
+using Sheepshead.Tests.PlayerMocks;
 
 namespace Sheepshead.Tests
 {
@@ -12,10 +13,124 @@ namespace Sheepshead.Tests
     public class AdvancedPlayerTests
     {
         [TestMethod]
-        public void AdvancedPlayer_GetMove()
+        public void AdvancedPlayer_FivePlayerGame_ManyPowerfulTrump_ShouldPick()
         {
+            var players = new List<IPlayer>() {
+                new AdvancedPlayer(),
+                new ComputerPlayerPickingMock(false),
+                new ComputerPlayerPickingMock(false),
+                new ComputerPlayerPickingMock(false),
+                new ComputerPlayerPickingMock(false)
+            };
+            var advancedPlayer = players.OfType<AdvancedPlayer>().Single();
+            advancedPlayer.Cards.Add(SheepCard.JACK_SPADES);
+            advancedPlayer.Cards.Add(SheepCard.QUEEN_CLUBS);
+            advancedPlayer.Cards.Add(SheepCard.QUEEN_DIAMONDS);
+            advancedPlayer.Cards.Add(SheepCard.QUEEN_HEARTS);
+            advancedPlayer.Cards.Add(SheepCard.QUEEN_SPADES);
+            advancedPlayer.Cards.Add(SheepCard.N9_DIAMONDS);
+            var deckMock = new Mock<IDeck>();
+            deckMock.Setup(m => m.Players).Returns(players);
+            deckMock.Setup(m => m.PlayerCount).Returns(players.Count);
+            var actual = advancedPlayer.WillPick(deckMock.Object);
+            Assert.AreEqual(true, actual);
         }
 
+        [TestMethod]
+        public void AdvancedPlayer_FivePlayerGame_ManyWeakTrumpAndPointsToBury_ShouldPick()
+        {
+            var players = new List<IPlayer>() {
+                new AdvancedPlayer(),
+                new ComputerPlayerPickingMock(false),
+                new ComputerPlayerPickingMock(false),
+                new ComputerPlayerPickingMock(false),
+                new ComputerPlayerPickingMock(false)
+            };
+            var advancedPlayer = players.OfType<AdvancedPlayer>().Single();
+            advancedPlayer.Cards.Add(SheepCard.QUEEN_CLUBS);
+            advancedPlayer.Cards.Add(SheepCard.ACE_DIAMONDS);
+            advancedPlayer.Cards.Add(SheepCard.KING_DIAMONDS);
+            advancedPlayer.Cards.Add(SheepCard.N10_CLUBS);
+            advancedPlayer.Cards.Add(SheepCard.ACE_HEARTS);
+            advancedPlayer.Cards.Add(SheepCard.N9_DIAMONDS);
+            var deckMock = new Mock<IDeck>();
+            deckMock.Setup(m => m.Players).Returns(players);
+            deckMock.Setup(m => m.PlayerCount).Returns(players.Count);
+            var actual = advancedPlayer.WillPick(deckMock.Object);
+            Assert.AreEqual(true, actual);
+        }
+
+        [TestMethod]
+        public void AdvancedPlayer_FivePlayerGame_ManyWeakTrumpFewPointsTowardsFront_ShouldPass()
+        {
+            var players = new List<IPlayer>() {
+                new AdvancedPlayer(),
+                new ComputerPlayerPickingMock(false),
+                new ComputerPlayerPickingMock(false),
+                new ComputerPlayerPickingMock(false),
+                new ComputerPlayerPickingMock(false)
+            };
+            var advancedPlayer = players.OfType<AdvancedPlayer>().Single();
+            advancedPlayer.Cards.Add(SheepCard.QUEEN_CLUBS);
+            advancedPlayer.Cards.Add(SheepCard.N9_SPADES);
+            advancedPlayer.Cards.Add(SheepCard.KING_DIAMONDS);
+            advancedPlayer.Cards.Add(SheepCard.N7_HEARTS);
+            advancedPlayer.Cards.Add(SheepCard.N8_DIAMONDS);
+            advancedPlayer.Cards.Add(SheepCard.N9_DIAMONDS);
+            var deckMock = new Mock<IDeck>();
+            deckMock.Setup(m => m.Players).Returns(players);
+            deckMock.Setup(m => m.PlayerCount).Returns(players.Count);
+            var actual = advancedPlayer.WillPick(deckMock.Object);
+            Assert.AreEqual(false, actual);
+        }
+
+        [TestMethod]
+        public void AdvancedPlayer_FivePlayerGame_ManyWeakTrumpFewPointsTowardsBack_ShouldPick()
+        {
+            var players = new List<IPlayer>() {
+                new ComputerPlayerPickingMock(false),
+                new ComputerPlayerPickingMock(false),
+                new ComputerPlayerPickingMock(false),
+                new ComputerPlayerPickingMock(false),
+                new AdvancedPlayer()
+            };
+            var advancedPlayer = players.OfType<AdvancedPlayer>().Single();
+            advancedPlayer.Cards.Add(SheepCard.QUEEN_CLUBS);
+            advancedPlayer.Cards.Add(SheepCard.N9_SPADES);
+            advancedPlayer.Cards.Add(SheepCard.KING_DIAMONDS);
+            advancedPlayer.Cards.Add(SheepCard.N7_HEARTS);
+            advancedPlayer.Cards.Add(SheepCard.N8_DIAMONDS);
+            advancedPlayer.Cards.Add(SheepCard.N9_DIAMONDS);
+            var deckMock = new Mock<IDeck>();
+            deckMock.Setup(m => m.Players).Returns(players);
+            deckMock.Setup(m => m.PlayerCount).Returns(players.Count);
+            var actual = advancedPlayer.WillPick(deckMock.Object);
+            Assert.AreEqual(true, actual);
+        }
+
+        [TestMethod]
+        public void AdvancedPlayer_FivePlayerGame_FewTrump_ShouldPass()
+        {
+            var players = new List<IPlayer>() {
+                new ComputerPlayerPickingMock(false),
+                new ComputerPlayerPickingMock(false),
+                new ComputerPlayerPickingMock(false),
+                new ComputerPlayerPickingMock(false),
+                new AdvancedPlayer()
+            };
+            var advancedPlayer = players.OfType<AdvancedPlayer>().Single();
+            advancedPlayer.Cards.Add(SheepCard.ACE_HEARTS);
+            advancedPlayer.Cards.Add(SheepCard.N9_SPADES);
+            advancedPlayer.Cards.Add(SheepCard.ACE_SPADES);
+            advancedPlayer.Cards.Add(SheepCard.N7_HEARTS);
+            advancedPlayer.Cards.Add(SheepCard.KING_CLUBS);
+            advancedPlayer.Cards.Add(SheepCard.KING_SPADES);
+            var deckMock = new Mock<IDeck>();
+            deckMock.Setup(m => m.Players).Returns(players);
+            deckMock.Setup(m => m.PlayerCount).Returns(players.Count);
+            var actual = advancedPlayer.WillPick(deckMock.Object);
+            Assert.AreEqual(false, actual);
+        }
 
         //Tests:
         //* In five player game, you have many powerful trump. Pick.
