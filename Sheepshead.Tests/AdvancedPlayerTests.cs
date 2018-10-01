@@ -32,6 +32,7 @@ namespace Sheepshead.Tests
             var deckMock = new Mock<IDeck>();
             deckMock.Setup(m => m.Players).Returns(players);
             deckMock.Setup(m => m.PlayerCount).Returns(players.Count);
+            deckMock.Setup(m => m.StartingPlayer).Returns(players[0]);
             var actual = advancedPlayer.WillPick(deckMock.Object);
             Assert.AreEqual(true, actual);
         }
@@ -56,6 +57,7 @@ namespace Sheepshead.Tests
             var deckMock = new Mock<IDeck>();
             deckMock.Setup(m => m.Players).Returns(players);
             deckMock.Setup(m => m.PlayerCount).Returns(players.Count);
+            deckMock.Setup(m => m.StartingPlayer).Returns(players[0]);
             var actual = advancedPlayer.WillPick(deckMock.Object);
             Assert.AreEqual(true, actual);
         }
@@ -80,6 +82,7 @@ namespace Sheepshead.Tests
             var deckMock = new Mock<IDeck>();
             deckMock.Setup(m => m.Players).Returns(players);
             deckMock.Setup(m => m.PlayerCount).Returns(players.Count);
+            deckMock.Setup(m => m.StartingPlayer).Returns(players[0]);
             var actual = advancedPlayer.WillPick(deckMock.Object);
             Assert.AreEqual(false, actual);
         }
@@ -104,6 +107,7 @@ namespace Sheepshead.Tests
             var deckMock = new Mock<IDeck>();
             deckMock.Setup(m => m.Players).Returns(players);
             deckMock.Setup(m => m.PlayerCount).Returns(players.Count);
+            deckMock.Setup(m => m.StartingPlayer).Returns(players[0]);
             var actual = advancedPlayer.WillPick(deckMock.Object);
             Assert.AreEqual(true, actual);
         }
@@ -128,6 +132,7 @@ namespace Sheepshead.Tests
             var deckMock = new Mock<IDeck>();
             deckMock.Setup(m => m.Players).Returns(players);
             deckMock.Setup(m => m.PlayerCount).Returns(players.Count);
+            deckMock.Setup(m => m.StartingPlayer).Returns(players[0]);
             var actual = advancedPlayer.WillPick(deckMock.Object);
             Assert.AreEqual(false, actual);
         }

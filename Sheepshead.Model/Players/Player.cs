@@ -11,6 +11,7 @@ namespace Sheepshead.Models.Players
 
         public int QueueRankInTrick(ITrick trick)
         {
+            if (trick.StartingPlayer == null) throw new NullReferenceException();
             var indexOfMe = trick.Players.IndexOf(this);
             var indexOfStartingPlayer = trick.Players.IndexOf(trick.StartingPlayer);
             var rank = indexOfMe - indexOfStartingPlayer;
@@ -20,6 +21,7 @@ namespace Sheepshead.Models.Players
 
         public int QueueRankInDeck(IDeck deck)
         {
+            if (deck.StartingPlayer == null) throw new NullReferenceException();
             var indexOfMe = deck.Players.IndexOf(this);
             var indexOfStartingPlayer = deck.Players.IndexOf(deck.StartingPlayer);
             var rank = indexOfMe - indexOfStartingPlayer;
