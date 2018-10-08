@@ -137,6 +137,114 @@ namespace Sheepshead.Tests
             Assert.AreEqual(false, actual);
         }
 
+        [TestMethod]
+        public void AdvancedPlayer_ThreePlayerGame_ManyPowerfulTrump_ShouldPick()
+        {
+            var players = new List<IPlayer>() {
+                new AdvancedPlayer(),
+                new ComputerPlayerPickingMock(false),
+                new ComputerPlayerPickingMock(false)
+            };
+            var advancedPlayer = players.OfType<AdvancedPlayer>().Single();
+            advancedPlayer.Cards.Add(SheepCard.JACK_SPADES);
+            advancedPlayer.Cards.Add(SheepCard.QUEEN_CLUBS);
+            advancedPlayer.Cards.Add(SheepCard.ACE_CLUBS);
+            advancedPlayer.Cards.Add(SheepCard.QUEEN_DIAMONDS);
+            advancedPlayer.Cards.Add(SheepCard.N10_HEARTS);
+            advancedPlayer.Cards.Add(SheepCard.QUEEN_HEARTS);
+            advancedPlayer.Cards.Add(SheepCard.ACE_SPADES);
+            advancedPlayer.Cards.Add(SheepCard.QUEEN_SPADES);
+            advancedPlayer.Cards.Add(SheepCard.N9_DIAMONDS);
+            advancedPlayer.Cards.Add(SheepCard.N10_CLUBS);
+            var deckMock = new Mock<IDeck>();
+            deckMock.Setup(m => m.Players).Returns(players);
+            deckMock.Setup(m => m.PlayerCount).Returns(players.Count);
+            deckMock.Setup(m => m.StartingPlayer).Returns(players[0]);
+            var actual = advancedPlayer.WillPick(deckMock.Object);
+            Assert.AreEqual(true, actual);
+        }
+
+        [TestMethod]
+        public void AdvancedPlayer_ThreePlayerGame_ManyWeakTrumpFewPointsTowardsFront_ShouldPass()
+        {
+            var players = new List<IPlayer>() {
+                new AdvancedPlayer(),
+                new ComputerPlayerPickingMock(false),
+                new ComputerPlayerPickingMock(false)
+            };
+            var advancedPlayer = players.OfType<AdvancedPlayer>().Single();
+            advancedPlayer.Cards.Add(SheepCard.QUEEN_CLUBS);
+            advancedPlayer.Cards.Add(SheepCard.N9_SPADES);
+            advancedPlayer.Cards.Add(SheepCard.KING_DIAMONDS);
+            advancedPlayer.Cards.Add(SheepCard.N7_HEARTS);
+            advancedPlayer.Cards.Add(SheepCard.N8_DIAMONDS);
+            advancedPlayer.Cards.Add(SheepCard.N9_DIAMONDS);
+            advancedPlayer.Cards.Add(SheepCard.N10_CLUBS);
+            advancedPlayer.Cards.Add(SheepCard.N7_CLUBS);
+            advancedPlayer.Cards.Add(SheepCard.KING_HEARTS);
+            advancedPlayer.Cards.Add(SheepCard.N8_CLUBS);
+            var deckMock = new Mock<IDeck>();
+            deckMock.Setup(m => m.Players).Returns(players);
+            deckMock.Setup(m => m.PlayerCount).Returns(players.Count);
+            deckMock.Setup(m => m.StartingPlayer).Returns(players[0]);
+            var actual = advancedPlayer.WillPick(deckMock.Object);
+            Assert.AreEqual(false, actual);
+        }
+
+        [TestMethod]
+        public void AdvancedPlayer_ThreePlayerGame_ManyWeakTrumpFewPointsTowardsBack_ShouldPick()
+        {
+            var players = new List<IPlayer>() {
+                new ComputerPlayerPickingMock(false),
+                new ComputerPlayerPickingMock(false),
+                new AdvancedPlayer()
+            };
+            var advancedPlayer = players.OfType<AdvancedPlayer>().Single();
+            advancedPlayer.Cards.Add(SheepCard.QUEEN_CLUBS);
+            advancedPlayer.Cards.Add(SheepCard.N9_SPADES);
+            advancedPlayer.Cards.Add(SheepCard.KING_DIAMONDS);
+            advancedPlayer.Cards.Add(SheepCard.N7_HEARTS);
+            advancedPlayer.Cards.Add(SheepCard.N8_DIAMONDS);
+            advancedPlayer.Cards.Add(SheepCard.N9_DIAMONDS);
+            advancedPlayer.Cards.Add(SheepCard.N10_CLUBS);
+            advancedPlayer.Cards.Add(SheepCard.N7_DIAMONDS);
+            advancedPlayer.Cards.Add(SheepCard.KING_HEARTS);
+            advancedPlayer.Cards.Add(SheepCard.ACE_DIAMONDS);
+            var deckMock = new Mock<IDeck>();
+            deckMock.Setup(m => m.Players).Returns(players);
+            deckMock.Setup(m => m.PlayerCount).Returns(players.Count);
+            deckMock.Setup(m => m.StartingPlayer).Returns(players[0]);
+            var actual = advancedPlayer.WillPick(deckMock.Object);
+            Assert.AreEqual(true, actual);
+        }
+
+        [TestMethod]
+        public void AdvancedPlayer_ThreePlayerGame_FewTrump_ShouldPass()
+        {
+            var players = new List<IPlayer>() {
+                new ComputerPlayerPickingMock(false),
+                new ComputerPlayerPickingMock(false),
+                new AdvancedPlayer()
+            };
+            var advancedPlayer = players.OfType<AdvancedPlayer>().Single();
+            advancedPlayer.Cards.Add(SheepCard.ACE_HEARTS);
+            advancedPlayer.Cards.Add(SheepCard.N9_SPADES);
+            advancedPlayer.Cards.Add(SheepCard.ACE_SPADES);
+            advancedPlayer.Cards.Add(SheepCard.N7_HEARTS);
+            advancedPlayer.Cards.Add(SheepCard.KING_CLUBS);
+            advancedPlayer.Cards.Add(SheepCard.N8_HEARTS);
+            advancedPlayer.Cards.Add(SheepCard.N10_CLUBS);
+            advancedPlayer.Cards.Add(SheepCard.N7_CLUBS);
+            advancedPlayer.Cards.Add(SheepCard.N9_SPADES);
+            advancedPlayer.Cards.Add(SheepCard.N8_CLUBS);
+            var deckMock = new Mock<IDeck>();
+            deckMock.Setup(m => m.Players).Returns(players);
+            deckMock.Setup(m => m.PlayerCount).Returns(players.Count);
+            deckMock.Setup(m => m.StartingPlayer).Returns(players[0]);
+            var actual = advancedPlayer.WillPick(deckMock.Object);
+            Assert.AreEqual(false, actual);
+        }
+
         //Tests:
         //* In five player game, you have many powerful trump. Pick.
         //* In five player game, you have many weak trump, and points you would like to bury. Pick.
@@ -148,7 +256,8 @@ namespace Sheepshead.Tests
         //* In three player game, you have not quite so many trump, aces, and tens, but are towards the back. Pick.
         //* In three player game, you just don't have much. Pass.
 
-        //* You lead the trick as an offensive player, lead with weak trump.
+        //* You lead the trick as an offensive player, but not all cards are Jacks or Queens, lead with weak trump.
+        //* You lead the trick as an offensive player, almost all cards are Jacks or Queens, lead with a strong trump.
         //* You lead the trick as a defensive player, lead with the suit of called ace.
 
         //* Not all your opponents have played, your team is winning with the most powerful remaining card. Give away points.

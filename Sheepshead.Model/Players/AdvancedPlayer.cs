@@ -13,10 +13,20 @@ namespace Sheepshead.Models.Players
             var playerQueueRankInTrick = QueueRankInDeck(deck);
             var middleQueueRankInTrick = (deck.PlayerCount + 1) / 2;
 
-            var willPick = avgRank <= 6
-                || avgRank <= 13 && highPointCards > 2
-                || avgRank <= 13 && playerQueueRankInTrick > middleQueueRankInTrick;
-            return willPick;
+            if (deck.PlayerCount == 5)
+            {
+                var willPick = avgRank <= 6
+                    || avgRank <= 13 && highPointCards > 2
+                    || avgRank <= 13 && playerQueueRankInTrick > middleQueueRankInTrick;
+                return willPick;
+            }
+            else
+            {
+                var willPick = avgRank <= 8
+                    || avgRank <= 16 && highPointCards > 2
+                    || avgRank <= 16 && playerQueueRankInTrick > middleQueueRankInTrick;
+                return willPick;
+            }
         }
 
         public override SheepCard GetMove(ITrick trick)
