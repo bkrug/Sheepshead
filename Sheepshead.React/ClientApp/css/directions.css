@@ -14,8 +14,9 @@
     margin: 0;
     height: 100vh;
     width: 100vw;
-    color: whitesmoke;
-    background-color: #307a18;
+    color: white;
+    background-image: url(../../wwwroot/img/card-table.jpg);
+    background-size: 100%;
 }
 
 .directions-film .slide .content {
