@@ -5,9 +5,6 @@
 .row .directions-film {
     width: 100vw;
     padding: 0px;
-    position: fixed;
-    left: 0px;
-    top: 0px;
 }
 
 .directions-film .slide {

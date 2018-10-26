@@ -1,7 +1,6 @@
 ﻿import '../../css/directions.css';
 import * as React from 'react';
 import { RouteComponentProps } from 'react-router';
-import { Offsetter } from './Offsetter';
 import { CheatSheet } from '../game/CheatSheet';
 
 export interface DirectionsState {
@@ -49,7 +48,6 @@ export class Directions extends React.Component<RouteComponentProps<{}>, Directi
     private _2C: JSX.Element = (<img className='card' src={'./img/49.png'} alt='2♣' />);
     private _back: JSX.Element = (<img className='card' src={'./img/b1fv.png'} alt='card-back' />);
 
-    private _offsetter: Offsetter = new Offsetter();
     private _inputNodes: { [slideName: string]: HTMLDivElement } = {};
     private _basicSlides: { [slideName: string]: JSX.Element } = {
         concept:
@@ -734,11 +732,9 @@ export class Directions extends React.Component<RouteComponentProps<{}>, Directi
     private scroll() {
         var doc = document.documentElement;
         var windowOffset = (window.pageYOffset || doc.scrollTop) - (doc.clientTop || 0);
-        var easedOffset = -this._offsetter.calculateEasedOffset(windowOffset);
-        this.setState({ filmOffset: easedOffset + 'px' });
+        this.setState({ filmOffset: windowOffset + 'px' });
 
-        var virtualOffset = windowOffset / window.innerHeight + 0.33;
-        var slideNo = virtualOffset - virtualOffset % 1;
+        var slideNo = windowOffset - windowOffset % 1;
         this.setState({ currentSlide: slideNo });
     }
 
@@ -797,7 +793,7 @@ export class Directions extends React.Component<RouteComponentProps<{}>, Directi
         }
 
         return (
-            <div className='directions-film' style={{ top: this.state.filmOffset }}>
+            <div className='directions-film'>
                 {basicSlides}
                 {advancedSlides}
                 <div className='button-group'>
