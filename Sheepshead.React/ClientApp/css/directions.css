@@ -12,8 +12,7 @@
     height: 100vh;
     width: 100vw;
     color: white;
-    background-image: url(../../wwwroot/img/card-table.jpg);
-    background-size: 100%;
+    background-image: url(../../wwwroot/img/table-tile.jpg);
 }
 
 .directions-film .slide .content {
