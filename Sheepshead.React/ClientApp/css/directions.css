@@ -19,8 +19,8 @@
     vertical-align: middle;
     display: table-cell;
     height: 100vh;
-    padding-left: 15px;
-    padding-right: 30px; /*Let the right margin be larger because we expect a scroll bar*/
+    padding-left: 3vmin;
+    padding-right: 6vmin; /*Let the right margin be larger because we expect a scroll bar*/
 }
 
 .directions-film .slide p:first-child,
