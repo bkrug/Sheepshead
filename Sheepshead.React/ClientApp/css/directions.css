@@ -20,7 +20,7 @@
     display: table-cell;
     height: 100vh;
     padding-left: 3vmin;
-    padding-right: 6vmin; /*Let the right margin be larger because we expect a scroll bar*/
+    padding-right: 16vmin; /*Let the right margin be larger because we expect a scroll bar*/
 }
 
 .directions-film .slide p:first-child,
@@ -56,12 +56,18 @@
 
 .directions-film .button-group {
     position: fixed;
-    bottom: 3vmin;
-    width: 100%;
+    top: 0;
+    bottom: 0;
+    right: 1vmin;
+    width: 10vmin;
+    text-align: left;
 }
 
 .directions-film .button-row {
-    text-align: center;
+    width: 5vmin;
+    display: inline-block;
+    vertical-align: middle;
+    margin-top: 19vmin;
 }
 
 .directions-film .jump-button {
