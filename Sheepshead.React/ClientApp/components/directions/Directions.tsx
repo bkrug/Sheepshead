@@ -147,7 +147,7 @@ export class Directions extends React.Component<RouteComponentProps<{}>, Directi
                     <h3>GOAL</h3>
                     <p>
                         The goal for each hand, is to win points for your team.
-                        A player wins points by winning tricks.
+                        A player wins points for the team by winning tricks.
                     </p>
                     <div className='trickRow'>
                         <div className='cardCol'>
@@ -662,7 +662,7 @@ export class Directions extends React.Component<RouteComponentProps<{}>, Directi
                     <h3>Schneider</h3>
                     <p>
                         When the defensive players win at least 30 points, it is said that they got schneider.
-                        When the offensive players win at least 31 points, that means that instead they got schneider.
+                        When the offensive players win at least 31 points, that means that the offense got schneider.
                         When playing Sheepshead with physical cards, you might hear your teammates say "We lost, but at least they didn't get schneider."
                     </p>
                 </div>
