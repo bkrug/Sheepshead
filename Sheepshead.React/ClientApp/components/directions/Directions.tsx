@@ -656,6 +656,17 @@ export class Directions extends React.Component<RouteComponentProps<{}>, Directi
                     </table>
                 </div>
             ),
+        schneider:
+            (
+                <div>
+                    <h3>Schneider</h3>
+                    <p>
+                        When the defensive players win at least 30 points, it is said that they got schneider.
+                        When the offensive players win at least 31 points, that means that instead they got schneider.
+                        When playing Sheepshead with physical cards, you might hear your teammates say "We lost, but at least they didn't get schneider."
+                    </p>
+                </div>
+            ),
         goingAlone:
             (
                 <div>
