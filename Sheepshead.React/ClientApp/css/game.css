@@ -7,6 +7,38 @@ a {
     color: skyblue;
 }
 
+.page-contents {
+    font-size: 2vmin;
+}
+
+.page-contents h1 {
+    font-size: 6vmin;
+}
+
+.page-contents h2 {
+    font-size: 5vmin;
+}
+
+.page-contents h3 {
+    font-size: 4vmin;
+}
+
+.page-contents h4 {
+    font-size: 3vmin;
+}
+
+.page-contents h5 {
+    font-size: 2vmin;
+}
+
+.page-contents h6 {
+    font-size: 1vmin;
+}
+
+.page-contents p {
+    text-align: justify;
+}
+
 input,
 button {
     color: black;
@@ -15,8 +47,8 @@ button {
 .modal-dialog {
     position: fixed;
     font-family: Arial, Helvetica, sans-serif;
-    top: 70px;
-    width: 540px;
+    top: 9vmin;
+    width: 67vmin;
     margin-left: auto;
     margin-right: auto;
     background: rgba(0,0,0,0.8);
@@ -28,13 +60,13 @@ button {
 }
 
 .modal-dialog.trick-cards {
-    top: 220px;
-    width: 300px;
+    top: 27vmin;
+    width: 37vmin;
 }
 
 .modal-dialog.trick-summary {
-    top: 45px;
-    width: 300px;
+    top: 10.5vmin;
+    width: 35.5vmin;
 }
 
 .modal-dialog:target {
@@ -45,8 +77,8 @@ button {
 .modal-dialog > div {
     position: relative;
     margin: 2% 2%;
-    padding: 5px 20px 13px 20px;
-    border-radius: 10px;
+    padding: .5vmin 3vmin 1.5vmin 2.5vmin;
+    border-radius: 1vmin;
     background: #fff;
     background: -moz-linear-gradient(#fff, #999);
     background: -webkit-linear-gradient(#fff, #999);
@@ -67,73 +99,78 @@ button {
 }
 
 .modal-dialog td:first-child {
-    padding-right: 6px;
+    padding-right: 1vmin;
 }
 
 .modal-dialog td:not(:first-child) {
-    border-width: 1px;
+    border-width: 0.1vmin;
     border-style: solid;
     border-color: black;
     text-align: center;
-    width: 30px;
+    width: 4vmin;
 }
 
 .pick-option button {
-    margin: 0 0 6px 6px;
+    margin: 0 0 1vmin 1vmin;
 }
 
 .play-pane .hand-data,
 .play-pane .trick-winners {
     display: inline-block;
     width: 50%;
-    height: 120px;
+    height: 15vmin;
     vertical-align: top;
+}
+
+.card {
+    width: 9vmin;
+    height: 12vmin;
 }
 
 .game-details,
 .trick-pane {
-    width: 492px; /* ( card-image width + margin ) x 6 */
+    width: 60vmin; /* ( card-image width + margin ) x 6 */
 }
 
 .trick-pane .trick-cards {
-    height: 128px;
+    height: 16vmin;
 }
 
 .trick-pane .trick-cards p {
-    margin-left: 5px;
-    margin-right: 5px;
+    margin-left: 0.5vmin;
+    margin-right: 0.5vmin;
     overflow: hidden;
-    width: 72px;
-    height: 20px;
+    width: 9vmin;
+    height: 2.5vmin;
 }
 
 .trick-pane .trick-cards img,
 .trick-pane .player-cards img,
 .pick-pane .player-cards img {
-    margin-right: 5px;
-    margin-left: 5px;
+    margin-right: 0.5vmin;
+    margin-left: 0.5vmin;
 }
 
 .trick-pane .text-row {
-    height: 20px;
+    height: 3vmin;
 }
 
 .trick-summary img {
-    width: 48px;
-    height: 64px;
+    width: 6vmin;
+    height: 8vmin;
 }
 
 .trick-summary {
-    width: 230px;
+    width: 29vmin;
 }
 
 .trick-summary p {
-    width: 30px;
+    width: 4vmin;
     display: inline-block;
     text-align: right;
 }
 
 .trick-summary p:first-child {
-    width: 50px;
+    width: 6vmin;
     text-align: left;
 }

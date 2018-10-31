@@ -1,8 +1,4 @@
-﻿body {
-    height: 1900vh; /* There are presumed to be 19 slides in the directions, each using 100% viewport height */
-}
-
-.row .directions-film {
+﻿.row .directions-film {
     width: 100vw;
     padding: 0px;
 }

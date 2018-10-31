@@ -39,11 +39,11 @@ export default class Card extends React.Component<CardProps, CardState> {
         var cursorType = this.userCouldClick() ? 'pointer' : 'not-allowed';
         if (this.state.illegalNotification)
             return (
-                <img src={'./img/illegal.png'} alt={'illegal move'} style={{ cursor: cursorType }} />
+                <img className="card" src={'./img/illegal.png'} alt={'illegal move'} style={{ cursor: cursorType }} />
             )
         else
             return (
-                <img src={'./img/' + filename + '.png'} alt={filename} onClick={this.onClick} style={{ cursor: cursorType }}/>
+                <img className="card" src={'./img/' + filename + '.png'} alt={filename} onClick={this.onClick} style={{ cursor: cursorType }}/>
             )
 	}
 }

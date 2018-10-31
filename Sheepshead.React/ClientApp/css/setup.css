@@ -1,5 +1,5 @@
 ﻿.title-container {
-    width: 90px;
+    width: 11vmin;
     display: inline-block;
 }
 
@@ -8,12 +8,12 @@
 }
 
 .button-container input {
-    margin-left: 6px;
-    margin-right: 2px;
+    margin-left: 1vmin;
+    margin-right: .2vmin;
 }
 
 label {
-    margin-right: 4px;
+    margin-right: 0.5vmin;
 }
 
 input[disabled] {
@@ -25,7 +25,7 @@ input[disabled] {
 }
 
 .directions-parent {
-    margin-top: 15px;
+    margin-top: 2vmin;
 }
 
 .directions-parent a {
