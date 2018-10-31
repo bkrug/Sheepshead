@@ -259,6 +259,7 @@ namespace Sheepshead.Tests
         //* You lead the trick as an offensive player, but not all cards are Jacks or Queens, lead with weak trump.
         //* You lead the trick as an offensive player, almost all cards are Jacks or Queens, lead with a strong trump.
         //* You lead the trick as a defensive player, lead with the suit of called ace.
+        //* You lead the trick as a defensive player, lead with non-trump that you have few of.
 
         //* Not all your opponents have played, your team is winning with the most powerful remaining card. Give away points.
         //* Not all your opponents have played, your team is winning. Give away points.
