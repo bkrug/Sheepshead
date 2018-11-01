@@ -23,7 +23,7 @@ export interface PickPaneProps extends React.Props<any> {
 }
 
 export default class PickPane extends React.Component<PickPaneProps, PickPaneState> {
-    private cardContainerStyle = { height: "96px" };
+    private cardContainerStyle = { height: "12vmin" };
 
     constructor(props: PickPaneProps) {
         super(props);
