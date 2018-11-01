@@ -26,25 +26,25 @@
 }
 
 .directions-film .slide .content {
-    font-size: 3vmin;
+    font-size: 2vmin;
 }
 .directions-film .slide .content h1 {
-    font-size: 7vmin;
-}
-.directions-film .slide .content h2 {
     font-size: 6vmin;
 }
-.directions-film .slide .content h3 {
+.directions-film .slide .content h2 {
     font-size: 5vmin;
 }
-.directions-film .slide .content h4 {
+.directions-film .slide .content h3 {
     font-size: 4vmin;
 }
-.directions-film .slide .content h5 {
+.directions-film .slide .content h4 {
     font-size: 3vmin;
 }
-.directions-film .slide .content h6 {
+.directions-film .slide .content h5 {
     font-size: 2vmin;
+}
+.directions-film .slide .content h6 {
+    font-size: 1vmin;
 }
 .directions-film .slide .content p {
     text-align: justify;
@@ -80,8 +80,8 @@
 }
 
 .directions-film img.card {
-    height: 16vmin;
-    width: 12vmin;
+    height: 12vmin;
+    width: 9vmin;
 }
 
 .directions-film a {
@@ -149,7 +149,7 @@
 }
 
 .directions-film .cards .card {
-    margin: 2.5vmin 4.5vmin;
+    margin: 2vmin 3.5vmin;
 }
 
 .directions-film .cards .prohibit-group {
@@ -159,8 +159,8 @@
 }
 
 .directions-film .cards .prohibit {
-    height: 21vmin;
-    width: 21vmin;
+    height: 16vmin;
+    width: 16vmin;
 }
 
 /* Goal slide */
@@ -180,15 +180,17 @@
     display: block;
 }
 
+.directions-film .suits h5,
 .directions-film .suits p.label {
     display: block;
     text-align: center;
     margin-bottom: 0;
     padding-top: 2vmin;
+    padding-bottom: 0.5vmin;
 }
 
 .directions-film .suits .overlapCards {
-    width: 42vmin;
+    width: 20vmin;
     display: inline-block;
 }
 
@@ -214,7 +216,7 @@
 .directions-film .tricks .row>div,
 .directions-film .winningTricks .row>div {
     display: inline-block;
-    max-width: 16vmin;
+    max-width: 12vmin;
     vertical-align: top;
 }
 
@@ -259,11 +261,13 @@
 
 .directions-film .picking .arrow {
     display: inline-block;
-    font-size: 10vmin;
+    font-size: 5vmin;
 }
 
 .directions-film .picking .overlapCards img.card {
-    margin-right: calc(1.5vw - 12vmin);
+    margin-right: calc(1.5vw - 9vmin);
+    width: 9vmin;
+    height: 12vmin;
 }
 
 .directions-film .picking .overlapCards img.card:last-child {
@@ -296,8 +300,8 @@
 }
 
 .directions-film .winningHand img.card {
-    height: 8vmin;
-    width: 6vmin;
+    height: 6.666vmin;
+    width: 5vmin;
 }
 
 /* Coins Per Player */

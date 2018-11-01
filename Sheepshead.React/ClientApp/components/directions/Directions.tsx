@@ -214,9 +214,9 @@ export class Directions extends React.Component<RouteComponentProps<{}>, Directi
                         The other fail suits follow the same pattern as clubs.
                     </p>
                     <div className='cardRow'>
-                        <p className='label'>
+                        <h5>
                             Trump
-                        </p>
+                        </h5>
                         <div className='overlapCards'>
                             {this._QC}
                             {this._QS}
@@ -237,9 +237,9 @@ export class Directions extends React.Component<RouteComponentProps<{}>, Directi
                         </div>
                     </div>
                     <div className='cardRow'>
-                        <p className='label'>
+                        <h5>
                             Fail
-                        </p>
+                        </h5>
                         <div className='overlapCards'>
                         </div>
                         <div className='fullCards'>
