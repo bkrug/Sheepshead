@@ -60,12 +60,12 @@ button {
 }
 
 .modal-dialog.trick-cards {
-    top: 27vmin;
+    top: 32vmin;
     width: 37vmin;
 }
 
 .modal-dialog.trick-summary {
-    top: 10.5vmin;
+    top: 9vmin;
     width: 35.5vmin;
 }
 
