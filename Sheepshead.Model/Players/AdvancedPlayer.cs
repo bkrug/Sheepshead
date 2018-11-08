@@ -34,7 +34,21 @@ namespace Sheepshead.Models.Players
             SheepCard moveCard;
             if (!trick.Hand.Leasters)
             {
-                moveCard = TryToWinTrick(trick);
+                if (trick.Hand.Picker == this || IamPartner(trick))
+                {
+                    if (Cards.Average(c => CardUtil.GetRank(c)) > 10)
+                        moveCard = Cards
+                            .OrderBy(c => CardUtil.GetSuit(c) == Suit.TRUMP ? 1 : 2)
+                            .ThenByDescending(c => CardUtil.GetRank(c))
+                            .FirstOrDefault();
+                    else
+                        moveCard = Cards
+                            .OrderBy(c => CardUtil.GetSuit(c) == Suit.TRUMP ? 1 : 2)
+                            .ThenBy(c => CardUtil.GetRank(c))
+                            .FirstOrDefault();
+                }
+                else
+                    moveCard = (SheepCard)0;
             }
             else
             {

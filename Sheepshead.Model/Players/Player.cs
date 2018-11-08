@@ -99,6 +99,11 @@ namespace Sheepshead.Models.Players
                     return SheepCard.N10_SPADES;
             }
         }
+
+        protected Boolean IamPartner(ITrick trick)
+        {
+            return trick.Hand.Partner == this || trick.Hand.PartnerCard.HasValue && Cards.Contains(trick.Hand.PartnerCard.Value);
+        }
     }
 
     public class LegalCalledAces
