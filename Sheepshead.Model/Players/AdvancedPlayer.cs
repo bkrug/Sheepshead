@@ -34,37 +34,10 @@ namespace Sheepshead.Models.Players
             SheepCard moveCard;
             if (!trick.Hand.Leasters)
             {
-                if (trick.Hand.Picker == this || IamPartner(trick))
-                {
-                    if (Cards.Average(c => CardUtil.GetRank(c)) > 10)
-                        moveCard = Cards
-                            .OrderBy(c => CardUtil.GetSuit(c) == Suit.TRUMP ? 1 : 2)
-                            .ThenByDescending(c => CardUtil.GetRank(c))
-                            .FirstOrDefault();
-                    else
-                        moveCard = Cards
-                            .OrderBy(c => CardUtil.GetSuit(c) == Suit.TRUMP ? 1 : 2)
-                            .ThenBy(c => CardUtil.GetRank(c))
-                            .FirstOrDefault();
-                }
+                if (trick.StartingPlayer == this)
+                    moveCard = GetLeadMove(trick);
                 else
-                {
-                    if (trick.Hand.Deck.Game.PartnerMethod == PartnerMethod.CalledAce && trick.Hand.PartnerCard.HasValue)
-                    {
-                        var partnerCardSuit = CardUtil.GetSuit(trick.Hand.PartnerCard.Value);
-                        return Cards
-                            .OrderBy(c => CardUtil.GetSuit(c) == partnerCardSuit ? 1 : 2)
-                            .ThenByDescending(c => CardUtil.GetRank(c))
-                            .FirstOrDefault();
-                    }
-                    else
-                    {
-                        return Cards
-                            .OrderBy(c => CardUtil.GetSuit(c) != Suit.TRUMP ? 1 : 2)
-                            .ThenByDescending(c => CardUtil.GetRank(c))
-                            .FirstOrDefault();
-                    }
-                }
+                    moveCard = (SheepCard)0;
             }
             else
             {
@@ -77,6 +50,41 @@ namespace Sheepshead.Models.Players
                     moveCard = TryToWinTrick(trick);
             }
             return moveCard;
+        }
+
+        private SheepCard GetLeadMove(ITrick trick)
+        {
+            if (trick.Hand.Picker == this || IamPartner(trick))
+            {
+                if (Cards.Average(c => CardUtil.GetRank(c)) > 10)
+                    return Cards
+                        .OrderBy(c => CardUtil.GetSuit(c) == Suit.TRUMP ? 1 : 2)
+                        .ThenByDescending(c => CardUtil.GetRank(c))
+                        .FirstOrDefault();
+                else
+                    return Cards
+                        .OrderBy(c => CardUtil.GetSuit(c) == Suit.TRUMP ? 1 : 2)
+                        .ThenBy(c => CardUtil.GetRank(c))
+                        .FirstOrDefault();
+            }
+            else
+            {
+                if (trick.Hand.Deck.Game.PartnerMethod == PartnerMethod.CalledAce && trick.Hand.PartnerCard.HasValue)
+                {
+                    var partnerCardSuit = CardUtil.GetSuit(trick.Hand.PartnerCard.Value);
+                    return Cards
+                        .OrderBy(c => CardUtil.GetSuit(c) == partnerCardSuit ? 1 : 2)
+                        .ThenByDescending(c => CardUtil.GetRank(c))
+                        .FirstOrDefault();
+                }
+                else
+                {
+                    return Cards
+                        .OrderBy(c => CardUtil.GetSuit(c) != Suit.TRUMP ? 1 : 2)
+                        .ThenByDescending(c => CardUtil.GetRank(c))
+                        .FirstOrDefault();
+                }
+            }
         }
 
         private SheepCard TryToWinTrick(ITrick trick)
