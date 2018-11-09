@@ -48,7 +48,23 @@ namespace Sheepshead.Models.Players
                             .FirstOrDefault();
                 }
                 else
-                    moveCard = (SheepCard)0;
+                {
+                    if (trick.Hand.Deck.Game.PartnerMethod == PartnerMethod.CalledAce && trick.Hand.PartnerCard.HasValue)
+                    {
+                        var partnerCardSuit = CardUtil.GetSuit(trick.Hand.PartnerCard.Value);
+                        return Cards
+                            .OrderBy(c => CardUtil.GetSuit(c) == partnerCardSuit ? 1 : 2)
+                            .ThenByDescending(c => CardUtil.GetRank(c))
+                            .FirstOrDefault();
+                    }
+                    else
+                    {
+                        return Cards
+                            .OrderBy(c => CardUtil.GetSuit(c) != Suit.TRUMP ? 1 : 2)
+                            .ThenByDescending(c => CardUtil.GetRank(c))
+                            .FirstOrDefault();
+                    }
+                }
             }
             else
             {
