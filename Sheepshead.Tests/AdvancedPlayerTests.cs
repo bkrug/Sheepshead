@@ -12,6 +12,18 @@ namespace Sheepshead.Tests
     [TestClass]
     public class AdvancedPlayerTests
     {
+        #region Pick Tests
+        //Tests:
+        //* In five player game, you have many powerful trump. Pick.
+        //* In five player game, you have many weak trump, and points you would like to bury. Pick.
+        //* In five player game, you have many weak trump, but no points to bury, and are towards the front. Pass.
+        //* In five player game, you have many weak trump, but no points to bury, but are towards the back. Pick.
+        //* In five player game, you have few trump. Pass.
+        //* In three player game, you have many trump and many aces or tens. Pick.
+        //* In three player game, you have many trump but fewer aces and tens, and are towards the front. Pass.
+        //* In three player game, you have not quite so many trump, aces, and tens, but are towards the back. Pick.
+        //* In three player game, you just don't have much. Pass.
+
         [TestMethod]
         public void AdvancedPlayer_FivePlayerGame_ManyPowerfulTrump_ShouldPick()
         {
@@ -244,17 +256,14 @@ namespace Sheepshead.Tests
             var actual = advancedPlayer.WillPick(deckMock.Object);
             Assert.AreEqual(false, actual);
         }
+        #endregion
 
-        //Tests:
-        //* In five player game, you have many powerful trump. Pick.
-        //* In five player game, you have many weak trump, and points you would like to bury. Pick.
-        //* In five player game, you have many weak trump, but no points to bury, and are towards the front. Pass.
-        //* In five player game, you have many weak trump, but no points to bury, but are towards the back. Pick.
-        //* In five player game, you have few trump. Pass.
-        //* In three player game, you have many trump and many aces or tens. Pick.
-        //* In three player game, you have many trump but fewer aces and tens, and are towards the front. Pass.
-        //* In three player game, you have not quite so many trump, aces, and tens, but are towards the back. Pick.
-        //* In three player game, you just don't have much. Pass.
+        #region Leading a Trick Tests
+
+        //* You lead the trick as an offensive player, but not all cards are Jacks or Queens, lead with weak trump.
+        //* You lead the trick as an offensive player, almost all cards are Jacks or Queens, lead with a strong trump.
+        //* You lead the trick as a defensive player, lead with the suit of called ace.
+        //* You lead the trick as a defensive player, lead with non-trump that you have few of.
 
         [TestMethod]
         public void AdvancedPlayer_LeadTrick_OffensivePlayer_WeakCards_LeadWithWeakTrump1()
@@ -278,10 +287,6 @@ namespace Sheepshead.Tests
             trickMock.Setup(t => t.StartingPlayer).Returns(advancedPlayer);
             trickMock.Setup(t => t.Hand.Leasters).Returns(false);
             trickMock.Setup(t => t.Hand.Picker).Returns(advancedPlayer);
-            var deckMock = new Mock<IDeck>();
-            deckMock.Setup(m => m.Players).Returns(players);
-            deckMock.Setup(m => m.PlayerCount).Returns(players.Count);
-            deckMock.Setup(m => m.StartingPlayer).Returns(players[0]);
             var actual = advancedPlayer.GetMove(trickMock.Object);
             Assert.IsTrue(CardUtil.GetSuit(actual) == Suit.TRUMP);
             Assert.AreNotEqual(SheepCard.JACK_SPADES, actual);
@@ -310,10 +315,6 @@ namespace Sheepshead.Tests
             trickMock.Setup(t => t.StartingPlayer).Returns(advancedPlayer);
             trickMock.Setup(t => t.Hand.Leasters).Returns(false);
             trickMock.Setup(t => t.Hand.PartnerCard).Returns(SheepCard.JACK_DIAMONDS);
-            var deckMock = new Mock<IDeck>();
-            deckMock.Setup(m => m.Players).Returns(players);
-            deckMock.Setup(m => m.PlayerCount).Returns(players.Count);
-            deckMock.Setup(m => m.StartingPlayer).Returns(players[0]);
             var actual = advancedPlayer.GetMove(trickMock.Object);
             Assert.IsTrue(CardUtil.GetSuit(actual) == Suit.TRUMP);
             Assert.AreNotEqual(SheepCard.JACK_SPADES, actual);
@@ -343,10 +344,6 @@ namespace Sheepshead.Tests
             trickMock.Setup(t => t.StartingPlayer).Returns(advancedPlayer);
             trickMock.Setup(t => t.Hand.Leasters).Returns(false);
             trickMock.Setup(t => t.Hand.Picker).Returns(advancedPlayer);
-            var deckMock = new Mock<IDeck>();
-            deckMock.Setup(m => m.Players).Returns(players);
-            deckMock.Setup(m => m.PlayerCount).Returns(players.Count);
-            deckMock.Setup(m => m.StartingPlayer).Returns(players[0]);
             var actual = advancedPlayer.GetMove(trickMock.Object);
             Assert.IsTrue(new List<SheepCard>() { SheepCard.QUEEN_CLUBS, SheepCard.QUEEN_HEARTS, SheepCard.QUEEN_SPADES }.Contains(actual));
         }
@@ -374,10 +371,6 @@ namespace Sheepshead.Tests
             trickMock.Setup(t => t.Hand.Leasters).Returns(false);
             trickMock.Setup(t => t.Hand.Deck.Game.PartnerMethod).Returns(PartnerMethod.CalledAce);
             trickMock.Setup(t => t.Hand.PartnerCard).Returns(SheepCard.ACE_SPADES);
-            var deckMock = new Mock<IDeck>();
-            deckMock.Setup(m => m.Players).Returns(players);
-            deckMock.Setup(m => m.PlayerCount).Returns(players.Count);
-            deckMock.Setup(m => m.StartingPlayer).Returns(players[0]);
             var actual = advancedPlayer.GetMove(trickMock.Object);
             Assert.AreEqual(SheepCard.N7_SPADES, actual);
         }
@@ -405,18 +398,49 @@ namespace Sheepshead.Tests
             trickMock.Setup(t => t.Hand.Leasters).Returns(false);
             trickMock.Setup(t => t.Hand.Deck.Game.PartnerMethod).Returns(PartnerMethod.JackOfDiamonds);
             trickMock.Setup(t => t.Hand.PartnerCard).Returns(SheepCard.JACK_DIAMONDS);
-            var deckMock = new Mock<IDeck>();
-            deckMock.Setup(m => m.Players).Returns(players);
-            deckMock.Setup(m => m.PlayerCount).Returns(players.Count);
-            deckMock.Setup(m => m.StartingPlayer).Returns(players[0]);
             var actual = advancedPlayer.GetMove(trickMock.Object);
             Assert.IsTrue(!new List<SheepCard>() { SheepCard.KING_DIAMONDS, SheepCard.JACK_HEARTS }.Contains(actual));
         }
+        #endregion
 
-        //* You lead the trick as an offensive player, but not all cards are Jacks or Queens, lead with weak trump.
-        //* You lead the trick as an offensive player, almost all cards are Jacks or Queens, lead with a strong trump.
-        //* You lead the trick as a defensive player, lead with the suit of called ace.
-        //* You lead the trick as a defensive player, lead with non-trump that you have few of.
+        #region Mid-Trick Tests (Not all opponents have played)
+
+        [TestMethod]
+        public void AdvancedPlayer_NotAllOpponentsPlayed_DefensivePlayer_YourTeamIsWinning_GiveAwayPoints()
+        {
+            var players = new List<IPlayer>() {
+                new AdvancedPlayer(),
+                new ComputerPlayerPickingMock(false),
+                new ComputerPlayerPickingMock(true),
+                new ComputerPlayerPickingMock(false),
+                new ComputerPlayerPickingMock(false)
+            };
+            var advancedPlayer = (AdvancedPlayer)players[0];
+            var picker = players[2];
+            var partner = players[4];
+            advancedPlayer.Cards.Add(SheepCard.ACE_DIAMONDS);
+            advancedPlayer.Cards.Add(SheepCard.N7_DIAMONDS);
+            advancedPlayer.Cards.Add(SheepCard.QUEEN_CLUBS);
+            var cardsPlayed = new Dictionary<IPlayer, SheepCard>()
+            {
+                { players[3], SheepCard.QUEEN_SPADES },
+                { partner, SheepCard.N10_HEARTS }
+            };
+            var trickMock = new Mock<ITrick>();
+            trickMock.Setup(t => t.CardsPlayed).Returns(cardsPlayed);
+            trickMock.Setup(t => t.StartingPlayer).Returns(players[3]);
+            trickMock.Setup(t => t.Hand.Picker).Returns(picker);
+            trickMock.Setup(t => t.Hand.Partner).Returns(partner);
+            trickMock.Setup(t => t.Hand.Leasters).Returns(false);
+            trickMock.Setup(t => t.IsLegalAddition(SheepCard.ACE_DIAMONDS, advancedPlayer)).Returns(true);
+            trickMock.Setup(t => t.IsLegalAddition(SheepCard.N7_DIAMONDS, advancedPlayer)).Returns(true);
+            trickMock.Setup(t => t.IsLegalAddition(SheepCard.QUEEN_CLUBS, advancedPlayer)).Returns(true);
+            trickMock.Setup(t => t.Hand.Deck.Game.Players).Returns(players);
+            var actual = advancedPlayer.GetMove(trickMock.Object);
+            Assert.AreEqual(SheepCard.ACE_DIAMONDS, actual);
+        }
+
+        #endregion
 
         //* Not all your opponents have played, your team is winning with the most powerful remaining card. Give away points.
         //* Not all your opponents have played, your team is winning. Give away points.

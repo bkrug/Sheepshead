@@ -37,7 +37,7 @@ namespace Sheepshead.Models.Players
                 if (trick.StartingPlayer == this)
                     moveCard = GetLeadMove(trick);
                 else
-                    moveCard = (SheepCard)0;
+                    moveCard = GetNonLeadMove(trick);
             }
             else
             {
@@ -87,6 +87,54 @@ namespace Sheepshead.Models.Players
             }
         }
 
+        private SheepCard GetNonLeadMove(ITrick trick)
+        {
+            var leadSuit = CardUtil.GetSuit(trick.CardsPlayed.First().Value);
+            var winningMove = trick.CardsPlayed
+                .OrderBy(cp => CardUtil.GetSuit(cp.Value) == Suit.TRUMP ? 1 : 2)
+                .OrderBy(cp => CardUtil.GetSuit(cp.Value) == leadSuit ? 1 : 2)
+                .OrderBy(cp => CardUtil.GetRank(cp.Value))
+                .FirstOrDefault();
+            if (PlayerIsTeammate(trick, winningMove.Key))
+            {
+                var legalCards = Cards.Where(c => trick.IsLegalAddition(c, this)).ToList();
+                return Cards
+                    .Where(c => trick.IsLegalAddition(c, this))
+                    .OrderBy(c => !BeatsWinningMove(winningMove.Value, c, trick.CardsPlayed.First().Value) ? 1 : 2)
+                    .ThenByDescending(c => CardUtil.GetPoints(c))
+                    .First();
+            }
+            return (SheepCard)0;
+        }
+
+        private bool PlayerIsTeammate(ITrick trick, IPlayer player)
+        {
+            var iAmOffense = trick.Hand.Picker == this || IamPartner(trick);
+            var theyAreOffense = trick.Hand.Picker == player || trick.Hand.Partner == player;
+            return iAmOffense == theyAreOffense;
+        }
+
+        private AllOpponentsPlayed AllOpponentsHavePlayed(ITrick trick)
+        {
+            if (!trick.Hand.PartnerCard.HasValue || trick.Hand.Partner != null)
+            {
+                var opponents = trick.Hand.Deck.Game.Players.Where(p => !PlayerIsTeammate(trick, p)).ToList();
+                var opponentsWithTurn = trick.CardsPlayed.Keys.Count(p => opponents.Contains(p));
+                return opponents.Count == opponentsWithTurn ? AllOpponentsPlayed.Yes : AllOpponentsPlayed.No;
+            }
+            return AllOpponentsPlayed.Unknown;
+        }
+
+        private bool BeatsWinningMove(SheepCard winningCard, SheepCard testCard, SheepCard startingCard)
+        {
+            var winningSuit = CardUtil.GetSuit(winningCard);
+            var testSuit = CardUtil.GetSuit(testCard);
+            var startSuit = CardUtil.GetSuit(startingCard);
+            return testSuit == Suit.TRUMP && winningSuit != Suit.TRUMP
+                || testSuit == startSuit && winningSuit != Suit.TRUMP && winningSuit != startSuit
+                || testSuit == winningSuit && CardUtil.GetRank(testCard) < CardUtil.GetRank(winningCard);
+        }
+
         private SheepCard TryToWinTrick(ITrick trick)
         {
             if (trick.StartingPlayer == this)
@@ -131,5 +179,14 @@ namespace Sheepshead.Models.Players
                 .Select(g => g.First()).ToList();
             return Cards.OrderBy(c => soloCardsOfSuite.Contains(c) ? 1 : 2).ThenByDescending(c => CardUtil.GetRank(c)).Take(2).ToList();
         }
+    }
+
+    public enum AllOpponentsPlayed
+    {
+        Unknown,
+        Yes,
+        YesProbably,
+        NoProbably,
+        No
     }
 }
