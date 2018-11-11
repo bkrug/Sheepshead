@@ -124,9 +124,9 @@ namespace Sheepshead.Models.Players
                 var winnableCards = _gameStateAnalyzer.MyCardsThatCanWin(this, trick);
                 if (_gameStateAnalyzer.MySideWinning(this, trick))
                 {
-                    if (_gameStateAnalyzer.UnplayedCardsCouldWin(winnableCards, trick))
+                    if (_gameStateAnalyzer.UnplayedCardsBeatPlayedCards(this, trick))
                     {
-                        if (winnableCards.Any())
+                        if (_gameStateAnalyzer.UnplayedCardsBeatMyCards(winnableCards, trick))
                             return _midTrickPlayCreator.PlayToWin(this, trick);
                         else
                             return _midTrickPlayCreator.GiveAwayLeastPowerLeastPoints(this, trick);
@@ -138,7 +138,7 @@ namespace Sheepshead.Models.Players
                 }
                 else
                 {
-                    if (_gameStateAnalyzer.UnplayedCardsCouldWin(winnableCards, trick))
+                    if (_gameStateAnalyzer.UnplayedCardsBeatMyCards(winnableCards, trick))
                         return _midTrickPlayCreator.GiveAwayLeastPowerLeastPoints(this, trick);
                     else
                         return _midTrickPlayCreator.PlayToWin(this, trick);

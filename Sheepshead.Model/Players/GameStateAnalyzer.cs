@@ -7,7 +7,8 @@ namespace Sheepshead.Models.Players
         bool? AllOpponentsHavePlayed(IPlayer thisPlayer, ITrick trick);
         bool MySideWinning(IPlayer thisPlayer, ITrick trick);
         List<SheepCard> MyCardsThatCanWin(IPlayer thisPlayer, ITrick trick);
-        bool UnplayedCardsCouldWin(List<SheepCard> myStrongCards, ITrick trick);
+        bool UnplayedCardsBeatPlayedCards(IPlayer thisPlayer, ITrick trick);
+        bool UnplayedCardsBeatMyCards(List<SheepCard> myStrongCards, ITrick trick);
     }
 
     public class GameStateAnalyzer : IGameStateAnalyzer
@@ -27,7 +28,12 @@ namespace Sheepshead.Models.Players
             throw new System.NotImplementedException();
         }
 
-        public bool UnplayedCardsCouldWin(List<SheepCard> myStrongCards, ITrick trick)
+        public bool UnplayedCardsBeatPlayedCards(IPlayer thisPlayer, ITrick trick)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public bool UnplayedCardsBeatMyCards(List<SheepCard> myStrongCards, ITrick trick)
         {
             throw new System.NotImplementedException();
         }
