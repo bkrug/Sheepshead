@@ -773,6 +773,60 @@ namespace Sheepshead.Tests
             Assert.AreEqual(true, actual);
         }
 
+        [TestMethod]
+        public void GameStateAnalyzer_UnplayedCardsBeatMyCards_False()
+        {
+            var playerMock = new Mock<IPlayer>();
+            playerMock.Setup(m => m.Cards).Returns(new List<SheepCard>() {
+                SheepCard.KING_SPADES,
+                SheepCard.ACE_DIAMONDS,
+                SheepCard.N7_DIAMONDS,
+                SheepCard.ACE_SPADES
+            });
+            var cardsPlayed1 = new Dictionary<IPlayer, SheepCard>() {
+                { new Mock<IPlayer>().Object, SheepCard.QUEEN_CLUBS },
+                { new Mock<IPlayer>().Object, SheepCard.QUEEN_SPADES },
+                { new Mock<IPlayer>().Object, SheepCard.QUEEN_HEARTS },
+                { new Mock<IPlayer>().Object, SheepCard.QUEEN_DIAMONDS },
+                { new Mock<IPlayer>().Object, SheepCard.JACK_CLUBS },
+                { new Mock<IPlayer>().Object, SheepCard.JACK_SPADES },
+            };
+            var cardsPlayed2 = new Dictionary<IPlayer, SheepCard>() {
+                { new Mock<IPlayer>().Object, SheepCard.JACK_HEARTS },
+                { new Mock<IPlayer>().Object, SheepCard.JACK_DIAMONDS },
+                { new Mock<IPlayer>().Object, SheepCard.N10_DIAMONDS },
+                { new Mock<IPlayer>().Object, SheepCard.KING_DIAMONDS },
+                { new Mock<IPlayer>().Object, SheepCard.N9_DIAMONDS },
+                { new Mock<IPlayer>().Object, SheepCard.N8_DIAMONDS },
+            };
+            var cardsPlayed3 = new Dictionary<IPlayer, SheepCard>() {
+                { new Mock<IPlayer>().Object, SheepCard.N8_SPADES },
+                { new Mock<IPlayer>().Object, SheepCard.N7_SPADES },
+                { new Mock<IPlayer>().Object, SheepCard.N8_CLUBS },
+                { new Mock<IPlayer>().Object, SheepCard.KING_HEARTS }
+            };
+            var trickMock1 = new Mock<ITrick>();
+            var trickMock2 = new Mock<ITrick>();
+            var trickMock3 = new Mock<ITrick>();
+            trickMock1.Setup(m => m.CardsPlayed).Returns(cardsPlayed1);
+            trickMock2.Setup(m => m.CardsPlayed).Returns(cardsPlayed2);
+            trickMock3.Setup(m => m.CardsPlayed).Returns(cardsPlayed3);
+            var allTricks = new List<ITrick>()
+            {
+                trickMock1.Object,
+                trickMock2.Object,
+                trickMock3.Object
+            };
+            trickMock3.Setup(m => m.Hand.Tricks).Returns(allTricks);
+
+            //Starting suite in the current trick is Spades.
+            //All trump have been played or are in the current player's hand.
+            //The most powerful unplayed spade is in the players hand. 
+            var analyzer = new GameStateAnalyzer();
+            var actual = analyzer.UnplayedCardsBeatPlayedCards(playerMock.Object, trickMock3.Object);
+            Assert.AreEqual(false, actual);
+        }
+
         #endregion
     }
 }
