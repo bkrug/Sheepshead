@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Sheepshead.Models.Players
@@ -66,17 +67,29 @@ namespace Sheepshead.Models.Players
 
         public List<SheepCard> MyCardsThatCanWin(IPlayer thisPlayer, ITrick trick)
         {
+            return GetCardsOfGreaterPower(thisPlayer, trick, thisPlayer.Cards).ToList();
+        }
+
+        public bool UnplayedCardsBeatPlayedCards(IPlayer thisPlayer, ITrick trick)
+        {
+            var playedAndHeldCards = trick.Hand.Tricks.SelectMany(t => t.CardsPlayed.Values).Union(thisPlayer.Cards);
+            var allCards = Enum.GetValues(typeof(SheepCard)).OfType<SheepCard>();
+            var unrevealedCards = allCards.Except(playedAndHeldCards);
+            return GetCardsOfGreaterPower(thisPlayer, trick, unrevealedCards).Any();
+        }
+
+        private static IEnumerable<SheepCard> GetCardsOfGreaterPower(IPlayer thisPlayer, ITrick trick, IEnumerable<SheepCard> comparisonCards)
+        {
             var startSuit = CardUtil.GetSuit(trick.CardsPlayed.First().Value);
             var winningCard = GetWinningPlay(trick).Value;
             var winningCardRank = CardUtil.GetRank(winningCard);
             if (CardUtil.GetSuit(winningCard) == Suit.TRUMP)
-                return thisPlayer.Cards.Where(c => CardUtil.GetRank(c) < winningCardRank).ToList();
+                return comparisonCards.Where(c => CardUtil.GetRank(c) < winningCardRank);
             else
-                return thisPlayer.Cards.Where(c => 
+                return comparisonCards.Where(c =>
                     CardUtil.GetSuit(c) == Suit.TRUMP
                     || CardUtil.GetSuit(c) == startSuit && CardUtil.GetRank(c) < winningCardRank
-                )
-                .ToList();
+                );
         }
 
         private static KeyValuePair<IPlayer, SheepCard> GetWinningPlay(ITrick trick)
@@ -88,11 +101,6 @@ namespace Sheepshead.Models.Players
                 .ThenBy(cp => CardUtil.GetRank(cp.Value))
                 .First();
             return winningPlay;
-        }
-
-        public bool UnplayedCardsBeatPlayedCards(IPlayer thisPlayer, ITrick trick)
-        {
-            throw new System.NotImplementedException();
         }
 
         public bool UnplayedCardsBeatMyCards(List<SheepCard> myStrongCards, ITrick trick)

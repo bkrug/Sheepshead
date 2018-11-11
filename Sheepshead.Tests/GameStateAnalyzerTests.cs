@@ -623,7 +623,7 @@ namespace Sheepshead.Tests
                 { new Mock<IPlayer>().Object, SheepCard.JACK_HEARTS },
             };
             var cardsPlayed2 = new Dictionary<IPlayer, SheepCard>() {
-                { new Mock<IPlayer>().Object, SheepCard.JACK_SPADES },
+                { new Mock<IPlayer>().Object, SheepCard.JACK_DIAMONDS },
                 { new Mock<IPlayer>().Object, SheepCard.N10_DIAMONDS },
                 { new Mock<IPlayer>().Object, SheepCard.KING_DIAMONDS },
                 { new Mock<IPlayer>().Object, SheepCard.N9_DIAMONDS },
