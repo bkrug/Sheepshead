@@ -823,7 +823,7 @@ namespace Sheepshead.Tests
             //All trump have been played or are in the current player's hand.
             //The most powerful unplayed spade is in the players hand. 
             var analyzer = new GameStateAnalyzer();
-            var actual = analyzer.UnplayedCardsBeatPlayedCards(playerMock.Object, trickMock3.Object);
+            var actual = analyzer.UnplayedCardsBeatMyCards(new List<SheepCard>() { SheepCard.KING_SPADES, SheepCard.ACE_SPADES }, trickMock3.Object);
             Assert.AreEqual(false, actual);
         }
 
