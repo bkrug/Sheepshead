@@ -370,9 +370,10 @@ namespace Sheepshead.Tests
         [TestMethod]
         public void GameStateAnalyzer_MySideWinning_Offense_ThisIsPartner_Yes()
         {
+            var partnerCard = SheepCard.JACK_HEARTS;
             var pickerMock = new Mock<IPlayer>();
             var playerMock = new Mock<IPlayer>();
-            playerMock.Setup(m => m.Cards).Returns(new List<SheepCard>());
+            playerMock.Setup(m => m.Cards).Returns(new List<SheepCard>() { partnerCard });
             var cardsPlayed = new Dictionary<IPlayer, SheepCard>() {
                 { new Mock<IPlayer>().Object, SheepCard.N7_HEARTS },
                 { new Mock<IPlayer>().Object, SheepCard.KING_HEARTS },
@@ -381,7 +382,7 @@ namespace Sheepshead.Tests
             var trickMock = new Mock<ITrick>();
             trickMock.Setup(m => m.CardsPlayed).Returns(cardsPlayed);
             trickMock.Setup(m => m.Hand.Picker).Returns(pickerMock.Object);
-            trickMock.Setup(m => m.Hand.PartnerCard).Returns(SheepCard.JACK_DIAMONDS);
+            trickMock.Setup(m => m.Hand.PartnerCard).Returns(partnerCard);
             trickMock.Setup(m => m.Hand.Partner).Returns((Player)null);
             trickMock.Setup(m => m.Hand.PresumedParnter).Returns((Player)null);
             var analyzer = new GameStateAnalyzer();
@@ -392,9 +393,10 @@ namespace Sheepshead.Tests
         [TestMethod]
         public void GameStateAnalyzer_MySideWinning_Offense_ThisIsPartner_No()
         {
+            var partnerCard = SheepCard.JACK_HEARTS;
             var pickerMock = new Mock<IPlayer>();
             var playerMock = new Mock<IPlayer>();
-            playerMock.Setup(m => m.Cards).Returns(new List<SheepCard>());
+            playerMock.Setup(m => m.Cards).Returns(new List<SheepCard>() { partnerCard });
             var cardsPlayed = new Dictionary<IPlayer, SheepCard>() {
                 { new Mock<IPlayer>().Object, SheepCard.N7_HEARTS },
                 { new Mock<IPlayer>().Object, SheepCard.QUEEN_HEARTS },
@@ -403,7 +405,7 @@ namespace Sheepshead.Tests
             var trickMock = new Mock<ITrick>();
             trickMock.Setup(m => m.CardsPlayed).Returns(cardsPlayed);
             trickMock.Setup(m => m.Hand.Picker).Returns(pickerMock.Object);
-            trickMock.Setup(m => m.Hand.PartnerCard).Returns(SheepCard.JACK_DIAMONDS);
+            trickMock.Setup(m => m.Hand.PartnerCard).Returns(partnerCard);
             trickMock.Setup(m => m.Hand.Partner).Returns((Player)null);
             trickMock.Setup(m => m.Hand.PresumedParnter).Returns((Player)null);
             var analyzer = new GameStateAnalyzer();

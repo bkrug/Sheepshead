@@ -54,7 +54,19 @@ namespace Sheepshead.Models.Players
 
         public bool MySideWinning(IPlayer thisPlayer, ITrick trick)
         {
-            throw new System.NotImplementedException();
+            var startSuit = CardUtil.GetSuit(trick.CardsPlayed.First().Value);
+            var winningPlay = trick.CardsPlayed
+                .OrderBy(cp => CardUtil.GetSuit(cp.Value) == Suit.TRUMP ? 1 : 2)
+                .ThenBy(cp => CardUtil.GetSuit(cp.Value) == startSuit ? 1 : 2)
+                .ThenBy(cp => CardUtil.GetRank(cp.Value))
+                .First();
+            if (trick.Hand.Picker == thisPlayer)
+                return winningPlay.Key == trick.Hand.PresumedParnter;
+            if (PlayerKnowsSelfToBePartner(thisPlayer, trick))
+                return winningPlay.Key == trick.Hand.Picker;
+            return winningPlay.Key != trick.Hand.Picker 
+                && winningPlay.Key != trick.Hand.PresumedParnter
+                && !(trick.Hand.PartnerCard.HasValue && trick.Hand.PresumedParnter == null);
         }
 
         public List<SheepCard> MyCardsThatCanWin(IPlayer thisPlayer, ITrick trick)

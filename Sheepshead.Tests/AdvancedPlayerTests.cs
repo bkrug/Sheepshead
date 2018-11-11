@@ -407,22 +407,6 @@ namespace Sheepshead.Tests
 
         #endregion
 
-        //* Not all your opponents have played, your team is winning with the most powerful remaining card. Give away points.
-        //* Not all your opponents have played, your team is winning. Give away points.
-        //* Not all your opponents have played, your team is loosing. There are points to be had. You have the most powerful remaining card. Play that card.
-        //* Not all your opponents have played, your team is loosing. There are points to be had. You have not the most powerful remaining card. Give away (fewest possible) points.
-        //* Not all your opponents have played. Your team is loosing. There are not many points. Give away (fewest possible) points.
-
-        //* All your opponents have played, your team is winning the trick. Give away points if you can.
-        //* All your opponents have played, your team is not winning. There are points to be won. Play a card that wins the trick.
-        //* All your opponents have played, your team is not winning. You can't make them win. Give away (fewest possible) points.
-        //* All your opponents have played, your team is not winning. You can't make them win. Give away something worthless.
-
-        //* You think all your opponents have played, your team is winning the trick. Give away points if you can.
-        //* You think all your opponents have played, your team is not winning. There are points to be won. Play a card that wins the trick.
-        //* You think all your opponents have played, your team is not winning. You can't make them win. Give away (fewest possible) points.
-        //* You think all your opponents have played, your team is not winning. You can't make them win. Give away something worthless.
-
         //* In leasters, you have a lot of high value cards, so give them up in hands that someone else one.
         //* In leasters, you have more limited high value cards, give them up in hands one by someone with many points.
     }
