@@ -8,7 +8,7 @@ namespace Sheepshead.Models.Players
     {
         bool? AllOpponentsHavePlayed(IPlayer thisPlayer, ITrick trick);
         bool MySideWinning(IPlayer thisPlayer, ITrick trick);
-        List<SheepCard> MyCardsThatCanWin(IPlayer thisPlayer, ITrick trick);
+        bool ICanWinTrick(IPlayer thisPlayer, ITrick trick);
         bool UnplayedCardsBeatPlayedCards(IPlayer thisPlayer, ITrick trick);
         bool UnplayedCardsBeatMyCards(IPlayer thisPlayer, ITrick trick);
     }
@@ -65,11 +65,10 @@ namespace Sheepshead.Models.Players
                 || trick.Hand.PartnerCard.HasValue && thisPlayer.Cards.Contains(trick.Hand.PartnerCard.Value);
         }
 
-        public List<SheepCard> MyCardsThatCanWin(IPlayer thisPlayer, ITrick trick)
+        public bool ICanWinTrick(IPlayer thisPlayer, ITrick trick)
         {
-            return GetCardsThatCouldWin(trick, thisPlayer.Cards)
-                .Where(c => trick.IsLegalAddition(c, thisPlayer))
-                .ToList();
+            var playableCards = thisPlayer.Cards.Where(c => trick.IsLegalAddition(c, thisPlayer));
+            return GetCardsThatCouldWin(trick, playableCards).Any();
         }
 
         public bool UnplayedCardsBeatPlayedCards(IPlayer thisPlayer, ITrick trick)

@@ -463,9 +463,8 @@ namespace Sheepshead.Tests
                 .Returns((SheepCard c, IPlayer p) => c == SheepCard.N10_HEARTS);
 
             var analyzer = new GameStateAnalyzer();
-            var actual = analyzer.MyCardsThatCanWin(playerMock.Object, trickMock.Object);
-            var expected = new List<SheepCard>() { SheepCard.N10_HEARTS };
-            CollectionAssert.AreEquivalent(expected, actual);
+            var actual = analyzer.ICanWinTrick(playerMock.Object, trickMock.Object);
+            Assert.IsTrue(actual);
         }
 
         [TestMethod]
@@ -490,9 +489,8 @@ namespace Sheepshead.Tests
             trickMock.Setup(m => m.CardsPlayed).Returns(cardsPlayed);
 
             var analyzer = new GameStateAnalyzer();
-            var actual = analyzer.MyCardsThatCanWin(playerMock.Object, trickMock.Object);
-            var expected = new List<SheepCard>() { };
-            CollectionAssert.AreEquivalent(expected, actual);
+            var actual = analyzer.ICanWinTrick(playerMock.Object, trickMock.Object);
+            Assert.IsFalse(actual);
         }
 
         #endregion

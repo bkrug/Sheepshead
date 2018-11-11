@@ -112,7 +112,7 @@ namespace Sheepshead.Models.Players
                 }
                 else
                 {
-                    if (_gameStateAnalyzer.MyCardsThatCanWin(this, trick).Any())
+                    if (_gameStateAnalyzer.ICanWinTrick(this, trick))
                         return _midTrickPlayCreator.PlayToWin(this, trick);
                     else
                         return _midTrickPlayCreator.GiveAwayLeastPowerLeastPoints(this, trick);
@@ -136,7 +136,7 @@ namespace Sheepshead.Models.Players
                 }
                 else
                 {
-                    if (_gameStateAnalyzer.MyCardsThatCanWin(this, trick).Any())
+                    if (_gameStateAnalyzer.ICanWinTrick(this, trick))
                     {
                         if (_gameStateAnalyzer.UnplayedCardsBeatMyCards(this, trick))
                             return _midTrickPlayCreator.GiveAwayLeastPowerLeastPoints(this, trick);
