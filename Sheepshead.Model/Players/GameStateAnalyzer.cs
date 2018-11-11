@@ -67,7 +67,7 @@ namespace Sheepshead.Models.Players
 
         public List<SheepCard> MyCardsThatCanWin(IPlayer thisPlayer, ITrick trick)
         {
-            return GetCardsOfGreaterPower(thisPlayer, trick, thisPlayer.Cards).ToList();
+            return GetCardsOfGreaterPower(trick, thisPlayer.Cards).ToList();
         }
 
         public bool UnplayedCardsBeatPlayedCards(IPlayer thisPlayer, ITrick trick)
@@ -75,10 +75,10 @@ namespace Sheepshead.Models.Players
             var playedAndHeldCards = trick.Hand.Tricks.SelectMany(t => t.CardsPlayed.Values).Union(thisPlayer.Cards);
             var allCards = Enum.GetValues(typeof(SheepCard)).OfType<SheepCard>();
             var unrevealedCards = allCards.Except(playedAndHeldCards);
-            return GetCardsOfGreaterPower(thisPlayer, trick, unrevealedCards).Any();
+            return GetCardsOfGreaterPower(trick, unrevealedCards).Any();
         }
 
-        private static IEnumerable<SheepCard> GetCardsOfGreaterPower(IPlayer thisPlayer, ITrick trick, IEnumerable<SheepCard> comparisonCards)
+        private static IEnumerable<SheepCard> GetCardsOfGreaterPower(ITrick trick, IEnumerable<SheepCard> comparisonCards)
         {
             var startSuit = CardUtil.GetSuit(trick.CardsPlayed.First().Value);
             var winningCard = GetWinningPlay(trick).Value;
@@ -105,7 +105,10 @@ namespace Sheepshead.Models.Players
 
         public bool UnplayedCardsBeatMyCards(List<SheepCard> myStrongCards, ITrick trick)
         {
-            throw new System.NotImplementedException();
+            var cardsHeldByOthers = trick.Hand.Tricks.SelectMany(t => t.CardsPlayed.Values);
+            var allCards = Enum.GetValues(typeof(SheepCard)).OfType<SheepCard>();
+            var unrevealedCards = allCards.Except(cardsHeldByOthers);
+            throw new NotImplementedException();
         }
     }
 }
