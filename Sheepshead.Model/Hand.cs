@@ -40,6 +40,17 @@ namespace Sheepshead.Models
             PartnerCardPlayed = null;
         }
 
+        //TODO: Look for players who lead with trump.
+        public IPlayer PresumedParnter
+        {
+            get
+            {
+                if (Partner != null)
+                    return Partner;
+                return null;
+            }
+        }
+
         private SheepCard? ChoosePartnerCard(IPlayer picker)
         {
             var potentialPartnerCards = new[] {
@@ -260,6 +271,7 @@ namespace Sheepshead.Models
         IPlayer Picker { get; }
         IPlayer Partner { get; }
         SheepCard? PartnerCard { get; }
+        IPlayer PresumedParnter { get; }
         void GoItAlone();
         int[] PartnerCardPlayed { get; }
         List<ITrick> Tricks { get; }

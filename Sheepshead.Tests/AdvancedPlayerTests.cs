@@ -405,41 +405,6 @@ namespace Sheepshead.Tests
 
         #region Mid-Trick Tests (Not all opponents have played)
 
-        [TestMethod]
-        public void AdvancedPlayer_NotAllOpponentsPlayed_DefensivePlayer_YourTeamIsWinning_GiveAwayPoints()
-        {
-            var players = new List<IPlayer>() {
-                new AdvancedPlayer(),
-                new ComputerPlayerPickingMock(false),
-                new ComputerPlayerPickingMock(true),
-                new ComputerPlayerPickingMock(false),
-                new ComputerPlayerPickingMock(false)
-            };
-            var advancedPlayer = (AdvancedPlayer)players[0];
-            var picker = players[2];
-            var partner = players[4];
-            advancedPlayer.Cards.Add(SheepCard.ACE_DIAMONDS);
-            advancedPlayer.Cards.Add(SheepCard.N7_DIAMONDS);
-            advancedPlayer.Cards.Add(SheepCard.QUEEN_CLUBS);
-            var cardsPlayed = new Dictionary<IPlayer, SheepCard>()
-            {
-                { players[3], SheepCard.QUEEN_SPADES },
-                { partner, SheepCard.N10_HEARTS }
-            };
-            var trickMock = new Mock<ITrick>();
-            trickMock.Setup(t => t.CardsPlayed).Returns(cardsPlayed);
-            trickMock.Setup(t => t.StartingPlayer).Returns(players[3]);
-            trickMock.Setup(t => t.Hand.Picker).Returns(picker);
-            trickMock.Setup(t => t.Hand.Partner).Returns(partner);
-            trickMock.Setup(t => t.Hand.Leasters).Returns(false);
-            trickMock.Setup(t => t.IsLegalAddition(SheepCard.ACE_DIAMONDS, advancedPlayer)).Returns(true);
-            trickMock.Setup(t => t.IsLegalAddition(SheepCard.N7_DIAMONDS, advancedPlayer)).Returns(true);
-            trickMock.Setup(t => t.IsLegalAddition(SheepCard.QUEEN_CLUBS, advancedPlayer)).Returns(true);
-            trickMock.Setup(t => t.Hand.Deck.Game.Players).Returns(players);
-            var actual = advancedPlayer.GetMove(trickMock.Object);
-            Assert.AreEqual(SheepCard.ACE_DIAMONDS, actual);
-        }
-
         #endregion
 
         //* Not all your opponents have played, your team is winning with the most powerful remaining card. Give away points.
