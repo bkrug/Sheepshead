@@ -49,10 +49,12 @@ namespace Sheepshead.Models.Players
             SheepCard moveCard;
             if (!trick.Hand.Leasters)
             {
-                if (trick.StartingPlayer == this)
+                if (Cards.Count == 1)
+                    moveCard = Cards.Single();
+                else if (trick.StartingPlayer == this)
                     moveCard = GetLeadMove(trick);
                 else
-                    moveCard = GetNonLeadMove(trick);
+                    moveCard = GetLaterMove(trick);
             }
             else
             {
@@ -102,7 +104,7 @@ namespace Sheepshead.Models.Players
             }
         }
 
-        private SheepCard GetNonLeadMove(ITrick trick)
+        private SheepCard GetLaterMove(ITrick trick)
         {
             if (_gameStateAnalyzer.AllOpponentsHavePlayed(this, trick) == true)
             {
