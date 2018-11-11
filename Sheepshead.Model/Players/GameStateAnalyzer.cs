@@ -49,7 +49,7 @@ namespace Sheepshead.Models.Players
 
         public bool MySideWinning(IPlayer thisPlayer, ITrick trick)
         {
-            var winningPlay = GetWinningPlay(trick);
+            var winningPlay = GameStateUtils.GetWinningPlay(trick);
             if (trick.Hand.Picker == thisPlayer)
                 return winningPlay.Key == trick.Hand.PresumedParnter;
             if (PlayerKnowsSelfToBePartner(thisPlayer, trick))
@@ -68,13 +68,13 @@ namespace Sheepshead.Models.Players
         public bool ICanWinTrick(IPlayer thisPlayer, ITrick trick)
         {
             var playableCards = thisPlayer.Cards.Where(c => trick.IsLegalAddition(c, thisPlayer));
-            return GetCardsThatCouldWin(trick, playableCards).Any();
+            return GameStateUtils.GetCardsThatCouldWin(trick, playableCards).Any();
         }
 
         public bool UnplayedCardsBeatPlayedCards(IPlayer thisPlayer, ITrick trick)
         {
             var unrevealedCards = GetUnrevealedCards(thisPlayer, trick);
-            return GetCardsThatCouldWin(trick, unrevealedCards).Any();
+            return GameStateUtils.GetCardsThatCouldWin(trick, unrevealedCards).Any();
         }
 
         private static IEnumerable<SheepCard> GetUnrevealedCards(IPlayer thisPlayer, ITrick trick)
@@ -83,31 +83,6 @@ namespace Sheepshead.Models.Players
             var allCards = Enum.GetValues(typeof(SheepCard)).OfType<SheepCard>();
             var unrevealedCards = allCards.Except(revealedAndPlayersOwnCards);
             return unrevealedCards;
-        }
-
-        private static IEnumerable<SheepCard> GetCardsThatCouldWin(ITrick trick, IEnumerable<SheepCard> comparisonCards)
-        {
-            var startSuit = CardUtil.GetSuit(trick.CardsPlayed.First().Value);
-            var winningCard = GetWinningPlay(trick).Value;
-            var winningCardRank = CardUtil.GetRank(winningCard);
-            if (CardUtil.GetSuit(winningCard) == Suit.TRUMP)
-                return comparisonCards.Where(c => CardUtil.GetRank(c) < winningCardRank);
-            else
-                return comparisonCards.Where(c =>
-                    CardUtil.GetSuit(c) == Suit.TRUMP
-                    || CardUtil.GetSuit(c) == startSuit && CardUtil.GetRank(c) < winningCardRank
-                );
-        }
-
-        private static KeyValuePair<IPlayer, SheepCard> GetWinningPlay(ITrick trick)
-        {
-            var startSuit = CardUtil.GetSuit(trick.CardsPlayed.First().Value);
-            var winningPlay = trick.CardsPlayed
-                .OrderBy(cp => CardUtil.GetSuit(cp.Value) == Suit.TRUMP ? 1 : 2)
-                .ThenBy(cp => CardUtil.GetSuit(cp.Value) == startSuit ? 1 : 2)
-                .ThenBy(cp => CardUtil.GetRank(cp.Value))
-                .First();
-            return winningPlay;
         }
 
         public bool UnplayedCardsBeatMyCards(IPlayer thisPlayer, ITrick trick)

@@ -115,9 +115,9 @@ namespace Sheepshead.Models.Players
                 else
                 {
                     if (_gameStateAnalyzer.ICanWinTrick(this, trick))
-                        return _midTrickPlayCreator.PlayToWin(this, trick);
+                        return _midTrickPlayCreator.PlayWeakestWin(this, trick);
                     else
-                        return _midTrickPlayCreator.GiveAwayLeastPowerLeastPoints(this, trick);
+                        return _midTrickPlayCreator.GiveAwayLeastPower(this, trick);
                 }
             }
             else
@@ -127,9 +127,9 @@ namespace Sheepshead.Models.Players
                     if (_gameStateAnalyzer.UnplayedCardsBeatPlayedCards(this, trick))
                     {
                         if (_gameStateAnalyzer.UnplayedCardsBeatMyCards(this, trick))
-                            return _midTrickPlayCreator.GiveAwayLeastPowerLeastPoints(this, trick);
+                            return _midTrickPlayCreator.GiveAwayLeastPower(this, trick);
                         else
-                            return _midTrickPlayCreator.PlayToWin(this, trick);
+                            return _midTrickPlayCreator.PlayStrongestWin(this, trick);
                     }
                     else
                     {
@@ -141,12 +141,12 @@ namespace Sheepshead.Models.Players
                     if (_gameStateAnalyzer.ICanWinTrick(this, trick))
                     {
                         if (_gameStateAnalyzer.UnplayedCardsBeatMyCards(this, trick))
-                            return _midTrickPlayCreator.GiveAwayLeastPowerLeastPoints(this, trick);
+                            return _midTrickPlayCreator.GiveAwayLeastPower(this, trick);
                         else
-                            return _midTrickPlayCreator.PlayToWin(this, trick);
+                            return _midTrickPlayCreator.PlayStrongestWin(this, trick);
                     }
                     else
-                        return _midTrickPlayCreator.GiveAwayLeastPowerLeastPoints(this, trick);
+                        return _midTrickPlayCreator.GiveAwayLeastPower(this, trick);
                 }
             }
         }
