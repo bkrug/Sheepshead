@@ -710,12 +710,15 @@ namespace Sheepshead.Tests
                 trickMock3.Object
             };
             trickMock3.Setup(m => m.Hand.Tricks).Returns(allTricks);
+            trickMock3
+                .Setup(m => m.IsLegalAddition(It.IsAny<SheepCard>(), It.IsAny<IPlayer>()))
+                .Returns((SheepCard c, IPlayer p) => c == SheepCard.KING_SPADES);
 
             //Starting suite in the current trick is Spades.
             //All the jacks are currently unplayed.
             //Jacks beat king of spades (ace of diamons is not legal).
             var analyzer = new GameStateAnalyzer();
-            var actual = analyzer.UnplayedCardsBeatMyCards(new List<SheepCard>() { SheepCard.KING_SPADES }, trickMock3.Object);
+            var actual = analyzer.UnplayedCardsBeatMyCards(playerMock.Object, trickMock3.Object);
             Assert.AreEqual(true, actual);
         }
 
@@ -764,12 +767,13 @@ namespace Sheepshead.Tests
                 trickMock3.Object
             };
             trickMock3.Setup(m => m.Hand.Tricks).Returns(allTricks);
+            trickMock3.Setup(m => m.IsLegalAddition(It.IsAny<SheepCard>(), It.IsAny<IPlayer>())).Returns(true);
 
             //Starting suite in the current trick is Spades.
             //All the jacks are currently unplayed.
             //Jacks beat ace of diamonds.
             var analyzer = new GameStateAnalyzer();
-            var actual = analyzer.UnplayedCardsBeatMyCards(new List<SheepCard>() { SheepCard.ACE_DIAMONDS }, trickMock3.Object);
+            var actual = analyzer.UnplayedCardsBeatMyCards(playerMock.Object, trickMock3.Object);
             Assert.AreEqual(true, actual);
         }
 
@@ -818,12 +822,15 @@ namespace Sheepshead.Tests
                 trickMock3.Object
             };
             trickMock3.Setup(m => m.Hand.Tricks).Returns(allTricks);
+            trickMock3
+                .Setup(m => m.IsLegalAddition(It.IsAny<SheepCard>(), It.IsAny<IPlayer>()))
+                .Returns((SheepCard c, IPlayer p) => c == SheepCard.KING_SPADES || c == SheepCard.ACE_SPADES);
 
             //Starting suite in the current trick is Spades.
             //All trump have been played or are in the current player's hand.
             //The most powerful unplayed spade is in the players hand. 
             var analyzer = new GameStateAnalyzer();
-            var actual = analyzer.UnplayedCardsBeatMyCards(new List<SheepCard>() { SheepCard.KING_SPADES, SheepCard.ACE_SPADES }, trickMock3.Object);
+            var actual = analyzer.UnplayedCardsBeatMyCards(playerMock.Object, trickMock3.Object);
             Assert.AreEqual(false, actual);
         }
 

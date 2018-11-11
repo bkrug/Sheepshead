@@ -67,20 +67,26 @@ namespace Sheepshead.Models.Players
 
         public List<SheepCard> MyCardsThatCanWin(IPlayer thisPlayer, ITrick trick)
         {
-            return GetCardsOfGreaterPower(trick, thisPlayer.Cards)
+            return GetCardsThatCouldWin(trick, thisPlayer.Cards)
                 .Where(c => trick.IsLegalAddition(c, thisPlayer))
                 .ToList();
         }
 
         public bool UnplayedCardsBeatPlayedCards(IPlayer thisPlayer, ITrick trick)
         {
+            var unrevealedCards = GetUnrevealedCards(thisPlayer, trick);
+            return GetCardsThatCouldWin(trick, unrevealedCards).Any();
+        }
+
+        private static IEnumerable<SheepCard> GetUnrevealedCards(IPlayer thisPlayer, ITrick trick)
+        {
             var revealedAndPlayersOwnCards = trick.Hand.Tricks.SelectMany(t => t.CardsPlayed.Values).Union(thisPlayer.Cards);
             var allCards = Enum.GetValues(typeof(SheepCard)).OfType<SheepCard>();
             var unrevealedCards = allCards.Except(revealedAndPlayersOwnCards);
-            return GetCardsOfGreaterPower(trick, unrevealedCards).Any();
+            return unrevealedCards;
         }
 
-        private static IEnumerable<SheepCard> GetCardsOfGreaterPower(ITrick trick, IEnumerable<SheepCard> comparisonCards)
+        private static IEnumerable<SheepCard> GetCardsThatCouldWin(ITrick trick, IEnumerable<SheepCard> comparisonCards)
         {
             var startSuit = CardUtil.GetSuit(trick.CardsPlayed.First().Value);
             var winningCard = GetWinningPlay(trick).Value;
@@ -105,11 +111,28 @@ namespace Sheepshead.Models.Players
             return winningPlay;
         }
 
+        public bool UnplayedCardsBeatMyCards(IPlayer thisPlayer, ITrick trick)
+        {
+            var playableCards = thisPlayer.Cards.Where(c => trick.IsLegalAddition(c, thisPlayer));
+            var unrevealedCards = GetUnrevealedCards(thisPlayer, trick);
+            var startSuit = CardUtil.GetSuit(trick.CardsPlayed.First().Value);
+            var strongestUnrevealedCard = GetStrongestCard(unrevealedCards, startSuit);
+            var strongestOfMyCards = GetStrongestCard(playableCards, startSuit);
+            var strongestCard = GetStrongestCard(new List<SheepCard>() { strongestUnrevealedCard, strongestOfMyCards }, startSuit);
+            return strongestCard == strongestUnrevealedCard;
+        }
+
+        private static SheepCard GetStrongestCard(IEnumerable<SheepCard> unrevealedCards, Suit startSuit)
+        {
+            return unrevealedCards
+                .OrderBy(c => CardUtil.GetSuit(c) == Suit.TRUMP ? 1 : 2)
+                .ThenBy(c => CardUtil.GetSuit(c) == startSuit ? 1 : 2)
+                .ThenBy(c => CardUtil.GetRank(c))
+                .First();
+        }
+
         public bool UnplayedCardsBeatMyCards(List<SheepCard> myStrongCards, ITrick trick)
         {
-            var cardsHeldByOthers = trick.Hand.Tricks.SelectMany(t => t.CardsPlayed.Values);
-            var allCards = Enum.GetValues(typeof(SheepCard)).OfType<SheepCard>();
-            var unrevealedCards = allCards.Except(cardsHeldByOthers);
             throw new NotImplementedException();
         }
     }
