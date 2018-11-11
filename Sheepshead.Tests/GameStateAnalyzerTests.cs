@@ -436,5 +436,63 @@ namespace Sheepshead.Tests
         }
 
         #endregion
+
+        #region My Cards That Can Win
+
+        [TestMethod]
+        public void GameStateAnalyzer_MyCardsThatCanWin_SomeResults()
+        {
+            var playerMock = new Mock<IPlayer>();
+            playerMock.Setup(m => m.Cards).Returns(new List<SheepCard>() {
+                SheepCard.KING_HEARTS,
+                SheepCard.N8_HEARTS,
+                SheepCard.N8_DIAMONDS,
+                SheepCard.KING_SPADES,
+                SheepCard.ACE_DIAMONDS,
+                SheepCard.ACE_CLUBS
+            });
+            var cardsPlayed = new Dictionary<IPlayer, SheepCard>() {
+                { new Mock<IPlayer>().Object, SheepCard.N7_HEARTS },
+                { new Mock<IPlayer>().Object, SheepCard.N10_HEARTS },
+                { new Mock<IPlayer>().Object, SheepCard.N10_CLUBS },
+                { new Mock<IPlayer>().Object, SheepCard.ACE_SPADES }
+            };
+            var trickMock = new Mock<ITrick>();
+            trickMock.Setup(m => m.CardsPlayed).Returns(cardsPlayed);
+
+            var analyzer = new GameStateAnalyzer();
+            var actual = analyzer.MyCardsThatCanWin(playerMock.Object, trickMock.Object);
+            var expected = new List<SheepCard>() { SheepCard.KING_HEARTS, SheepCard.N8_DIAMONDS, SheepCard.ACE_DIAMONDS };
+            CollectionAssert.AreEquivalent(expected, actual);
+        }
+
+        [TestMethod]
+        public void GameStateAnalyzer_MyCardsThatCanWin_NoResults()
+        {
+            var playerMock = new Mock<IPlayer>();
+            playerMock.Setup(m => m.Cards).Returns(new List<SheepCard>() {
+                SheepCard.KING_HEARTS,
+                SheepCard.N8_HEARTS,
+                SheepCard.N8_DIAMONDS,
+                SheepCard.KING_SPADES,
+                SheepCard.ACE_DIAMONDS,
+                SheepCard.ACE_CLUBS
+            });
+            var cardsPlayed = new Dictionary<IPlayer, SheepCard>() {
+                { new Mock<IPlayer>().Object, SheepCard.N7_HEARTS },
+                { new Mock<IPlayer>().Object, SheepCard.N10_HEARTS },
+                { new Mock<IPlayer>().Object, SheepCard.QUEEN_CLUBS },
+                { new Mock<IPlayer>().Object, SheepCard.ACE_SPADES }
+            };
+            var trickMock = new Mock<ITrick>();
+            trickMock.Setup(m => m.CardsPlayed).Returns(cardsPlayed);
+
+            var analyzer = new GameStateAnalyzer();
+            var actual = analyzer.MyCardsThatCanWin(playerMock.Object, trickMock.Object);
+            var expected = new List<SheepCard>() { };
+            CollectionAssert.AreEquivalent(expected, actual);
+        }
+
+        #endregion
     }
 }
