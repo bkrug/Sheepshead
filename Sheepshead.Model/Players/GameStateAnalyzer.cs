@@ -18,15 +18,16 @@ namespace Sheepshead.Models.Players
         {
             if (trick.CardsPlayed.Count == trick.Hand.Deck.Game.PlayerCount - 1)
                 return true;
-            var playerIsPartner = trick.Hand.Partner == thisPlayer 
-                || trick.Hand.PartnerCard.HasValue && thisPlayer.Cards.Contains(trick.Hand.PartnerCard.Value);
-            var playerIsOffense = trick.Hand.Picker == thisPlayer 
-                || playerIsPartner;
-            if (playerIsOffense) {
+            var playerIsPartner = PlayerKnowsSelfToBePartner(thisPlayer, trick);
+            var playerIsOffense = trick.Hand.Picker == thisPlayer || playerIsPartner;
+            if (playerIsOffense)
+            {
                 var opponentCount = trick.Hand.PartnerCard.HasValue
                     ? trick.Hand.Deck.Game.PlayerCount - 2
                     : trick.Hand.Deck.Game.PlayerCount - 1;
-                var opponentsWithTurns = trick.CardsPlayed.Keys.Count(p => trick.Hand.Picker != p && trick.Hand.PresumedParnter != p);
+                var opponentsWithTurns = playerIsPartner
+                    ? trick.CardsPlayed.Keys.Count(p => trick.Hand.Picker != p && thisPlayer != p)
+                    : trick.CardsPlayed.Keys.Count(p => trick.Hand.Picker != p && trick.Hand.PresumedParnter != p);
                 if (opponentsWithTurns < opponentCount)
                     return false;
                 if (!playerIsPartner && trick.Hand.PartnerCard.HasValue && trick.Hand.PresumedParnter == null)
@@ -45,12 +46,18 @@ namespace Sheepshead.Models.Players
             }
         }
 
-        public List<SheepCard> MyCardsThatCanWin(IPlayer thisPlayer, ITrick trick)
+        private static bool PlayerKnowsSelfToBePartner(IPlayer thisPlayer, ITrick trick)
+        {
+            return trick.Hand.Partner == thisPlayer
+                || trick.Hand.PartnerCard.HasValue && thisPlayer.Cards.Contains(trick.Hand.PartnerCard.Value);
+        }
+
+        public bool MySideWinning(IPlayer thisPlayer, ITrick trick)
         {
             throw new System.NotImplementedException();
         }
 
-        public bool MySideWinning(IPlayer thisPlayer, ITrick trick)
+        public List<SheepCard> MyCardsThatCanWin(IPlayer thisPlayer, ITrick trick)
         {
             throw new System.NotImplementedException();
         }

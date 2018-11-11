@@ -12,6 +12,7 @@ namespace Sheepshead.Tests
     [TestClass]
     public class GameStateAnalyzerTests
     {
+        #region All Opponents Have Played
         [TestMethod]
         public void GameStateAnalyzer_AllOpponentsHavePlayed_Defense_PartnerProbablyKnown_Yes()
         {
@@ -249,5 +250,189 @@ namespace Sheepshead.Tests
             var actual = analyzer.AllOpponentsHavePlayed(playerMock.Object, trickMock.Object);
             Assert.AreEqual(false, actual);
         }
+        #endregion
+
+        #region My Side Winning
+
+        [TestMethod]
+        public void GameStateAnalyzer_MySideWinning_Defense_PartnerProbablyKnown_Yes()
+        {
+            var pickerMock = new Mock<IPlayer>();
+            var partnerMock = new Mock<IPlayer>();
+            var playerMock = new Mock<IPlayer>();
+            playerMock.Setup(m => m.Cards).Returns(new List<SheepCard>());
+            var cardsPlayed = new Dictionary<IPlayer, SheepCard>() {
+                { new Mock<IPlayer>().Object, SheepCard.N7_HEARTS },
+                { new Mock<IPlayer>().Object, SheepCard.QUEEN_HEARTS },
+                { partnerMock.Object, SheepCard.JACK_CLUBS }
+            };
+            var trickMock = new Mock<ITrick>();
+            trickMock.Setup(m => m.CardsPlayed).Returns(cardsPlayed);
+            trickMock.Setup(m => m.Hand.Picker).Returns(pickerMock.Object);
+            trickMock.Setup(m => m.Hand.PartnerCard).Returns(SheepCard.JACK_DIAMONDS);
+            trickMock.Setup(m => m.Hand.Partner).Returns((Player)null);
+            trickMock.Setup(m => m.Hand.PresumedParnter).Returns(partnerMock.Object);
+            var analyzer = new GameStateAnalyzer();
+            var actual = analyzer.MySideWinning(playerMock.Object, trickMock.Object);
+            Assert.AreEqual(true, actual);
+        }
+
+        [TestMethod]
+        public void GameStateAnalyzer_MySideWinning_Defense_PartnerProbablyKnown_No()
+        {
+            var pickerMock = new Mock<IPlayer>();
+            var partnerMock = new Mock<IPlayer>();
+            var playerMock = new Mock<IPlayer>();
+            playerMock.Setup(m => m.Cards).Returns(new List<SheepCard>());
+            var cardsPlayed = new Dictionary<IPlayer, SheepCard>() {
+                { new Mock<IPlayer>().Object, SheepCard.N7_HEARTS },
+                { new Mock<IPlayer>().Object, SheepCard.KING_HEARTS },
+                { partnerMock.Object, SheepCard.JACK_CLUBS }
+            };
+            var trickMock = new Mock<ITrick>();
+            trickMock.Setup(m => m.CardsPlayed).Returns(cardsPlayed);
+            trickMock.Setup(m => m.Hand.Picker).Returns(pickerMock.Object);
+            trickMock.Setup(m => m.Hand.PartnerCard).Returns(SheepCard.JACK_DIAMONDS);
+            trickMock.Setup(m => m.Hand.Partner).Returns((Player)null);
+            trickMock.Setup(m => m.Hand.PresumedParnter).Returns(partnerMock.Object);
+            var analyzer = new GameStateAnalyzer();
+            var actual = analyzer.MySideWinning(playerMock.Object, trickMock.Object);
+            Assert.AreEqual(false, actual);
+        }
+
+        [TestMethod]
+        public void GameStateAnalyzer_MySideWinning_Defense_PartnerUnknown_No()
+        {
+            var pickerMock = new Mock<IPlayer>();
+            var partnerMock = new Mock<IPlayer>();
+            var playerMock = new Mock<IPlayer>();
+            playerMock.Setup(m => m.Cards).Returns(new List<SheepCard>());
+            var cardsPlayed = new Dictionary<IPlayer, SheepCard>() {
+                { new Mock<IPlayer>().Object, SheepCard.N7_HEARTS },
+                { new Mock<IPlayer>().Object, SheepCard.QUEEN_HEARTS },
+                { partnerMock.Object, SheepCard.JACK_CLUBS }
+            };
+            var trickMock = new Mock<ITrick>();
+            trickMock.Setup(m => m.CardsPlayed).Returns(cardsPlayed);
+            trickMock.Setup(m => m.Hand.Picker).Returns(pickerMock.Object);
+            trickMock.Setup(m => m.Hand.PartnerCard).Returns(SheepCard.JACK_DIAMONDS);
+            trickMock.Setup(m => m.Hand.Partner).Returns((Player)null);
+            trickMock.Setup(m => m.Hand.PresumedParnter).Returns((Player)null);
+            var analyzer = new GameStateAnalyzer();
+            var actual = analyzer.MySideWinning(playerMock.Object, trickMock.Object);
+            Assert.AreEqual(false, actual);
+        }
+
+        [TestMethod]
+        public void GameStateAnalyzer_MySideWinning_Offense_PartnerProbablyKnown_Yes()
+        {
+            var partnerMock = new Mock<IPlayer>();
+            var playerMock = new Mock<IPlayer>();
+            playerMock.Setup(m => m.Cards).Returns(new List<SheepCard>());
+            var cardsPlayed = new Dictionary<IPlayer, SheepCard>() {
+                { new Mock<IPlayer>().Object, SheepCard.N7_HEARTS },
+                { new Mock<IPlayer>().Object, SheepCard.KING_HEARTS },
+                { partnerMock.Object, SheepCard.JACK_CLUBS }
+            };
+            var trickMock = new Mock<ITrick>();
+            trickMock.Setup(m => m.CardsPlayed).Returns(cardsPlayed);
+            trickMock.Setup(m => m.Hand.Picker).Returns(playerMock.Object);
+            trickMock.Setup(m => m.Hand.PartnerCard).Returns(SheepCard.JACK_DIAMONDS);
+            trickMock.Setup(m => m.Hand.Partner).Returns((Player)null);
+            trickMock.Setup(m => m.Hand.PresumedParnter).Returns(partnerMock.Object);
+            var analyzer = new GameStateAnalyzer();
+            var actual = analyzer.MySideWinning(playerMock.Object, trickMock.Object);
+            Assert.AreEqual(true, actual);
+        }
+
+        [TestMethod]
+        public void GameStateAnalyzer_MySideWinning_Offense_PartnerProbablyKnown_No()
+        {
+            var partnerMock = new Mock<IPlayer>();
+            var playerMock = new Mock<IPlayer>();
+            playerMock.Setup(m => m.Cards).Returns(new List<SheepCard>());
+            var cardsPlayed = new Dictionary<IPlayer, SheepCard>() {
+                { new Mock<IPlayer>().Object, SheepCard.N7_HEARTS },
+                { new Mock<IPlayer>().Object, SheepCard.QUEEN_HEARTS },
+                { partnerMock.Object, SheepCard.JACK_CLUBS }
+            };
+            var trickMock = new Mock<ITrick>();
+            trickMock.Setup(m => m.CardsPlayed).Returns(cardsPlayed);
+            trickMock.Setup(m => m.Hand.Picker).Returns(playerMock.Object);
+            trickMock.Setup(m => m.Hand.PartnerCard).Returns(SheepCard.JACK_DIAMONDS);
+            trickMock.Setup(m => m.Hand.Partner).Returns((Player)null);
+            trickMock.Setup(m => m.Hand.PresumedParnter).Returns(partnerMock.Object);
+            var analyzer = new GameStateAnalyzer();
+            var actual = analyzer.MySideWinning(playerMock.Object, trickMock.Object);
+            Assert.AreEqual(false, actual);
+        }
+
+        [TestMethod]
+        public void GameStateAnalyzer_MySideWinning_Offense_ThisIsPartner_Yes()
+        {
+            var pickerMock = new Mock<IPlayer>();
+            var playerMock = new Mock<IPlayer>();
+            playerMock.Setup(m => m.Cards).Returns(new List<SheepCard>());
+            var cardsPlayed = new Dictionary<IPlayer, SheepCard>() {
+                { new Mock<IPlayer>().Object, SheepCard.N7_HEARTS },
+                { new Mock<IPlayer>().Object, SheepCard.KING_HEARTS },
+                { pickerMock.Object, SheepCard.JACK_CLUBS }
+            };
+            var trickMock = new Mock<ITrick>();
+            trickMock.Setup(m => m.CardsPlayed).Returns(cardsPlayed);
+            trickMock.Setup(m => m.Hand.Picker).Returns(pickerMock.Object);
+            trickMock.Setup(m => m.Hand.PartnerCard).Returns(SheepCard.JACK_DIAMONDS);
+            trickMock.Setup(m => m.Hand.Partner).Returns((Player)null);
+            trickMock.Setup(m => m.Hand.PresumedParnter).Returns((Player)null);
+            var analyzer = new GameStateAnalyzer();
+            var actual = analyzer.MySideWinning(playerMock.Object, trickMock.Object);
+            Assert.AreEqual(true, actual);
+        }
+
+        [TestMethod]
+        public void GameStateAnalyzer_MySideWinning_Offense_ThisIsPartner_No()
+        {
+            var pickerMock = new Mock<IPlayer>();
+            var playerMock = new Mock<IPlayer>();
+            playerMock.Setup(m => m.Cards).Returns(new List<SheepCard>());
+            var cardsPlayed = new Dictionary<IPlayer, SheepCard>() {
+                { new Mock<IPlayer>().Object, SheepCard.N7_HEARTS },
+                { new Mock<IPlayer>().Object, SheepCard.QUEEN_HEARTS },
+                { pickerMock.Object, SheepCard.JACK_CLUBS }
+            };
+            var trickMock = new Mock<ITrick>();
+            trickMock.Setup(m => m.CardsPlayed).Returns(cardsPlayed);
+            trickMock.Setup(m => m.Hand.Picker).Returns(pickerMock.Object);
+            trickMock.Setup(m => m.Hand.PartnerCard).Returns(SheepCard.JACK_DIAMONDS);
+            trickMock.Setup(m => m.Hand.Partner).Returns((Player)null);
+            trickMock.Setup(m => m.Hand.PresumedParnter).Returns((Player)null);
+            var analyzer = new GameStateAnalyzer();
+            var actual = analyzer.MySideWinning(playerMock.Object, trickMock.Object);
+            Assert.AreEqual(false, actual);
+        }
+
+        [TestMethod]
+        public void GameStateAnalyzer_MySideWinning_Offense_PartnerUnknown_No()
+        {
+            var partnerMock = new Mock<IPlayer>();
+            var playerMock = new Mock<IPlayer>();
+            playerMock.Setup(m => m.Cards).Returns(new List<SheepCard>());
+            var cardsPlayed = new Dictionary<IPlayer, SheepCard>() {
+                { new Mock<IPlayer>().Object, SheepCard.N7_HEARTS },
+                { new Mock<IPlayer>().Object, SheepCard.KING_HEARTS },
+                { partnerMock.Object, SheepCard.JACK_CLUBS }
+            };
+            var trickMock = new Mock<ITrick>();
+            trickMock.Setup(m => m.CardsPlayed).Returns(cardsPlayed);
+            trickMock.Setup(m => m.Hand.Picker).Returns(playerMock.Object);
+            trickMock.Setup(m => m.Hand.PartnerCard).Returns(SheepCard.JACK_DIAMONDS);
+            trickMock.Setup(m => m.Hand.Partner).Returns((Player)null);
+            trickMock.Setup(m => m.Hand.PresumedParnter).Returns((Player)null);
+            var analyzer = new GameStateAnalyzer();
+            var actual = analyzer.MySideWinning(playerMock.Object, trickMock.Object);
+            Assert.AreEqual(false, actual);
+        }
+
+        #endregion
     }
 }
