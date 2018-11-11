@@ -74,9 +74,9 @@ namespace Sheepshead.Models.Players
 
         public bool UnplayedCardsBeatPlayedCards(IPlayer thisPlayer, ITrick trick)
         {
-            var playedAndHeldCards = trick.Hand.Tricks.SelectMany(t => t.CardsPlayed.Values).Union(thisPlayer.Cards);
+            var revealedAndPlayersOwnCards = trick.Hand.Tricks.SelectMany(t => t.CardsPlayed.Values).Union(thisPlayer.Cards);
             var allCards = Enum.GetValues(typeof(SheepCard)).OfType<SheepCard>();
-            var unrevealedCards = allCards.Except(playedAndHeldCards);
+            var unrevealedCards = allCards.Except(revealedAndPlayersOwnCards);
             return GetCardsOfGreaterPower(trick, unrevealedCards).Any();
         }
 
