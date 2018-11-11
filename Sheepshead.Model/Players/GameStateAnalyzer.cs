@@ -10,7 +10,7 @@ namespace Sheepshead.Models.Players
         bool MySideWinning(IPlayer thisPlayer, ITrick trick);
         List<SheepCard> MyCardsThatCanWin(IPlayer thisPlayer, ITrick trick);
         bool UnplayedCardsBeatPlayedCards(IPlayer thisPlayer, ITrick trick);
-        bool UnplayedCardsBeatMyCards(List<SheepCard> myStrongCards, ITrick trick);
+        bool UnplayedCardsBeatMyCards(IPlayer thisPlayer, ITrick trick);
     }
 
     public class GameStateAnalyzer : IGameStateAnalyzer
@@ -129,11 +129,6 @@ namespace Sheepshead.Models.Players
                 .ThenBy(c => CardUtil.GetSuit(c) == startSuit ? 1 : 2)
                 .ThenBy(c => CardUtil.GetRank(c))
                 .First();
-        }
-
-        public bool UnplayedCardsBeatMyCards(List<SheepCard> myStrongCards, ITrick trick)
-        {
-            throw new NotImplementedException();
         }
     }
 }

@@ -112,8 +112,7 @@ namespace Sheepshead.Models.Players
                 }
                 else
                 {
-                    var winnableCards = _gameStateAnalyzer.MyCardsThatCanWin(this, trick);
-                    if (winnableCards.Any())
+                    if (_gameStateAnalyzer.MyCardsThatCanWin(this, trick).Any())
                         return _midTrickPlayCreator.PlayToWin(this, trick);
                     else
                         return _midTrickPlayCreator.GiveAwayLeastPowerLeastPoints(this, trick);
@@ -121,15 +120,14 @@ namespace Sheepshead.Models.Players
             }
             else
             {
-                var winnableCards = _gameStateAnalyzer.MyCardsThatCanWin(this, trick);
                 if (_gameStateAnalyzer.MySideWinning(this, trick))
                 {
                     if (_gameStateAnalyzer.UnplayedCardsBeatPlayedCards(this, trick))
                     {
-                        if (_gameStateAnalyzer.UnplayedCardsBeatMyCards(winnableCards, trick))
-                            return _midTrickPlayCreator.PlayToWin(this, trick);
-                        else
+                        if (_gameStateAnalyzer.UnplayedCardsBeatMyCards(this, trick))
                             return _midTrickPlayCreator.GiveAwayLeastPowerLeastPoints(this, trick);
+                        else
+                            return _midTrickPlayCreator.PlayToWin(this, trick);
                     }
                     else
                     {
@@ -138,60 +136,17 @@ namespace Sheepshead.Models.Players
                 }
                 else
                 {
-                    if (_gameStateAnalyzer.UnplayedCardsBeatMyCards(winnableCards, trick))
-                        return _midTrickPlayCreator.GiveAwayLeastPowerLeastPoints(this, trick);
+                    if (_gameStateAnalyzer.MyCardsThatCanWin(this, trick).Any())
+                    {
+                        if (_gameStateAnalyzer.UnplayedCardsBeatMyCards(this, trick))
+                            return _midTrickPlayCreator.GiveAwayLeastPowerLeastPoints(this, trick);
+                        else
+                            return _midTrickPlayCreator.PlayToWin(this, trick);
+                    }
                     else
-                        return _midTrickPlayCreator.PlayToWin(this, trick);
+                        return _midTrickPlayCreator.GiveAwayLeastPowerLeastPoints(this, trick);
                 }
             }
-        }
-
-        //private SheepCard GetNonLeadMove(ITrick trick)
-        //{
-        //    var leadSuit = CardUtil.GetSuit(trick.CardsPlayed.First().Value);
-        //    var winningMove = trick.CardsPlayed
-        //        .OrderBy(cp => CardUtil.GetSuit(cp.Value) == Suit.TRUMP ? 1 : 2)
-        //        .OrderBy(cp => CardUtil.GetSuit(cp.Value) == leadSuit ? 1 : 2)
-        //        .OrderBy(cp => CardUtil.GetRank(cp.Value))
-        //        .FirstOrDefault();
-        //    if (PlayerIsTeammate(trick, winningMove.Key))
-        //    {
-        //        var legalCards = Cards.Where(c => trick.IsLegalAddition(c, this)).ToList();
-        //        return Cards
-        //            .Where(c => trick.IsLegalAddition(c, this))
-        //            .OrderBy(c => !BeatsWinningMove(winningMove.Value, c, trick.CardsPlayed.First().Value) ? 1 : 2)
-        //            .ThenByDescending(c => CardUtil.GetPoints(c))
-        //            .First();
-        //    }
-        //    return (SheepCard)0;
-        //}
-
-        private bool PlayerIsTeammate(ITrick trick, IPlayer player)
-        {
-            var iAmOffense = trick.Hand.Picker == this || IamPartner(trick);
-            var theyAreOffense = trick.Hand.Picker == player || trick.Hand.Partner == player;
-            return iAmOffense == theyAreOffense;
-        }
-
-        private bool? AllOpponentsHavePlayed(ITrick trick)
-        {
-            if (!trick.Hand.PartnerCard.HasValue || trick.Hand.Partner != null)
-            {
-                var opponents = trick.Hand.Deck.Game.Players.Where(p => !PlayerIsTeammate(trick, p)).ToList();
-                var opponentsWithTurn = trick.CardsPlayed.Keys.Count(p => opponents.Contains(p));
-                return opponents.Count == opponentsWithTurn;
-            }
-            return null;
-        }
-
-        private bool BeatsWinningMove(SheepCard winningCard, SheepCard testCard, SheepCard startingCard)
-        {
-            var winningSuit = CardUtil.GetSuit(winningCard);
-            var testSuit = CardUtil.GetSuit(testCard);
-            var startSuit = CardUtil.GetSuit(startingCard);
-            return testSuit == Suit.TRUMP && winningSuit != Suit.TRUMP
-                || testSuit == startSuit && winningSuit != Suit.TRUMP && winningSuit != startSuit
-                || testSuit == winningSuit && CardUtil.GetRank(testCard) < CardUtil.GetRank(winningCard);
         }
 
         private SheepCard TryToWinTrick(ITrick trick)
