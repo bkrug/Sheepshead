@@ -66,7 +66,17 @@ namespace Sheepshead.Models.Players
 
         public List<SheepCard> MyCardsThatCanWin(IPlayer thisPlayer, ITrick trick)
         {
-            throw new System.NotImplementedException();
+            var startSuit = CardUtil.GetSuit(trick.CardsPlayed.First().Value);
+            var winningCard = GetWinningPlay(trick).Value;
+            var winningCardRank = CardUtil.GetRank(winningCard);
+            if (CardUtil.GetSuit(winningCard) == Suit.TRUMP)
+                return thisPlayer.Cards.Where(c => CardUtil.GetRank(c) < winningCardRank).ToList();
+            else
+                return thisPlayer.Cards.Where(c => 
+                    CardUtil.GetSuit(c) == Suit.TRUMP
+                    || CardUtil.GetSuit(c) == startSuit && CardUtil.GetRank(c) < winningCardRank
+                )
+                .ToList();
         }
 
         private static KeyValuePair<IPlayer, SheepCard> GetWinningPlay(ITrick trick)

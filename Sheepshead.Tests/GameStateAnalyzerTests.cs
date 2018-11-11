@@ -444,7 +444,7 @@ namespace Sheepshead.Tests
         {
             var playerMock = new Mock<IPlayer>();
             playerMock.Setup(m => m.Cards).Returns(new List<SheepCard>() {
-                SheepCard.KING_HEARTS,
+                SheepCard.N10_HEARTS,
                 SheepCard.N8_HEARTS,
                 SheepCard.N8_DIAMONDS,
                 SheepCard.KING_SPADES,
@@ -453,7 +453,7 @@ namespace Sheepshead.Tests
             });
             var cardsPlayed = new Dictionary<IPlayer, SheepCard>() {
                 { new Mock<IPlayer>().Object, SheepCard.N7_HEARTS },
-                { new Mock<IPlayer>().Object, SheepCard.N10_HEARTS },
+                { new Mock<IPlayer>().Object, SheepCard.KING_HEARTS },
                 { new Mock<IPlayer>().Object, SheepCard.N10_CLUBS },
                 { new Mock<IPlayer>().Object, SheepCard.ACE_SPADES }
             };
@@ -462,7 +462,7 @@ namespace Sheepshead.Tests
 
             var analyzer = new GameStateAnalyzer();
             var actual = analyzer.MyCardsThatCanWin(playerMock.Object, trickMock.Object);
-            var expected = new List<SheepCard>() { SheepCard.KING_HEARTS, SheepCard.N8_DIAMONDS, SheepCard.ACE_DIAMONDS };
+            var expected = new List<SheepCard>() { SheepCard.N10_HEARTS, SheepCard.N8_DIAMONDS, SheepCard.ACE_DIAMONDS };
             CollectionAssert.AreEquivalent(expected, actual);
         }
 
