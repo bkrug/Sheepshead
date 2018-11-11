@@ -45,6 +45,7 @@ namespace Sheepshead.Models
         {
             get
             {
+                throw new NotImplementedException();
                 if (Partner != null)
                     return Partner;
                 return null;
