@@ -67,7 +67,9 @@ namespace Sheepshead.Models.Players
 
         public List<SheepCard> MyCardsThatCanWin(IPlayer thisPlayer, ITrick trick)
         {
-            return GetCardsOfGreaterPower(trick, thisPlayer.Cards).ToList();
+            return GetCardsOfGreaterPower(trick, thisPlayer.Cards)
+                .Where(c => trick.IsLegalAddition(c, thisPlayer))
+                .ToList();
         }
 
         public bool UnplayedCardsBeatPlayedCards(IPlayer thisPlayer, ITrick trick)

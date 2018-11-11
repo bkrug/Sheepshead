@@ -458,10 +458,13 @@ namespace Sheepshead.Tests
             };
             var trickMock = new Mock<ITrick>();
             trickMock.Setup(m => m.CardsPlayed).Returns(cardsPlayed);
+            trickMock
+                .Setup(m => m.IsLegalAddition(It.IsAny<SheepCard>(), playerMock.Object))
+                .Returns((SheepCard c, IPlayer p) => c == SheepCard.N10_HEARTS);
 
             var analyzer = new GameStateAnalyzer();
             var actual = analyzer.MyCardsThatCanWin(playerMock.Object, trickMock.Object);
-            var expected = new List<SheepCard>() { SheepCard.N10_HEARTS, SheepCard.N8_DIAMONDS, SheepCard.ACE_DIAMONDS };
+            var expected = new List<SheepCard>() { SheepCard.N10_HEARTS };
             CollectionAssert.AreEquivalent(expected, actual);
         }
 
