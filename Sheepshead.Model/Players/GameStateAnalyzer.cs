@@ -46,20 +46,9 @@ namespace Sheepshead.Models.Players
             }
         }
 
-        private static bool PlayerKnowsSelfToBePartner(IPlayer thisPlayer, ITrick trick)
-        {
-            return trick.Hand.Partner == thisPlayer
-                || trick.Hand.PartnerCard.HasValue && thisPlayer.Cards.Contains(trick.Hand.PartnerCard.Value);
-        }
-
         public bool MySideWinning(IPlayer thisPlayer, ITrick trick)
         {
-            var startSuit = CardUtil.GetSuit(trick.CardsPlayed.First().Value);
-            var winningPlay = trick.CardsPlayed
-                .OrderBy(cp => CardUtil.GetSuit(cp.Value) == Suit.TRUMP ? 1 : 2)
-                .ThenBy(cp => CardUtil.GetSuit(cp.Value) == startSuit ? 1 : 2)
-                .ThenBy(cp => CardUtil.GetRank(cp.Value))
-                .First();
+            var winningPlay = GetWinningPlay(trick);
             if (trick.Hand.Picker == thisPlayer)
                 return winningPlay.Key == trick.Hand.PresumedParnter;
             if (PlayerKnowsSelfToBePartner(thisPlayer, trick))
@@ -69,9 +58,26 @@ namespace Sheepshead.Models.Players
                 && !(trick.Hand.PartnerCard.HasValue && trick.Hand.PresumedParnter == null);
         }
 
+        private static bool PlayerKnowsSelfToBePartner(IPlayer thisPlayer, ITrick trick)
+        {
+            return trick.Hand.Partner == thisPlayer
+                || trick.Hand.PartnerCard.HasValue && thisPlayer.Cards.Contains(trick.Hand.PartnerCard.Value);
+        }
+
         public List<SheepCard> MyCardsThatCanWin(IPlayer thisPlayer, ITrick trick)
         {
             throw new System.NotImplementedException();
+        }
+
+        private static KeyValuePair<IPlayer, SheepCard> GetWinningPlay(ITrick trick)
+        {
+            var startSuit = CardUtil.GetSuit(trick.CardsPlayed.First().Value);
+            var winningPlay = trick.CardsPlayed
+                .OrderBy(cp => CardUtil.GetSuit(cp.Value) == Suit.TRUMP ? 1 : 2)
+                .ThenBy(cp => CardUtil.GetSuit(cp.Value) == startSuit ? 1 : 2)
+                .ThenBy(cp => CardUtil.GetRank(cp.Value))
+                .First();
+            return winningPlay;
         }
 
         public bool UnplayedCardsBeatPlayedCards(IPlayer thisPlayer, ITrick trick)
