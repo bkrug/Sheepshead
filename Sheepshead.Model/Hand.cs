@@ -45,6 +45,8 @@ namespace Sheepshead.Models
         {
             get
             {
+                if (!PartnerCard.HasValue)
+                    return null;
                 if (Partner != null)
                     return Partner;
                 var potentialPartnerGroups = Tricks
