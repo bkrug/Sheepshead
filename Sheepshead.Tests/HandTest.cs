@@ -914,5 +914,93 @@ namespace Sheepshead.Tests
             Assert.AreEqual(hand.PartnerCardPlayed[0], 2);
             Assert.AreEqual(hand.PartnerCardPlayed[1], 3);
         }
+
+        [TestMethod]
+        public void Hand_PresumedPartner_BasedOnLead()
+        {
+            var deckMock = new Mock<IDeck>();
+            deckMock.Setup(d => d.Blinds).Returns(new List<SheepCard>());
+            deckMock.Setup(d => d.PlayerCount).Returns(5);
+            var player1 = new Mock<IPlayer>();
+            var player2 = new Mock<IPlayer>();
+            var pickerMock = new Mock<IPlayer>();
+            var player4 = new Mock<IPlayer>();
+            var player5 = new Mock<IPlayer>();
+            pickerMock.Setup(p => p.Cards).Returns(new List<SheepCard>());
+            var hand = new Hand(deckMock.Object, pickerMock.Object, new List<SheepCard>());
+            var cardsPlayed1 = new Dictionary<IPlayer, SheepCard>()
+            {
+                { player4.Object, SheepCard.ACE_DIAMONDS  }
+            };
+            var cardsPlayed2 = new Dictionary<IPlayer, SheepCard>()
+            {
+                { player2.Object, SheepCard.N7_DIAMONDS  }
+            };
+            var cardsPlayed3 = new Dictionary<IPlayer, SheepCard>()
+            {
+                { player4.Object, SheepCard.N10_DIAMONDS }
+            };
+            var cardsPlayed4 = new Dictionary<IPlayer, SheepCard>()
+            {
+                { player5.Object, SheepCard.KING_SPADES }
+            };
+            var trick1Mock = new Mock<ITrick>();
+            var trick2Mock = new Mock<ITrick>();
+            var trick3Mock = new Mock<ITrick>();
+            var trick4Mock = new Mock<ITrick>();
+            trick1Mock.Setup(m => m.CardsPlayed).Returns(cardsPlayed1);
+            trick2Mock.Setup(m => m.CardsPlayed).Returns(cardsPlayed2);
+            trick3Mock.Setup(m => m.CardsPlayed).Returns(cardsPlayed3);
+            trick4Mock.Setup(m => m.CardsPlayed).Returns(cardsPlayed4);
+            hand.AddTrick(trick1Mock.Object);
+            hand.AddTrick(trick2Mock.Object);
+            hand.AddTrick(trick3Mock.Object);
+            hand.AddTrick(trick4Mock.Object);
+            Assert.AreEqual(player4.Object, hand.PresumedParnter, "Player4 led with trump more than any other player.");
+        }
+
+        [TestMethod]
+        public void Hand_PresumedPartner_2PlayersTie()
+        {
+            var deckMock = new Mock<IDeck>();
+            deckMock.Setup(d => d.Blinds).Returns(new List<SheepCard>());
+            deckMock.Setup(d => d.PlayerCount).Returns(5);
+            var player1 = new Mock<IPlayer>();
+            var player2 = new Mock<IPlayer>();
+            var pickerMock = new Mock<IPlayer>();
+            var player4 = new Mock<IPlayer>();
+            var player5 = new Mock<IPlayer>();
+            pickerMock.Setup(p => p.Cards).Returns(new List<SheepCard>());
+            var hand = new Hand(deckMock.Object, pickerMock.Object, new List<SheepCard>());
+            var cardsPlayed1 = new Dictionary<IPlayer, SheepCard>()
+            {
+                { player4.Object, SheepCard.ACE_DIAMONDS  }
+            };
+            var cardsPlayed2 = new Dictionary<IPlayer, SheepCard>()
+            {
+                { player2.Object, SheepCard.N7_DIAMONDS  }
+            };
+            var cardsPlayed3 = new Dictionary<IPlayer, SheepCard>()
+            {
+                { player5.Object, SheepCard.KING_HEARTS }
+            };
+            var cardsPlayed4 = new Dictionary<IPlayer, SheepCard>()
+            {
+                { player5.Object, SheepCard.KING_SPADES }
+            };
+            var trick1Mock = new Mock<ITrick>();
+            var trick2Mock = new Mock<ITrick>();
+            var trick3Mock = new Mock<ITrick>();
+            var trick4Mock = new Mock<ITrick>();
+            trick1Mock.Setup(m => m.CardsPlayed).Returns(cardsPlayed1);
+            trick2Mock.Setup(m => m.CardsPlayed).Returns(cardsPlayed2);
+            trick3Mock.Setup(m => m.CardsPlayed).Returns(cardsPlayed3);
+            trick4Mock.Setup(m => m.CardsPlayed).Returns(cardsPlayed4);
+            hand.AddTrick(trick1Mock.Object);
+            hand.AddTrick(trick2Mock.Object);
+            hand.AddTrick(trick3Mock.Object);
+            hand.AddTrick(trick4Mock.Object);
+            Assert.IsNull(hand.PresumedParnter, "Cannot guess at who the partner is.");
+        }
     }
 }

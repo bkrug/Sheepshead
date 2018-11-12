@@ -23,7 +23,7 @@ namespace Sheepshead.Models
 
         public bool Leasters { get { return Picker == null; } }
 
-        public Hand(IDeck deck, IPlayer picker, List<SheepCard> droppedCards)
+        public Hand(IDeck deck, IPlayer picker, List<SheepCard> burried)
         {
             Deck = deck;
             if (Deck.Hand != null)
@@ -33,7 +33,7 @@ namespace Sheepshead.Models
             if (picker != null)
             {
                 picker.Cards.AddRange(deck.Blinds.Where(c => !picker.Cards.Contains(c)));
-                picker.Cards.Where(c => droppedCards.Contains(c)).ToList().ForEach(c => picker.Cards.Remove(c));
+                picker.Cards.Where(c => burried.Contains(c)).ToList().ForEach(c => picker.Cards.Remove(c));
                 if (Deck.PlayerCount == 5)
                     PartnerCard = ChoosePartnerCard(picker);
             }
@@ -45,10 +45,22 @@ namespace Sheepshead.Models
         {
             get
             {
-                throw new NotImplementedException();
                 if (Partner != null)
                     return Partner;
-                return null;
+                var potentialPartnerGroups = Tricks
+                    .Where(t =>
+                        t.CardsPlayed.First().Key != Picker
+                        && CardUtil.GetSuit(t.CardsPlayed.First().Value) == Suit.TRUMP
+                    )
+                    .Select(t => t.CardsPlayed.First().Key)
+                    .GroupBy(p => p)
+                    .OrderByDescending(g => g.Count())
+                    .ToList();
+                if (!potentialPartnerGroups.Any()
+                    || potentialPartnerGroups.Count >= 2 && potentialPartnerGroups[0].Count() == potentialPartnerGroups[1].Count())
+                    return null;
+                else
+                    return potentialPartnerGroups.First().Key;  
             }
         }
 
