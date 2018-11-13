@@ -1,7 +1,8 @@
 ﻿using Sheepshead.Models;
 using Sheepshead.Models.Players;
+using System.Linq;
 
-namespace Sheepshead.Model.Players
+namespace Sheepshead.Models.Players
 {
     public interface ILeasterStateAnalyzer
     {
@@ -16,12 +17,13 @@ namespace Sheepshead.Model.Players
 
     public class LeasterStateAnalyzer : ILeasterStateAnalyzer
     {
-        public bool CanILoose(IPlayer thisPlayer, ITrick trick)
+        public bool CanIWin(IPlayer thisPlayer, ITrick trick)
         {
-            throw new System.NotImplementedException();
+            var legalCards = thisPlayer.Cards.Where(c => trick.IsLegalAddition(c, thisPlayer)).ToList();
+            return GameStateUtils.GetCardsThatCouldWin(trick, legalCards).Any();
         }
 
-        public bool CanIWin(IPlayer thisPlayer, ITrick trick)
+        public bool CanILoose(IPlayer thisPlayer, ITrick trick)
         {
             throw new System.NotImplementedException();
         }

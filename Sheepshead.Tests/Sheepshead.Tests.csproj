@@ -103,6 +103,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="LeasterStateAnalyzerTests.cs" />
     <Compile Include="PlayCreatorTests.cs" />
     <Compile Include="GameStateAnalyzerTests.cs" />
     <Compile Include="CardTests.cs" />
