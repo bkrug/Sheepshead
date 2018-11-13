@@ -33,22 +33,24 @@ namespace Sheepshead.Models.Players
             throw new System.NotImplementedException();
         }
 
+        public bool HaveIAlreadyWon(IPlayer thisPlayer, ITrick trick)
+        {
+            return trick.Hand.Tricks
+                .Where(t => t.CardsPlayed.Count == trick.Hand.Deck.Game.PlayerCount)
+                .Any(t => t.Winner().Player == thisPlayer);
+        }
+
         public bool HaveAnyPowerCards(IPlayer thisPlayer, ITrick trick)
         {
             throw new System.NotImplementedException();
         }
 
-        public bool HaveHighPointsBeenPlayed(IPlayer thisPlayer, ITrick trick)
-        {
-            throw new System.NotImplementedException();
-        }
-
-        public bool HaveIAlreadyWon(IPlayer thisPlayer, ITrick trick)
-        {
-            throw new System.NotImplementedException();
-        }
-
         public bool HaveTwoPowerCards(IPlayer thisPlayer, ITrick trick)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public bool HaveHighPointsBeenPlayed(IPlayer thisPlayer, ITrick trick)
         {
             throw new System.NotImplementedException();
         }
