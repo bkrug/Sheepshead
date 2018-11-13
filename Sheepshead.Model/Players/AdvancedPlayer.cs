@@ -7,12 +7,12 @@ namespace Sheepshead.Models.Players
     public class AdvancedPlayer : BasicPlayer
     {
         IGameStateAnalyzer _gameStateAnalyzer;
-        IMidTrickPlayCreator _midTrickPlayCreator;
+        IPlayCreator _midTrickPlayCreator;
 
         public AdvancedPlayer()
         {
             _gameStateAnalyzer = new GameStateAnalyzer();
-            _midTrickPlayCreator = new MidTrickPlayCreator();
+            _midTrickPlayCreator = new PlayCreator();
         }
 
         public override bool WillPick(IDeck deck)

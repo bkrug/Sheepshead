@@ -2,7 +2,7 @@
 
 namespace Sheepshead.Models.Players
 {
-    public interface IMidTrickPlayCreator
+    public interface IPlayCreator
     {
         SheepCard GiveAwayLeastPower(IPlayer thisPlayer, ITrick trick);
         SheepCard GiveAwayPoints(IPlayer thisPlayer, ITrick trick);
@@ -12,7 +12,7 @@ namespace Sheepshead.Models.Players
         SheepCard PlayToWin(IPlayer thisPlayer, ITrick trick);
     }
 
-    public class MidTrickPlayCreator : IMidTrickPlayCreator
+    public class PlayCreator : IPlayCreator
     {
         public SheepCard GiveAwayLeastPower(IPlayer thisPlayer, ITrick trick)
         {

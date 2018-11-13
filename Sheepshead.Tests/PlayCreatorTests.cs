@@ -9,10 +9,10 @@ using Sheepshead.Models.Players;
 namespace Sheepshead.Tests
 {
     [TestClass]
-    public class MidTrickPlayCreatorTests
+    public class PlayCreatorTests
     {
         [TestMethod]
-        public void MidTrickPlayCreator_PlayWeakestWin()
+        public void PlayCreator_PlayWeakestWin()
         {
             var pickerMock = new Mock<IPlayer>();
             var partnerMock = new Mock<IPlayer>();
@@ -34,13 +34,13 @@ namespace Sheepshead.Tests
             trickMock.Setup(m => m.CardsPlayed).Returns(cardsPlayed);
             trickMock.Setup(m => m.IsLegalAddition(SheepCard.JACK_DIAMONDS, playerMock.Object)).Returns(true);
             trickMock.Setup(m => m.IsLegalAddition(SheepCard.QUEEN_CLUBS, playerMock.Object)).Returns(true);
-            var playCreator = new MidTrickPlayCreator();
+            var playCreator = new PlayCreator();
             var actual = playCreator.PlayWeakestWin(playerMock.Object, trickMock.Object);
             Assert.AreEqual(SheepCard.JACK_DIAMONDS, actual);
         }
 
         [TestMethod]
-        public void MidTrickPlayCreator_PlayStrongestWin()
+        public void PlayCreator_PlayStrongestWin()
         {
             var pickerMock = new Mock<IPlayer>();
             var partnerMock = new Mock<IPlayer>();
@@ -62,7 +62,7 @@ namespace Sheepshead.Tests
             trickMock.Setup(m => m.CardsPlayed).Returns(cardsPlayed);
             trickMock.Setup(m => m.IsLegalAddition(SheepCard.JACK_DIAMONDS, playerMock.Object)).Returns(true);
             trickMock.Setup(m => m.IsLegalAddition(SheepCard.QUEEN_CLUBS, playerMock.Object)).Returns(true);
-            var playCreator = new MidTrickPlayCreator();
+            var playCreator = new PlayCreator();
             var actual = playCreator.PlayStrongestWin(playerMock.Object, trickMock.Object);
             Assert.AreEqual(SheepCard.QUEEN_CLUBS, actual);
         }

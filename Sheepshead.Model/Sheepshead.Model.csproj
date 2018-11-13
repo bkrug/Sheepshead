@@ -60,7 +60,7 @@
     <Compile Include="Players\HumanPlayer.cs" />
     <Compile Include="Players\AdvancedPlayer.cs" />
     <Compile Include="Players\LeasterStateAnalyzer.cs" />
-    <Compile Include="Players\MidTrickPlayCreator.cs" />
+    <Compile Include="Players\PlayCreator.cs" />
     <Compile Include="Players\NewbiePlayer.cs" />
     <Compile Include="Players\Player.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
