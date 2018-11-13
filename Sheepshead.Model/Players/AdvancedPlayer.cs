@@ -15,12 +15,6 @@ namespace Sheepshead.Models.Players
             _midTrickPlayCreator = new MidTrickPlayCreator();
         }
 
-        public AdvancedPlayer(IGameStateAnalyzer gameStateAnalyzer, IMidTrickPlayCreator midTrickPlayCreator)
-        {
-            _gameStateAnalyzer = gameStateAnalyzer;
-            _midTrickPlayCreator = midTrickPlayCreator;
-        }
-
         public override bool WillPick(IDeck deck)
         {
             var highPointCards = Cards.Count(c => CardUtil.GetPoints(c) >= 10);
