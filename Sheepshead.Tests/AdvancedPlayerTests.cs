@@ -403,11 +403,23 @@ namespace Sheepshead.Tests
         }
         #endregion
 
-        #region Mid-Trick Tests (Not all opponents have played)
-
-        #endregion
-
         //* In leasters, you have a lot of high value cards, so give them up in hands that someone else one.
         //* In leasters, you have more limited high value cards, give them up in hands one by someone with many points.
+
+
+        //Bury Cards - Do the first of these that is possible:
+        //--- 2 Fail Aces or 10s ---
+        //There are 2 fail suits for which I have only one card, and both are an ACE or 10. Bury them.
+        //There is 1 fail suit for which I have only two cards, and they are an ACE and 10. Bury them.
+        //There is 1 fail suit for which my only card is an ACE or 10, and I have another fail ACE or 10. Bury them.
+        //I have two fail cards that are ACEs or 10s. Bury them.
+        //--- ---
+        //There are 2 fail suits for which I have only one card, and in one case the card is an ACE or 10. Bury them.
+        //There is 1 fail suit for which I have only two cards, and one card is an ACE or 10. Bury them.
+        //There are 2 fail suits for which I have only one card. Bury them.
+        //There is 1 fail suit for which I have only two cards. Bury them.
+        //There is 1 fail suit for which I have only one card. There is at least one other fail. Select the fail suit for which I have the next smallest remaiing number of cards. Bury the lowest ranking card in that suit.
+        //I have at least two fail card. Bury the lowest ranking cards from the fail suit for which I have the fewest cards.
+        //Bury my lowest ranking cards. (One fail and a trump, or my lowest ranking trumps).
     }
 }
