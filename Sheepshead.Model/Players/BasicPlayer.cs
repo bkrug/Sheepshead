@@ -45,7 +45,7 @@ namespace Sheepshead.Models.Players
         protected SheepCard GetLeadCard(ITrick trick, IEnumerable<SheepCard> legalCards)
         {
             IEnumerable<SheepCard> cardsOfPreferedSuite = new List<SheepCard>();
-            if (trick.Hand.Picker == this || this.Cards.Any(c => c == trick.Hand.PartnerCard))
+            if (trick.Hand.Picker == this || IamPartner(trick))
                 cardsOfPreferedSuite = legalCards.Where(c => CardUtil.GetSuit(c) == Suit.TRUMP).ToList();
             else
             {
