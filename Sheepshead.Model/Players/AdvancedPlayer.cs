@@ -6,13 +6,15 @@ namespace Sheepshead.Models.Players
 {
     public class AdvancedPlayer : BasicPlayer
     {
+        ILeasterStateAnalyzer _leasterStateAnalyzer;
         IGameStateAnalyzer _gameStateAnalyzer;
-        IPlayCreator _midTrickPlayCreator;
+        IPlayCreator _playCreator;
 
         public AdvancedPlayer()
         {
+            _leasterStateAnalyzer = new LeasterStateAnalyzer();
             _gameStateAnalyzer = new GameStateAnalyzer();
-            _midTrickPlayCreator = new PlayCreator();
+            _playCreator = new PlayCreator();
         }
 
         public override bool WillPick(IDeck deck)
@@ -40,27 +42,14 @@ namespace Sheepshead.Models.Players
 
         public override SheepCard GetMove(ITrick trick)
         {
-            SheepCard moveCard;
-            if (!trick.Hand.Leasters)
-            {
-                if (Cards.Count == 1)
-                    moveCard = Cards.Single();
-                else if (trick.StartingPlayer == this)
-                    moveCard = GetLeadMove(trick);
-                else
-                    moveCard = GetLaterMove(trick);
-            }
+            if (Cards.Count == 1)
+                return Cards.Single();
+            if (trick.Hand.Leasters)
+                return PlayLeasterMove(trick);
+            if (trick.StartingPlayer == this)
+                return GetLeadMove(trick);
             else
-            {
-                //TODO: Be more selective about which trick you want to win.
-                var previousWinners = trick.Hand.Tricks.Where(t => t != trick).Select(t => t.Winner());
-                var lowestTrick = previousWinners.Any() ? previousWinners.Min(w => w.Points) : -1;
-                if (previousWinners.Any(t => t.Player == this) || trick.CardsPlayed.Sum(c => CardUtil.GetPoints(c.Value)) > lowestTrick)
-                    moveCard = TryToLooseTrick(trick);
-                else
-                    moveCard = TryToWinTrick(trick);
-            }
-            return moveCard;
+                return GetLaterMove(trick);
         }
 
         private SheepCard GetLeadMove(ITrick trick)
@@ -104,14 +93,14 @@ namespace Sheepshead.Models.Players
             {
                 if (_gameStateAnalyzer.MySideWinning(this, trick))
                 {
-                    return _midTrickPlayCreator.GiveAwayPoints(this, trick);
+                    return _playCreator.GiveAwayPoints(this, trick);
                 }
                 else
                 {
                     if (_gameStateAnalyzer.ICanWinTrick(this, trick))
-                        return _midTrickPlayCreator.PlayWeakestWin(this, trick);
+                        return _playCreator.PlayWeakestWin(this, trick);
                     else
-                        return _midTrickPlayCreator.GiveAwayLeastPower(this, trick);
+                        return _playCreator.GiveAwayLeastPower(this, trick);
                 }
             }
             else
@@ -121,13 +110,13 @@ namespace Sheepshead.Models.Players
                     if (_gameStateAnalyzer.UnplayedCardsBeatPlayedCards(this, trick))
                     {
                         if (_gameStateAnalyzer.UnplayedCardsBeatMyCards(this, trick))
-                            return _midTrickPlayCreator.GiveAwayLeastPower(this, trick);
+                            return _playCreator.GiveAwayLeastPower(this, trick);
                         else
-                            return _midTrickPlayCreator.PlayStrongestWin(this, trick);
+                            return _playCreator.PlayStrongestWin(this, trick);
                     }
                     else
                     {
-                        return _midTrickPlayCreator.GiveAwayPoints(this, trick);
+                        return _playCreator.GiveAwayPoints(this, trick);
                     }
                 }
                 else
@@ -135,48 +124,90 @@ namespace Sheepshead.Models.Players
                     if (_gameStateAnalyzer.ICanWinTrick(this, trick))
                     {
                         if (_gameStateAnalyzer.UnplayedCardsBeatMyCards(this, trick))
-                            return _midTrickPlayCreator.GiveAwayLeastPower(this, trick);
+                            return _playCreator.GiveAwayLeastPower(this, trick);
                         else
-                            return _midTrickPlayCreator.PlayStrongestWin(this, trick);
+                            return _playCreator.PlayStrongestWin(this, trick);
                     }
                     else
-                        return _midTrickPlayCreator.GiveAwayLeastPower(this, trick);
+                        return _playCreator.GiveAwayLeastPower(this, trick);
                 }
             }
         }
 
-        private SheepCard TryToWinTrick(ITrick trick)
+        private SheepCard PlayLeasterMove(ITrick trick)
         {
-            if (trick.StartingPlayer == this)
-                return GetLeadCard(trick, this.Cards);
-            var legalCards = Cards.Where(c => trick.IsLegalAddition(c, this));
-            if (QueueRankInTrick(trick) < trick.PlayerCount)
-                return GetMiddleCard(trick, legalCards);
-            return GetFinishingCard(trick, legalCards);
-        }
-
-        private SheepCard TryToLooseTrick(ITrick trick)
-        {
-            var legalCards = Cards.Where(c => trick.IsLegalAddition(c, this));
-            return legalCards.OrderByDescending(l => CardUtil.GetRank(l)).First();
-        }
-
-        //TODO: What if all of my opponents have already played?
-        //That will change my strategy.
-        private SheepCard GetMiddleCard(ITrick trick, IEnumerable<SheepCard> legalCards)
-        {
-            return legalCards.OrderByDescending(c => CardUtil.GetRank(c))
-                             .ThenByDescending(c => CardUtil.GetPoints(c))
-                             .First();
-        }
-
-        //TODO: What if I already know that my side is winning?
-        //I can just give away points then instead of trying to win the tick.
-        private SheepCard GetFinishingCard(ITrick trick, IEnumerable<SheepCard> legalCards)
-        {
-            var highestPlayedCard = trick.CardsPlayed.OrderByDescending(d => CardUtil.GetRank(d.Value)).First().Value;
-            var winningCards = legalCards.Where(c => CardUtil.GetRank(c) > CardUtil.GetRank(highestPlayedCard)).ToList();
-            return legalCards.OrderBy(c => winningCards.Contains(c) ? 1 : 2).ThenByDescending(c => CardUtil.GetRank(c)).First();
+            if (_leasterStateAnalyzer.CanIWin(this, trick))
+            {
+                if (_leasterStateAnalyzer.CanILoose(this, trick))
+                {
+                    if (_leasterStateAnalyzer.EarlyInTrick(trick))
+                    {
+                        if (_leasterStateAnalyzer.HaveIAlreadyWon(this, trick))
+                            return _playCreator.PlaySecondStrongestLoosingCard(this, trick);
+                        else
+                            return _playCreator.PlayStrongestLoosingCard(this, trick);
+                    }
+                    else
+                    {
+                        if (_leasterStateAnalyzer.HaveIAlreadyWon(this, trick))
+                        {
+                            if (_leasterStateAnalyzer.HaveAnyPowerCards(this, trick))
+                            {
+                                if (_leasterStateAnalyzer.HaveHighPointsBeenPlayed(this, trick))
+                                    return _playCreator.PlayStrongestLoosingCard(this, trick);
+                                else
+                                    return _playCreator.PlayStrongestWin(this, trick);
+                            }
+                            else
+                            {
+                                return _playCreator.PlayStrongestLoosingCard(this, trick);
+                            }
+                        }
+                        else
+                        {
+                            if (_leasterStateAnalyzer.HaveAnyPowerCards(this, trick))
+                            {
+                                if (_leasterStateAnalyzer.HaveHighPointsBeenPlayed(this, trick))
+                                {
+                                    return _playCreator.PlaySecondStrongestLoosingCard(this, trick);
+                                }
+                                else
+                                {
+                                    if (_leasterStateAnalyzer.HaveTwoPowerCards(this, trick))
+                                        return _playCreator.PlaySecondStrongestLoosingCard(this, trick);
+                                    else
+                                        return _playCreator.PlayStrongestWin(this, trick);
+                                }
+                            }
+                            else
+                            {
+                                return _playCreator.PlayStrongestWin(this, trick);
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    return _playCreator.PlayStrongestWin(this, trick);
+                }
+            }
+            else
+            {
+                if (_leasterStateAnalyzer.HaveIAlreadyWon(this, trick))
+                {
+                    if (_leasterStateAnalyzer.HaveAnyPowerCards(this, trick))
+                        return _playCreator.PlayStrongestLoosingCard(this, trick);
+                    else
+                        return _playCreator.GiveAwayPoints(this, trick);
+                }
+                else
+                {
+                    if (_leasterStateAnalyzer.HaveTwoPowerCards(this, trick))
+                        return _playCreator.PlaySecondStrongestLoosingCard(this, trick);
+                    else
+                        return _playCreator.GiveAwayPoints(this, trick);
+                }
+            }
         }
 
         //TODO: This player should, under certain circumstances, bury high-point cards

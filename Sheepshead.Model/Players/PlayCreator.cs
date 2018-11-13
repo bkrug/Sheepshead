@@ -9,7 +9,7 @@ namespace Sheepshead.Models.Players
         SheepCard PlayWeakestWin(IPlayer thisPlayer, ITrick trick);
         SheepCard PlayStrongestWin(IPlayer thisPlayer, ITrick trick);
         SheepCard PlayStrongestLoosingCard(IPlayer thisPlayer, ITrick trick);
-        SheepCard PlayToWin(IPlayer thisPlayer, ITrick trick);
+        SheepCard PlaySecondStrongestLoosingCard(IPlayer thisPlayer, ITrick trick);
     }
 
     public class PlayCreator : IPlayCreator
@@ -51,12 +51,15 @@ namespace Sheepshead.Models.Players
             return legalCards.Except(winnableCards).OrderBy(c => CardUtil.GetRank(c)).First();
         }
 
-        public SheepCard PlayToWin(IPlayer thisPlayer, ITrick trick)
+        public SheepCard PlaySecondStrongestLoosingCard(IPlayer thisPlayer, ITrick trick)
         {
-            if (trick.CardsPlayed.Count == trick.Hand.Deck.Game.PlayerCount - 1)
-                return PlayWeakestWin(thisPlayer, trick);
+            var legalCards = thisPlayer.Cards.Where(c => trick.IsLegalAddition(c, thisPlayer));
+            var winnableCards = GameStateUtils.GetCardsThatCouldWin(trick, legalCards);
+            var cards = legalCards.Except(winnableCards).OrderBy(c => CardUtil.GetRank(c)).ToList();
+            if (cards.Count == 1)
+                return cards.Single();
             else
-                return PlayStrongestWin(thisPlayer, trick);
+                return cards[1];
         }
     }
 }
