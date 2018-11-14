@@ -48,17 +48,25 @@ namespace Sheepshead.Models.Players
 
         public bool HaveAnyPowerCards(IPlayer thisPlayer, ITrick trick)
         {
-            throw new System.NotImplementedException();
+            return CountQueensJacks(thisPlayer) >= 1;
         }
 
         public bool HaveTwoPowerCards(IPlayer thisPlayer, ITrick trick)
         {
-            throw new System.NotImplementedException();
+            return CountQueensJacks(thisPlayer) >= 2;
+        }
+
+        private int CountQueensJacks(IPlayer thisPlayer)
+        {
+            return thisPlayer.Cards.Count(c => new[] { CardType.JACK, CardType.QUEEN }.Contains(CardUtil.GetFace(c)));
         }
 
         public bool HaveHighPointsBeenPlayed(ITrick trick)
         {
-            return trick.CardsPlayed.Sum(cp => CardUtil.GetPoints(cp.Value)) >= 10;
+            var totalPoints = trick.CardsPlayed.Sum(cp => CardUtil.GetPoints(cp.Value));
+            return trick.Hand.Deck.Game.PlayerCount == 3
+                ? totalPoints >= 10
+                : totalPoints >= 12;
         }
     }
 }
