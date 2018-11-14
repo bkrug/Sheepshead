@@ -33,7 +33,10 @@ namespace Sheepshead.Models.Players
 
         public bool EarlyInTrick(ITrick trick)
         {
-            throw new System.NotImplementedException();
+            if (trick.Hand.Deck.Game.PlayerCount == 3)
+                return trick.CardsPlayed.Count < 2;
+            else
+                return trick.CardsPlayed.Count < 3;
         }
 
         public bool HaveIAlreadyWon(IPlayer thisPlayer, ITrick trick)
