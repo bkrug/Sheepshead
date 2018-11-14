@@ -25,7 +25,10 @@ namespace Sheepshead.Models.Players
 
         public bool CanILoose(IPlayer thisPlayer, ITrick trick)
         {
-            throw new System.NotImplementedException();
+            var legalCards = thisPlayer.Cards.Where(c => trick.IsLegalAddition(c, thisPlayer)).ToList();
+            var winnableCards = GameStateUtils.GetCardsThatCouldWin(trick, legalCards).ToList();
+            var looseableCards = legalCards.Except(winnableCards);
+            return looseableCards.Any();
         }
 
         public bool EarlyInTrick(ITrick trick)
