@@ -49,6 +49,8 @@ namespace Sheepshead.Models
             var buriedCards = picker.DropCardsForPick(deck);
             deck.Buried = buriedCards;
             handFactory.GetHand(deck, picker, buriedCards);
+            if (picker.GoItAlone(deck))
+                return;
             if (deck.Game.PartnerMethod == PartnerMethod.CalledAce)
             {
                 var partnerCard = picker.ChooseCalledAce(deck);

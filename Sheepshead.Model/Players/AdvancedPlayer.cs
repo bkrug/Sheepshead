@@ -40,6 +40,14 @@ namespace Sheepshead.Models.Players
             }
         }
 
+        public override bool GoItAlone(IDeck deck)
+        {
+            var trumpCount = Cards.Count(c => CardUtil.GetSuit(c) == Suit.TRUMP);
+            var queenJackCount = Cards.Count(c => new[] { CardType.JACK, CardType.QUEEN }.Contains(CardUtil.GetFace(c)));
+            var queenCount = Cards.Count(c => CardUtil.GetFace(c) == CardType.QUEEN);
+            return trumpCount >= 5 && queenJackCount >= 3 && queenCount >= 2;
+        }
+
         public override SheepCard GetMove(ITrick trick)
         {
             if (Cards.Count == 1)

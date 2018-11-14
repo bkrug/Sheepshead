@@ -20,6 +20,11 @@ namespace Sheepshead.Models.Players
             return DropCardsForPickInternal(deck);
         }
 
+        public virtual bool GoItAlone(IDeck deck)
+        {
+            return false;
+        }
+
         protected abstract List<SheepCard> DropCardsForPickInternal(IDeck deck);
     }
 
@@ -28,6 +33,7 @@ namespace Sheepshead.Models.Players
         SheepCard GetMove(ITrick trick);
         bool WillPick(IDeck deck);
         List<SheepCard> DropCardsForPick(IDeck deck);
+        bool GoItAlone(IDeck deck);
         SheepCard? ChooseCalledAce(IDeck deck);
     }
 }

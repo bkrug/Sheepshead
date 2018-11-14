@@ -55,5 +55,10 @@ namespace Sheepshead.Tests.PlayerMocks
         {
             throw new NotImplementedException();
         }
+
+        public bool GoItAlone(IDeck deck)
+        {
+            return false;
+        }
     }
 }
