@@ -161,7 +161,7 @@ namespace Sheepshead.Models.Players
                         {
                             if (_leasterStateAnalyzer.HaveAnyPowerCards(this, trick))
                             {
-                                if (_leasterStateAnalyzer.HaveHighPointsBeenPlayed(this, trick))
+                                if (_leasterStateAnalyzer.HaveHighPointsBeenPlayed(trick))
                                     return _playCreator.PlayStrongestLoosingCard(this, trick);
                                 else
                                     return _playCreator.PlayStrongestWin(this, trick);
@@ -175,7 +175,7 @@ namespace Sheepshead.Models.Players
                         {
                             if (_leasterStateAnalyzer.HaveAnyPowerCards(this, trick))
                             {
-                                if (_leasterStateAnalyzer.HaveHighPointsBeenPlayed(this, trick))
+                                if (_leasterStateAnalyzer.HaveHighPointsBeenPlayed(trick))
                                 {
                                     return _playCreator.PlaySecondStrongestLoosingCard(this, trick);
                                 }

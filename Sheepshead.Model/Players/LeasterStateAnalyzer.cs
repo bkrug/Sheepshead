@@ -12,7 +12,7 @@ namespace Sheepshead.Models.Players
         bool HaveIAlreadyWon(IPlayer thisPlayer, ITrick trick);
         bool HaveAnyPowerCards(IPlayer thisPlayer, ITrick trick);
         bool HaveTwoPowerCards(IPlayer thisPlayer, ITrick trick);
-        bool HaveHighPointsBeenPlayed(IPlayer thisPlayer, ITrick trick);
+        bool HaveHighPointsBeenPlayed(ITrick trick);
     }
 
     public class LeasterStateAnalyzer : ILeasterStateAnalyzer
@@ -56,9 +56,9 @@ namespace Sheepshead.Models.Players
             throw new System.NotImplementedException();
         }
 
-        public bool HaveHighPointsBeenPlayed(IPlayer thisPlayer, ITrick trick)
+        public bool HaveHighPointsBeenPlayed(ITrick trick)
         {
-            throw new System.NotImplementedException();
+            return trick.CardsPlayed.Sum(cp => CardUtil.GetPoints(cp.Value)) >= 10;
         }
     }
 }
