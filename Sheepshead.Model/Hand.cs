@@ -34,7 +34,7 @@ namespace Sheepshead.Models
             {
                 picker.Cards.AddRange(deck.Blinds.Where(c => !picker.Cards.Contains(c)));
                 picker.Cards.Where(c => burried.Contains(c)).ToList().ForEach(c => picker.Cards.Remove(c));
-                if (Deck.PlayerCount == 5)
+                if (Deck.PlayerCount == 5 && deck.Game.PartnerMethod == PartnerMethod.JackOfDiamonds)
                     PartnerCard = ChoosePartnerCard(picker);
             }
             PartnerCardPlayed = null;
@@ -78,12 +78,6 @@ namespace Sheepshead.Models
                 SheepCard.QUEEN_SPADES,
                 SheepCard.QUEEN_CLUBS
             };
-            if (!picker.Cards.Any())
-            {
-            }
-            if (!potentialPartnerCards.Any(c => !picker.Cards.Contains(c)))
-            {
-            }
             SheepCard? partnerCard = potentialPartnerCards.Any(c => !picker.Cards.Contains(c))
                 ? potentialPartnerCards.First(c => !picker.Cards.Contains(c))
                 : (SheepCard?)null;

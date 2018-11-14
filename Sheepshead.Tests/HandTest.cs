@@ -76,6 +76,7 @@ namespace Sheepshead.Tests
             var player3Mock = new Mock<IPlayer>();
             pickerMock.Setup(p => p.Cards).Returns(new List<SheepCard>());
             deckMock.Setup(d => d.Blinds).Returns(new List<SheepCard>() { SheepCard.N8_CLUBS, SheepCard.N7_CLUBS });
+            deckMock.Setup(m => m.Game.PartnerMethod).Returns(PartnerMethod.JackOfDiamonds);
             deckMock.Setup(d => d.PlayerCount).Returns(5);
             deckMock.Setup(d => d.Players).Returns(new List<IPlayer>() { partnerMock.Object, player1Mock.Object, pickerMock.Object, player2Mock.Object, player3Mock.Object });
             deckMock.Setup(d => d.Buried).Returns(new List<SheepCard>() { SheepCard.ACE_CLUBS, SheepCard.N10_SPADES });
@@ -115,6 +116,7 @@ namespace Sheepshead.Tests
             var player3Mock = new Mock<IPlayer>();
             pickerMock.Setup(p => p.Cards).Returns(new List<SheepCard>());
             deckMock.Setup(d => d.Blinds).Returns(new List<SheepCard>() { SheepCard.JACK_CLUBS, SheepCard.ACE_HEARTS });
+            deckMock.Setup(m => m.Game.PartnerMethod).Returns(PartnerMethod.JackOfDiamonds);
             deckMock.Setup(d => d.PlayerCount).Returns(5);
             deckMock.Setup(d => d.Players).Returns(new List<IPlayer>() { partnerMock.Object, player1Mock.Object, pickerMock.Object, player2Mock.Object, player3Mock.Object });
             deckMock.Setup(d => d.Buried).Returns(new List<SheepCard>() { SheepCard.KING_CLUBS, SheepCard.ACE_SPADES });
@@ -154,6 +156,7 @@ namespace Sheepshead.Tests
             var player3Mock = new Mock<IPlayer>();
             pickerMock.Setup(p => p.Cards).Returns(new List<SheepCard>());
             deckMock.Setup(d => d.Blinds).Returns(new List<SheepCard>() { SheepCard.JACK_CLUBS, SheepCard.ACE_HEARTS });
+            deckMock.Setup(m => m.Game.PartnerMethod).Returns(PartnerMethod.JackOfDiamonds);
             deckMock.Setup(d => d.PlayerCount).Returns(5);
             deckMock.Setup(d => d.Players).Returns(new List<IPlayer>() { partnerMock.Object, player1Mock.Object, pickerMock.Object, player2Mock.Object, player3Mock.Object });
             deckMock.Setup(d => d.Buried).Returns(new List<SheepCard>() { SheepCard.KING_SPADES, SheepCard.N10_HEARTS });
@@ -193,6 +196,7 @@ namespace Sheepshead.Tests
             var player3Mock = new Mock<IPlayer>();
             pickerMock.Setup(p => p.Cards).Returns(new List<SheepCard>());
             deckMock.Setup(d => d.Blinds).Returns(new List<SheepCard>() { SheepCard.KING_CLUBS, SheepCard.ACE_HEARTS });
+            deckMock.Setup(m => m.Game.PartnerMethod).Returns(PartnerMethod.JackOfDiamonds);
             deckMock.Setup(d => d.PlayerCount).Returns(5);
             deckMock.Setup(d => d.Players).Returns(new List<IPlayer>() { partnerMock.Object, player1Mock.Object, pickerMock.Object, player2Mock.Object, player3Mock.Object });
             deckMock.Setup(d => d.Buried).Returns(new List<SheepCard>() { SheepCard.KING_CLUBS, SheepCard.ACE_HEARTS });
@@ -232,6 +236,7 @@ namespace Sheepshead.Tests
             var player3Mock = new Mock<IPlayer>();
             pickerMock.Setup(p => p.Cards).Returns(new List<SheepCard>());
             deckMock.Setup(d => d.Blinds).Returns(new List<SheepCard>() { SheepCard.KING_CLUBS, SheepCard.ACE_HEARTS });
+            deckMock.Setup(m => m.Game.PartnerMethod).Returns(PartnerMethod.JackOfDiamonds);
             deckMock.Setup(d => d.PlayerCount).Returns(5);
             deckMock.Setup(d => d.Players).Returns(new List<IPlayer>() { partnerMock.Object, player1Mock.Object, pickerMock.Object, player2Mock.Object, player3Mock.Object });
             deckMock.Setup(d => d.Buried).Returns(new List<SheepCard>() { SheepCard.QUEEN_HEARTS, SheepCard.JACK_DIAMONDS });
@@ -271,6 +276,7 @@ namespace Sheepshead.Tests
             var player3Mock = new Mock<IPlayer>();
             pickerMock.Setup(p => p.Cards).Returns(new List<SheepCard>());
             deckMock.Setup(d => d.Blinds).Returns(new List<SheepCard>() { SheepCard.N8_HEARTS, SheepCard.JACK_HEARTS });
+            deckMock.Setup(m => m.Game.PartnerMethod).Returns(PartnerMethod.JackOfDiamonds);
             deckMock.Setup(d => d.PlayerCount).Returns(5);
             deckMock.Setup(d => d.Players).Returns(new List<IPlayer>() { partnerMock.Object, player1Mock.Object, pickerMock.Object, player2Mock.Object, player3Mock.Object });
             deckMock.Setup(d => d.Buried).Returns(new List<SheepCard>() { SheepCard.ACE_SPADES, SheepCard.ACE_HEARTS });
@@ -310,6 +316,7 @@ namespace Sheepshead.Tests
             var player4Mock = new Mock<IPlayer>();
             pickerMock.Setup(p => p.Cards).Returns(new List<SheepCard>());
             deckMock.Setup(d => d.Blinds).Returns(new List<SheepCard>() { SheepCard.N8_CLUBS, SheepCard.N7_CLUBS });
+            deckMock.Setup(m => m.Game.PartnerMethod).Returns(PartnerMethod.JackOfDiamonds);
             deckMock.Setup(d => d.PlayerCount).Returns(5);
             deckMock.Setup(d => d.Players).Returns(new List<IPlayer>() { player4Mock.Object, player1Mock.Object, pickerMock.Object, player2Mock.Object, player3Mock.Object });
             deckMock.Setup(d => d.Buried).Returns(new List<SheepCard>() { SheepCard.ACE_CLUBS, SheepCard.N10_SPADES });
@@ -348,6 +355,7 @@ namespace Sheepshead.Tests
             var player4Mock = new Mock<IPlayer>();
             pickerMock.Setup(p => p.Cards).Returns(new List<SheepCard>());
             deckMock.Setup(d => d.Blinds).Returns(new List<SheepCard>() { SheepCard.N8_CLUBS, SheepCard.N7_CLUBS });
+            deckMock.Setup(m => m.Game.PartnerMethod).Returns(PartnerMethod.JackOfDiamonds);
             deckMock.Setup(d => d.PlayerCount).Returns(5);
             deckMock.Setup(d => d.Players).Returns(new List<IPlayer>() { player4Mock.Object, player1Mock.Object, pickerMock.Object, player2Mock.Object, player3Mock.Object });
             deckMock.Setup(d => d.Buried).Returns(new List<SheepCard>() { SheepCard.ACE_CLUBS, SheepCard.N10_SPADES });
@@ -637,6 +645,7 @@ namespace Sheepshead.Tests
             var blinds = new List<SheepCard>() { SheepCard.KING_DIAMONDS, SheepCard.ACE_CLUBS };
             var mockDeck = new Mock<IDeck>();
             mockDeck.Setup(m => m.Blinds).Returns(blinds);
+            mockDeck.Setup(m => m.Game.PartnerMethod).Returns(PartnerMethod.JackOfDiamonds);
             mockDeck.Setup(m => m.PlayerCount).Returns(5);
             var hand = new Hand(mockDeck.Object, new NewbiePlayer(), new List<SheepCard>());
 
@@ -671,6 +680,7 @@ namespace Sheepshead.Tests
                 var blinds = new List<SheepCard>() { SheepCard.KING_DIAMONDS, SheepCard.ACE_CLUBS };
                 var mockDeck = new Mock<IDeck>();
                 mockDeck.Setup(m => m.Blinds).Returns(blinds);
+                mockDeck.Setup(m => m.Game.PartnerMethod).Returns(PartnerMethod.JackOfDiamonds);
                 mockDeck.Setup(m => m.PlayerCount).Returns(5);
                 var mockPicker = new Mock<IPlayer>();
                 var originalPickerCards = new List<SheepCard>() { SheepCard.N7_SPADES, SheepCard.N8_SPADES, SheepCard.N9_SPADES, SheepCard.N10_SPADES };
@@ -689,6 +699,7 @@ namespace Sheepshead.Tests
             var blinds = new List<SheepCard>() { SheepCard.JACK_DIAMONDS, SheepCard.JACK_HEARTS };
             var mockDeck = new Mock<IDeck>();
             mockDeck.Setup(m => m.Blinds).Returns(blinds);
+            mockDeck.Setup(m => m.Game.PartnerMethod).Returns(PartnerMethod.JackOfDiamonds);
             mockDeck.Setup(m => m.PlayerCount).Returns(5);
             var mockPicker = new Mock<IPlayer>();
             mockPicker.Setup(m => m.Cards).Returns(new List<SheepCard>() {
@@ -704,6 +715,7 @@ namespace Sheepshead.Tests
             var blinds = new List<SheepCard>() { SheepCard.JACK_DIAMONDS, SheepCard.JACK_HEARTS };
             var mockDeck = new Mock<IDeck>();
             mockDeck.Setup(m => m.Blinds).Returns(blinds);
+            mockDeck.Setup(m => m.Game.PartnerMethod).Returns(PartnerMethod.JackOfDiamonds);
             mockDeck.Setup(m => m.PlayerCount).Returns(5);
             var mockPicker = new Mock<IPlayer>();
             mockPicker.Setup(m => m.Cards).Returns(new List<SheepCard>() {
@@ -794,6 +806,7 @@ namespace Sheepshead.Tests
             var playerList = new List<IPlayer>() { player1.Object, player2.Object, player3.Object, player4.Object, player5.Object };
             var deckMock = new Mock<IDeck>();
             deckMock.Setup(m => m.StartingPlayer).Returns(player5.Object);
+            deckMock.Setup(m => m.Game.PartnerMethod).Returns(PartnerMethod.JackOfDiamonds);
             deckMock.Setup(m => m.PlayerCount).Returns(5);
             deckMock.Setup(m => m.Players).Returns(playerList);
             deckMock.Setup(m => m.Blinds).Returns(new List<SheepCard>() { SheepCard.N7_HEARTS, SheepCard.JACK_DIAMONDS });
@@ -897,6 +910,7 @@ namespace Sheepshead.Tests
             for (var i = 0; i < 32; ++i) { cards.Add(0); }
             var deckMock = new Mock<IDeck>();
             deckMock.Setup(m => m.StartingPlayer).Returns(player2.Object);
+            deckMock.Setup(m => m.Game.PartnerMethod).Returns(PartnerMethod.JackOfDiamonds);
             deckMock.Setup(m => m.PlayerCount).Returns(5);
             deckMock.Setup(m => m.Players).Returns(playerList);
             deckMock.Setup(m => m.Blinds).Returns(new List<SheepCard>() { SheepCard.N7_HEARTS, SheepCard.JACK_DIAMONDS });
@@ -920,6 +934,7 @@ namespace Sheepshead.Tests
         {
             var deckMock = new Mock<IDeck>();
             deckMock.Setup(d => d.Blinds).Returns(new List<SheepCard>());
+            deckMock.Setup(m => m.Game.PartnerMethod).Returns(PartnerMethod.JackOfDiamonds);
             deckMock.Setup(d => d.PlayerCount).Returns(5);
             var player1 = new Mock<IPlayer>();
             var player2 = new Mock<IPlayer>();
@@ -964,6 +979,7 @@ namespace Sheepshead.Tests
         {
             var deckMock = new Mock<IDeck>();
             deckMock.Setup(d => d.Blinds).Returns(new List<SheepCard>());
+            deckMock.Setup(m => m.Game.PartnerMethod).Returns(PartnerMethod.JackOfDiamonds);
             deckMock.Setup(d => d.PlayerCount).Returns(5);
             var player1 = new Mock<IPlayer>();
             var player2 = new Mock<IPlayer>();
