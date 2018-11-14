@@ -403,10 +403,6 @@ namespace Sheepshead.Tests
         }
         #endregion
 
-        //* In leasters, you have a lot of high value cards, so give them up in hands that someone else one.
-        //* In leasters, you have more limited high value cards, give them up in hands one by someone with many points.
-
-
         //Bury Cards - Do the first of these that is possible:
         //--- 2 Fail Aces or 10s ---
         //There are 2 fail suits for which I have only one card, and both are an ACE or 10. Bury them.
