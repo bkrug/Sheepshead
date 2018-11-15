@@ -171,6 +171,84 @@ namespace Sheepshead.Tests
             CollectionAssert.AreEquivalent(expected, actual, "There is one fail suits for which we have exactly two cards.");
         }
 
+        [TestMethod]
+        public void BuriedCardSelector_BuryCardsByEasiestToRetireLowestRank_RetireOneButNotOther()
+        {
+            var cards = new List<SheepCard>()
+            {
+                SheepCard.N7_SPADES,
+                SheepCard.JACK_HEARTS,
+                SheepCard.N8_DIAMONDS,
+                SheepCard.N8_SPADES,
+                SheepCard.KING_HEARTS,
+                SheepCard.KING_DIAMONDS,
+                SheepCard.N9_SPADES,
+                SheepCard.QUEEN_CLUBS
+            };
+            var selector = new BuriedCardSelector(cards);
+            var expected = new List<SheepCard>() { SheepCard.KING_HEARTS, SheepCard.KING_CLUBS };
+            var actual = selector.CardsToBury;
+            Assert.IsTrue(actual.Contains(SheepCard.KING_HEARTS));
+            Assert.IsTrue(actual.Any(c => CardUtil.GetSuit(c) == Suit.SPADES));
+        }
 
+        [TestMethod]
+        public void BuriedCardSelector_BuryCardsByEasiestToRetireLowestRank_RetireNothing()
+        {
+            var cards = new List<SheepCard>()
+            {
+                SheepCard.N9_SPADES,
+                SheepCard.N8_SPADES,
+                SheepCard.N7_SPADES,
+                SheepCard.N7_CLUBS,
+                SheepCard.KING_CLUBS,
+                SheepCard.N8_CLUBS,
+                SheepCard.KING_DIAMONDS,
+                SheepCard.QUEEN_CLUBS
+            };
+            var selector = new BuriedCardSelector(cards);
+            var actual = selector.CardsToBury;
+            Assert.IsTrue(actual.All(c => CardUtil.GetSuit(c) == Suit.SPADES) || actual.All(c => CardUtil.GetSuit(c) == Suit.CLUBS));
+        }
+
+        [TestMethod]
+        public void BuriedCardSelector_BuryCardsByLowestRank_OneFail()
+        {
+            var cards = new List<SheepCard>()
+            {
+                SheepCard.N8_DIAMONDS,
+                SheepCard.N7_DIAMONDS,
+                SheepCard.QUEEN_HEARTS,
+                SheepCard.JACK_SPADES,
+                SheepCard.N9_SPADES,
+                SheepCard.ACE_DIAMONDS,
+                SheepCard.KING_DIAMONDS,
+                SheepCard.QUEEN_CLUBS
+            };
+            var selector = new BuriedCardSelector(cards);
+            var expected = new List<SheepCard>() { SheepCard.N9_SPADES, SheepCard.N7_DIAMONDS };
+            var actual = selector.CardsToBury;
+            CollectionAssert.AreEquivalent(expected, actual);
+        }
+
+        [TestMethod]
+        public void BuriedCardSelector_BuryCardsByLowestRank_AllTrump()
+        {
+            var cards = new List<SheepCard>()
+            {
+                SheepCard.N8_DIAMONDS,
+                SheepCard.N7_DIAMONDS,
+                SheepCard.QUEEN_HEARTS,
+                SheepCard.JACK_SPADES,
+                SheepCard.QUEEN_DIAMONDS,
+                SheepCard.ACE_DIAMONDS,
+                SheepCard.KING_DIAMONDS,
+                SheepCard.QUEEN_CLUBS
+            };
+            var selector = new BuriedCardSelector(cards);
+            var expected = new List<SheepCard>() { SheepCard.N8_DIAMONDS, SheepCard.N7_DIAMONDS };
+            var actual = selector.CardsToBury;
+            CollectionAssert.AreEquivalent(expected, actual);
+        }
     }
 }

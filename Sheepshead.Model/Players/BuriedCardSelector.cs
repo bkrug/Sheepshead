@@ -16,9 +16,13 @@ namespace Sheepshead.Models.Players
 
         public BuriedCardSelector(List<SheepCard> cards)
         {
-            CardsPerSuit = cards.GroupBy(c => CardUtil.GetSuit(c)).ToDictionary(g => g.Key, g => g.Count());
+            CardsPerSuit = cards
+                .Where(c => CardUtil.GetSuit(c) != Suit.TRUMP)
+                .GroupBy(c => CardUtil.GetSuit(c))
+                .ToDictionary(g => g.Key, g => g.Count());
             _cards = cards;
             _acesAndTens = cards
+                .Where(c => CardUtil.GetSuit(c) != Suit.TRUMP)
                 .Where(c => new[] { CardType.ACE, CardType.N10 }.Contains(CardUtil.GetFace(c)))
                 .ToList();
             _acesAndTensPerSuit = _acesAndTens
@@ -37,7 +41,7 @@ namespace Sheepshead.Models.Players
                     ?? RetireOneFailSuitsWithOneAceOrTen()
                     ?? RetireTwoFailSuits()
                     ?? RetireOneFailSuit()
-                    ?? new List<SheepCard>();
+                    ?? RetireOneFailOrLowestRankCards();
             }
         }
 
@@ -120,6 +124,7 @@ namespace Sheepshead.Models.Players
         public List<SheepCard> RetireOneFailSuit()
         {
             var buryCards = _cards
+                .Where(c => CardUtil.GetSuit(c) != Suit.TRUMP)
                 .Where(c => CardsPerSuit[CardUtil.GetSuit(c)] == 2)
                 .GroupBy(c => CardUtil.GetSuit(c))
                 .ToList();
@@ -128,14 +133,15 @@ namespace Sheepshead.Models.Players
             return null;
         }
 
-        public List<SheepCard> BuryCardsByEasiestToRetireLowestRank()
+        public List<SheepCard> RetireOneFailOrLowestRankCards()
         {
-            throw new NotImplementedException();
-        }
-
-        public List<SheepCard> BuryCardsByLowestRank()
-        {
-            throw new NotImplementedException();
+            var groups = _cards
+                .GroupBy(c => CardUtil.GetSuit(c))
+                .OrderBy(g => g.Key != Suit.TRUMP ? CardsPerSuit[g.Key] : int.MaxValue);
+            var retVal = new List<SheepCard>();
+            foreach (var group in groups)
+                retVal.AddRange(group.OrderByDescending(c => CardUtil.GetRank(c)));
+            return retVal.Take(2).ToList();
         }
     }
 }
