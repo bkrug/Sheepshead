@@ -647,7 +647,7 @@ namespace Sheepshead.Tests
             mockDeck.Setup(m => m.Blinds).Returns(blinds);
             mockDeck.Setup(m => m.Game.PartnerMethod).Returns(PartnerMethod.JackOfDiamonds);
             mockDeck.Setup(m => m.PlayerCount).Returns(5);
-            var hand = new Hand(mockDeck.Object, new NewbiePlayer(), new List<SheepCard>());
+            var hand = new Hand(mockDeck.Object, new SimplePlayer(), new List<SheepCard>());
 
             var mockCompleteTrick = new Mock<ITrick>();
             var mockIncompleteTrick = new Mock<ITrick>();
@@ -663,7 +663,7 @@ namespace Sheepshead.Tests
             hand.AddTrick(mockIncompleteTrick.Object);
             Assert.IsFalse(hand.IsComplete(), "Hand is not complete if the last trick is not complete.");
 
-            hand = new Hand(mockDeck.Object, new NewbiePlayer(), new List<SheepCard>());
+            hand = new Hand(mockDeck.Object, new SimplePlayer(), new List<SheepCard>());
             hand.AddTrick(mockCompleteTrick.Object);
             hand.AddTrick(mockCompleteTrick.Object);
             hand.AddTrick(mockCompleteTrick.Object);

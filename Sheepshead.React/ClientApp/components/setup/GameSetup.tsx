@@ -15,13 +15,13 @@ export interface GameSetupState {
 export class GameSetup extends React.Component<RouteComponentProps<{}>, GameSetupState> {
     readonly MAX_PLAYERS = 5;
     readonly HUMANS = "humanCount";
-    readonly NEWBIE = "newbieCount";
+    readonly SIMPLE = "simpleCount";
     readonly INTERMEDIATE = "intermediateCount";
 
     constructor(props: any) {
         super(props);
         let selections: { [index: string]: number } = {};
-        selections[this.HUMANS] = selections[this.NEWBIE] = selections[this.INTERMEDIATE] = 0;
+        selections[this.HUMANS] = selections[this.SIMPLE] = selections[this.INTERMEDIATE] = 0;
         this.state = {
             value: 0,
             partnerCard: true,
@@ -46,7 +46,7 @@ export class GameSetup extends React.Component<RouteComponentProps<{}>, GameSetu
         if (radioValue === 0 || radioValue > 0) {
             this.state.selections[radioGroup] = radioValue;
             let newTotal = this.state.selections[this.HUMANS]
-                + this.state.selections[this.NEWBIE]
+                + this.state.selections[this.SIMPLE]
                 + this.state.selections[this.INTERMEDIATE];
             this.setState({ value: newTotal, remaining: this.MAX_PLAYERS - newTotal });
         }
@@ -67,7 +67,7 @@ export class GameSetup extends React.Component<RouteComponentProps<{}>, GameSetu
                     <h4>Setup Sheepshead Game</h4>
                     <form method="post">
                         <PlayerCountRadio name={this.HUMANS} title="Humans" onChange={this.handleChange} value={this.state.selections[this.HUMANS]} remaining={this.state.remaining} />
-                        <PlayerCountRadio name={this.NEWBIE} title="A.I. Simple" onChange={this.handleChange} value={this.state.selections[this.NEWBIE]} remaining={this.state.remaining} />
+                        <PlayerCountRadio name={this.SIMPLE} title="A.I. Simple" onChange={this.handleChange} value={this.state.selections[this.SIMPLE]} remaining={this.state.remaining} />
                         <PlayerCountRadio name={this.INTERMEDIATE} title="A.I. Intermediate" onChange={this.handleChange} value={this.state.selections[this.INTERMEDIATE]} remaining={this.state.remaining} />
                         <div className="total-players">
                             <span>Total Players:</span>

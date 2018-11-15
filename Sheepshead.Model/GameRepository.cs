@@ -18,13 +18,13 @@ namespace Sheepshead.Models
         {
         }
 
-        public IGame Create(int humanCount, int newbieCount, int intermediateCount, PartnerMethod partnerMethod, bool leastersGame)
+        public IGame Create(int humanCount, int simpleCount, int intermediateCount, PartnerMethod partnerMethod, bool leastersGame)
         {
             var playerList = new List<IPlayer>();
             for (var i = 0; i < humanCount; ++i)
                 playerList.Add(new HumanPlayer());
-            for (var i = 0; i < newbieCount; ++i)
-                playerList.Add(new NewbiePlayer());
+            for (var i = 0; i < simpleCount; ++i)
+                playerList.Add(new SimplePlayer());
             for (var i = 0; i < intermediateCount; ++i)
                 playerList.Add(new IntermediatePlayer());
             var newGame = new Game(playerList, partnerMethod, leastersGame);
@@ -41,7 +41,7 @@ namespace Sheepshead.Models
 
     public interface IGameRepository : IBaseRepository<IGame>
     {
-        IGame Create(int humanCount, int newbieCount, int intermediateCount, PartnerMethod partnerMethod, bool leastersGame);
+        IGame Create(int humanCount, int simpleCount, int intermediateCount, PartnerMethod partnerMethod, bool leastersGame);
         IGame GetGame(Func<IGame, bool> lambda);
     }
 }

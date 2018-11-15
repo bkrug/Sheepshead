@@ -13,9 +13,9 @@ namespace Sheepshead.Tests
     public class PlayerTests
     {
         [TestMethod]
-        public void NewbiePlayer_GetMove()
+        public void SimplePlayer_GetMove()
         {
-            var mainPlayer = new NewbiePlayer();
+            var mainPlayer = new SimplePlayer();
             var card1 = SheepCard.JACK_CLUBS;
             var card2 = SheepCard.N8_HEARTS;
             mainPlayer.Cards.AddRange(new List<SheepCard>() { card1, card2 });
@@ -25,14 +25,14 @@ namespace Sheepshead.Tests
                 trickMock.Setup(m => m.IsLegalAddition(card1, mainPlayer)).Returns(true);
                 trickMock.Setup(m => m.IsLegalAddition(card2, mainPlayer)).Returns(false);
                 var cardPlayed = mainPlayer.GetMove(trickMock.Object);
-                Assert.AreEqual(card1, cardPlayed, "Since card1 is legal, that is the card newbie player will play");
+                Assert.AreEqual(card1, cardPlayed, "Since card1 is legal, that is the card simple player will play");
             }
             {
                 var trickMock = GenerateTrickMock(playerList);
                 trickMock.Setup(m => m.IsLegalAddition(card1, mainPlayer)).Returns(false);
                 trickMock.Setup(m => m.IsLegalAddition(card2, mainPlayer)).Returns(true);
                 var cardPlayed = mainPlayer.GetMove(trickMock.Object);
-                Assert.AreEqual(card2, cardPlayed, "Since card2 is legal, that is the card newbie player will play");
+                Assert.AreEqual(card2, cardPlayed, "Since card2 is legal, that is the card simple player will play");
             }
         }
 
@@ -58,37 +58,37 @@ namespace Sheepshead.Tests
         private IPlayer player4 = new Player();
 
         [TestMethod]
-        public void NewbiePlayer_WillPick()
+        public void SimplePlayer_WillPick()
         {
-            var mainPlayer = new NewbiePlayer();
+            var mainPlayer = new SimplePlayer();
             {
                 var playerList = new List<IPlayer>() { player1, player2, mainPlayer, player3, player4 };
                 var deckMock = GenerateDeckMock(playerList);
                 deckMock.Setup(m => m.StartingPlayer).Returns(player2);
-                Assert.IsFalse(mainPlayer.WillPick(deckMock.Object), "Newbie Player should not pick if he is not last.");
+                Assert.IsFalse(mainPlayer.WillPick(deckMock.Object), "Simple Player should not pick if he is not last.");
             }
             {
                 var playerList = new List<IPlayer>() { player1, player2, mainPlayer, player3, player4 };
                 var deckMock = GenerateDeckMock(playerList);
                 deckMock.Setup(m => m.StartingPlayer).Returns(player3);
-                Assert.IsTrue(mainPlayer.WillPick(deckMock.Object), "Newbie Player should pick if he is last.");
+                Assert.IsTrue(mainPlayer.WillPick(deckMock.Object), "Simple Player should pick if he is last.");
             }
             {
                 var playerList = new List<IPlayer>() { player1, player2, player3, player4, mainPlayer };
                 var deckMock = GenerateDeckMock(playerList);
                 deckMock.Setup(m => m.StartingPlayer).Returns(player1);
-                Assert.IsTrue(mainPlayer.WillPick(deckMock.Object), "Newbie Player should pick if he is last.");
+                Assert.IsTrue(mainPlayer.WillPick(deckMock.Object), "Simple Player should pick if he is last.");
             }
             {
                 var playerList = new List<IPlayer>() { player1, player2, player3, player4, mainPlayer };
                 var deckMock = GenerateDeckMock(playerList);
                 deckMock.Setup(m => m.StartingPlayer).Returns(player3);
-                Assert.IsFalse(mainPlayer.WillPick(deckMock.Object), "Newbie Player should not pick if he is not last.");
+                Assert.IsFalse(mainPlayer.WillPick(deckMock.Object), "Simple Player should not pick if he is not last.");
             }
         }
 
         [TestMethod]
-        public void NewbiePlayer_DropCards()
+        public void SimplePlayer_DropCards()
         {
             var picker = new IntermediatePlayer();
             picker.Cards.AddRange(new List<SheepCard>()
@@ -111,7 +111,7 @@ namespace Sheepshead.Tests
         }
 
         [TestMethod]
-        public void NewbiePlayer_ChooseCalledAce()
+        public void SimplePlayer_ChooseCalledAce()
         {
             var picker = new IntermediatePlayer();
             picker.Cards.AddRange(new List<SheepCard>()
@@ -136,7 +136,7 @@ namespace Sheepshead.Tests
         }
 
         [TestMethod]
-        public void NewbiePlayer_ChooseCalledAce_GetNothing()
+        public void SimplePlayer_ChooseCalledAce_GetNothing()
         {
             var picker = new IntermediatePlayer();
             picker.Cards.AddRange(new List<SheepCard>()

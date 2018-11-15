@@ -365,8 +365,8 @@ namespace Sheepshead.Tests
         public void Trick_StartingPlayer()
         {
             var player1 = new Mock<IntermediatePlayer>();
-            var player2 = new Mock<NewbiePlayer>();
-            var player3 = new Mock<NewbiePlayer>();
+            var player2 = new Mock<SimplePlayer>();
+            var player3 = new Mock<SimplePlayer>();
             var player4 = new Mock<IntermediatePlayer>();
             var player5 = new Mock<IntermediatePlayer>();
             var playerList = new List<IPlayer>() { player3.Object, player4.Object, player5.Object, player1.Object, player2.Object };
@@ -390,8 +390,8 @@ namespace Sheepshead.Tests
         private static List<IPlayer> GetPlayerList()
         {
             var player1 = new Mock<IntermediatePlayer>();
-            var player2 = new Mock<NewbiePlayer>();
-            var player3 = new Mock<NewbiePlayer>();
+            var player2 = new Mock<SimplePlayer>();
+            var player3 = new Mock<SimplePlayer>();
             var player4 = new Mock<IntermediatePlayer>();
             var player5 = new Mock<IntermediatePlayer>();
             var playerList = new List<IPlayer>() { player1.Object, player2.Object, player3.Object, player4.Object, player5.Object };
