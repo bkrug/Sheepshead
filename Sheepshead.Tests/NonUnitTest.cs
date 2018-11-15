@@ -11,12 +11,15 @@ namespace Sheepshead.Tests
     [TestClass]
     public class NonUnitTest
     {
+        private Dictionary<string, int> _playerTypeCoins;
+
         [TestMethod]
         public void TestAllPlayers()
         {
+            _playerTypeCoins = new Dictionary<string, int>();
             var stringBuilder = new StringBuilder();
             var gameNo = 0;
-            var handCount = 10;
+            var handCount = 10000;
             PartnerMethod partnerMethod;
 
             partnerMethod = PartnerMethod.JackOfDiamonds;
@@ -38,6 +41,9 @@ namespace Sheepshead.Tests
             PlayTwoThreePlayer(typeof(IntermediatePlayer), typeof(SimplePlayer), stringBuilder, ref gameNo, handCount);
             PlayTwoThreePlayer(typeof(AdvancedPlayer), typeof(IntermediatePlayer), stringBuilder, ref gameNo, handCount);
             PlayTwoThreePlayer(typeof(AdvancedPlayer), typeof(SimplePlayer), stringBuilder, ref gameNo, handCount);
+
+            foreach (var kvp in _playerTypeCoins)
+                stringBuilder.AppendLine(StringSegment(kvp.Key) + kvp.Value);
 
             File.WriteAllText(@"F:\Users\bjkrug\Documents\scores.txt", stringBuilder.ToString());
         }
@@ -120,6 +126,9 @@ namespace Sheepshead.Tests
             {
                 outputString1 += StringSegment(coinSet.Name);
                 outputString2 += StringSegment(coinSet.Coins.ToString());
+                if (!_playerTypeCoins.ContainsKey(coinSet.Name))
+                    _playerTypeCoins[coinSet.Name] = 0;
+                _playerTypeCoins[coinSet.Name] += coinSet.Coins;
             }
             //var leastersScores = game.Decks.Where(d => d.Hand.Leasters).Select(d => d.Hand.Scores());
             return "Game: " + gameNo + (game.PlayerCount == 5 ? "  " + game.PartnerMethod.ToString() : "") + Environment.NewLine + 
