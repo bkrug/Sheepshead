@@ -35,6 +35,8 @@ namespace Sheepshead.Models.Players
                 return GetTwoFailAceOrTens()
                     ?? RetireTwoFailSuitsWithOneAceOrTen()
                     ?? RetireOneFailSuitsWithOneAceOrTen()
+                    ?? RetireTwoFailSuits()
+                    ?? RetireOneFailSuit()
                     ?? new List<SheepCard>();
             }
         }
@@ -104,14 +106,26 @@ namespace Sheepshead.Models.Players
             return buryCards;
         }
 
-        public List<SheepCard> RetireTwoFailSuitsTwoCards()
+        public List<SheepCard> RetireTwoFailSuits()
         {
-            throw new NotImplementedException();
+            var buryCards = _cards
+                .Where(c => CardsPerSuit[CardUtil.GetSuit(c)] == 1)
+                .Take(2)
+                .ToList();
+            if (buryCards.Count == 2)
+                return buryCards;
+            return null;
         }
 
-        public List<SheepCard> RetireOneFailSuitTwoCards()
+        public List<SheepCard> RetireOneFailSuit()
         {
-            throw new NotImplementedException();
+            var buryCards = _cards
+                .Where(c => CardsPerSuit[CardUtil.GetSuit(c)] == 2)
+                .GroupBy(c => CardUtil.GetSuit(c))
+                .ToList();
+            if (buryCards.Any())
+                return buryCards.First().ToList();
+            return null;
         }
 
         public List<SheepCard> BuryCardsByEasiestToRetireLowestRank()

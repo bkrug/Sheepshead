@@ -130,5 +130,47 @@ namespace Sheepshead.Tests
             var actual = selector.CardsToBury;
             CollectionAssert.AreEquivalent(expected, actual, "We can find one suit to retire, and also bury points");
         }
+
+        [TestMethod]
+        public void BuriedCardSelector_RetireTwoFailSuits()
+        {
+            var cards = new List<SheepCard>()
+            {
+                SheepCard.JACK_DIAMONDS,
+                SheepCard.N7_CLUBS,
+                SheepCard.N7_SPADES,
+                SheepCard.KING_HEARTS,
+                SheepCard.N8_SPADES,
+                SheepCard.KING_DIAMONDS,
+                SheepCard.KING_SPADES,
+                SheepCard.QUEEN_CLUBS
+            };
+            var selector = new BuriedCardSelector(cards);
+            var expected = new List<SheepCard>() { SheepCard.N7_CLUBS, SheepCard.KING_HEARTS };
+            var actual = selector.CardsToBury;
+            CollectionAssert.AreEquivalent(expected, actual, "There are two fail suits for which we have only one card.");
+        }
+
+        [TestMethod]
+        public void BuriedCardSelector_RetireOneFailSuits()
+        {
+            var cards = new List<SheepCard>()
+            {
+                SheepCard.JACK_DIAMONDS,
+                SheepCard.N7_CLUBS,
+                SheepCard.N7_SPADES,
+                SheepCard.KING_CLUBS,
+                SheepCard.N8_SPADES,
+                SheepCard.KING_DIAMONDS,
+                SheepCard.KING_SPADES,
+                SheepCard.QUEEN_CLUBS
+            };
+            var selector = new BuriedCardSelector(cards);
+            var expected = new List<SheepCard>() { SheepCard.N7_CLUBS, SheepCard.KING_CLUBS };
+            var actual = selector.CardsToBury;
+            CollectionAssert.AreEquivalent(expected, actual, "There is one fail suits for which we have exactly two cards.");
+        }
+
+
     }
 }
