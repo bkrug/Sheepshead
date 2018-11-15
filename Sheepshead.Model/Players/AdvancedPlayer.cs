@@ -218,15 +218,9 @@ namespace Sheepshead.Models.Players
             }
         }
 
-        //TODO: This player should, under certain circumstances, bury high-point cards
         protected override List<SheepCard> DropCardsForPickInternal(IDeck deck)
         {
-            //get a list of cards for which there are no other cards in their suite.  Exclude Trump cards.
-            var soloCardsOfSuite = Cards
-                .GroupBy(g => CardUtil.GetSuit(g))
-                .Where(g => g.Count() == 1 && CardUtil.GetSuit(g.First()) != Suit.TRUMP)
-                .Select(g => g.First()).ToList();
-            return Cards.OrderBy(c => soloCardsOfSuite.Contains(c) ? 1 : 2).ThenByDescending(c => CardUtil.GetRank(c)).Take(2).ToList();
+            return new BuriedCardSelector(Cards).CardsToBury;
         }
     }
 }

@@ -1,9 +1,5 @@
-﻿using Sheepshead.Models;
-using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Sheepshead.Models.Players
 {
@@ -113,6 +109,7 @@ namespace Sheepshead.Models.Players
         public List<SheepCard> RetireTwoFailSuits()
         {
             var buryCards = _cards
+                .Where(c => CardUtil.GetSuit(c) != Suit.TRUMP)
                 .Where(c => CardsPerSuit[CardUtil.GetSuit(c)] == 1)
                 .Take(2)
                 .ToList();
