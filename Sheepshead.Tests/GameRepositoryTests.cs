@@ -16,7 +16,7 @@ namespace Sheepshead.Tests
         {
             var dict = new Dictionary<Guid, IGame>();
             var repository = new GameRepository(dict);
-            var game = repository.Create(1, 4, 0, PartnerMethod.JackOfDiamonds, true);
+            var game = repository.Create(1, 4, 0, 0, PartnerMethod.JackOfDiamonds, true);
             Assert.IsTrue(dict.ContainsKey(game.Id), "Game returned is in the dictionary.");
             Assert.AreSame(dict[game.Id], game, "Game returned is in the dictionary.");
             Assert.AreEqual(1, dict.Count, "Game Repository did not create extra tests.");

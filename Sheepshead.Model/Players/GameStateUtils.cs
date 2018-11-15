@@ -7,6 +7,8 @@ namespace Sheepshead.Models.Players
     {
         public static IEnumerable<SheepCard> GetCardsThatCouldWin(ITrick trick, IEnumerable<SheepCard> comparisonCards)
         {
+            if (!trick.CardsPlayed.Any())
+                return comparisonCards;
             var startSuit = CardUtil.GetSuit(trick.CardsPlayed.First().Value);
             var winningCard = GameStateUtils.GetWinningPlay(trick).Value;
             var winningCardRank = CardUtil.GetRank(winningCard);

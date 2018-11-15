@@ -17,11 +17,12 @@ export class GameSetup extends React.Component<RouteComponentProps<{}>, GameSetu
     readonly HUMANS = "humanCount";
     readonly SIMPLE = "simpleCount";
     readonly INTERMEDIATE = "intermediateCount";
+    readonly ADVANCED = "advancedCount";
 
     constructor(props: any) {
         super(props);
         let selections: { [index: string]: number } = {};
-        selections[this.HUMANS] = selections[this.SIMPLE] = selections[this.INTERMEDIATE] = 0;
+        selections[this.HUMANS] = selections[this.SIMPLE] = selections[this.INTERMEDIATE] = selections[this.ADVANCED] = 0;
         this.state = {
             value: 0,
             partnerCard: true,
@@ -47,7 +48,8 @@ export class GameSetup extends React.Component<RouteComponentProps<{}>, GameSetu
             this.state.selections[radioGroup] = radioValue;
             let newTotal = this.state.selections[this.HUMANS]
                 + this.state.selections[this.SIMPLE]
-                + this.state.selections[this.INTERMEDIATE];
+                + this.state.selections[this.INTERMEDIATE]
+                + this.state.selections[this.ADVANCED];
             this.setState({ value: newTotal, remaining: this.MAX_PLAYERS - newTotal });
         }
     }
@@ -69,6 +71,7 @@ export class GameSetup extends React.Component<RouteComponentProps<{}>, GameSetu
                         <PlayerCountRadio name={this.HUMANS} title="Humans" onChange={this.handleChange} value={this.state.selections[this.HUMANS]} remaining={this.state.remaining} />
                         <PlayerCountRadio name={this.SIMPLE} title="A.I. Simple" onChange={this.handleChange} value={this.state.selections[this.SIMPLE]} remaining={this.state.remaining} />
                         <PlayerCountRadio name={this.INTERMEDIATE} title="A.I. Intermediate" onChange={this.handleChange} value={this.state.selections[this.INTERMEDIATE]} remaining={this.state.remaining} />
+                        <PlayerCountRadio name={this.ADVANCED} title="A.I. Advanced" onChange={this.handleChange} value={this.state.selections[this.ADVANCED]} remaining={this.state.remaining} />
                         <div className="total-players">
                             <span>Total Players:</span>
                             <span className={"totalPlayers " + this.playerCountValidityStyle()}>{this.state.value}</span>
