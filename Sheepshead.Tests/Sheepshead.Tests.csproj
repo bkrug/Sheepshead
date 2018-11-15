@@ -104,6 +104,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BuriedCardSelectorTests.cs" />
+    <Compile Include="NonUnitTest.cs" />
     <Compile Include="LeasterStateAnalyzerTests.cs" />
     <Compile Include="PlayCreatorTests.cs" />
     <Compile Include="GameStateAnalyzerTests.cs" />
