@@ -90,7 +90,7 @@ namespace Sheepshead.Tests
         [TestMethod]
         public void NewbiePlayer_DropCards()
         {
-            var picker = new BasicPlayer();
+            var picker = new IntermediatePlayer();
             picker.Cards.AddRange(new List<SheepCard>()
             {
                 SheepCard.N7_DIAMONDS,
@@ -113,7 +113,7 @@ namespace Sheepshead.Tests
         [TestMethod]
         public void NewbiePlayer_ChooseCalledAce()
         {
-            var picker = new BasicPlayer();
+            var picker = new IntermediatePlayer();
             picker.Cards.AddRange(new List<SheepCard>()
             {
                 SheepCard.N7_DIAMONDS,
@@ -138,7 +138,7 @@ namespace Sheepshead.Tests
         [TestMethod]
         public void NewbiePlayer_ChooseCalledAce_GetNothing()
         {
-            var picker = new BasicPlayer();
+            var picker = new IntermediatePlayer();
             picker.Cards.AddRange(new List<SheepCard>()
             {
                 SheepCard.ACE_CLUBS,

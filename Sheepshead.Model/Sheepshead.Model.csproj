@@ -53,7 +53,7 @@
     <Compile Include="HandFactory.cs" />
     <Compile Include="PickPlayerOrderer.cs" />
     <Compile Include="PickProcessor.cs" />
-    <Compile Include="Players\BasicPlayer.cs" />
+    <Compile Include="Players\IntermediatePlayer.cs" />
     <Compile Include="Players\BuriedCardSelector.cs" />
     <Compile Include="Players\ComputerPlayer.cs" />
     <Compile Include="Players\GameStateAnalyzer.cs" />

@@ -24,7 +24,7 @@ namespace Sheepshead.Controllers
         {
             public string Name { get; set; }
             public int NewbiewCount { get; set; }
-            public int BasicCount { get; set; }
+            public int IntermediateCount { get; set; }
         }
 
         public ActionResult Create()
@@ -36,7 +36,7 @@ namespace Sheepshead.Controllers
         public ActionResult Create(GameModel model)
         {
             var repository = new GameRepository(GameDictionary.Instance.Dictionary);
-            var newGame = repository.Create(1, model.NewbiewCount, model.BasicCount, PartnerMethod.JackOfDiamonds, true);
+            var newGame = repository.Create(1, model.NewbiewCount, model.IntermediateCount, PartnerMethod.JackOfDiamonds, true);
             return RedirectToAction("Play", new { id = newGame.Id });
         }
 

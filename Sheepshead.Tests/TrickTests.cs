@@ -364,11 +364,11 @@ namespace Sheepshead.Tests
         [TestMethod]
         public void Trick_StartingPlayer()
         {
-            var player1 = new Mock<BasicPlayer>();
+            var player1 = new Mock<IntermediatePlayer>();
             var player2 = new Mock<NewbiePlayer>();
             var player3 = new Mock<NewbiePlayer>();
-            var player4 = new Mock<BasicPlayer>();
-            var player5 = new Mock<BasicPlayer>();
+            var player4 = new Mock<IntermediatePlayer>();
+            var player5 = new Mock<IntermediatePlayer>();
             var playerList = new List<IPlayer>() { player3.Object, player4.Object, player5.Object, player1.Object, player2.Object };
             var mockHand = new Mock<IHand>();
             mockHand.Setup(m => m.StartingPlayer).Returns(player1.Object);
@@ -389,11 +389,11 @@ namespace Sheepshead.Tests
 
         private static List<IPlayer> GetPlayerList()
         {
-            var player1 = new Mock<BasicPlayer>();
+            var player1 = new Mock<IntermediatePlayer>();
             var player2 = new Mock<NewbiePlayer>();
             var player3 = new Mock<NewbiePlayer>();
-            var player4 = new Mock<BasicPlayer>();
-            var player5 = new Mock<BasicPlayer>();
+            var player4 = new Mock<IntermediatePlayer>();
+            var player5 = new Mock<IntermediatePlayer>();
             var playerList = new List<IPlayer>() { player1.Object, player2.Object, player3.Object, player4.Object, player5.Object };
             return playerList;
         }

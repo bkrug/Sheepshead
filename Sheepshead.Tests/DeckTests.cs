@@ -31,11 +31,11 @@ namespace Sheepshead.Tests
         [TestMethod]
         public void Deck_StartingPlayer()
         {
-            var player1 = new Mock<BasicPlayer>();
+            var player1 = new Mock<IntermediatePlayer>();
             var player2 = new Mock<NewbiePlayer>();
             var player3 = new Mock<NewbiePlayer>();
-            var player4 = new Mock<BasicPlayer>();
-            var player5 = new Mock<BasicPlayer>();
+            var player4 = new Mock<IntermediatePlayer>();
+            var player5 = new Mock<IntermediatePlayer>();
             var playerList = new List<IPlayer>() { player3.Object, player4.Object, player5.Object, player1.Object, player2.Object };
             var mockGame = new Mock<IGame>();
             mockGame.Setup(m => m.Players).Returns(playerList);

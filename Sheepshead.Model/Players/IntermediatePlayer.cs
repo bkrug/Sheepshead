@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace Sheepshead.Models.Players
 {
-    public class BasicPlayer : ComputerPlayer
+    public class IntermediatePlayer : ComputerPlayer
     {
         public override SheepCard GetMove(ITrick trick)
         {

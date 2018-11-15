@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace Sheepshead.Models.Players
 {
-    public class AdvancedPlayer : BasicPlayer
+    public class AdvancedPlayer : IntermediatePlayer
     {
         ILeasterStateAnalyzer _leasterStateAnalyzer;
         IGameStateAnalyzer _gameStateAnalyzer;
