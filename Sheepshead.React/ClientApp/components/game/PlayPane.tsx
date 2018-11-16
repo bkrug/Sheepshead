@@ -115,10 +115,10 @@ export class PlayPane extends React.Component<RouteComponentProps<{}>, PlayPaneS
                         <h4>Game Details</h4>
                         {
                             this.state.coins.map((coinScore: GameScore, i: number) =>
-                                <div key={i} style={{ display: 'inline-flex', margin: '0px 20px', textAlign: 'center' }}>
+                                <div key={i} className='playerCoins'>
                                     {coinScore.name}
                                     <br />
-                                    {coinScore.score || '-'}
+                                    {coinScore.score}
                                 </div>
                             )
                         }

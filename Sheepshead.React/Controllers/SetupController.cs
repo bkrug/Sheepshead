@@ -11,7 +11,7 @@ namespace Sheepshead.React.Controllers
         public IActionResult Create(int humanCount, int simpleCount, int intermediateCount, int advancedCount, string partnerCard, string leastersGame)
         {
             var repository = new GameRepository(GameDictionary.Instance.Dictionary);
-            var partnerMethod = partnerCard.Equals("Jack of Hearts", StringComparison.OrdinalIgnoreCase) 
+            var partnerMethod = partnerCard?.Equals("Jack of Hearts", StringComparison.OrdinalIgnoreCase) == true
                 ? PartnerMethod.JackOfDiamonds 
                 : PartnerMethod.CalledAce;
             var leastersOn = leastersGame.Equals("On", StringComparison.OrdinalIgnoreCase);

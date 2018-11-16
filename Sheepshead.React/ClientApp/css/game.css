@@ -130,6 +130,17 @@ button {
 .game-details,
 .trick-pane {
     width: 60vmin; /* ( card-image width + margin ) x 6 */
+
+}
+
+.playerCoins {
+    display: inline-block;
+    padding: 0vmin 2vmin;
+    width: 12vmin;
+    text-align: center;
+    height: 5vmin;
+    overflow: hidden;
+    white-space: nowrap;
 }
 
 .trick-pane .trick-cards {
