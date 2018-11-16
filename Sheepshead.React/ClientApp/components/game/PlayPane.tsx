@@ -49,7 +49,8 @@ export class PlayPane extends React.Component<RouteComponentProps<{}>, PlayPaneS
                     coins: json,
                     picker: '',
                     partner: '',
-                    partnerCard: ''
+                    partnerCard: '',
+                    trickWinners: []
                 });
             });
     }
