@@ -53,7 +53,7 @@ export class Directions extends React.Component<RouteComponentProps<{}>, Directi
         concept:
             (
                 <div>
-                    <h2>CONCEPT</h2>
+                    <h3>CONCEPT</h3>
                     <p>
                         This version of sheepshead features 3 or 5 players.
                         1 'picker' against 2 other players,
@@ -659,7 +659,7 @@ export class Directions extends React.Component<RouteComponentProps<{}>, Directi
         schneider:
             (
                 <div>
-                    <h3>Schneider</h3>
+                    <h3>SCHNEIDER</h3>
                     <p>
                         When the defensive players win at least 30 points, it is said that they got schneider.
                         When the offensive players win at least 31 points, that means that the offense got schneider.
