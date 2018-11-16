@@ -320,19 +320,5 @@ namespace Sheepshead.Tests
             Assert.IsTrue(!new List<SheepCard>() { SheepCard.KING_DIAMONDS, SheepCard.JACK_HEARTS }.Contains(actual));
         }
         #endregion
-
-        //Bury Cards - Do the first of these that is possible:
-        //--- 2 Fail Aces or 10s ---
-        //There are 2 fail suits for which I have only one card, and both are an ACE or 10. Bury them.
-        //There is 1 fail suit for which I have only two cards, and they are an ACE and 10. Bury them.
-        //Take 10s and Aces from the suits with the smallest total number of cards and bury them.
-        //--- ---
-        //There are 2 fail suits for which I have only one card, and in one case the card is an ACE or 10. Bury them.
-        //There is 1 fail suit for which I have only two cards, and one card is an ACE or 10. Bury them.
-        //There are 2 fail suits for which I have only one card. Bury them.
-        //There is 1 fail suit for which I have only two cards. Bury them.
-        //There is 1 fail suit for which I have only one card. There is at least one other fail. Select the fail suit for which I have the next smallest remaiing number of cards. Bury the lowest ranking card in that suit.
-        //I have at least two fail card. Bury the lowest ranking cards from the fail suit for which I have the fewest cards.
-        //Bury my lowest ranking cards. (One fail and a trump, or my lowest ranking trumps).
     }
 }
