@@ -32,6 +32,7 @@ export class HandSummary {
     coins: any;
     mustRedeal: boolean;
     tricks: { key: string, value: CardSummary[] }[];
+    buried: CardSummary[];
 }
 
 export class PickChoice {

@@ -12,8 +12,9 @@ export interface HandSummaryPaneState {
     points: GameScore[];
     coins: GameScore[];
     mustRedeal: boolean;
-    tricks: { key: string, value: CardSummary[] }[],
+    tricks: { key: string, value: CardSummary[] }[];
     showGroupedTricks: boolean;
+    buried: CardSummary[];
 }
 
 export interface HandSummaryPaneProps extends React.Props<any> {
@@ -33,7 +34,8 @@ export default class HandSummaryPane extends React.Component<HandSummaryPaneProp
             coins: [],
             mustRedeal: false,
             tricks: [],
-            showGroupedTricks: false
+            showGroupedTricks: false,
+            buried: []
         };
         var self = this;
         this.showGroupedTricks = this.showGroupedTricks.bind(this);
@@ -55,7 +57,8 @@ export default class HandSummaryPane extends React.Component<HandSummaryPaneProp
                     coins: coinsArray,
                     points: pointsArray,
                     mustRedeal: json.mustRedeal,
-                    tricks: json.tricks
+                    tricks: json.tricks,
+                    buried: json.buried
                 });
             }
         );
@@ -105,14 +108,25 @@ export default class HandSummaryPane extends React.Component<HandSummaryPaneProp
                 {score.score || '-'}
             </div>);
 
+        var buriedList = this.state.buried.map((card: CardSummary, i: number) =>
+            <div key={i}>
+                <Card cardSummary={card} />
+            </div>);
+
         return (
             <div>
                 { this.state.mustRedeal
                     ? <h3>Must re-deal. There was no picker. </h3>
                     : <div>
                         <div onMouseOver={this.showGroupedTricks} onMouseOut={this.hideGroupedTricks}>
-                            <h4>Points from this Hand</h4>
-                            {pointList}
+                            <div>
+                                <h4>Points from this Hand</h4>
+                                {pointList}
+                            </div>
+                        </div>
+                        <h4>Buried Cards</h4>
+                        <div className='buriedCards'>
+                            {buriedList}
                         </div>
                         <div>
                             <h4>Coins from this Hand</h4>

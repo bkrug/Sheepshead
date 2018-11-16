@@ -143,6 +143,11 @@ button {
     white-space: nowrap;
 }
 
+.buriedCards div {
+    display: inline-block;
+    margin-right: 1vmin;
+}
+
 .trick-pane .trick-cards {
     height: 16vmin;
 }
