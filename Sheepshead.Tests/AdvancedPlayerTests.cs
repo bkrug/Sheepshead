@@ -50,31 +50,6 @@ namespace Sheepshead.Tests
         }
 
         [TestMethod]
-        public void AdvancedPlayer_FivePlayerGame_ManyWeakTrumpAndPointsToBury_ShouldPick()
-        {
-            var players = new List<IPlayer>() {
-                new AdvancedPlayer(),
-                new ComputerPlayerPickingMock(false),
-                new ComputerPlayerPickingMock(false),
-                new ComputerPlayerPickingMock(false),
-                new ComputerPlayerPickingMock(false)
-            };
-            var advancedPlayer = players.OfType<AdvancedPlayer>().Single();
-            advancedPlayer.Cards.Add(SheepCard.QUEEN_CLUBS);
-            advancedPlayer.Cards.Add(SheepCard.ACE_DIAMONDS);
-            advancedPlayer.Cards.Add(SheepCard.KING_DIAMONDS);
-            advancedPlayer.Cards.Add(SheepCard.N10_CLUBS);
-            advancedPlayer.Cards.Add(SheepCard.ACE_HEARTS);
-            advancedPlayer.Cards.Add(SheepCard.N9_DIAMONDS);
-            var deckMock = new Mock<IDeck>();
-            deckMock.Setup(m => m.Players).Returns(players);
-            deckMock.Setup(m => m.PlayerCount).Returns(players.Count);
-            deckMock.Setup(m => m.StartingPlayer).Returns(players[0]);
-            var actual = advancedPlayer.WillPick(deckMock.Object);
-            Assert.AreEqual(true, actual);
-        }
-
-        [TestMethod]
         public void AdvancedPlayer_FivePlayerGame_ManyWeakTrumpFewPointsTowardsFront_ShouldPass()
         {
             var players = new List<IPlayer>() {
@@ -264,63 +239,6 @@ namespace Sheepshead.Tests
         //* You lead the trick as an offensive player, almost all cards are Jacks or Queens, lead with a strong trump.
         //* You lead the trick as a defensive player, lead with the suit of called ace.
         //* You lead the trick as a defensive player, lead with non-trump that you have few of.
-
-        [TestMethod]
-        public void AdvancedPlayer_LeadTrick_OffensivePlayer_WeakCards_LeadWithWeakTrump1()
-        {
-            var players = new List<IPlayer>() {
-                new AdvancedPlayer(),
-                new ComputerPlayerPickingMock(false),
-                new ComputerPlayerPickingMock(false),
-                new ComputerPlayerPickingMock(false),
-                new ComputerPlayerPickingMock(false)
-            };
-            var advancedPlayer = players.OfType<AdvancedPlayer>().Single();
-            advancedPlayer.Cards.Add(SheepCard.JACK_SPADES);
-            advancedPlayer.Cards.Add(SheepCard.QUEEN_CLUBS);
-            advancedPlayer.Cards.Add(SheepCard.ACE_DIAMONDS);
-            advancedPlayer.Cards.Add(SheepCard.N7_DIAMONDS);
-            advancedPlayer.Cards.Add(SheepCard.ACE_SPADES);
-            advancedPlayer.Cards.Add(SheepCard.N10_HEARTS);
-            var trickMock = new Mock<ITrick>();
-            trickMock.Setup(t => t.CardsPlayed).Returns(new Dictionary<IPlayer, SheepCard>());
-            trickMock.Setup(t => t.StartingPlayer).Returns(advancedPlayer);
-            trickMock.Setup(t => t.Hand.Leasters).Returns(false);
-            trickMock.Setup(t => t.Hand.Picker).Returns(advancedPlayer);
-            var actual = advancedPlayer.GetMove(trickMock.Object);
-            Assert.IsTrue(CardUtil.GetSuit(actual) == Suit.TRUMP);
-            Assert.AreNotEqual(SheepCard.JACK_SPADES, actual);
-            Assert.AreNotEqual(SheepCard.QUEEN_CLUBS, actual);
-        }
-
-        [TestMethod]
-        public void AdvancedPlayer_LeadTrick_OffensivePlayer_WeakCards_LeadWithWeakTrump2()
-        {
-            var players = new List<IPlayer>() {
-                new AdvancedPlayer(),
-                new ComputerPlayerPickingMock(false),
-                new ComputerPlayerPickingMock(false),
-                new ComputerPlayerPickingMock(false),
-                new ComputerPlayerPickingMock(false)
-            };
-            var advancedPlayer = players.OfType<AdvancedPlayer>().Single();
-            advancedPlayer.Cards.Add(SheepCard.JACK_DIAMONDS); //This player is partner
-            advancedPlayer.Cards.Add(SheepCard.QUEEN_CLUBS);
-            advancedPlayer.Cards.Add(SheepCard.ACE_DIAMONDS);
-            advancedPlayer.Cards.Add(SheepCard.N7_DIAMONDS);
-            advancedPlayer.Cards.Add(SheepCard.ACE_SPADES);
-            advancedPlayer.Cards.Add(SheepCard.N10_HEARTS);
-            var trickMock = new Mock<ITrick>();
-            trickMock.Setup(t => t.CardsPlayed).Returns(new Dictionary<IPlayer, SheepCard>());
-            trickMock.Setup(t => t.StartingPlayer).Returns(advancedPlayer);
-            trickMock.Setup(t => t.Hand.Leasters).Returns(false);
-            trickMock.Setup(t => t.Hand.PartnerCard).Returns(SheepCard.JACK_DIAMONDS);
-            var actual = advancedPlayer.GetMove(trickMock.Object);
-            Assert.IsTrue(CardUtil.GetSuit(actual) == Suit.TRUMP);
-            Assert.AreNotEqual(SheepCard.JACK_SPADES, actual);
-            Assert.AreNotEqual(SheepCard.QUEEN_CLUBS, actual);
-        }
-
 
         [TestMethod]
         public void AdvancedPlayer_LeadTrick_OffensivePlayer_StrongCards_LeadWithStrongTrump1()
