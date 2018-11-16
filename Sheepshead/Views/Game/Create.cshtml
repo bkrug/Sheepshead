@@ -11,9 +11,15 @@
     @using (@Html.BeginForm())
     {
         <div>
-            Game Name: 
+            Game Name:
             @Html.TextBoxFor(model => model.Name)
-        </div>      
+        </div>
+        <b>
+            Player count must total 3 or 5.
+        </b>
+        <div>
+            Number of Human Players: 1
+        </div>
         <div>
             Number of Simple Players:
             @Html.TextBoxFor(model => model.SimpleCount)
@@ -22,7 +28,11 @@
             Number of Intermediate Players:
             @Html.TextBoxFor(model => model.IntermediateCount)
         </div>
-        
+        <div>
+            Number of Advanced Players:
+            @Html.TextBoxFor(model => model.AdvancedCount)
+        </div>
+
         <input type="submit" value="Create Game" />
     }
 </body>
