@@ -19,25 +19,22 @@ namespace Sheepshead.Models.Players
 
         public override bool WillPick(IDeck deck)
         {
-            var highPointCards = Cards.Count(c => CardUtil.GetPoints(c) >= 10);
-            var avgRank = Cards.Average(c => CardUtil.GetRank(c));
             var playerQueueRankInTrick = QueueRankInDeck(deck);
             var middleQueueRankInTrick = (deck.PlayerCount + 1) / 2;
+            var trumpCount = this.Cards.Count(c => CardUtil.GetSuit(c) == Suit.TRUMP);
+            var willPick = playerQueueRankInTrick > middleQueueRankInTrick && trumpCount >= 3
+                || playerQueueRankInTrick == middleQueueRankInTrick && trumpCount >= 4
+                || trumpCount >= 5;
+            return willPick;
+        }
 
-            if (deck.PlayerCount == 5)
-            {
-                var willPick = avgRank <= 6
-                    || avgRank <= 13 && highPointCards > 2
-                    || avgRank <= 13 && playerQueueRankInTrick > middleQueueRankInTrick;
-                return willPick;
-            }
-            else
-            {
-                var willPick = avgRank <= 8
-                    || avgRank <= 16 && highPointCards > 2
-                    || avgRank <= 16 && playerQueueRankInTrick > middleQueueRankInTrick;
-                return willPick;
-            }
+        protected override List<SheepCard> DropCardsForPickInternal(IDeck deck)
+        {
+            return Cards
+                .OrderBy(c => CardUtil.GetSuit(c) != Suit.TRUMP ? 1 : 2)
+                .ThenByDescending(c => CardUtil.GetPoints(c))
+                .Take(2)
+                .ToList();
         }
 
         public override bool GoItAlone(IDeck deck)
@@ -66,11 +63,13 @@ namespace Sheepshead.Models.Players
             {
                 if (Cards.Average(c => CardUtil.GetRank(c)) > 10)
                     return Cards
+                        .Where(c => trick.IsLegalAddition(c, this))
                         .OrderBy(c => CardUtil.GetSuit(c) == Suit.TRUMP ? 1 : 2)
                         .ThenByDescending(c => CardUtil.GetRank(c))
                         .FirstOrDefault();
                 else
                     return Cards
+                        .Where(c => trick.IsLegalAddition(c, this))
                         .OrderBy(c => CardUtil.GetSuit(c) == Suit.TRUMP ? 1 : 2)
                         .ThenBy(c => CardUtil.GetRank(c))
                         .FirstOrDefault();
@@ -82,6 +81,7 @@ namespace Sheepshead.Models.Players
                     var partnerCardSuit = CardUtil.GetSuit(trick.Hand.PartnerCard.Value);
                     return Cards
                         .OrderBy(c => CardUtil.GetSuit(c) == partnerCardSuit ? 1 : 2)
+                        .ThenBy(c => CardUtil.GetSuit(c) != Suit.TRUMP ? 1 : 2)
                         .ThenByDescending(c => CardUtil.GetRank(c))
                         .FirstOrDefault();
                 }
@@ -115,27 +115,12 @@ namespace Sheepshead.Models.Players
             {
                 if (_gameStateAnalyzer.MySideWinning(this, trick))
                 {
-                    if (_gameStateAnalyzer.UnplayedCardsBeatPlayedCards(this, trick))
-                    {
-                        if (_gameStateAnalyzer.UnplayedCardsBeatMyCards(this, trick))
-                            return _playCreator.GiveAwayLeastPower(this, trick);
-                        else
-                            return _playCreator.PlayStrongestWin(this, trick);
-                    }
-                    else
-                    {
-                        return _playCreator.GiveAwayPoints(this, trick);
-                    }
+                    return _playCreator.GiveAwayPoints(this, trick);
                 }
                 else
                 {
                     if (_gameStateAnalyzer.ICanWinTrick(this, trick))
-                    {
-                        if (_gameStateAnalyzer.UnplayedCardsBeatMyCards(this, trick))
-                            return _playCreator.GiveAwayLeastPower(this, trick);
-                        else
-                            return _playCreator.PlayStrongestWin(this, trick);
-                    }
+                        return _playCreator.PlayStrongestWin(this, trick);
                     else
                         return _playCreator.GiveAwayLeastPower(this, trick);
                 }
@@ -150,47 +135,20 @@ namespace Sheepshead.Models.Players
                 {
                     if (_leasterStateAnalyzer.EarlyInTrick(trick))
                     {
-                        if (_leasterStateAnalyzer.HaveIAlreadyWon(this, trick))
-                            return _playCreator.PlaySecondStrongestLoosingCard(this, trick);
-                        else
-                            return _playCreator.PlayStrongestLoosingCard(this, trick);
+                        return _playCreator.PlaySecondStrongestLoosingCard(this, trick);
                     }
                     else
                     {
                         if (_leasterStateAnalyzer.HaveIAlreadyWon(this, trick))
                         {
-                            if (_leasterStateAnalyzer.HaveAnyPowerCards(this, trick))
-                            {
-                                if (_leasterStateAnalyzer.HaveHighPointsBeenPlayed(trick))
-                                    return _playCreator.PlayStrongestLoosingCard(this, trick);
-                                else
-                                    return _playCreator.PlayStrongestWin(this, trick);
-                            }
-                            else
-                            {
-                                return _playCreator.PlayStrongestLoosingCard(this, trick);
-                            }
+                            return _playCreator.PlayStrongestLoosingCard(this, trick);
                         }
                         else
                         {
-                            if (_leasterStateAnalyzer.HaveAnyPowerCards(this, trick))
-                            {
-                                if (_leasterStateAnalyzer.HaveHighPointsBeenPlayed(trick))
-                                {
-                                    return _playCreator.PlaySecondStrongestLoosingCard(this, trick);
-                                }
-                                else
-                                {
-                                    if (_leasterStateAnalyzer.HaveTwoPowerCards(this, trick))
-                                        return _playCreator.PlaySecondStrongestLoosingCard(this, trick);
-                                    else
-                                        return _playCreator.PlayStrongestWin(this, trick);
-                                }
-                            }
+                            if (_leasterStateAnalyzer.HaveHighPointsBeenPlayed(trick))
+                                return _playCreator.PlaySecondStrongestLoosingCard(this, trick);
                             else
-                            {
                                 return _playCreator.PlayStrongestWin(this, trick);
-                            }
                         }
                     }
                 }
@@ -203,24 +161,13 @@ namespace Sheepshead.Models.Players
             {
                 if (_leasterStateAnalyzer.HaveIAlreadyWon(this, trick))
                 {
-                    if (_leasterStateAnalyzer.HaveAnyPowerCards(this, trick))
-                        return _playCreator.PlayStrongestLoosingCard(this, trick);
-                    else
-                        return _playCreator.GiveAwayPoints(this, trick);
+                    return _playCreator.PlayStrongestLoosingCard(this, trick);
                 }
                 else
                 {
-                    if (_leasterStateAnalyzer.HaveTwoPowerCards(this, trick))
-                        return _playCreator.PlaySecondStrongestLoosingCard(this, trick);
-                    else
-                        return _playCreator.GiveAwayPoints(this, trick);
+                    return _playCreator.PlaySecondStrongestLoosingCard(this, trick);
                 }
             }
-        }
-
-        protected override List<SheepCard> DropCardsForPickInternal(IDeck deck)
-        {
-            return new BuriedCardSelector(Cards).CardsToBury;
         }
     }
 }

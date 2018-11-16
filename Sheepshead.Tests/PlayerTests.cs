@@ -88,7 +88,7 @@ namespace Sheepshead.Tests
         }
 
         [TestMethod]
-        public void SimplePlayer_DropCards()
+        public void Intermediate_DropCards()
         {
             var picker = new IntermediatePlayer();
             picker.Cards.AddRange(new List<SheepCard>()
@@ -111,7 +111,7 @@ namespace Sheepshead.Tests
         }
 
         [TestMethod]
-        public void SimplePlayer_ChooseCalledAce()
+        public void Intermediate_ChooseCalledAce()
         {
             var picker = new IntermediatePlayer();
             picker.Cards.AddRange(new List<SheepCard>()
@@ -136,7 +136,7 @@ namespace Sheepshead.Tests
         }
 
         [TestMethod]
-        public void SimplePlayer_ChooseCalledAce_GetNothing()
+        public void IntermediatePlayer_ChooseCalledAce_GetNothing()
         {
             var picker = new IntermediatePlayer();
             picker.Cards.AddRange(new List<SheepCard>()

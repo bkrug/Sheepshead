@@ -19,7 +19,7 @@ namespace Sheepshead.Tests
             _playerTypeCoins = new Dictionary<string, int>();
             var stringBuilder = new StringBuilder();
             var gameNo = 0;
-            var handCount = 100 * 1000;
+            var handCount = 10 * 1000;
             PartnerMethod partnerMethod;
 
             partnerMethod = PartnerMethod.JackOfDiamonds;

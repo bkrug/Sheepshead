@@ -2,97 +2,47 @@
 using System.Collections.Generic;
 using System.Linq;
 
-
 namespace Sheepshead.Models.Players
 {
     public class IntermediatePlayer : ComputerPlayer
     {
-        public override SheepCard GetMove(ITrick trick)
-        {
-            SheepCard moveCard;
-            if (!trick.Hand.Leasters)
-            {
-                moveCard = TryToWinTrick(trick);
-            }
-            else
-            {
-                var previousWinners = trick.Hand.Tricks.Where(t => t != trick).Select(t => t.Winner());
-                var lowestTrick = previousWinners.Any() ? previousWinners.Min(w => w.Points) : -1;
-                if (previousWinners.Any(t => t.Player == this) || trick.CardsPlayed.Sum(c => CardUtil.GetPoints(c.Value)) > lowestTrick)
-                    moveCard = TryToLooseTrick(trick);
-                else
-                    moveCard = TryToWinTrick(trick);
-            }
-            return moveCard;
-        }
+        ILeasterStateAnalyzer _leasterStateAnalyzer;
+        IGameStateAnalyzer _gameStateAnalyzer;
+        IPlayCreator _playCreator;
 
-        private SheepCard TryToWinTrick(ITrick trick)
+        public IntermediatePlayer()
         {
-            if (trick.StartingPlayer == this)
-                return GetLeadCard(trick, this.Cards);
-            var legalCards = Cards.Where(c => trick.IsLegalAddition(c, this));
-            if (QueueRankInTrick(trick) < trick.PlayerCount)
-                return GetMiddleCard(trick, legalCards);
-            return GetFinishingCard(trick, legalCards);
-        }
-
-        private SheepCard TryToLooseTrick(ITrick trick)
-        {
-            var legalCards = Cards.Where(c => trick.IsLegalAddition(c, this));
-            return legalCards.OrderByDescending(l => CardUtil.GetRank(l)).First();
-        }
-
-        protected SheepCard GetLeadCard(ITrick trick, IEnumerable<SheepCard> legalCards)
-        {
-            IEnumerable<SheepCard> cardsOfPreferedSuite = new List<SheepCard>();
-            if (trick.Hand.Picker == this || IamPartner(trick))
-                cardsOfPreferedSuite = legalCards.Where(c => CardUtil.GetSuit(c) == Suit.TRUMP).ToList();
-            else
-            {
-                if (trick.Game.PartnerMethod == PartnerMethod.CalledAce && trick.PartnerCard.HasValue)
-                    cardsOfPreferedSuite = legalCards.Where(c => CardUtil.GetSuit(c) == CardUtil.GetSuit(trick.PartnerCard.Value));
-                if (!cardsOfPreferedSuite.Any())
-                    cardsOfPreferedSuite = legalCards.Where(c => CardUtil.GetSuit(c) != Suit.TRUMP).ToList();
-            }
-            return legalCards.OrderBy(c => cardsOfPreferedSuite.Contains(c) ? 1 : 2)
-                             .OrderByDescending(c => CardUtil.GetRank(c))
-                             .ThenByDescending(c => CardUtil.GetPoints(c))
-                             .First();
-        }
-
-        private SheepCard GetMiddleCard(ITrick trick, IEnumerable<SheepCard> legalCards)
-        {
-            return legalCards.OrderByDescending(c => CardUtil.GetRank(c))
-                             .ThenByDescending(c => CardUtil.GetPoints(c))
-                             .First();
-        }
-
-        private SheepCard GetFinishingCard(ITrick trick, IEnumerable<SheepCard> legalCards)
-        {
-            var highestPlayedCard = trick.CardsPlayed.OrderByDescending(d => CardUtil.GetRank(d.Value)).First().Value;
-            var winningCards = legalCards.Where(c => CardUtil.GetRank(c) > CardUtil.GetRank(highestPlayedCard)).ToList();
-            return legalCards.OrderBy(c => winningCards.Contains(c) ? 1 : 2).ThenByDescending(c => CardUtil.GetRank(c)).First();
+            _leasterStateAnalyzer = new LeasterStateAnalyzer();
+            _gameStateAnalyzer = new GameStateAnalyzer();
+            _playCreator = new PlayCreator();
         }
 
         public override bool WillPick(IDeck deck)
         {
+            var highPointCards = Cards.Count(c => CardUtil.GetPoints(c) >= 10);
+            var avgRank = Cards.Average(c => CardUtil.GetRank(c));
             var playerQueueRankInTrick = QueueRankInDeck(deck);
             var middleQueueRankInTrick = (deck.PlayerCount + 1) / 2;
-            var trumpCount = this.Cards.Count(c => CardUtil.GetSuit(c) == Suit.TRUMP);
-            var willPick = playerQueueRankInTrick > middleQueueRankInTrick && trumpCount >= 2
-                || playerQueueRankInTrick == middleQueueRankInTrick && trumpCount >= 3
-                || trumpCount >= 4;
-            return willPick;
+
+            if (deck.PlayerCount == 5)
+            {
+                var willPick = avgRank <= 6
+                    || avgRank <= 13 && highPointCards > 2
+                    || avgRank <= 13 && playerQueueRankInTrick > middleQueueRankInTrick;
+                return willPick;
+            }
+            else
+            {
+                var willPick = avgRank <= 8
+                    || avgRank <= 16 && highPointCards > 2
+                    || avgRank <= 16 && playerQueueRankInTrick > middleQueueRankInTrick;
+                return willPick;
+            }
         }
 
         protected override List<SheepCard> DropCardsForPickInternal(IDeck deck)
         {
-            //get a list of cards for which there are no other cards in their suite.  Exclude Trump cards.
-            var soloCardsOfSuite = Cards
-                .GroupBy(g => CardUtil.GetSuit(g))
-                .Where(g => g.Count() == 1 && CardUtil.GetSuit(g.First()) != Suit.TRUMP)
-                .Select(g => g.First()).ToList();
-            return Cards.OrderBy(c => soloCardsOfSuite.Contains(c) ? 1 : 2).ThenByDescending(c => CardUtil.GetRank(c)).Take(2).ToList();
+            return new BuriedCardSelector(Cards).CardsToBury;
         }
 
         public override SheepCard? ChooseCalledAce(IDeck deck)
@@ -105,6 +55,168 @@ namespace Sheepshead.Models.Players
                 .First()
                 .Key;
             return GetCardOfSuit(acceptableSuits.CardType, selectedSuit);
+        }
+
+        public override SheepCard GetMove(ITrick trick)
+        {
+            if (Cards.Count == 1)
+                return Cards.Single();
+            if (trick.Hand.Leasters)
+                return PlayLeasterMove(trick);
+            if (trick.StartingPlayer == this)
+                return GetLeadMove(trick);
+            else
+                return GetLaterMove(trick);
+        }
+
+        private SheepCard GetLeadMove(ITrick trick)
+        {
+            if (trick.Hand.Picker == this || IamPartner(trick))
+            {
+                return Cards
+                    .Where(c => trick.IsLegalAddition(c, this))
+                    .OrderBy(c => CardUtil.GetSuit(c) == Suit.TRUMP ? 1 : 2)
+                    .FirstOrDefault();
+            }
+            else
+            {
+                if (trick.Hand.Deck.Game.PartnerMethod == PartnerMethod.CalledAce && trick.Hand.PartnerCard.HasValue)
+                {
+                    var partnerCardSuit = CardUtil.GetSuit(trick.Hand.PartnerCard.Value);
+                    return Cards
+                        .OrderBy(c => CardUtil.GetSuit(c) == partnerCardSuit ? 1 : 2)
+                        .FirstOrDefault();
+                }
+                else
+                {
+                    return Cards
+                        .OrderBy(c => CardUtil.GetSuit(c) != Suit.TRUMP ? 1 : 2)
+                        .FirstOrDefault();
+                }
+            }
+        }
+
+        private SheepCard GetLaterMove(ITrick trick)
+        {
+            if (_gameStateAnalyzer.AllOpponentsHavePlayed(this, trick) == true)
+            {
+                if (_gameStateAnalyzer.MySideWinning(this, trick))
+                {
+                    return _playCreator.GiveAwayPoints(this, trick);
+                }
+                else
+                {
+                    if (_gameStateAnalyzer.ICanWinTrick(this, trick))
+                        return _playCreator.PlayWeakestWin(this, trick);
+                    else
+                        return _playCreator.GiveAwayLeastPower(this, trick);
+                }
+            }
+            else
+            {
+                if (_gameStateAnalyzer.MySideWinning(this, trick))
+                {
+                    if (_gameStateAnalyzer.UnplayedCardsBeatPlayedCards(this, trick))
+                    {
+                        if (_gameStateAnalyzer.UnplayedCardsBeatMyCards(this, trick))
+                            return _playCreator.GiveAwayLeastPower(this, trick);
+                        else
+                            return _playCreator.PlayStrongestWin(this, trick);
+                    }
+                    else
+                    {
+                        return _playCreator.GiveAwayPoints(this, trick);
+                    }
+                }
+                else
+                {
+                    if (_gameStateAnalyzer.ICanWinTrick(this, trick))
+                    {
+                        if (_gameStateAnalyzer.UnplayedCardsBeatMyCards(this, trick))
+                            return _playCreator.GiveAwayLeastPower(this, trick);
+                        else
+                            return _playCreator.PlayStrongestWin(this, trick);
+                    }
+                    else
+                        return _playCreator.GiveAwayLeastPower(this, trick);
+                }
+            }
+        }
+
+        private SheepCard PlayLeasterMove(ITrick trick)
+        {
+            if (_leasterStateAnalyzer.CanIWin(this, trick))
+            {
+                if (_leasterStateAnalyzer.CanILoose(this, trick))
+                {
+                    if (_leasterStateAnalyzer.EarlyInTrick(trick))
+                    {
+                        if (_leasterStateAnalyzer.HaveIAlreadyWon(this, trick))
+                            return _playCreator.PlaySecondStrongestLoosingCard(this, trick);
+                        else
+                            return _playCreator.PlayStrongestLoosingCard(this, trick);
+                    }
+                    else
+                    {
+                        if (_leasterStateAnalyzer.HaveIAlreadyWon(this, trick))
+                        {
+                            if (_leasterStateAnalyzer.HaveAnyPowerCards(this, trick))
+                            {
+                                if (_leasterStateAnalyzer.HaveHighPointsBeenPlayed(trick))
+                                    return _playCreator.PlayStrongestLoosingCard(this, trick);
+                                else
+                                    return _playCreator.PlayStrongestWin(this, trick);
+                            }
+                            else
+                            {
+                                return _playCreator.PlayStrongestLoosingCard(this, trick);
+                            }
+                        }
+                        else
+                        {
+                            if (_leasterStateAnalyzer.HaveAnyPowerCards(this, trick))
+                            {
+                                if (_leasterStateAnalyzer.HaveHighPointsBeenPlayed(trick))
+                                {
+                                    return _playCreator.PlaySecondStrongestLoosingCard(this, trick);
+                                }
+                                else
+                                {
+                                    if (_leasterStateAnalyzer.HaveTwoPowerCards(this, trick))
+                                        return _playCreator.PlaySecondStrongestLoosingCard(this, trick);
+                                    else
+                                        return _playCreator.PlayStrongestWin(this, trick);
+                                }
+                            }
+                            else
+                            {
+                                return _playCreator.PlayStrongestWin(this, trick);
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    return _playCreator.PlayStrongestWin(this, trick);
+                }
+            }
+            else
+            {
+                if (_leasterStateAnalyzer.HaveIAlreadyWon(this, trick))
+                {
+                    if (_leasterStateAnalyzer.HaveAnyPowerCards(this, trick))
+                        return _playCreator.PlayStrongestLoosingCard(this, trick);
+                    else
+                        return _playCreator.GiveAwayPoints(this, trick);
+                }
+                else
+                {
+                    if (_leasterStateAnalyzer.HaveTwoPowerCards(this, trick))
+                        return _playCreator.PlaySecondStrongestLoosingCard(this, trick);
+                    else
+                        return _playCreator.GiveAwayPoints(this, trick);
+                }
+            }
         }
     }
 }
