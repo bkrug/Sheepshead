@@ -44,3 +44,7 @@ input[disabled] {
 .total-players {
     text-align: right;
 }
+
+input[value="Play"] {
+    margin: 0 0 1vmin 1vmin;
+}

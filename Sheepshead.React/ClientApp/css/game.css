@@ -114,6 +114,10 @@ button {
     margin: 0 0 1vmin 1vmin;
 }
 
+.go-it-alone-option button {
+    margin: 1vmin 1vmin 0 0;
+}
+
 .play-pane .hand-data,
 .play-pane .trick-winners {
     display: inline-block;

@@ -163,7 +163,7 @@ export default class PickPane extends React.Component<PickPaneProps, PickPaneSta
 
     private renderPartnerOption() {
         return (
-            <div style={{ display: (this.state.buryCards.length == 2 ? 'block' : 'none') }}>
+            <div style={{ display: (this.state.buryCards.length == 2 ? 'block' : 'none') }} className='go-it-alone-option'>
                 {
                     this.state.playerCount == 3
                         ? this.renderNoPartnerOption()
