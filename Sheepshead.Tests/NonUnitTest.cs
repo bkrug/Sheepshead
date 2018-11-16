@@ -13,13 +13,13 @@ namespace Sheepshead.Tests
     {
         private Dictionary<string, int> _playerTypeCoins;
 
-        [TestMethod]
+        //[TestMethod]
         public void TestAllPlayers()
         {
             _playerTypeCoins = new Dictionary<string, int>();
             var stringBuilder = new StringBuilder();
             var gameNo = 0;
-            var handCount = 10000;
+            var handCount = 100 * 1000;
             PartnerMethod partnerMethod;
 
             partnerMethod = PartnerMethod.JackOfDiamonds;

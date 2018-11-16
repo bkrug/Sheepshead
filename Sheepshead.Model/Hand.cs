@@ -159,27 +159,26 @@ namespace Sheepshead.Models
 
         private void AssignNonLeasterCoins(HandScores handScores, bool challengersWonOneTrick, int defensiveCoins)
         {
-            var partner = Partner;
+            if (Partner == Picker) {
+                var partnerCard = PartnerCard.HasValue ? Enum.GetName(typeof(SheepCard), PartnerCard.Value) : "no parter card.";
+                throw new Exception("Picker and Partner are the same person! " + partnerCard);
+            }
             Deck.Players
-                .Except(new List<IPlayer>() { partner, Picker })
+                .Except(new List<IPlayer>() { Partner, Picker })
                 .ToList()
                 .ForEach(p => handScores.Coins.Add(p, defensiveCoins));
             var totalDefensiveCoins = handScores.Coins.Sum(c => c.Value);
-            if (partner == null)
+            if (Partner == null)
                 handScores.Coins.Add(Picker, -totalDefensiveCoins);
             else if (!challengersWonOneTrick)
             {
                 handScores.Coins.Add(Picker, -totalDefensiveCoins);
-                handScores.Coins.Add(partner, 0);
+                handScores.Coins.Add(Partner, 0);
             }
             else
             {
                 handScores.Coins.Add(Picker, -totalDefensiveCoins * 2 / 3);
-                handScores.Coins.Add(partner, -totalDefensiveCoins / 3);
-            }
-            if (partner != Partner)
-            {
-                throw new Exception("Partner changed while gathering score statistics!");
+                handScores.Coins.Add(Partner, -totalDefensiveCoins / 3);
             }
         }
 
