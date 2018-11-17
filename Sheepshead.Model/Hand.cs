@@ -92,7 +92,16 @@ namespace Sheepshead.Models
                 trick.OnTrickEnd += (Object sender, EventArgs e) => { OnHandEndHandler(); };
         }
 
+        private HandScores _scores = null;
         public HandScores Scores()
+        {
+            if (Tricks.Count == Deck.Game.TrickCount && Tricks.Last().IsComplete())
+                return _scores = (_scores ?? InternalScores());
+            return null;
+        }
+
+        //Only public for unit testing.
+        public HandScores InternalScores()
         {
             if (!Leasters)
                 return GetNonLeasterScores();

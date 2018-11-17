@@ -229,8 +229,8 @@ namespace Sheepshead.Models
         public List<GameCoins> GameCoins()
         {
             var coins = Decks
-                .Where(d => d?.Hand?.Tricks?.Count == TrickCount)
-                .Select(d => d.Hand.Scores().Coins)
+                .Select(d => d.Hand.Scores()?.Coins)
+                .Where(c => c != null)
                 .ToList();
             return Players
                 .Select(p => new GameCoins() {

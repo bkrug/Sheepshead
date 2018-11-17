@@ -90,7 +90,7 @@ namespace Sheepshead.Tests
             MockTrickWinners(hand, player2Mock, 7);
             MockTrickWinners(hand, player3Mock, 28);
 
-            var scores = hand.Scores();
+            var scores = hand.InternalScores();
 
             Assert.AreEqual(21 + 14 + 21, scores.Points[pickerMock.Object], "Picker recieves the blind");
             Assert.AreEqual(12, scores.Points[partnerMock.Object]);
@@ -130,7 +130,7 @@ namespace Sheepshead.Tests
             MockTrickWinners(hand, player2Mock, 7);
             MockTrickWinners(hand, player3Mock, 12);
 
-            var scores = hand.Scores();
+            var scores = hand.InternalScores();
 
             Assert.AreEqual(21 + 28 + 15, scores.Points[pickerMock.Object], "Picker recieves the blind");
             Assert.AreEqual(23 + 14, scores.Points[partnerMock.Object]);
@@ -170,7 +170,7 @@ namespace Sheepshead.Tests
             MockTrickWinners(hand, pickerMock, 7);
             MockTrickWinners(hand, pickerMock, 12);
 
-            var scores = hand.Scores();
+            var scores = hand.InternalScores();
 
             Assert.AreEqual(21 + 28 + 7 + 12 + 14, scores.Points[pickerMock.Object], "Picker recieves the blind");
             Assert.AreEqual(23 + 14, scores.Points[partnerMock.Object]);
@@ -210,7 +210,7 @@ namespace Sheepshead.Tests
             MockTrickWinners(hand, player2Mock, 18);
             MockTrickWinners(hand, player3Mock, 15);
 
-            var scores = hand.Scores();
+            var scores = hand.InternalScores();
 
             Assert.AreEqual(20 + 15 + 15, scores.Points[pickerMock.Object], "Picker recieves the blind");
             Assert.AreEqual(10, scores.Points[partnerMock.Object]);
@@ -250,7 +250,7 @@ namespace Sheepshead.Tests
             MockTrickWinners(hand, player2Mock, 27);
             MockTrickWinners(hand, player3Mock, 15);
 
-            var scores = hand.Scores();
+            var scores = hand.InternalScores();
 
             Assert.AreEqual(10 + 5, scores.Points[pickerMock.Object], "Picker recieves the blind");
             Assert.AreEqual(15, scores.Points[partnerMock.Object]);
@@ -290,7 +290,7 @@ namespace Sheepshead.Tests
             MockTrickWinners(hand, player3Mock, 19);
             MockTrickWinners(hand, player3Mock, 15);
 
-            var scores = hand.Scores();
+            var scores = hand.InternalScores();
 
             Assert.AreEqual(22, scores.Points[pickerMock.Object], "Picker recieves the blind");
             Assert.IsFalse(scores.Points.ContainsKey(partnerMock.Object));
@@ -329,7 +329,7 @@ namespace Sheepshead.Tests
             MockTrickWinners(hand, player2Mock, 7);
             MockTrickWinners(hand, player3Mock, 28);
 
-            var scores = hand.Scores();
+            var scores = hand.InternalScores();
 
             Assert.AreEqual(21 + 12 + 14 + 21, scores.Points[pickerMock.Object], "Picker recieves the blind");
             Assert.AreEqual(17, scores.Points[player1Mock.Object]);
@@ -368,7 +368,7 @@ namespace Sheepshead.Tests
             MockTrickWinners(hand, player3Mock, 28);
             MockTrickWinners(hand, player4Mock, 14);
 
-            var scores = hand.Scores();
+            var scores = hand.InternalScores();
 
             Assert.AreEqual(21, scores.Points[pickerMock.Object], "Picker recieves the blind");
             Assert.AreEqual(29, scores.Points[player1Mock.Object]);
@@ -408,7 +408,7 @@ namespace Sheepshead.Tests
             MockTrickWinners(hand, player2Mock, 11);
             MockTrickWinners(hand, player2Mock, 10);
 
-            var scores = hand.Scores();
+            var scores = hand.InternalScores();
 
             Assert.AreEqual(22, scores.Points[pickerMock.Object], "Picker recieves the blind");
             Assert.AreEqual(55, scores.Points[player1Mock.Object]);
@@ -444,7 +444,7 @@ namespace Sheepshead.Tests
             MockTrickWinners(hand, player2Mock, 13);
             MockTrickWinners(hand, player2Mock, 4);
 
-            var scores = hand.Scores();
+            var scores = hand.InternalScores();
 
             Assert.AreEqual(58, scores.Points[pickerMock.Object], "Picker recieves the blind");
             Assert.AreEqual(31, scores.Points[player1Mock.Object]);
@@ -480,7 +480,7 @@ namespace Sheepshead.Tests
             MockTrickWinners(hand, player2Mock, 13);
             MockTrickWinners(hand, player2Mock, 4);
 
-            var scores = hand.Scores();
+            var scores = hand.InternalScores();
 
             Assert.AreEqual(65, scores.Points[pickerMock.Object], "Picker recieves the blind");
             Assert.AreEqual(24, scores.Points[player1Mock.Object]);
@@ -516,7 +516,7 @@ namespace Sheepshead.Tests
             MockTrickWinners(hand, pickerMock, 13);
             MockTrickWinners(hand, pickerMock, 4);
 
-            var scores = hand.Scores();
+            var scores = hand.InternalScores();
 
             Assert.AreEqual(120, scores.Points[pickerMock.Object], "Picker recieves the blind");
             Assert.IsFalse(scores.Points.ContainsKey(player1Mock.Object));
@@ -548,7 +548,7 @@ namespace Sheepshead.Tests
             MockTrickWinners(hand, player3Mock, 28);
             MockTrickWinners(hand, player4Mock, 14);
 
-            var scores = hand.Scores();
+            var scores = hand.InternalScores();
 
             Assert.AreEqual(29, scores.Points[player1Mock.Object]);
             Assert.AreEqual(28, scores.Points[player2Mock.Object]);
@@ -584,7 +584,7 @@ namespace Sheepshead.Tests
             MockTrickWinners(hand, player2Mock, 28);
             MockTrickWinners(hand, player2Mock, 14);
 
-            var scores = hand.Scores();
+            var scores = hand.InternalScores();
 
             Assert.IsFalse(scores.Points.ContainsKey(player1Mock.Object));
             Assert.AreEqual(12 + 17 + 21 + 7 + 28 + 14, scores.Points[player2Mock.Object]);
@@ -622,7 +622,7 @@ namespace Sheepshead.Tests
             MockTrickWinners(hand, player3Mock, 13);
             MockTrickWinners(hand, player3Mock, 4);
 
-            var scores = hand.Scores();
+            var scores = hand.InternalScores();
 
             Assert.AreEqual(11 + 22 + 10, scores.Points[player1Mock.Object]);
             Assert.AreEqual(7 + 4, scores.Points[player2Mock.Object]);
