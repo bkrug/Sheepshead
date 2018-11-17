@@ -85,6 +85,9 @@ export class GameSetup extends React.Component<RouteComponentProps<{}>, GameSetu
                         <a href="/directions">Directions</a>
                     </div>
                 </div>
+                <div className="source-code">
+                    See the source code at <a href="https://github.com/bkrug/Sheepshead">Github</a>
+                </div>
             </div>
         );
     }

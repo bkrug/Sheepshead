@@ -48,3 +48,11 @@ input[disabled] {
 input[value="Play"] {
     margin: 0 0 1vmin 1vmin;
 }
+
+.source-code {
+    position: absolute;
+    bottom: 0px;
+    height: 4vmin;
+    text-align: center;
+    width: 100%;
+}
