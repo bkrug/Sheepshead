@@ -33,9 +33,9 @@ namespace Sheepshead.Models
             if (picker != null)
             {
                 picker.Cards.AddRange(deck.Blinds.Where(c => !picker.Cards.Contains(c)));
-                picker.Cards.Where(c => burried.Contains(c)).ToList().ForEach(c => picker.Cards.Remove(c));
                 if (Deck.PlayerCount == 5 && deck.Game.PartnerMethod == PartnerMethod.JackOfDiamonds)
                     PartnerCard = ChoosePartnerCard(picker);
+                picker.Cards.Where(c => burried.Contains(c)).ToList().ForEach(c => picker.Cards.Remove(c));
             }
             PartnerCardPlayed = null;
         }

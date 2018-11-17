@@ -701,11 +701,13 @@ namespace Sheepshead.Tests
             mockDeck.Setup(m => m.Blinds).Returns(blinds);
             mockDeck.Setup(m => m.Game.PartnerMethod).Returns(PartnerMethod.JackOfDiamonds);
             mockDeck.Setup(m => m.PlayerCount).Returns(5);
-            var mockPicker = new Mock<IPlayer>();
-            mockPicker.Setup(m => m.Cards).Returns(new List<SheepCard>() {
+            var pickerCards = new List<SheepCard>() {
                 SheepCard.JACK_SPADES, SheepCard.JACK_CLUBS, SheepCard.QUEEN_DIAMONDS, SheepCard.N7_CLUBS, SheepCard.QUEEN_SPADES, SheepCard.QUEEN_CLUBS
-            });
-            var hand = new Hand(mockDeck.Object, mockPicker.Object, new List<SheepCard>());
+            };
+            var droppedCards = new List<SheepCard>() { SheepCard.JACK_CLUBS, SheepCard.JACK_HEARTS };
+            var mockPicker = new Mock<IPlayer>();
+            mockPicker.Setup(m => m.Cards).Returns(pickerCards);
+            var hand = new Hand(mockDeck.Object, mockPicker.Object, droppedCards);
             Assert.AreEqual(SheepCard.QUEEN_HEARTS, hand.PartnerCard, "Queen of hearts should be partner card right now");
         }
 
@@ -717,11 +719,13 @@ namespace Sheepshead.Tests
             mockDeck.Setup(m => m.Blinds).Returns(blinds);
             mockDeck.Setup(m => m.Game.PartnerMethod).Returns(PartnerMethod.JackOfDiamonds);
             mockDeck.Setup(m => m.PlayerCount).Returns(5);
-            var mockPicker = new Mock<IPlayer>();
-            mockPicker.Setup(m => m.Cards).Returns(new List<SheepCard>() {
+            var pickerCards = new List<SheepCard>() {
                 SheepCard.JACK_SPADES, SheepCard.JACK_CLUBS, SheepCard.QUEEN_DIAMONDS, SheepCard.QUEEN_HEARTS, SheepCard.QUEEN_SPADES, SheepCard.QUEEN_CLUBS
-            });
-            var hand = new Hand(mockDeck.Object, mockPicker.Object, new List<SheepCard>());
+            };
+            var buriedCards = new List<SheepCard>() { SheepCard.JACK_HEARTS, SheepCard.JACK_DIAMONDS };
+            var mockPicker = new Mock<IPlayer>();
+            mockPicker.Setup(m => m.Cards).Returns(pickerCards);
+            var hand = new Hand(mockDeck.Object, mockPicker.Object, buriedCards);
             Assert.IsNull(hand.PartnerCard, "There should be no partner card.");
         }
 
