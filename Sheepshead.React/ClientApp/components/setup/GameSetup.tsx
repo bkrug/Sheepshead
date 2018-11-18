@@ -2,6 +2,7 @@
 import { RouteComponentProps } from 'react-router';
 import PlayerCountRadio from './PlayerCountRadio';
 import OnOffRadio from './OnOffRadio';
+import { FetchUtils } from '../FetchUtils';
 
 export interface GameSetupState {
     value: number;
@@ -10,6 +11,7 @@ export interface GameSetupState {
     gameName: string;
     selections: { [index: string]: number };
     leastersDefault: boolean;
+    version: string;
 }
 
 export class GameSetup extends React.Component<RouteComponentProps<{}>, GameSetupState> {
@@ -29,9 +31,19 @@ export class GameSetup extends React.Component<RouteComponentProps<{}>, GameSetu
             remaining: this.MAX_PLAYERS,
             gameName: '',
             selections: selections,
-            leastersDefault: this.getLeastersDefault(props)
+            leastersDefault: this.getLeastersDefault(props),
+            version: '0.x.0.0'
         };
         this.handleChange = this.handleChange.bind(this);
+        var self = this;
+        FetchUtils.get(
+            'Setup/GetVersion',
+            function (receivedVersion: string): void {
+                self.setState({
+                    //version: receivedVersion.major + '.' + receivedVersion.minor + '.' + receivedVersion.revision + '.' + receivedVersion.build
+                    version: receivedVersion
+                });
+            });
     }
 
     private getLeastersDefault(props: any): boolean {
@@ -86,7 +98,8 @@ export class GameSetup extends React.Component<RouteComponentProps<{}>, GameSetu
                     </div>
                 </div>
                 <div className="source-code">
-                    See the source code at <a href="https://github.com/bkrug/Sheepshead">Github</a>
+                    <div>See the source code at <a href="https://github.com/bkrug/Sheepshead">Github</a></div>
+                    <div>{this.state.version}</div>
                 </div>
             </div>
         );

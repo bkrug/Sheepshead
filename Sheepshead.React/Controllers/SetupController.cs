@@ -2,6 +2,7 @@
 using System.Linq;
 using Sheepshead.Models;
 using Microsoft.AspNetCore.Mvc;
+using System.Reflection;
 
 namespace Sheepshead.React.Controllers
 {
@@ -47,6 +48,13 @@ namespace Sheepshead.React.Controllers
             {
                 allPlayersReady = !game.UnassignedPlayers.Any()
             });
+        }
+
+        [HttpGet]
+        public IActionResult GetVersion()
+        {
+            var version = Assembly.GetAssembly(typeof(GameRepository)).GetName().Version.ToString();
+            return Json(version);
         }
     }
 }
