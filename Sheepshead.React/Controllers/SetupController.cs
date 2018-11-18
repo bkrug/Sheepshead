@@ -3,11 +3,20 @@ using System.Linq;
 using Sheepshead.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Reflection;
+using Microsoft.IdentityModel.Protocols;
+using Microsoft.Extensions.Configuration;
 
 namespace Sheepshead.React.Controllers
 {
     public class SetupController : Controller
     {
+        private IConfiguration _config;
+
+        public SetupController(IConfiguration config)
+        {
+            _config = config;
+        }
+
         [HttpPost]
         public IActionResult Create(int humanCount, int simpleCount, int intermediateCount, int advancedCount, string partnerCard, string leastersGame)
         {
@@ -54,7 +63,8 @@ namespace Sheepshead.React.Controllers
         public IActionResult GetVersion()
         {
             var version = Assembly.GetAssembly(typeof(GameRepository)).GetName().Version.ToString();
-            return Json(version);
+            var inBeta = _config.GetValue<bool>("InBeta") ? " Beta" : string.Empty;
+            return Json(version + inBeta);
         }
     }
 }

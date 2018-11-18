@@ -229,7 +229,7 @@ namespace Sheepshead.Models
         public List<GameCoins> GameCoins()
         {
             var coins = Decks
-                .Select(d => d.Hand.Scores()?.Coins)
+                .Select(d => d.Hand?.Scores()?.Coins)
                 .Where(c => c != null)
                 .ToList();
             return Players
