@@ -745,7 +745,7 @@ export class Directions extends React.Component<RouteComponentProps<{}>, Directi
         var windowOffset = (window.pageYOffset || doc.scrollTop) - (doc.clientTop || 0);
         this.setState({ filmOffset: windowOffset + 'px' });
 
-        var slideNo = windowOffset / window.innerHeight;
+        var slideNo = windowOffset / window.innerHeight + .4;
         slideNo = slideNo - slideNo % 1;
         this.setState({ currentSlide: slideNo });
     }
