@@ -2,7 +2,6 @@
 import * as React from 'react';
 import { RouteComponentProps } from 'react-router';
 import ReactDOM from 'react-dom';
-import CopyToClipboard from 'react-copy-to-clipboard';
 import { IdUtils } from '../IdUtils';
 
 export interface RegistrationWaitState {
@@ -25,6 +24,21 @@ export class RegistrationWait extends React.Component<RouteComponentProps<{}>, R
         return window.location.host + '/setup/RegisterHuman/' + this.state.gameId;
     }
 
+    private copyToClipboard() {
+        var copyTextarea = document.querySelector('textarea');
+        if (copyTextarea == null)
+            copyTextarea = new HTMLTextAreaElement();
+        copyTextarea.select();
+
+        try {
+            var successful = document.execCommand('copy');
+            var msg = successful ? 'successful' : 'unsuccessful';
+            console.log('Copying text command was ' + msg);
+        } catch (err) {
+            console.log('Oops, unable to copy');
+        }
+    }
+
     private checkIfPlayersReady() {
         fetch('/Setup/AllPlayersReady?gameId=' + this.state.gameId)
             .then(response => response.json())
@@ -45,10 +59,9 @@ export class RegistrationWait extends React.Component<RouteComponentProps<{}>, R
                     <h4>Play Sheepshead</h4>
                     <div hidden={this.state.allPlayersReady}>
                         <p>Waiting for other players.</p>
-                        <p>Share this url with friends that you will play with: <b>{this.getUrl()}</b> </p>
-                        <CopyToClipboard text={this.getUrl()}>
-                            <button>Copy URL to clipboard</button>
-                        </CopyToClipboard>
+                        <p>Share this url with friends that you will play with:</p>
+                        <textarea disabled={false}>{this.getUrl()}</textarea>
+                        <button onClick={this.copyToClipboard}>Copy URL to clipboard</button>
                     </div>
                     <div hidden={!this.state.allPlayersReady}>
                         All players have registered.

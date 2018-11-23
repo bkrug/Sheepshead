@@ -56,3 +56,10 @@ input[value="Play"] {
     text-align: center;
     width: 100%;
 }
+
+textarea {
+    background: transparent;
+    border: none;
+    width: 100%;
+    font-weight: bold;
+}
