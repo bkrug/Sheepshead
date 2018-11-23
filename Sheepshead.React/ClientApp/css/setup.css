@@ -51,7 +51,7 @@ input[value="Play"] {
 
 .source-code {
     position: absolute;
-    bottom: 0px;
+    bottom: 0;
     height: 6vmin;
     text-align: center;
     width: 100%;

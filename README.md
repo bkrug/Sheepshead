@@ -8,7 +8,7 @@ Sheepshead - almost no javascript is used
 Sheepshead.React - uses the React framework
 
 Work to do:
-* Games in memory need to expire after 24 hours of non-use.
+* Games that are made up entirely of humans don't seem to work.
 * Handle Leasters games that tie.
 
 Changes to be considered.
