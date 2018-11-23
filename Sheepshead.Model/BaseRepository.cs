@@ -9,12 +9,12 @@ namespace Sheepshead.Models
     {
         private BaseRepository() { }
 
-        public BaseRepository(Dictionary<Guid, T> datasource)
+        public BaseRepository(IDictionary<Guid, T> datasource)
         {
             Items = datasource;
         }
 
-        protected Dictionary<Guid, T> Items { get; set; }
+        protected IDictionary<Guid, T> Items { get; set; }
 
         protected void Save(T saveThis)
         {

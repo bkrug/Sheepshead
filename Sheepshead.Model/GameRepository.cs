@@ -9,12 +9,12 @@ namespace Sheepshead.Models
     {
         private GameDictionary() { }
         public static GameDictionary Instance { get; } = new GameDictionary();
-        public Dictionary<Guid, IGame> Dictionary { get; } = new Dictionary<Guid, IGame>();
+        public IDictionary<Guid, IGame> Dictionary { get; } = new SelfClearingDictionary();
     }
 
     public class GameRepository : BaseRepository<IGame>, IGameRepository
     {
-        public GameRepository(Dictionary<Guid, IGame> gameList) : base(gameList)
+        public GameRepository(IDictionary<Guid, IGame> gameList) : base(gameList)
         {
         }
 

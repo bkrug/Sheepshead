@@ -15,6 +15,7 @@ export interface ActionPaneState {
     turnType: string;
     trickCount: number;
     playerCount: number;
+    gameExists: boolean;
 }
 
 export interface ActionPaneProps extends React.Props<any> {
@@ -27,6 +28,7 @@ export interface GameType {
     turnType: string;
     trickCount: number;
     playerCount: number;
+    gameExists: boolean;
 }
 
 export default class ActionPane extends React.Component<ActionPaneProps, ActionPaneState> {
@@ -37,7 +39,8 @@ export default class ActionPane extends React.Component<ActionPaneProps, ActionP
             playerId: IdUtils.getPlayerId(props.gameId) || '',
             turnType: '',
             trickCount: 0,
-            playerCount: 0
+            playerCount: 0,
+            gameExists: true
         };
         this.onPickComplete = this.onPickComplete.bind(this);
         this.onBuryComplete = this.onBuryComplete.bind(this);
@@ -55,7 +58,8 @@ export default class ActionPane extends React.Component<ActionPaneProps, ActionP
                 self.setState({
                     turnType: json.turnType == 'BeginDeck' ? 'ReportHand' : json.turnType,
                     playerCount: json.playerCount,
-                    trickCount: json.trickCount
+                    trickCount: json.trickCount,
+                    gameExists: json.gameExists
                 });
                 if (json.turnType == 'PlayTrick')
                     self.props.onTrickEnd();
@@ -111,7 +115,7 @@ export default class ActionPane extends React.Component<ActionPaneProps, ActionP
                 return (
                     <div>
                         <h4>Other Phase</h4>
-                        This is not a recognized phase.
+                        { this.state.gameExists ? 'This is not a recognized phase.' : 'A game with this identifier does not exist.' }
                     </div>);
         }
     }

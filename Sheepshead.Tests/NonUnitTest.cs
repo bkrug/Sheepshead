@@ -5,6 +5,8 @@ using Sheepshead.Models;
 using Sheepshead.Models.Players;
 using System.Text;
 using System.IO;
+using Moq;
+using System.Threading;
 
 namespace Sheepshead.Tests
 {
@@ -143,6 +145,46 @@ namespace Sheepshead.Tests
             var spaces = "";
             for(var a = 0; a < spaceCount; ++a) { spaces += " "; }
             return part + spaces;
+        }
+    }
+
+    [TestClass]
+    public class SelfClearingDictionaryTests
+    {
+        //[TestMethod]
+        public void SelfClearingDictionary_Test()
+        {
+            var oneSeconds = new TimeSpan(0, 0, 1);
+            var twoSeconds = new TimeSpan(0, 0, 2);
+            var almostTwoSeconds = new TimeSpan(0, 0, 0, 1, 800);
+
+            var dict = new SelfClearingDictionary(twoSeconds);
+            Assert.AreEqual(0, dict.Count);
+
+            var guid1 = Guid.NewGuid();
+            var guid2 = Guid.NewGuid();
+            dict.Add(guid1, new Mock<IGame>().Object);
+            dict.Add(guid2, new Mock<IGame>().Object);
+            //By this point, both items are brand new.
+            Assert.AreEqual(2, dict.Count);
+
+            Thread.Sleep(almostTwoSeconds);
+            Assert.AreEqual(2, dict.Count);
+            var recalledGame = dict[guid1];
+            Thread.Sleep(oneSeconds);
+            //By this point, one item has been used recently, but one has not.
+            Assert.IsTrue(dict.ContainsKey(guid1));
+            Assert.IsFalse(dict.ContainsKey(guid2));
+
+            recalledGame = dict[guid1];
+            var guid3 = Guid.NewGuid();
+            dict.Add(guid3, new Mock<IGame>().Object);
+            Thread.Sleep(oneSeconds);
+            //By this point, one item is old, one is new, but both have been used within two seconds.
+            Assert.AreEqual(2, dict.Count);
+
+            Thread.Sleep(twoSeconds);
+            Assert.AreEqual(0, dict.Count);
         }
     }
 }

@@ -12,7 +12,9 @@ namespace Sheepshead.React.Controllers
         [HttpGet]
         public IActionResult GameSummary(string gameId)
         {
-            var gameCoins = GetGame(gameId).GameCoins();
+            var gameCoins = GetGame(gameId)?.GameCoins();
+            if (gameCoins == null)
+                return Json(new object[] { });
             return Json(gameCoins.Select(p => new {
                 name = p.Name,
                 score = p.Coins
@@ -60,9 +62,10 @@ namespace Sheepshead.React.Controllers
             IGame game = GetGame(gameId);
             return Json(new
             {
-                turnType = game.TurnType.ToString(),
-                playerCount = game.PlayerCount,
-                trickCount = game.TrickCount
+                gameExists = game != null,
+                turnType = game?.TurnType.ToString(),
+                playerCount = game?.PlayerCount,
+                trickCount = game?.TrickCount
             });
         }
 
