@@ -22,7 +22,6 @@
     "jquery": "3.2.1",
     "json-loader": "0.5.4",
     "react": "15.6.1",
-    "react-copy-to-clipboard": "5.0.1",
     "react-dom": "15.6.1",
     "react-hot-loader": "3.0.0-beta.7",
     "react-router-dom": "4.1.1",
@@ -33,7 +32,6 @@
     "webpack-hot-middleware": "2.18.2"
   },
   "dependencies": {
-    "react": "https://registry.npmjs.org/react/-/react-15.6.1.tgz",
-    "react-copy-to-clipboard": "^5.0.1"
+    "react": "https://registry.npmjs.org/react/-/react-15.6.1.tgz"
   }
 }
