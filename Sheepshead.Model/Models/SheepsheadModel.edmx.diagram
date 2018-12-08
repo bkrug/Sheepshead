@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="99ef0c90e61f4182b6fbcc5f993e43af" Name="Diagram1">
+        <EntityTypeShape EntityType="SheepsheadModel.Game" Width="1.5" PointX="0.75" PointY="3.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="SheepsheadModel.Hand" Width="1.5" PointX="5.25" PointY="5.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="SheepsheadModel.Player" Width="1.5" PointX="3" PointY="7.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="SheepsheadModel.Trick" Width="1.5" PointX="7.5" PointY="7.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="SheepsheadModel.CardsPlayed" Width="1.5" PointX="9.75" PointY="7.875" IsExpanded="true" />
+        <AssociationConnector Association="SheepsheadModel.FK_Hand_Game" ManuallyRouted="false" />
+        <AssociationConnector Association="SheepsheadModel.FK_Player_Game" ManuallyRouted="false" />
+        <AssociationConnector Association="SheepsheadModel.FK_Hand_Partner" ManuallyRouted="false" />
+        <AssociationConnector Association="SheepsheadModel.FK_Hand_Picker" ManuallyRouted="false" />
+        <AssociationConnector Association="SheepsheadModel.FK_Hand_StartingPlayer" ManuallyRouted="false" />
+        <AssociationConnector Association="SheepsheadModel.FK_Trick_Hand" ManuallyRouted="false" />
+        <AssociationConnector Association="SheepsheadModel.FK_CardsPlayed_Player" ManuallyRouted="false" />
+        <AssociationConnector Association="SheepsheadModel.FK_Trick_Player" ManuallyRouted="false" />
+        <AssociationConnector Association="SheepsheadModel.FK_CardsPlayed_Trick" ManuallyRouted="false" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

@@ -40,6 +40,8 @@
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Security" />
     <Reference Include="System.Web.Extensions" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -58,6 +60,36 @@
     <Compile Include="GameStateDescriber.cs" />
     <Compile Include="Hand.cs" />
     <Compile Include="HandFactory.cs" />
+    <Compile Include="Models\CardsPlayed.cs">
+      <DependentUpon>SheepsheadModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Game.cs">
+      <DependentUpon>SheepsheadModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Hand.cs">
+      <DependentUpon>SheepsheadModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Player.cs">
+      <DependentUpon>SheepsheadModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\SheepsheadModel.Context.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>SheepsheadModel.Context.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\SheepsheadModel.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>SheepsheadModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\SheepsheadModel.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>SheepsheadModel.edmx</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Trick.cs">
+      <DependentUpon>SheepsheadModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="PickPlayerOrderer.cs" />
     <Compile Include="PickProcessor.cs" />
     <Compile Include="Players\IntermediatePlayer.cs" />
@@ -81,7 +113,30 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <EntityDeploy Include="Models\SheepsheadModel.edmx">
+      <Generator>EntityModelCodeGenerator</Generator>
+      <LastGenOutput>SheepsheadModel.Designer.cs</LastGenOutput>
+    </EntityDeploy>
+    <None Include="Models\SheepsheadModel.edmx.diagram">
+      <DependentUpon>SheepsheadModel.edmx</DependentUpon>
+    </None>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <Content Include="Models\SheepsheadModel.Context.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>SheepsheadModel.edmx</DependentUpon>
+      <LastGenOutput>SheepsheadModel.Context.cs</LastGenOutput>
+    </Content>
+    <Content Include="Models\SheepsheadModel.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>SheepsheadModel.edmx</DependentUpon>
+      <LastGenOutput>SheepsheadModel.cs</LastGenOutput>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

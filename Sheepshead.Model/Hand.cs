@@ -111,8 +111,10 @@ namespace Sheepshead.Model
 
         private HandScores GetNonLeasterScores()
         {
-            var handScores = new HandScores();
-            handScores.Points = AssignNonLeasterPoints(out int defensePoints, out bool challengersWonOneTrick, out bool defenseWonOneTrick);
+            var handScores = new HandScores
+            {
+                Points = AssignNonLeasterPoints(out int defensePoints, out bool challengersWonOneTrick, out bool defenseWonOneTrick)
+            };
             int defensiveCoins = CalculateDefensiveCoins(defensePoints, challengersWonOneTrick, defenseWonOneTrick);
             handScores.Coins = AssignNonLeasterCoins(challengersWonOneTrick, defensiveCoins);
             return handScores;
@@ -120,8 +122,10 @@ namespace Sheepshead.Model
 
         private Dictionary<IPlayer, int> AssignNonLeasterPoints(out int defensePoints, out bool challengersWonOneTrick, out bool defenseWonOneTrick)
         {
-            var handPoints = new Dictionary<IPlayer, int>();
-            handPoints.Add(Picker, Deck.Buried.Sum(c => CardUtil.GetPoints(c)));
+            var handPoints = new Dictionary<IPlayer, int>
+            {
+                { Picker, Deck.Buried.Sum(c => CardUtil.GetPoints(c)) }
+            };
             defensePoints = 0;
             challengersWonOneTrick = false;
             defenseWonOneTrick = false;
@@ -216,10 +220,12 @@ namespace Sheepshead.Model
 
         public string Summary()
         {
-            var pieces = new List<string>();
-            pieces.Add(GetBlindSummary());
-            pieces.Add(GetBuriedSummary());
-            foreach(var trick in Tricks)
+            var pieces = new List<string>
+            {
+                GetBlindSummary(),
+                GetBuriedSummary()
+            };
+            foreach (var trick in Tricks)
                 pieces.Add(GetTrickSummary(trick));
             return String.Join(",", pieces);
         }
