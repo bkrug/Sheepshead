@@ -41,23 +41,6 @@ namespace Sheepshead.Tests
                 });
         }
 
-        private IHand GetHand(List<Mock<ITrick>> trickMocks, List<IPlayer> players, IPlayer picker, IPlayer partner)
-        {
-            var deckMock = new Mock<IDeck>();
-            deckMock.Setup(m => m.Players).Returns(players);
-            deckMock.Setup(m => m.PlayerCount).Returns(players.Count);
-            var blinds = new List<SheepCard>() { SheepCard.KING_DIAMONDS, SheepCard.ACE_CLUBS };
-            deckMock.Setup(m => m.Blinds).Returns(blinds);
-            var hand = new Hand(deckMock.Object, picker, new List<SheepCard>());
-            foreach (var mockTrick in trickMocks)
-            {
-                hand.AddTrick(mockTrick.Object);
-            }
-            trickMocks[2].Setup(m => m.QueueRankOfPartner).Returns(-1);
-            hand.SetPartner(partner, trickMocks[2].Object);
-            return hand;
-        }
-
         private void MockTrickWinners(IHand hand, Mock<IPlayer> player, int points)
         {
             var trickMock = new Mock<ITrick>();
