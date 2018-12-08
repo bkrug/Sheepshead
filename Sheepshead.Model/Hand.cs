@@ -40,7 +40,6 @@ namespace Sheepshead.Model
             PartnerCardPlayed = null;
         }
 
-        //TODO: Look for players who lead with trump.
         public IPlayer PresumedParnter
         {
             get
