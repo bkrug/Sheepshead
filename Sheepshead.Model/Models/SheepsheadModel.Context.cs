@@ -40,7 +40,7 @@ public partial class SheepsheadEntities : DbContext
 
     public virtual DbSet<Trick> Tricks { get; set; }
 
-    public virtual DbSet<CardsPlayed> CardsPlayeds { get; set; }
+    public virtual DbSet<CardsPlayed> CardsPlayed { get; set; }
 
 }
 

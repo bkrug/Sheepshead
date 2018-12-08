@@ -4,15 +4,11 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-      <Schema Namespace="SheepsheadModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
-        <!--Errors Found During Generation:
-warning 6002: The table/view 'Sheepshead.dbo.CardsPlayed' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+    <Schema Namespace="SheepsheadModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="CardsPlayed">
           <Key>
             <PropertyRef Name="PlayerId" />
             <PropertyRef Name="TrickId" />
-            <PropertyRef Name="Card" />
-            <PropertyRef Name="SortOrder" />
           </Key>
           <Property Name="PlayerId" Type="int" Nullable="false" />
           <Property Name="TrickId" Type="int" Nullable="false" />
@@ -171,18 +167,11 @@ warning 6002: The table/view 'Sheepshead.dbo.CardsPlayed' does not have a primar
           </ReferentialConstraint>
         </Association>
         <EntityContainer Name="SheepsheadModelStoreContainer">
+          <EntitySet Name="CardsPlayed" EntityType="Self.CardsPlayed" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Game" EntityType="Self.Game" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Hand" EntityType="Self.Hand" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Player" EntityType="Self.Player" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Trick" EntityType="Self.Trick" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="CardsPlayed" EntityType="Self.CardsPlayed" store:Type="Tables" store:Schema="dbo">
-            <DefiningQuery>SELECT 
-    [CardsPlayed].[PlayerId] AS [PlayerId], 
-    [CardsPlayed].[TrickId] AS [TrickId], 
-    [CardsPlayed].[Card] AS [Card], 
-    [CardsPlayed].[SortOrder] AS [SortOrder]
-    FROM [dbo].[CardsPlayed] AS [CardsPlayed]</DefiningQuery>
-          </EntitySet>
           <AssociationSet Name="FK_CardsPlayed_Player" Association="Self.FK_CardsPlayed_Player">
             <End Role="Player" EntitySet="Player" />
             <End Role="CardsPlayed" EntitySet="CardsPlayed" />
@@ -220,8 +209,7 @@ warning 6002: The table/view 'Sheepshead.dbo.CardsPlayed' does not have a primar
             <End Role="Trick" EntitySet="Trick" />
           </AssociationSet>
         </EntityContainer>
-      </Schema>
-    </edmx:StorageModels>
+      </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="SheepsheadModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
@@ -266,8 +254,8 @@ warning 6002: The table/view 'Sheepshead.dbo.CardsPlayed' does not have a primar
           <NavigationProperty Name="Hands" Relationship="Self.FK_Hand_Partner" FromRole="Player" ToRole="Hand" />
           <NavigationProperty Name="Hands1" Relationship="Self.FK_Hand_Picker" FromRole="Player" ToRole="Hand" />
           <NavigationProperty Name="Hands2" Relationship="Self.FK_Hand_StartingPlayer" FromRole="Player" ToRole="Hand" />
-          <NavigationProperty Name="CardsPlayed" Relationship="Self.FK_CardsPlayed_Player" FromRole="Player" ToRole="CardsPlayed" />
           <NavigationProperty Name="Tricks" Relationship="Self.FK_Trick_Player" FromRole="Player" ToRole="Trick" />
+          <NavigationProperty Name="CardsPlayed" Relationship="SheepsheadModel.FK_CardsPlayed_Player" FromRole="Player" ToRole="CardsPlayed" />
         </EntityType>
         <EntityType Name="Trick">
           <Key>
@@ -278,21 +266,7 @@ warning 6002: The table/view 'Sheepshead.dbo.CardsPlayed' does not have a primar
           <Property Name="StartingPlayerId" Type="Int32" Nullable="false" />
           <NavigationProperty Name="Hand" Relationship="Self.FK_Trick_Hand" FromRole="Trick" ToRole="Hand" />
           <NavigationProperty Name="StartingPlayer" Relationship="Self.FK_Trick_Player" FromRole="Trick" ToRole="Player" />
-          <NavigationProperty Name="CardsPlayed" Relationship="Self.FK_CardsPlayed_Trick" FromRole="Trick" ToRole="CardsPlayed" />
-        </EntityType>
-        <EntityType Name="CardsPlayed">
-          <Key>
-            <PropertyRef Name="PlayerId" />
-            <PropertyRef Name="TrickId" />
-            <PropertyRef Name="Card" />
-            <PropertyRef Name="SortOrder" />
-          </Key>
-          <Property Name="PlayerId" Type="Int32" Nullable="false" />
-          <Property Name="TrickId" Type="Int32" Nullable="false" />
-          <Property Name="Card" Type="String" MaxLength="2" FixedLength="true" Unicode="false" Nullable="false" />
-          <Property Name="SortOrder" Type="Int32" Nullable="false" />
-          <NavigationProperty Name="Player" Relationship="Self.FK_CardsPlayed_Player" FromRole="CardsPlayed" ToRole="Player" />
-          <NavigationProperty Name="Trick" Relationship="Self.FK_CardsPlayed_Trick" FromRole="CardsPlayed" ToRole="Trick" />
+          <NavigationProperty Name="CardsPlayed" Relationship="SheepsheadModel.FK_CardsPlayed_Trick" FromRole="Trick" ToRole="CardsPlayed" />
         </EntityType>
         <Association Name="FK_Hand_Game">
           <End Role="Game" Type="Self.Game" Multiplicity="1">
@@ -370,18 +344,6 @@ warning 6002: The table/view 'Sheepshead.dbo.CardsPlayed' does not have a primar
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_CardsPlayed_Player">
-          <End Role="Player" Type="Self.Player" Multiplicity="1" />
-          <End Role="CardsPlayed" Type="Self.CardsPlayed" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Player">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="CardsPlayed">
-              <PropertyRef Name="PlayerId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="FK_Trick_Player">
           <End Role="Player" Type="Self.Player" Multiplicity="1" />
           <End Role="Trick" Type="Self.Trick" Multiplicity="*" />
@@ -394,24 +356,11 @@ warning 6002: The table/view 'Sheepshead.dbo.CardsPlayed' does not have a primar
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_CardsPlayed_Trick">
-          <End Role="Trick" Type="Self.Trick" Multiplicity="1" />
-          <End Role="CardsPlayed" Type="Self.CardsPlayed" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Trick">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="CardsPlayed">
-              <PropertyRef Name="TrickId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <EntityContainer Name="SheepsheadEntities" annotation:LazyLoadingEnabled="true">
           <EntitySet Name="Games" EntityType="Self.Game" />
           <EntitySet Name="Hands" EntityType="Self.Hand" />
           <EntitySet Name="Players" EntityType="Self.Player" />
           <EntitySet Name="Tricks" EntityType="Self.Trick" />
-          <EntitySet Name="CardsPlayeds" EntityType="Self.CardsPlayed" />
           <AssociationSet Name="FK_Hand_Game" Association="Self.FK_Hand_Game">
             <End Role="Game" EntitySet="Games" />
             <End Role="Hand" EntitySet="Hands" />
@@ -436,19 +385,56 @@ warning 6002: The table/view 'Sheepshead.dbo.CardsPlayed' does not have a primar
             <End Role="Hand" EntitySet="Hands" />
             <End Role="Trick" EntitySet="Tricks" />
           </AssociationSet>
-          <AssociationSet Name="FK_CardsPlayed_Player" Association="Self.FK_CardsPlayed_Player">
-            <End Role="Player" EntitySet="Players" />
-            <End Role="CardsPlayed" EntitySet="CardsPlayeds" />
-          </AssociationSet>
           <AssociationSet Name="FK_Trick_Player" Association="Self.FK_Trick_Player">
             <End Role="Player" EntitySet="Players" />
             <End Role="Trick" EntitySet="Tricks" />
           </AssociationSet>
-          <AssociationSet Name="FK_CardsPlayed_Trick" Association="Self.FK_CardsPlayed_Trick">
+          <EntitySet Name="CardsPlayed" EntityType="SheepsheadModel.CardsPlayed" />
+          <AssociationSet Name="FK_CardsPlayed_Player" Association="SheepsheadModel.FK_CardsPlayed_Player">
+            <End Role="Player" EntitySet="Players" />
+            <End Role="CardsPlayed" EntitySet="CardsPlayed" />
+          </AssociationSet>
+          <AssociationSet Name="FK_CardsPlayed_Trick" Association="SheepsheadModel.FK_CardsPlayed_Trick">
             <End Role="Trick" EntitySet="Tricks" />
-            <End Role="CardsPlayed" EntitySet="CardsPlayeds" />
+            <End Role="CardsPlayed" EntitySet="CardsPlayed" />
           </AssociationSet>
         </EntityContainer>
+        <EntityType Name="CardsPlayed">
+          <Key>
+            <PropertyRef Name="PlayerId" />
+            <PropertyRef Name="TrickId" />
+          </Key>
+          <Property Name="PlayerId" Type="Int32" Nullable="false" />
+          <Property Name="TrickId" Type="Int32" Nullable="false" />
+          <Property Name="Card" Type="String" Nullable="false" MaxLength="2" FixedLength="true" Unicode="false" />
+          <Property Name="SortOrder" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Player" Relationship="SheepsheadModel.FK_CardsPlayed_Player" FromRole="CardsPlayed" ToRole="Player" />
+          <NavigationProperty Name="Trick" Relationship="SheepsheadModel.FK_CardsPlayed_Trick" FromRole="CardsPlayed" ToRole="Trick" />
+        </EntityType>
+        <Association Name="FK_CardsPlayed_Player">
+          <End Type="SheepsheadModel.Player" Role="Player" Multiplicity="1" />
+          <End Type="SheepsheadModel.CardsPlayed" Role="CardsPlayed" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Player">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="CardsPlayed">
+              <PropertyRef Name="PlayerId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_CardsPlayed_Trick">
+          <End Type="SheepsheadModel.Trick" Role="Trick" Multiplicity="1" />
+          <End Type="SheepsheadModel.CardsPlayed" Role="CardsPlayed" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Trick">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="CardsPlayed">
+              <PropertyRef Name="TrickId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -498,13 +484,13 @@ warning 6002: The table/view 'Sheepshead.dbo.CardsPlayed' does not have a primar
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="CardsPlayeds">
+          <EntitySetMapping Name="CardsPlayed">
             <EntityTypeMapping TypeName="SheepsheadModel.CardsPlayed">
               <MappingFragment StoreEntitySet="CardsPlayed">
-                <ScalarProperty Name="PlayerId" ColumnName="PlayerId" />
-                <ScalarProperty Name="TrickId" ColumnName="TrickId" />
-                <ScalarProperty Name="Card" ColumnName="Card" />
                 <ScalarProperty Name="SortOrder" ColumnName="SortOrder" />
+                <ScalarProperty Name="Card" ColumnName="Card" />
+                <ScalarProperty Name="TrickId" ColumnName="TrickId" />
+                <ScalarProperty Name="PlayerId" ColumnName="PlayerId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -522,8 +508,8 @@ warning 6002: The table/view 'Sheepshead.dbo.CardsPlayed' does not have a primar
     <Options>
       <DesignerInfoPropertySet>
         <DesignerProperty Name="ValidateOnBuild" Value="true" />
-        <DesignerProperty Name="EnablePluralization" Value="true" />
-        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="False" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="False" />
         <DesignerProperty Name="UseLegacyProvider" Value="false" />
         <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
       </DesignerInfoPropertySet>

@@ -28,9 +28,9 @@ public partial class Player
 
         this.Hands2 = new HashSet<Hand>();
 
-        this.CardsPlayed = new HashSet<CardsPlayed>();
-
         this.Tricks = new HashSet<Trick>();
+
+        this.CardsPlayed = new HashSet<CardsPlayed>();
 
     }
 
@@ -61,11 +61,11 @@ public partial class Player
 
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
 
-    public virtual ICollection<CardsPlayed> CardsPlayed { get; set; }
+    public virtual ICollection<Trick> Tricks { get; set; }
 
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
 
-    public virtual ICollection<Trick> Tricks { get; set; }
+    public virtual ICollection<CardsPlayed> CardsPlayed { get; set; }
 
 }
 
