@@ -16,7 +16,6 @@ namespace Sheepshead.Model
         private List<ITrick> _tricks = new List<ITrick>();
         public List<ITrick> Tricks { get { return _tricks.ToList(); } }
         public IPlayer StartingPlayer { get { return Deck.StartingPlayer; } }
-        public event EventHandler<EventArgs> OnAddTrick;
         public event EventHandler<EventArgs> OnHandEnd;
         public int PlayerCount => Deck.PlayerCount;
         public List<IPlayer> Players => Deck.Players;
@@ -86,7 +85,6 @@ namespace Sheepshead.Model
         public void AddTrick(ITrick trick)
         {
             _tricks.Add(trick);
-            OnAddTrickHandler();
             if (_tricks.Count == (int)(Game.CARDS_IN_DECK / Deck.PlayerCount))
                 trick.OnTrickEnd += (Object sender, EventArgs e) => { OnHandEndHandler(); };
         }
@@ -104,12 +102,6 @@ namespace Sheepshead.Model
             const int CARDS_IN_PLAY = 30;
             var trickCount = CARDS_IN_PLAY / Deck.PlayerCount;
             return _tricks.Count() == trickCount && _tricks.Last().IsComplete();
-        }
-
-        protected virtual void OnAddTrickHandler()
-        {
-            var e = new EventArgs();
-            OnAddTrick?.Invoke(this, e);
         }
 
         protected virtual void OnHandEndHandler()
@@ -158,7 +150,6 @@ namespace Sheepshead.Model
         int PlayerCount { get; }
         List<IPlayer> Players { get; }
         IPlayer StartingPlayer { get; }
-        event EventHandler<EventArgs> OnAddTrick;
         event EventHandler<EventArgs> OnHandEnd;
         void SetPartner(IPlayer partner, ITrick trick);
         void SetPartnerCard(SheepCard? sheepCard);

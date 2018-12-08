@@ -823,26 +823,20 @@ namespace Sheepshead.Tests
         }
 
         [TestMethod]
-        public void Hand_OnAddTrick()
+        public void Hand_OnEndHand()
         {
             var deckMock = new Mock<IDeck>();
             deckMock.Setup(m => m.PlayerCount).Returns(5);
             var hand = new Hand(deckMock.Object, null, null);
-            var addEventCalled = false;
             var endEventCalled = false;
-            hand.OnAddTrick += (Object sender, EventArgs e) => { 
-                addEventCalled = true;
-            };
             hand.OnHandEnd += (Object sender, EventArgs e) => {
                 endEventCalled = true;
             };
             for (var i = 0; i < 6; ++i)
             {
-                addEventCalled = false;
                 var trickMock = new Mock<ITrick>();
                 hand.AddTrick(trickMock.Object);
                 trickMock.Raise(x => x.OnTrickEnd += null, new EventArgs());
-                Assert.IsTrue(addEventCalled, "event should be raised whenever a trick is added.");
                 if (i + 1 == 6)
                     Assert.IsTrue(endEventCalled, "When the last trick ended, so did the hand.");
                 else
