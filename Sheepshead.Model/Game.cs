@@ -16,7 +16,6 @@ namespace Sheepshead.Model
         public const int CARDS_IN_DECK = 32;
         public int PlayerCount => Players.Count();
         public int TrickCount => (int)Math.Floor(32d / PlayerCount);
-        public int Blind => CARDS_IN_DECK % Players.Count();
         public int HumanPlayerCount => Players.Count(p => p is IHumanPlayer);
         public bool LeastersEnabled { get; }
         public List<IPlayer> Players { get; }
