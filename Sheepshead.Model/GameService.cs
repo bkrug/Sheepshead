@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 
-using Sheepshead.Models.Wrappers;
-using Sheepshead.Models.Players;
+using Sheepshead.Model.Wrappers;
+using Sheepshead.Model.Players;
 
 
-namespace Sheepshead.Models
+namespace Sheepshead.Model
 {
     public class GameService : IGameService
     {

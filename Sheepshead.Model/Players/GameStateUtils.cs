@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
-namespace Sheepshead.Models.Players
+namespace Sheepshead.Model.Players
 {
     public static class GameStateUtils
     {

@@ -1,11 +1,10 @@
-﻿using Sheepshead.Models;
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Timers;
 
-namespace Sheepshead.Models
+namespace Sheepshead.Model
 {
     public class SelfClearingDictionary : IDictionary<Guid, IGame>
     {

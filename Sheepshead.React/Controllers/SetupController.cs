@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Linq;
-using Sheepshead.Models;
+using Sheepshead.Model;
 using Microsoft.AspNetCore.Mvc;
 using System.Reflection;
-using Microsoft.IdentityModel.Protocols;
 using Microsoft.Extensions.Configuration;
 
 namespace Sheepshead.React.Controllers

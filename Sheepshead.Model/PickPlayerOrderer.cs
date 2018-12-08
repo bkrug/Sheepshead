@@ -1,10 +1,10 @@
-﻿using Sheepshead.Models.Players;
+﻿using Sheepshead.Model.Players;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
 
-namespace Sheepshead.Models
+namespace Sheepshead.Model
 {
     public interface IPlayerOrderer
     {

@@ -3,8 +3,8 @@ using System.Linq;
 using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
-using Sheepshead.Models;
-using Sheepshead.Models.Players;
+using Sheepshead.Model;
+using Sheepshead.Model.Players;
 using Sheepshead.Tests.PlayerMocks;
 
 namespace Sheepshead.Tests

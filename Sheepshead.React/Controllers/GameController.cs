@@ -2,8 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.AspNetCore.Mvc;
-using Sheepshead.Models;
-using Sheepshead.Models.Players;
+using Sheepshead.Model;
+using Sheepshead.Model.Players;
 
 namespace Sheepshead.React.Controllers
 {

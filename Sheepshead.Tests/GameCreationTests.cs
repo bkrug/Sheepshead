@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Sheepshead.Models;
+using Sheepshead.Model;
 using Moq;
 
 namespace Sheepshead.Tests

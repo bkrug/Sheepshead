@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 
 
-namespace Sheepshead.Models.Players
+namespace Sheepshead.Model.Players
 {
     public class HumanPlayer : Player, IHumanPlayer
     {

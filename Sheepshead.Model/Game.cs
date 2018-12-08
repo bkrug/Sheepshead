@@ -1,15 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Sheepshead.Models.Players;
-using Sheepshead.Models.Wrappers;
-using Sheepshead.Model;
+using Sheepshead.Model.Players;
+using Sheepshead.Model.Wrappers;
 
-namespace Sheepshead.Models
+namespace Sheepshead.Model
 {
-    public class Game : IGame
+    public partial class Game
     {
-        public Guid Id { get; } = Guid.NewGuid();
+        public Guid Id { get; }
+    }
+
+    public partial class Game : IGame
+    {
         public const int CARDS_IN_DECK = 32;
         public int PlayerCount => Players.Count();
         public int TrickCount => (int)Math.Floor(32d / PlayerCount);
@@ -34,6 +37,7 @@ namespace Sheepshead.Models
         public Game(List<IPlayer> players, PartnerMethod partnerMethod, bool enableLeasters) : this(players, partnerMethod, null, null, null)
         {
             LeastersEnabled = enableLeasters;
+            Id = Guid.NewGuid();
         }
 
         //TODO: Make this internal except to test project
@@ -47,7 +51,8 @@ namespace Sheepshead.Models
             _random = random ?? new RandomWrapper();
             _handFactory = handFactory ?? new HandFactory();
             _gameStateDesciber = gameStateDescriber ?? new GameStateDescriber();
-        } 
+            Id = Guid.NewGuid();
+        }
 
         public void RearrangePlayers()
         {

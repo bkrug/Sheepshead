@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Linq;
 using System.Collections.Generic;
-using Sheepshead.Models.Players;
-using Sheepshead.Models.Wrappers;
+using Sheepshead.Model.Players;
+using Sheepshead.Model.Wrappers;
 
-namespace Sheepshead.Models
+namespace Sheepshead.Model
 {
     public class Deck : IDeck
     {
@@ -41,7 +41,7 @@ namespace Sheepshead.Models
         private Queue<SheepCard> ShuffleCards()
         {
             List<SheepCard> cards = CardUtil.UnshuffledList();
-            for (var i = Models.Game.CARDS_IN_DECK - 1; i > 0; --i)
+            for (var i = Model.Game.CARDS_IN_DECK - 1; i > 0; --i)
             {
                 var j = _random.Next(i);
                 var swap = cards[i];

@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 
-using Sheepshead.Models.Players;
+using Sheepshead.Model.Players;
 
-namespace Sheepshead.Models
+namespace Sheepshead.Model
 {
     public class Hand : IHand
     {
@@ -88,7 +88,7 @@ namespace Sheepshead.Models
         {
             _tricks.Add(trick);
             OnAddTrickHandler();
-            if (_tricks.Count == (int)(Sheepshead.Models.Game.CARDS_IN_DECK / Deck.PlayerCount))
+            if (_tricks.Count == (int)(Game.CARDS_IN_DECK / Deck.PlayerCount))
                 trick.OnTrickEnd += (Object sender, EventArgs e) => { OnHandEndHandler(); };
         }
 

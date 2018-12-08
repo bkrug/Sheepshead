@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Sheepshead.Models
+namespace Sheepshead.Model
 {
     public class BaseRepository<T>
         : IBaseRepository<T> where T : IGame

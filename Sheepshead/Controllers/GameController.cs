@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
-using Sheepshead.Models;
-using Sheepshead.Models.Wrappers;
-using Sheepshead.Models.Players;
+using Sheepshead.Model;
+using Sheepshead.Model.Wrappers;
+using Sheepshead.Model.Players;
 
 
 namespace Sheepshead.Controllers

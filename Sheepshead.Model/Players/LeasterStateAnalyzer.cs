@@ -1,8 +1,6 @@
-﻿using Sheepshead.Models;
-using Sheepshead.Models.Players;
-using System.Linq;
+﻿using System.Linq;
 
-namespace Sheepshead.Models.Players
+namespace Sheepshead.Model.Players
 {
     public interface ILeasterStateAnalyzer
     {

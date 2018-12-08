@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Sheepshead.Models;
-using Sheepshead.Models.Wrappers;
-using Sheepshead.Models.Players;
+using Sheepshead.Model;
+using Sheepshead.Model.Wrappers;
+using Sheepshead.Model.Players;
 
 
 namespace Sheepshead.Tests

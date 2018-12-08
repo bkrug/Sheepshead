@@ -1,6 +1,6 @@
 ﻿using System.Linq;
 
-namespace Sheepshead.Models.Players
+namespace Sheepshead.Model.Players
 {
     public interface IPlayCreator
     {
