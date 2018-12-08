@@ -6,13 +6,9 @@ using Sheepshead.Model.Wrappers;
 
 namespace Sheepshead.Model
 {
-    public partial class Game
+    public class Game : IGame
     {
         public Guid Id { get; }
-    }
-
-    public partial class Game : IGame
-    {
         public const int CARDS_IN_DECK = 32;
         public int PlayerCount => Players.Count();
         public int TrickCount => (int)Math.Floor(32d / PlayerCount);
