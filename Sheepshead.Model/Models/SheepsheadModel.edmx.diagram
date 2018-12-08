@@ -5,7 +5,7 @@
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
       <Diagram DiagramId="99ef0c90e61f4182b6fbcc5f993e43af" Name="Diagram1">
-        <EntityTypeShape EntityType="SheepsheadModel.Game" Width="1.5" PointX="0.75" PointY="3.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="SheepsheadModel.Game" Width="1.5" PointX="0.75" PointY="5.5" IsExpanded="true" />
         <EntityTypeShape EntityType="SheepsheadModel.Hand" Width="1.5" PointX="5.25" PointY="5.5" IsExpanded="true" />
         <EntityTypeShape EntityType="SheepsheadModel.Player" Width="1.5" PointX="3" PointY="7.875" IsExpanded="true" />
         <EntityTypeShape EntityType="SheepsheadModel.Trick" Width="1.5" PointX="7.5" PointY="7.125" IsExpanded="true" />

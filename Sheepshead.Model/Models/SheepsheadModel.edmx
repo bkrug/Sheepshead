@@ -249,9 +249,9 @@ warning 6002: The table/view 'Sheepshead.dbo.CardsPlayed' does not have a primar
           <Property Name="PartnerCard" Type="String" MaxLength="2" FixedLength="true" Unicode="false" />
           <Property Name="GameId" Type="Guid" Nullable="false" />
           <NavigationProperty Name="Game" Relationship="Self.FK_Hand_Game" FromRole="Hand" ToRole="Game" />
-          <NavigationProperty Name="Player" Relationship="Self.FK_Hand_Partner" FromRole="Hand" ToRole="Player" />
-          <NavigationProperty Name="Player1" Relationship="Self.FK_Hand_Picker" FromRole="Hand" ToRole="Player" />
-          <NavigationProperty Name="Player2" Relationship="Self.FK_Hand_StartingPlayer" FromRole="Hand" ToRole="Player" />
+          <NavigationProperty Name="Partner" Relationship="Self.FK_Hand_Partner" FromRole="Hand" ToRole="Player" />
+          <NavigationProperty Name="Picker" Relationship="Self.FK_Hand_Picker" FromRole="Hand" ToRole="Player" />
+          <NavigationProperty Name="StartingPlayer" Relationship="Self.FK_Hand_StartingPlayer" FromRole="Hand" ToRole="Player" />
           <NavigationProperty Name="Tricks" Relationship="Self.FK_Trick_Hand" FromRole="Hand" ToRole="Trick" />
         </EntityType>
         <EntityType Name="Player">
@@ -266,7 +266,7 @@ warning 6002: The table/view 'Sheepshead.dbo.CardsPlayed' does not have a primar
           <NavigationProperty Name="Hands" Relationship="Self.FK_Hand_Partner" FromRole="Player" ToRole="Hand" />
           <NavigationProperty Name="Hands1" Relationship="Self.FK_Hand_Picker" FromRole="Player" ToRole="Hand" />
           <NavigationProperty Name="Hands2" Relationship="Self.FK_Hand_StartingPlayer" FromRole="Player" ToRole="Hand" />
-          <NavigationProperty Name="CardsPlayeds" Relationship="Self.FK_CardsPlayed_Player" FromRole="Player" ToRole="CardsPlayed" />
+          <NavigationProperty Name="CardsPlayed" Relationship="Self.FK_CardsPlayed_Player" FromRole="Player" ToRole="CardsPlayed" />
           <NavigationProperty Name="Tricks" Relationship="Self.FK_Trick_Player" FromRole="Player" ToRole="Trick" />
         </EntityType>
         <EntityType Name="Trick">
@@ -277,8 +277,8 @@ warning 6002: The table/view 'Sheepshead.dbo.CardsPlayed' does not have a primar
           <Property Name="HandId" Type="Int32" Nullable="false" />
           <Property Name="StartingPlayerId" Type="Int32" Nullable="false" />
           <NavigationProperty Name="Hand" Relationship="Self.FK_Trick_Hand" FromRole="Trick" ToRole="Hand" />
-          <NavigationProperty Name="Player" Relationship="Self.FK_Trick_Player" FromRole="Trick" ToRole="Player" />
-          <NavigationProperty Name="CardsPlayeds" Relationship="Self.FK_CardsPlayed_Trick" FromRole="Trick" ToRole="CardsPlayed" />
+          <NavigationProperty Name="StartingPlayer" Relationship="Self.FK_Trick_Player" FromRole="Trick" ToRole="Player" />
+          <NavigationProperty Name="CardsPlayed" Relationship="Self.FK_CardsPlayed_Trick" FromRole="Trick" ToRole="CardsPlayed" />
         </EntityType>
         <EntityType Name="CardsPlayed">
           <Key>
