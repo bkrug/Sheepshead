@@ -105,6 +105,7 @@
     <Compile Include="Players\Player.cs" />
     <Compile Include="Properties\GlobalAssemblyInfo.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ScoreCalculator.cs" />
     <Compile Include="SelfClearingDictionary.cs" />
     <Compile Include="StartingPlayerCalculator.cs" />
     <Compile Include="Trick.cs" />

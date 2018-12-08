@@ -41,11 +41,11 @@ namespace Sheepshead.Tests
                 });
         }
 
-        private void MockTrickWinners(IHand hand, Mock<IPlayer> player, int points)
+        private ITrick MockTrickWinners(Mock<IPlayer> player, int points)
         {
             var trickMock = new Mock<ITrick>();
             trickMock.Setup(m => m.Winner()).Returns(new TrickWinner() { Player = player.Object, Points = points });
-            hand.AddTrick(trickMock.Object);
+            return trickMock.Object;
         }
 
         [TestMethod]
@@ -63,17 +63,22 @@ namespace Sheepshead.Tests
             deckMock.Setup(d => d.PlayerCount).Returns(5);
             deckMock.Setup(d => d.Players).Returns(new List<IPlayer>() { partnerMock.Object, player1Mock.Object, pickerMock.Object, player2Mock.Object, player3Mock.Object });
             deckMock.Setup(d => d.Buried).Returns(new List<SheepCard>() { SheepCard.ACE_CLUBS, SheepCard.N10_SPADES });
+            var handMock = new Mock<IHand>();
+            handMock.Setup(m => m.Picker).Returns(pickerMock.Object);
+            handMock.Setup(m => m.Partner).Returns(partnerMock.Object);
+            handMock.Setup(m => m.Deck).Returns(deckMock.Object);
+            handMock.Setup(m => m.Tricks).Returns(new List<ITrick>()
+            {
+                MockTrickWinners(pickerMock, 21),
+                MockTrickWinners(partnerMock, 12),
+                MockTrickWinners(pickerMock, 14),
+                MockTrickWinners(player1Mock, 17),
+                MockTrickWinners(player2Mock, 7),
+                MockTrickWinners(player3Mock, 28)
+            });
 
-            var hand = new Hand(deckMock.Object, pickerMock.Object, deckMock.Object.Buried);
-            hand.SetPartner(partnerMock.Object, null);
-            MockTrickWinners(hand, pickerMock, 21);
-            MockTrickWinners(hand, partnerMock, 12);
-            MockTrickWinners(hand, pickerMock, 14);
-            MockTrickWinners(hand, player1Mock, 17);
-            MockTrickWinners(hand, player2Mock, 7);
-            MockTrickWinners(hand, player3Mock, 28);
-
-            var scores = hand.InternalScores();
+            var calculator = new ScoreCalculator(handMock.Object);
+            var scores = calculator.InternalScores();
 
             Assert.AreEqual(21 + 14 + 21, scores.Points[pickerMock.Object], "Picker recieves the blind");
             Assert.AreEqual(12, scores.Points[partnerMock.Object]);
@@ -103,17 +108,22 @@ namespace Sheepshead.Tests
             deckMock.Setup(d => d.PlayerCount).Returns(5);
             deckMock.Setup(d => d.Players).Returns(new List<IPlayer>() { partnerMock.Object, player1Mock.Object, pickerMock.Object, player2Mock.Object, player3Mock.Object });
             deckMock.Setup(d => d.Buried).Returns(new List<SheepCard>() { SheepCard.KING_CLUBS, SheepCard.ACE_SPADES });
+            var handMock = new Mock<IHand>();
+            handMock.Setup(m => m.Picker).Returns(pickerMock.Object);
+            handMock.Setup(m => m.Partner).Returns(partnerMock.Object);
+            handMock.Setup(m => m.Deck).Returns(deckMock.Object);
+            handMock.Setup(m => m.Tricks).Returns(new List<ITrick>()
+            {
+                MockTrickWinners(pickerMock, 21),
+                MockTrickWinners(partnerMock, 23),
+                MockTrickWinners(pickerMock, 28),
+                MockTrickWinners(partnerMock, 14),
+                MockTrickWinners(player2Mock, 7),
+                MockTrickWinners(player3Mock, 12)
+            });
 
-            var hand = new Hand(deckMock.Object, pickerMock.Object, deckMock.Object.Buried);
-            hand.SetPartner(partnerMock.Object, null);
-            MockTrickWinners(hand, pickerMock, 21);
-            MockTrickWinners(hand, partnerMock, 23);
-            MockTrickWinners(hand, pickerMock, 28);
-            MockTrickWinners(hand, partnerMock, 14);
-            MockTrickWinners(hand, player2Mock, 7);
-            MockTrickWinners(hand, player3Mock, 12);
-
-            var scores = hand.InternalScores();
+            var calculator = new ScoreCalculator(handMock.Object);
+            var scores = calculator.InternalScores();
 
             Assert.AreEqual(21 + 28 + 15, scores.Points[pickerMock.Object], "Picker recieves the blind");
             Assert.AreEqual(23 + 14, scores.Points[partnerMock.Object]);
@@ -143,17 +153,22 @@ namespace Sheepshead.Tests
             deckMock.Setup(d => d.PlayerCount).Returns(5);
             deckMock.Setup(d => d.Players).Returns(new List<IPlayer>() { partnerMock.Object, player1Mock.Object, pickerMock.Object, player2Mock.Object, player3Mock.Object });
             deckMock.Setup(d => d.Buried).Returns(new List<SheepCard>() { SheepCard.KING_SPADES, SheepCard.N10_HEARTS });
+            var handMock = new Mock<IHand>();
+            handMock.Setup(m => m.Picker).Returns(pickerMock.Object);
+            handMock.Setup(m => m.Partner).Returns(partnerMock.Object);
+            handMock.Setup(m => m.Deck).Returns(deckMock.Object);
+            handMock.Setup(m => m.Tricks).Returns(new List<ITrick>()
+            {
+                MockTrickWinners(pickerMock, 21),
+                MockTrickWinners(partnerMock, 23),
+                MockTrickWinners(pickerMock, 28),
+                MockTrickWinners(partnerMock, 14),
+                MockTrickWinners(pickerMock, 7),
+                MockTrickWinners(pickerMock, 12),
+            });
 
-            var hand = new Hand(deckMock.Object, pickerMock.Object, deckMock.Object.Buried);
-            hand.SetPartner(partnerMock.Object, null);
-            MockTrickWinners(hand, pickerMock, 21);
-            MockTrickWinners(hand, partnerMock, 23);
-            MockTrickWinners(hand, pickerMock, 28);
-            MockTrickWinners(hand, partnerMock, 14);
-            MockTrickWinners(hand, pickerMock, 7);
-            MockTrickWinners(hand, pickerMock, 12);
-
-            var scores = hand.InternalScores();
+            var calculator = new ScoreCalculator(handMock.Object);
+            var scores = calculator.InternalScores();
 
             Assert.AreEqual(21 + 28 + 7 + 12 + 14, scores.Points[pickerMock.Object], "Picker recieves the blind");
             Assert.AreEqual(23 + 14, scores.Points[partnerMock.Object]);
@@ -183,17 +198,22 @@ namespace Sheepshead.Tests
             deckMock.Setup(d => d.PlayerCount).Returns(5);
             deckMock.Setup(d => d.Players).Returns(new List<IPlayer>() { partnerMock.Object, player1Mock.Object, pickerMock.Object, player2Mock.Object, player3Mock.Object });
             deckMock.Setup(d => d.Buried).Returns(new List<SheepCard>() { SheepCard.KING_CLUBS, SheepCard.ACE_HEARTS });
+            var handMock = new Mock<IHand>();
+            handMock.Setup(m => m.Picker).Returns(pickerMock.Object);
+            handMock.Setup(m => m.Partner).Returns(partnerMock.Object);
+            handMock.Setup(m => m.Deck).Returns(deckMock.Object);
+            handMock.Setup(m => m.Tricks).Returns(new List<ITrick>()
+            {
+                MockTrickWinners(pickerMock, 20),
+                MockTrickWinners(pickerMock, 15),
+                MockTrickWinners(partnerMock, 10),
+                MockTrickWinners(player1Mock, 27),
+                MockTrickWinners(player2Mock, 18),
+                MockTrickWinners(player3Mock, 15),
+            });
 
-            var hand = new Hand(deckMock.Object, pickerMock.Object, deckMock.Object.Buried);
-            hand.SetPartner(partnerMock.Object, null);
-            MockTrickWinners(hand, pickerMock, 20);
-            MockTrickWinners(hand, pickerMock, 15);
-            MockTrickWinners(hand, partnerMock, 10);
-            MockTrickWinners(hand, player1Mock, 27);
-            MockTrickWinners(hand, player2Mock, 18);
-            MockTrickWinners(hand, player3Mock, 15);
-
-            var scores = hand.InternalScores();
+            var calculator = new ScoreCalculator(handMock.Object);
+            var scores = calculator.InternalScores();
 
             Assert.AreEqual(20 + 15 + 15, scores.Points[pickerMock.Object], "Picker recieves the blind");
             Assert.AreEqual(10, scores.Points[partnerMock.Object]);
@@ -223,17 +243,22 @@ namespace Sheepshead.Tests
             deckMock.Setup(d => d.PlayerCount).Returns(5);
             deckMock.Setup(d => d.Players).Returns(new List<IPlayer>() { partnerMock.Object, player1Mock.Object, pickerMock.Object, player2Mock.Object, player3Mock.Object });
             deckMock.Setup(d => d.Buried).Returns(new List<SheepCard>() { SheepCard.QUEEN_HEARTS, SheepCard.JACK_DIAMONDS });
+            var handMock = new Mock<IHand>();
+            handMock.Setup(m => m.Picker).Returns(pickerMock.Object);
+            handMock.Setup(m => m.Partner).Returns(partnerMock.Object);
+            handMock.Setup(m => m.Deck).Returns(deckMock.Object);
+            handMock.Setup(m => m.Tricks).Returns(new List<ITrick>()
+            {
+                MockTrickWinners(pickerMock, 10),
+                MockTrickWinners(partnerMock, 15),
+                MockTrickWinners(player1Mock, 20),
+                MockTrickWinners(player1Mock, 28),
+                MockTrickWinners(player2Mock, 27),
+                MockTrickWinners(player3Mock, 15),
+            });
 
-            var hand = new Hand(deckMock.Object, pickerMock.Object, deckMock.Object.Buried);
-            hand.SetPartner(partnerMock.Object, null);
-            MockTrickWinners(hand, pickerMock, 10);
-            MockTrickWinners(hand, partnerMock, 15);
-            MockTrickWinners(hand, player1Mock, 20);
-            MockTrickWinners(hand, player1Mock, 28);
-            MockTrickWinners(hand, player2Mock, 27);
-            MockTrickWinners(hand, player3Mock, 15);
-
-            var scores = hand.InternalScores();
+            var calculator = new ScoreCalculator(handMock.Object);
+            var scores = calculator.InternalScores();
 
             Assert.AreEqual(10 + 5, scores.Points[pickerMock.Object], "Picker recieves the blind");
             Assert.AreEqual(15, scores.Points[partnerMock.Object]);
@@ -263,17 +288,22 @@ namespace Sheepshead.Tests
             deckMock.Setup(d => d.PlayerCount).Returns(5);
             deckMock.Setup(d => d.Players).Returns(new List<IPlayer>() { partnerMock.Object, player1Mock.Object, pickerMock.Object, player2Mock.Object, player3Mock.Object });
             deckMock.Setup(d => d.Buried).Returns(new List<SheepCard>() { SheepCard.ACE_SPADES, SheepCard.ACE_HEARTS });
+            var handMock = new Mock<IHand>();
+            handMock.Setup(m => m.Picker).Returns(pickerMock.Object);
+            handMock.Setup(m => m.Partner).Returns(partnerMock.Object);
+            handMock.Setup(m => m.Deck).Returns(deckMock.Object);
+            handMock.Setup(m => m.Tricks).Returns(new List<ITrick>()
+            {
+                MockTrickWinners(player1Mock, 10),
+                MockTrickWinners(player1Mock, 6),
+                MockTrickWinners(player2Mock, 20),
+                MockTrickWinners(player2Mock, 28),
+                MockTrickWinners(player3Mock, 19),
+                MockTrickWinners(player3Mock, 15),
+            });
 
-            var hand = new Hand(deckMock.Object, pickerMock.Object, deckMock.Object.Buried);
-            hand.SetPartner(partnerMock.Object, null);
-            MockTrickWinners(hand, player1Mock, 10);
-            MockTrickWinners(hand, player1Mock, 6);
-            MockTrickWinners(hand, player2Mock, 20);
-            MockTrickWinners(hand, player2Mock, 28);
-            MockTrickWinners(hand, player3Mock, 19);
-            MockTrickWinners(hand, player3Mock, 15);
-
-            var scores = hand.InternalScores();
+            var calculator = new ScoreCalculator(handMock.Object);
+            var scores = calculator.InternalScores();
 
             Assert.AreEqual(22, scores.Points[pickerMock.Object], "Picker recieves the blind");
             Assert.IsFalse(scores.Points.ContainsKey(partnerMock.Object));
@@ -303,16 +333,21 @@ namespace Sheepshead.Tests
             deckMock.Setup(d => d.PlayerCount).Returns(5);
             deckMock.Setup(d => d.Players).Returns(new List<IPlayer>() { player4Mock.Object, player1Mock.Object, pickerMock.Object, player2Mock.Object, player3Mock.Object });
             deckMock.Setup(d => d.Buried).Returns(new List<SheepCard>() { SheepCard.ACE_CLUBS, SheepCard.N10_SPADES });
+            var handMock = new Mock<IHand>();
+            handMock.Setup(m => m.Picker).Returns(pickerMock.Object);
+            handMock.Setup(m => m.Deck).Returns(deckMock.Object);
+            handMock.Setup(m => m.Tricks).Returns(new List<ITrick>()
+            {
+                MockTrickWinners(pickerMock, 21),
+                MockTrickWinners(pickerMock, 12),
+                MockTrickWinners(pickerMock, 14),
+                MockTrickWinners(player1Mock, 17),
+                MockTrickWinners(player2Mock, 7),
+                MockTrickWinners(player3Mock, 28),
+            });
 
-            var hand = new Hand(deckMock.Object, pickerMock.Object, deckMock.Object.Buried);
-            MockTrickWinners(hand, pickerMock, 21);
-            MockTrickWinners(hand, pickerMock, 12);
-            MockTrickWinners(hand, pickerMock, 14);
-            MockTrickWinners(hand, player1Mock, 17);
-            MockTrickWinners(hand, player2Mock, 7);
-            MockTrickWinners(hand, player3Mock, 28);
-
-            var scores = hand.InternalScores();
+            var calculator = new ScoreCalculator(handMock.Object);
+            var scores = calculator.InternalScores();
 
             Assert.AreEqual(21 + 12 + 14 + 21, scores.Points[pickerMock.Object], "Picker recieves the blind");
             Assert.AreEqual(17, scores.Points[player1Mock.Object]);
@@ -342,16 +377,21 @@ namespace Sheepshead.Tests
             deckMock.Setup(d => d.PlayerCount).Returns(5);
             deckMock.Setup(d => d.Players).Returns(new List<IPlayer>() { player4Mock.Object, player1Mock.Object, pickerMock.Object, player2Mock.Object, player3Mock.Object });
             deckMock.Setup(d => d.Buried).Returns(new List<SheepCard>() { SheepCard.ACE_CLUBS, SheepCard.N10_SPADES });
+            var handMock = new Mock<IHand>();
+            handMock.Setup(m => m.Picker).Returns(pickerMock.Object);
+            handMock.Setup(m => m.Deck).Returns(deckMock.Object);
+            handMock.Setup(m => m.Tricks).Returns(new List<ITrick>()
+            {
+                MockTrickWinners(player1Mock, 12),
+                MockTrickWinners(player1Mock, 17),
+                MockTrickWinners(player2Mock, 21),
+                MockTrickWinners(player2Mock, 7),
+                MockTrickWinners(player3Mock, 28),
+                MockTrickWinners(player4Mock, 14),
+            });
 
-            var hand = new Hand(deckMock.Object, pickerMock.Object, deckMock.Object.Buried);
-            MockTrickWinners(hand, player1Mock, 12);
-            MockTrickWinners(hand, player1Mock, 17);
-            MockTrickWinners(hand, player2Mock, 21);
-            MockTrickWinners(hand, player2Mock, 7);
-            MockTrickWinners(hand, player3Mock, 28);
-            MockTrickWinners(hand, player4Mock, 14);
-
-            var scores = hand.InternalScores();
+            var calculator = new ScoreCalculator(handMock.Object);
+            var scores = calculator.InternalScores();
 
             Assert.AreEqual(21, scores.Points[pickerMock.Object], "Picker recieves the blind");
             Assert.AreEqual(29, scores.Points[player1Mock.Object]);
@@ -378,20 +418,25 @@ namespace Sheepshead.Tests
             deckMock.Setup(d => d.PlayerCount).Returns(3);
             deckMock.Setup(d => d.Players).Returns(new List<IPlayer>() { player1Mock.Object, pickerMock.Object, player2Mock.Object });
             deckMock.Setup(d => d.Buried).Returns(new List<SheepCard>() { SheepCard.ACE_CLUBS, SheepCard.ACE_DIAMONDS });
+            var handMock = new Mock<IHand>();
+            handMock.Setup(m => m.Picker).Returns(pickerMock.Object);
+            handMock.Setup(m => m.Deck).Returns(deckMock.Object);
+            handMock.Setup(m => m.Tricks).Returns(new List<ITrick>()
+            {
+                MockTrickWinners(player1Mock, 15),
+                MockTrickWinners(player1Mock, 16),
+                MockTrickWinners(player1Mock, 7),
+                MockTrickWinners(player1Mock, 4),
+                MockTrickWinners(player1Mock, 13),
+                MockTrickWinners(player2Mock, 4),
+                MockTrickWinners(player2Mock, 14),
+                MockTrickWinners(player2Mock, 4),
+                MockTrickWinners(player2Mock, 11),
+                MockTrickWinners(player2Mock, 10),
+            });
 
-            var hand = new Hand(deckMock.Object, pickerMock.Object, deckMock.Object.Buried);
-            MockTrickWinners(hand, player1Mock, 15);
-            MockTrickWinners(hand, player1Mock, 16);
-            MockTrickWinners(hand, player1Mock, 7);
-            MockTrickWinners(hand, player1Mock, 4);
-            MockTrickWinners(hand, player1Mock, 13);
-            MockTrickWinners(hand, player2Mock, 4);
-            MockTrickWinners(hand, player2Mock, 14);
-            MockTrickWinners(hand, player2Mock, 4);
-            MockTrickWinners(hand, player2Mock, 11);
-            MockTrickWinners(hand, player2Mock, 10);
-
-            var scores = hand.InternalScores();
+            var calculator = new ScoreCalculator(handMock.Object);
+            var scores = calculator.InternalScores();
 
             Assert.AreEqual(22, scores.Points[pickerMock.Object], "Picker recieves the blind");
             Assert.AreEqual(55, scores.Points[player1Mock.Object]);
@@ -414,20 +459,25 @@ namespace Sheepshead.Tests
             deckMock.Setup(d => d.PlayerCount).Returns(3);
             deckMock.Setup(d => d.Players).Returns(new List<IPlayer>() { player1Mock.Object, pickerMock.Object, player2Mock.Object });
             deckMock.Setup(d => d.Buried).Returns(new List<SheepCard>() { SheepCard.ACE_CLUBS, SheepCard.KING_SPADES });
+            var handMock = new Mock<IHand>();
+            handMock.Setup(m => m.Picker).Returns(pickerMock.Object);
+            handMock.Setup(m => m.Deck).Returns(deckMock.Object);
+            handMock.Setup(m => m.Tricks).Returns(new List<ITrick>()
+            {
+                MockTrickWinners(pickerMock, 11),
+                MockTrickWinners(pickerMock, 22),
+                MockTrickWinners(pickerMock, 10),
+                MockTrickWinners(player1Mock, 4),
+                MockTrickWinners(player1Mock, 4),
+                MockTrickWinners(player1Mock, 16),
+                MockTrickWinners(player1Mock, 7),
+                MockTrickWinners(player2Mock, 14),
+                MockTrickWinners(player2Mock, 13),
+                MockTrickWinners(player2Mock, 4),
+            });
 
-            var hand = new Hand(deckMock.Object, pickerMock.Object, deckMock.Object.Buried);
-            MockTrickWinners(hand, pickerMock, 11);
-            MockTrickWinners(hand, pickerMock, 22);
-            MockTrickWinners(hand, pickerMock, 10);
-            MockTrickWinners(hand, player1Mock, 4);
-            MockTrickWinners(hand, player1Mock, 4);
-            MockTrickWinners(hand, player1Mock, 16);
-            MockTrickWinners(hand, player1Mock, 7);
-            MockTrickWinners(hand, player2Mock, 14);
-            MockTrickWinners(hand, player2Mock, 13);
-            MockTrickWinners(hand, player2Mock, 4);
-
-            var scores = hand.InternalScores();
+            var calculator = new ScoreCalculator(handMock.Object);
+            var scores = calculator.InternalScores();
 
             Assert.AreEqual(58, scores.Points[pickerMock.Object], "Picker recieves the blind");
             Assert.AreEqual(31, scores.Points[player1Mock.Object]);
@@ -450,20 +500,25 @@ namespace Sheepshead.Tests
             deckMock.Setup(d => d.PlayerCount).Returns(3);
             deckMock.Setup(d => d.Players).Returns(new List<IPlayer>() { player1Mock.Object, pickerMock.Object, player2Mock.Object });
             deckMock.Setup(d => d.Buried).Returns(new List<SheepCard>() { SheepCard.ACE_CLUBS, SheepCard.KING_SPADES });
+            var handMock = new Mock<IHand>();
+            handMock.Setup(m => m.Picker).Returns(pickerMock.Object);
+            handMock.Setup(m => m.Deck).Returns(deckMock.Object);
+            handMock.Setup(m => m.Tricks).Returns(new List<ITrick>()
+            {
+                MockTrickWinners(pickerMock, 11),
+                MockTrickWinners(pickerMock, 22),
+                MockTrickWinners(pickerMock, 10),
+                MockTrickWinners(pickerMock, 7),
+                MockTrickWinners(player1Mock, 4),
+                MockTrickWinners(player1Mock, 4),
+                MockTrickWinners(player1Mock, 16),
+                MockTrickWinners(player2Mock, 14),
+                MockTrickWinners(player2Mock, 13),
+                MockTrickWinners(player2Mock, 4),
+            });
 
-            var hand = new Hand(deckMock.Object, pickerMock.Object, deckMock.Object.Buried);
-            MockTrickWinners(hand, pickerMock, 11);
-            MockTrickWinners(hand, pickerMock, 22);
-            MockTrickWinners(hand, pickerMock, 10);
-            MockTrickWinners(hand, pickerMock, 7);
-            MockTrickWinners(hand, player1Mock, 4);
-            MockTrickWinners(hand, player1Mock, 4);
-            MockTrickWinners(hand, player1Mock, 16);
-            MockTrickWinners(hand, player2Mock, 14);
-            MockTrickWinners(hand, player2Mock, 13);
-            MockTrickWinners(hand, player2Mock, 4);
-
-            var scores = hand.InternalScores();
+            var calculator = new ScoreCalculator(handMock.Object);
+            var scores = calculator.InternalScores();
 
             Assert.AreEqual(65, scores.Points[pickerMock.Object], "Picker recieves the blind");
             Assert.AreEqual(24, scores.Points[player1Mock.Object]);
@@ -486,20 +541,25 @@ namespace Sheepshead.Tests
             deckMock.Setup(d => d.PlayerCount).Returns(3);
             deckMock.Setup(d => d.Players).Returns(new List<IPlayer>() { player1Mock.Object, pickerMock.Object, player2Mock.Object });
             deckMock.Setup(d => d.Buried).Returns(new List<SheepCard>() { SheepCard.ACE_CLUBS, SheepCard.KING_SPADES });
+            var handMock = new Mock<IHand>();
+            handMock.Setup(m => m.Picker).Returns(pickerMock.Object);
+            handMock.Setup(m => m.Deck).Returns(deckMock.Object);
+            handMock.Setup(m => m.Tricks).Returns(new List<ITrick>()
+            {
+                MockTrickWinners(pickerMock, 11),
+                MockTrickWinners(pickerMock, 22),
+                MockTrickWinners(pickerMock, 10),
+                MockTrickWinners(pickerMock, 7),
+                MockTrickWinners(pickerMock, 4),
+                MockTrickWinners(pickerMock, 4),
+                MockTrickWinners(pickerMock, 16),
+                MockTrickWinners(pickerMock, 14),
+                MockTrickWinners(pickerMock, 13),
+                MockTrickWinners(pickerMock, 4),
+            });
 
-            var hand = new Hand(deckMock.Object, pickerMock.Object, deckMock.Object.Buried);
-            MockTrickWinners(hand, pickerMock, 11);
-            MockTrickWinners(hand, pickerMock, 22);
-            MockTrickWinners(hand, pickerMock, 10);
-            MockTrickWinners(hand, pickerMock, 7);
-            MockTrickWinners(hand, pickerMock, 4);
-            MockTrickWinners(hand, pickerMock, 4);
-            MockTrickWinners(hand, pickerMock, 16);
-            MockTrickWinners(hand, pickerMock, 14);
-            MockTrickWinners(hand, pickerMock, 13);
-            MockTrickWinners(hand, pickerMock, 4);
-
-            var scores = hand.InternalScores();
+            var calculator = new ScoreCalculator(handMock.Object);
+            var scores = calculator.InternalScores();
 
             Assert.AreEqual(120, scores.Points[pickerMock.Object], "Picker recieves the blind");
             Assert.IsFalse(scores.Points.ContainsKey(player1Mock.Object));
@@ -522,16 +582,21 @@ namespace Sheepshead.Tests
             deckMock.Setup(d => d.Blinds).Returns(new List<SheepCard>() { SheepCard.N8_CLUBS, SheepCard.N7_CLUBS });
             deckMock.Setup(d => d.PlayerCount).Returns(5);
             deckMock.Setup(d => d.Players).Returns(new List<IPlayer>() { player4Mock.Object, player1Mock.Object, player5Mock.Object, player2Mock.Object, player3Mock.Object });
+            var handMock = new Mock<IHand>();
+            handMock.Setup(m => m.Deck).Returns(deckMock.Object);
+            handMock.Setup(m => m.Leasters).Returns(true);
+            handMock.Setup(m => m.Tricks).Returns(new List<ITrick>()
+            {
+                MockTrickWinners(player1Mock, 12),
+                MockTrickWinners(player1Mock, 17),
+                MockTrickWinners(player2Mock, 21),
+                MockTrickWinners(player2Mock, 7),
+                MockTrickWinners(player3Mock, 28),
+                MockTrickWinners(player4Mock, 14),
+            });
 
-            var hand = new Hand(deckMock.Object, null, null);
-            MockTrickWinners(hand, player1Mock, 12);
-            MockTrickWinners(hand, player1Mock, 17);
-            MockTrickWinners(hand, player2Mock, 21);
-            MockTrickWinners(hand, player2Mock, 7);
-            MockTrickWinners(hand, player3Mock, 28);
-            MockTrickWinners(hand, player4Mock, 14);
-
-            var scores = hand.InternalScores();
+            var calculator = new ScoreCalculator(handMock.Object);
+            var scores = calculator.InternalScores();
 
             Assert.AreEqual(29, scores.Points[player1Mock.Object]);
             Assert.AreEqual(28, scores.Points[player2Mock.Object]);
@@ -558,16 +623,21 @@ namespace Sheepshead.Tests
             deckMock.Setup(d => d.Blinds).Returns(new List<SheepCard>() { SheepCard.N8_CLUBS, SheepCard.N7_CLUBS });
             deckMock.Setup(d => d.PlayerCount).Returns(5);
             deckMock.Setup(d => d.Players).Returns(new List<IPlayer>() { player4Mock.Object, player1Mock.Object, player5Mock.Object, player2Mock.Object, player3Mock.Object });
+            var handMock = new Mock<IHand>();
+            handMock.Setup(m => m.Deck).Returns(deckMock.Object);
+            handMock.Setup(m => m.Leasters).Returns(true);
+            handMock.Setup(m => m.Tricks).Returns(new List<ITrick>()
+            {
+                MockTrickWinners(player2Mock, 12),
+                MockTrickWinners(player2Mock, 17),
+                MockTrickWinners(player2Mock, 21),
+                MockTrickWinners(player2Mock, 7),
+                MockTrickWinners(player2Mock, 28),
+                MockTrickWinners(player2Mock, 14),
+            });
 
-            var hand = new Hand(deckMock.Object, null, null);
-            MockTrickWinners(hand, player2Mock, 12);
-            MockTrickWinners(hand, player2Mock, 17);
-            MockTrickWinners(hand, player2Mock, 21);
-            MockTrickWinners(hand, player2Mock, 7);
-            MockTrickWinners(hand, player2Mock, 28);
-            MockTrickWinners(hand, player2Mock, 14);
-
-            var scores = hand.InternalScores();
+            var calculator = new ScoreCalculator(handMock.Object);
+            var scores = calculator.InternalScores();
 
             Assert.IsFalse(scores.Points.ContainsKey(player1Mock.Object));
             Assert.AreEqual(12 + 17 + 21 + 7 + 28 + 14, scores.Points[player2Mock.Object]);
@@ -592,20 +662,25 @@ namespace Sheepshead.Tests
             deckMock.Setup(d => d.Blinds).Returns(new List<SheepCard>() { SheepCard.N10_HEARTS, SheepCard.N7_CLUBS });
             deckMock.Setup(d => d.PlayerCount).Returns(3);
             deckMock.Setup(d => d.Players).Returns(new List<IPlayer>() { player1Mock.Object, player3Mock.Object, player2Mock.Object });
+            var handMock = new Mock<IHand>();
+            handMock.Setup(m => m.Deck).Returns(deckMock.Object);
+            handMock.Setup(m => m.Leasters).Returns(true);
+            handMock.Setup(m => m.Tricks).Returns(new List<ITrick>()
+            {
+                MockTrickWinners(player1Mock, 11),
+                MockTrickWinners(player1Mock, 22),
+                MockTrickWinners(player1Mock, 10),
+                MockTrickWinners(player2Mock, 7),
+                MockTrickWinners(player2Mock, 4),
+                MockTrickWinners(player3Mock, 4),
+                MockTrickWinners(player3Mock, 16),
+                MockTrickWinners(player3Mock, 14),
+                MockTrickWinners(player3Mock, 13),
+                MockTrickWinners(player3Mock, 4),
+            });
 
-            var hand = new Hand(deckMock.Object, null, null);
-            MockTrickWinners(hand, player1Mock, 11);
-            MockTrickWinners(hand, player1Mock, 22);
-            MockTrickWinners(hand, player1Mock, 10);
-            MockTrickWinners(hand, player2Mock, 7);
-            MockTrickWinners(hand, player2Mock, 4);
-            MockTrickWinners(hand, player3Mock, 4);
-            MockTrickWinners(hand, player3Mock, 16);
-            MockTrickWinners(hand, player3Mock, 14);
-            MockTrickWinners(hand, player3Mock, 13);
-            MockTrickWinners(hand, player3Mock, 4);
-
-            var scores = hand.InternalScores();
+            var calculator = new ScoreCalculator(handMock.Object);
+            var scores = calculator.InternalScores();
 
             Assert.AreEqual(11 + 22 + 10, scores.Points[player1Mock.Object]);
             Assert.AreEqual(7 + 4, scores.Points[player2Mock.Object]);
@@ -614,12 +689,6 @@ namespace Sheepshead.Tests
             Assert.AreEqual(-1, scores.Coins[player1Mock.Object]);
             Assert.AreEqual(2, scores.Coins[player2Mock.Object]);
             Assert.AreEqual(-1, scores.Coins[player3Mock.Object]);
-        }
-
-        [TestMethod]
-        public void Hand_Scores_Leasters_WithBlind()
-        {
-
         }
 
         [TestMethod]
