@@ -51,7 +51,6 @@ namespace Sheepshead.Tests
         [TestMethod]
         public void Hand_Scores_5Player_DefenseLooseOneCoin()
         {
-            var deckMock = new Mock<IHand>();
             var pickerMock = new Mock<IPlayer>();
             var partnerMock = new Mock<IPlayer>();
             var player1Mock = new Mock<IPlayer>();
@@ -95,7 +94,6 @@ namespace Sheepshead.Tests
         [TestMethod]
         public void Hand_Scores_5Player_DefenseLooseTwoCoins()
         {
-            var deckMock = new Mock<IHand>();
             var pickerMock = new Mock<IPlayer>();
             var partnerMock = new Mock<IPlayer>();
             var player1Mock = new Mock<IPlayer>();
@@ -139,7 +137,6 @@ namespace Sheepshead.Tests
         [TestMethod]
         public void Hand_Scores_5Player_DefenseLooseThreeCoins()
         {
-            var deckMock = new Mock<IHand>();
             var pickerMock = new Mock<IPlayer>();
             var partnerMock = new Mock<IPlayer>();
             var player1Mock = new Mock<IPlayer>();
@@ -183,7 +180,6 @@ namespace Sheepshead.Tests
         [TestMethod]
         public void Hand_Scores_5Player_DefenseWinsOneCoin()
         {
-            var deckMock = new Mock<IHand>();
             var pickerMock = new Mock<IPlayer>();
             var partnerMock = new Mock<IPlayer>();
             var player1Mock = new Mock<IPlayer>();
@@ -227,7 +223,6 @@ namespace Sheepshead.Tests
         [TestMethod]
         public void Hand_Scores_5Player_DefenseWinsTwoCoins()
         {
-            var deckMock = new Mock<IHand>();
             var pickerMock = new Mock<IPlayer>();
             var partnerMock = new Mock<IPlayer>();
             var player1Mock = new Mock<IPlayer>();
@@ -271,7 +266,6 @@ namespace Sheepshead.Tests
         [TestMethod]
         public void Hand_Scores_5Player_DefenseWinsThreeCoins()
         {
-            var deckMock = new Mock<IHand>();
             var pickerMock = new Mock<IPlayer>();
             var partnerMock = new Mock<IPlayer>();
             var player1Mock = new Mock<IPlayer>();
@@ -315,7 +309,6 @@ namespace Sheepshead.Tests
         [TestMethod]
         public void Hand_Scores_5Player_NoPartner()
         {
-            var deckMock = new Mock<IHand>();
             var pickerMock = new Mock<IPlayer>();
             var player1Mock = new Mock<IPlayer>();
             var player2Mock = new Mock<IPlayer>();
@@ -358,7 +351,6 @@ namespace Sheepshead.Tests
         [TestMethod]
         public void Hand_Scores_5Player_NoPartner_PickerWinsNoTricks()
         {
-            var deckMock = new Mock<IHand>();
             var pickerMock = new Mock<IPlayer>();
             var player1Mock = new Mock<IPlayer>();
             var player2Mock = new Mock<IPlayer>();
@@ -557,7 +549,6 @@ namespace Sheepshead.Tests
         [TestMethod]
         public void Hand_Scores_Leasters_5Player_WithoutBlind()
         {
-            var deckMock = new Mock<IHand>();
             var player1Mock = new Mock<IPlayer>();
             var player2Mock = new Mock<IPlayer>();
             var player3Mock = new Mock<IPlayer>();
@@ -597,7 +588,6 @@ namespace Sheepshead.Tests
         [TestMethod]
         public void Hand_Scores_Leasters_5Player_AllTricksToOnePlayer_WithoutBlind()
         {
-            var deckMock = new Mock<IHand>();
             var player1Mock = new Mock<IPlayer>();
             var player2Mock = new Mock<IPlayer>();
             var player3Mock = new Mock<IPlayer>();
@@ -637,7 +627,6 @@ namespace Sheepshead.Tests
         [TestMethod]
         public void Hand_Scores_Leasters_3Player_WithoutBlind()
         {
-            var deckMock = new Mock<IHand>();
             var player1Mock = new Mock<IPlayer>();
             var player2Mock = new Mock<IPlayer>();
             var player3Mock = new Mock<IPlayer>();

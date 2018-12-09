@@ -89,8 +89,8 @@ namespace Sheepshead.Tests
             };
             var playersDifferentOrder = players.Skip(2).Union(players.Take(2)).ToList();
             var trickMock = new Mock<ITrick>();
-            var deckMock = new Mock<IHand>();
-            deckMock.Setup(m => m.Tricks).Returns(new List<ITrick>() { trickMock.Object });
+            var handMock = new Mock<IHand>();
+            handMock.Setup(m => m.Tricks).Returns(new List<ITrick>() { trickMock.Object });
             trickMock.Setup(m => m.PlayersWithoutTurn).Returns(players);
             var gameStateDescriberMock = new Mock<IGameStateDescriber>();
             gameStateDescriberMock.Setup(m => m.CurrentTrick).Returns(trickMock.Object);
@@ -113,11 +113,11 @@ namespace Sheepshead.Tests
             };
             var refusingPick = players.Take(1).ToList();
             var unplayedPlayers = players.Skip(1).ToList();
-            var deckMock = new Mock<IHand>();
-            deckMock.Setup(m => m.PlayersRefusingPick).Returns(refusingPick);
-            deckMock.Setup(m => m.PlayersWithoutPickTurn).Returns(unplayedPlayers);
+            var handMock = new Mock<IHand>();
+            handMock.Setup(m => m.PlayersRefusingPick).Returns(refusingPick);
+            handMock.Setup(m => m.PlayersWithoutPickTurn).Returns(unplayedPlayers);
             var gameStateDescriberMock = new Mock<IGameStateDescriber>();
-            gameStateDescriberMock.Setup(m => m.CurrentHand).Returns(deckMock.Object);
+            gameStateDescriberMock.Setup(m => m.CurrentHand).Returns(handMock.Object);
             gameStateDescriberMock.Setup(m => m.GetTurnType()).Returns(TurnType.Pick);
             
             var game = new Game(players, PartnerMethod.JackOfDiamonds, null, gameStateDescriberMock.Object);
@@ -139,12 +139,12 @@ namespace Sheepshead.Tests
             var unplayedPlayers = playerList.Skip(1).ToList();
             var expectedPicker = playerList[2] as IComputerPlayer;
             var refusingPick = playerList.Take(1).ToList();
-            var deckMock = new Mock<IHand>();
-            deckMock.Setup(m => m.PlayersWithoutPickTurn).Returns(unplayedPlayers);
-            deckMock.Setup(m => m.PlayersRefusingPick).Returns(refusingPick);
-            deckMock.Setup(m => m.Game.PartnerMethod);
+            var handMock = new Mock<IHand>();
+            handMock.Setup(m => m.PlayersWithoutPickTurn).Returns(unplayedPlayers);
+            handMock.Setup(m => m.PlayersRefusingPick).Returns(refusingPick);
+            handMock.Setup(m => m.Game.PartnerMethod);
             var gameStateDescriberMock = new Mock<IGameStateDescriber>();
-            gameStateDescriberMock.Setup(m => m.CurrentHand).Returns(deckMock.Object);
+            gameStateDescriberMock.Setup(m => m.CurrentHand).Returns(handMock.Object);
             gameStateDescriberMock.Setup(m => m.GetTurnType()).Returns(TurnType.Pick);
 
             var game = new Game(playerList, PartnerMethod.JackOfDiamonds, null, gameStateDescriberMock.Object);
@@ -165,12 +165,12 @@ namespace Sheepshead.Tests
             };
             var unplayedPlayers = playerList.Skip(1).ToList();
             var refusingPick = playerList.Take(1).ToList();
-            var deckMock = new Mock<IHand>();
-            deckMock.SetupGet(m => m.PlayersWithoutPickTurn).Returns(unplayedPlayers);
-            deckMock.SetupGet(m => m.PlayersRefusingPick).Returns(refusingPick);
-            deckMock.SetupGet(m => m.Game.LeastersEnabled).Returns(true);
+            var handMock = new Mock<IHand>();
+            handMock.SetupGet(m => m.PlayersWithoutPickTurn).Returns(unplayedPlayers);
+            handMock.SetupGet(m => m.PlayersRefusingPick).Returns(refusingPick);
+            handMock.SetupGet(m => m.Game.LeastersEnabled).Returns(true);
             var gameStateDescriberMock = new Mock<IGameStateDescriber>();
-            gameStateDescriberMock.Setup(m => m.CurrentHand).Returns(deckMock.Object);
+            gameStateDescriberMock.Setup(m => m.CurrentHand).Returns(handMock.Object);
             gameStateDescriberMock.Setup(m => m.GetTurnType()).Returns(TurnType.Pick);
 
             var game = new Game(playerList, PartnerMethod.JackOfDiamonds, null, gameStateDescriberMock.Object);

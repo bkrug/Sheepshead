@@ -41,11 +41,11 @@ namespace Sheepshead.Tests
             advancedPlayer.Cards.Add(SheepCard.QUEEN_HEARTS);
             advancedPlayer.Cards.Add(SheepCard.QUEEN_SPADES);
             advancedPlayer.Cards.Add(SheepCard.N9_DIAMONDS);
-            var deckMock = new Mock<IHand>();
-            deckMock.Setup(m => m.Players).Returns(players);
-            deckMock.Setup(m => m.PlayerCount).Returns(players.Count);
-            deckMock.Setup(m => m.StartingPlayer).Returns(players[0]);
-            var actual = advancedPlayer.WillPick(deckMock.Object);
+            var handMock = new Mock<IHand>();
+            handMock.Setup(m => m.Players).Returns(players);
+            handMock.Setup(m => m.PlayerCount).Returns(players.Count);
+            handMock.Setup(m => m.StartingPlayer).Returns(players[0]);
+            var actual = advancedPlayer.WillPick(handMock.Object);
             Assert.AreEqual(true, actual);
         }
 
@@ -66,11 +66,11 @@ namespace Sheepshead.Tests
             advancedPlayer.Cards.Add(SheepCard.N7_HEARTS);
             advancedPlayer.Cards.Add(SheepCard.N8_DIAMONDS);
             advancedPlayer.Cards.Add(SheepCard.N9_DIAMONDS);
-            var deckMock = new Mock<IHand>();
-            deckMock.Setup(m => m.Players).Returns(players);
-            deckMock.Setup(m => m.PlayerCount).Returns(players.Count);
-            deckMock.Setup(m => m.StartingPlayer).Returns(players[0]);
-            var actual = advancedPlayer.WillPick(deckMock.Object);
+            var handMock = new Mock<IHand>();
+            handMock.Setup(m => m.Players).Returns(players);
+            handMock.Setup(m => m.PlayerCount).Returns(players.Count);
+            handMock.Setup(m => m.StartingPlayer).Returns(players[0]);
+            var actual = advancedPlayer.WillPick(handMock.Object);
             Assert.AreEqual(false, actual);
         }
 
@@ -91,11 +91,11 @@ namespace Sheepshead.Tests
             advancedPlayer.Cards.Add(SheepCard.N7_HEARTS);
             advancedPlayer.Cards.Add(SheepCard.N8_DIAMONDS);
             advancedPlayer.Cards.Add(SheepCard.N9_DIAMONDS);
-            var deckMock = new Mock<IHand>();
-            deckMock.Setup(m => m.Players).Returns(players);
-            deckMock.Setup(m => m.PlayerCount).Returns(players.Count);
-            deckMock.Setup(m => m.StartingPlayer).Returns(players[0]);
-            var actual = advancedPlayer.WillPick(deckMock.Object);
+            var handMock = new Mock<IHand>();
+            handMock.Setup(m => m.Players).Returns(players);
+            handMock.Setup(m => m.PlayerCount).Returns(players.Count);
+            handMock.Setup(m => m.StartingPlayer).Returns(players[0]);
+            var actual = advancedPlayer.WillPick(handMock.Object);
             Assert.AreEqual(true, actual);
         }
 
@@ -116,11 +116,11 @@ namespace Sheepshead.Tests
             advancedPlayer.Cards.Add(SheepCard.N7_HEARTS);
             advancedPlayer.Cards.Add(SheepCard.KING_CLUBS);
             advancedPlayer.Cards.Add(SheepCard.KING_SPADES);
-            var deckMock = new Mock<IHand>();
-            deckMock.Setup(m => m.Players).Returns(players);
-            deckMock.Setup(m => m.PlayerCount).Returns(players.Count);
-            deckMock.Setup(m => m.StartingPlayer).Returns(players[0]);
-            var actual = advancedPlayer.WillPick(deckMock.Object);
+            var handMock = new Mock<IHand>();
+            handMock.Setup(m => m.Players).Returns(players);
+            handMock.Setup(m => m.PlayerCount).Returns(players.Count);
+            handMock.Setup(m => m.StartingPlayer).Returns(players[0]);
+            var actual = advancedPlayer.WillPick(handMock.Object);
             Assert.AreEqual(false, actual);
         }
 
@@ -143,11 +143,11 @@ namespace Sheepshead.Tests
             advancedPlayer.Cards.Add(SheepCard.QUEEN_SPADES);
             advancedPlayer.Cards.Add(SheepCard.N9_DIAMONDS);
             advancedPlayer.Cards.Add(SheepCard.N10_CLUBS);
-            var deckMock = new Mock<IHand>();
-            deckMock.Setup(m => m.Players).Returns(players);
-            deckMock.Setup(m => m.PlayerCount).Returns(players.Count);
-            deckMock.Setup(m => m.StartingPlayer).Returns(players[0]);
-            var actual = advancedPlayer.WillPick(deckMock.Object);
+            var handMock = new Mock<IHand>();
+            handMock.Setup(m => m.Players).Returns(players);
+            handMock.Setup(m => m.PlayerCount).Returns(players.Count);
+            handMock.Setup(m => m.StartingPlayer).Returns(players[0]);
+            var actual = advancedPlayer.WillPick(handMock.Object);
             Assert.AreEqual(true, actual);
         }
 
@@ -170,11 +170,11 @@ namespace Sheepshead.Tests
             advancedPlayer.Cards.Add(SheepCard.N7_CLUBS);
             advancedPlayer.Cards.Add(SheepCard.KING_HEARTS);
             advancedPlayer.Cards.Add(SheepCard.N8_CLUBS);
-            var deckMock = new Mock<IHand>();
-            deckMock.Setup(m => m.Players).Returns(players);
-            deckMock.Setup(m => m.PlayerCount).Returns(players.Count);
-            deckMock.Setup(m => m.StartingPlayer).Returns(players[0]);
-            var actual = advancedPlayer.WillPick(deckMock.Object);
+            var handMock = new Mock<IHand>();
+            handMock.Setup(m => m.Players).Returns(players);
+            handMock.Setup(m => m.PlayerCount).Returns(players.Count);
+            handMock.Setup(m => m.StartingPlayer).Returns(players[0]);
+            var actual = advancedPlayer.WillPick(handMock.Object);
             Assert.AreEqual(false, actual);
         }
 
@@ -197,11 +197,11 @@ namespace Sheepshead.Tests
             advancedPlayer.Cards.Add(SheepCard.N7_DIAMONDS);
             advancedPlayer.Cards.Add(SheepCard.KING_HEARTS);
             advancedPlayer.Cards.Add(SheepCard.ACE_DIAMONDS);
-            var deckMock = new Mock<IHand>();
-            deckMock.Setup(m => m.Players).Returns(players);
-            deckMock.Setup(m => m.PlayerCount).Returns(players.Count);
-            deckMock.Setup(m => m.StartingPlayer).Returns(players[0]);
-            var actual = advancedPlayer.WillPick(deckMock.Object);
+            var handMock = new Mock<IHand>();
+            handMock.Setup(m => m.Players).Returns(players);
+            handMock.Setup(m => m.PlayerCount).Returns(players.Count);
+            handMock.Setup(m => m.StartingPlayer).Returns(players[0]);
+            var actual = advancedPlayer.WillPick(handMock.Object);
             Assert.AreEqual(true, actual);
         }
 
@@ -224,11 +224,11 @@ namespace Sheepshead.Tests
             advancedPlayer.Cards.Add(SheepCard.N7_CLUBS);
             advancedPlayer.Cards.Add(SheepCard.N9_SPADES);
             advancedPlayer.Cards.Add(SheepCard.N8_CLUBS);
-            var deckMock = new Mock<IHand>();
-            deckMock.Setup(m => m.Players).Returns(players);
-            deckMock.Setup(m => m.PlayerCount).Returns(players.Count);
-            deckMock.Setup(m => m.StartingPlayer).Returns(players[0]);
-            var actual = advancedPlayer.WillPick(deckMock.Object);
+            var handMock = new Mock<IHand>();
+            handMock.Setup(m => m.Players).Returns(players);
+            handMock.Setup(m => m.PlayerCount).Returns(players.Count);
+            handMock.Setup(m => m.StartingPlayer).Returns(players[0]);
+            var actual = advancedPlayer.WillPick(handMock.Object);
             Assert.AreEqual(false, actual);
         }
         #endregion

@@ -63,27 +63,27 @@ namespace Sheepshead.Tests
             var mainPlayer = new SimplePlayer();
             {
                 var playerList = new List<IPlayer>() { player1, player2, mainPlayer, player3, player4 };
-                var deckMock = GenerateHandMock(playerList);
-                deckMock.Setup(m => m.StartingPlayer).Returns(player2);
-                Assert.IsFalse(mainPlayer.WillPick(deckMock.Object), "Simple Player should not pick if he is not last.");
+                var handMock = GenerateHandMock(playerList);
+                handMock.Setup(m => m.StartingPlayer).Returns(player2);
+                Assert.IsFalse(mainPlayer.WillPick(handMock.Object), "Simple Player should not pick if he is not last.");
             }
             {
                 var playerList = new List<IPlayer>() { player1, player2, mainPlayer, player3, player4 };
-                var deckMock = GenerateHandMock(playerList);
-                deckMock.Setup(m => m.StartingPlayer).Returns(player3);
-                Assert.IsTrue(mainPlayer.WillPick(deckMock.Object), "Simple Player should pick if he is last.");
+                var handMock = GenerateHandMock(playerList);
+                handMock.Setup(m => m.StartingPlayer).Returns(player3);
+                Assert.IsTrue(mainPlayer.WillPick(handMock.Object), "Simple Player should pick if he is last.");
             }
             {
                 var playerList = new List<IPlayer>() { player1, player2, player3, player4, mainPlayer };
-                var deckMock = GenerateHandMock(playerList);
-                deckMock.Setup(m => m.StartingPlayer).Returns(player1);
-                Assert.IsTrue(mainPlayer.WillPick(deckMock.Object), "Simple Player should pick if he is last.");
+                var handMock = GenerateHandMock(playerList);
+                handMock.Setup(m => m.StartingPlayer).Returns(player1);
+                Assert.IsTrue(mainPlayer.WillPick(handMock.Object), "Simple Player should pick if he is last.");
             }
             {
                 var playerList = new List<IPlayer>() { player1, player2, player3, player4, mainPlayer };
-                var deckMock = GenerateHandMock(playerList);
-                deckMock.Setup(m => m.StartingPlayer).Returns(player3);
-                Assert.IsFalse(mainPlayer.WillPick(deckMock.Object), "Simple Player should not pick if he is not last.");
+                var handMock = GenerateHandMock(playerList);
+                handMock.Setup(m => m.StartingPlayer).Returns(player3);
+                Assert.IsFalse(mainPlayer.WillPick(handMock.Object), "Simple Player should not pick if he is not last.");
             }
         }
 
@@ -100,12 +100,12 @@ namespace Sheepshead.Tests
                 SheepCard.N7_HEARTS,
                 SheepCard.N8_HEARTS
             });
-            var deckMock = new Mock<IHand>();
-            deckMock.Setup(m => m.Blinds).Returns(new List<SheepCard>() { 
+            var handMock = new Mock<IHand>();
+            handMock.Setup(m => m.Blinds).Returns(new List<SheepCard>() { 
                 SheepCard.N8_SPADES,
                 SheepCard.QUEEN_HEARTS
             });
-            var cardsToDrop = picker.DropCardsForPick(deckMock.Object);
+            var cardsToDrop = picker.DropCardsForPick(handMock.Object);
             Assert.IsTrue(cardsToDrop.Contains(SheepCard.N7_CLUBS), "Drop 7 of Clubs since it is only club.");
             Assert.IsTrue(cardsToDrop.Contains(SheepCard.N8_SPADES), "Drop 8 of Spades since it is only club.");
         }
@@ -123,14 +123,14 @@ namespace Sheepshead.Tests
                 SheepCard.N7_HEARTS,
                 SheepCard.N8_HEARTS
             });
-            var deckMock = new Mock<IHand>();
-            deckMock.Setup(m => m.Blinds).Returns(new List<SheepCard>() {
+            var handMock = new Mock<IHand>();
+            handMock.Setup(m => m.Blinds).Returns(new List<SheepCard>() {
                 SheepCard.N7_CLUBS,
                 SheepCard.QUEEN_HEARTS
             });
-            deckMock.Setup(m => m.Buried).Returns(new List<SheepCard>());
+            handMock.Setup(m => m.Buried).Returns(new List<SheepCard>());
 
-            var partnerCard = picker.ChooseCalledAce(deckMock.Object);
+            var partnerCard = picker.ChooseCalledAce(handMock.Object);
 
             Assert.IsTrue(partnerCard == SheepCard.ACE_CLUBS || partnerCard == SheepCard.ACE_HEARTS, "Partner card cannot be ace of spaces since picker has no spade.");
         }
@@ -148,14 +148,14 @@ namespace Sheepshead.Tests
                 SheepCard.N7_HEARTS,
                 SheepCard.N8_HEARTS
             });
-            var deckMock = new Mock<IHand>();
-            deckMock.Setup(m => m.Blinds).Returns(new List<SheepCard>() {
+            var handMock = new Mock<IHand>();
+            handMock.Setup(m => m.Blinds).Returns(new List<SheepCard>() {
                 SheepCard.ACE_HEARTS,
                 SheepCard.QUEEN_HEARTS
             });
-            deckMock.Setup(m => m.Buried).Returns(new List<SheepCard>());
+            handMock.Setup(m => m.Buried).Returns(new List<SheepCard>());
 
-            var partnerCard = picker.ChooseCalledAce(deckMock.Object);
+            var partnerCard = picker.ChooseCalledAce(handMock.Object);
 
             Assert.IsNull(partnerCard, "No ace can be called as the partner card at this point.");
         }
@@ -163,13 +163,13 @@ namespace Sheepshead.Tests
         [TestMethod]
         public void Player_LegalCalledAces_TwoAcesAreLegal()
         {
-            var deckMock = new Mock<IHand>();
-            deckMock.Setup(m => m.Buried).Returns(new List<SheepCard>());
-            deckMock.Setup(m => m.Blinds).Returns(new List<SheepCard>() { SheepCard.N9_CLUBS, SheepCard.N9_SPADES });
+            var handMock = new Mock<IHand>();
+            handMock.Setup(m => m.Buried).Returns(new List<SheepCard>());
+            handMock.Setup(m => m.Blinds).Returns(new List<SheepCard>() { SheepCard.N9_CLUBS, SheepCard.N9_SPADES });
             var player = new HumanPlayer();
             player.Cards.AddRange(new List<SheepCard>() { SheepCard.JACK_DIAMONDS, SheepCard.N8_CLUBS, SheepCard.N8_SPADES, SheepCard.N8_HEARTS, SheepCard.ACE_HEARTS, SheepCard.QUEEN_HEARTS });
 
-            var actual = player.LegalCalledAces(deckMock.Object);
+            var actual = player.LegalCalledAces(handMock.Object);
 
             CollectionAssert.AreEquivalent(new List<SheepCard>() { SheepCard.ACE_CLUBS, SheepCard.ACE_SPADES }, actual);
         }
@@ -177,13 +177,13 @@ namespace Sheepshead.Tests
         [TestMethod]
         public void Player_LegalCalledAces_TwoTensAreLegal()
         {
-            var deckMock = new Mock<IHand>();
-            deckMock.Setup(m => m.Buried).Returns(new List<SheepCard>());
-            deckMock.Setup(m => m.Blinds).Returns(new List<SheepCard>() { SheepCard.ACE_CLUBS, SheepCard.N10_SPADES });
+            var handMock = new Mock<IHand>();
+            handMock.Setup(m => m.Buried).Returns(new List<SheepCard>());
+            handMock.Setup(m => m.Blinds).Returns(new List<SheepCard>() { SheepCard.ACE_CLUBS, SheepCard.N10_SPADES });
             var player = new HumanPlayer();
             player.Cards.AddRange(new List<SheepCard>() { SheepCard.JACK_DIAMONDS, SheepCard.N8_CLUBS, SheepCard.N8_SPADES, SheepCard.N8_HEARTS, SheepCard.ACE_HEARTS, SheepCard.ACE_SPADES });
 
-            var actual = player.LegalCalledAces(deckMock.Object);
+            var actual = player.LegalCalledAces(handMock.Object);
 
             CollectionAssert.AreEquivalent(new List<SheepCard>() { SheepCard.N10_CLUBS, SheepCard.N10_HEARTS }, actual);
         }
@@ -191,13 +191,13 @@ namespace Sheepshead.Tests
         [TestMethod]
         public void Player_LegalCalledAces_TwoNothingIsLegal()
         {
-            var deckMock = new Mock<IHand>();
-            deckMock.Setup(m => m.Buried).Returns(new List<SheepCard>());
-            deckMock.Setup(m => m.Blinds).Returns(new List<SheepCard>() { SheepCard.QUEEN_CLUBS, SheepCard.JACK_SPADES });
+            var handMock = new Mock<IHand>();
+            handMock.Setup(m => m.Buried).Returns(new List<SheepCard>());
+            handMock.Setup(m => m.Blinds).Returns(new List<SheepCard>() { SheepCard.QUEEN_CLUBS, SheepCard.JACK_SPADES });
             var player = new HumanPlayer();
             player.Cards.AddRange(new List<SheepCard>() { SheepCard.JACK_DIAMONDS, SheepCard.N8_CLUBS, SheepCard.ACE_CLUBS, SheepCard.N9_CLUBS, SheepCard.QUEEN_HEARTS, SheepCard.QUEEN_DIAMONDS });
 
-            var actual = player.LegalCalledAces(deckMock.Object);
+            var actual = player.LegalCalledAces(handMock.Object);
 
             CollectionAssert.AreEquivalent(new List<SheepCard>(), actual);
         }
@@ -212,15 +212,15 @@ namespace Sheepshead.Tests
                 new AdvancedPlayer(),
                 new AdvancedPlayer()
             };
-            var deckMock = new Mock<IHand>();
-            deckMock.Setup(m => m.Players).Returns(players);
-            deckMock.Setup(m => m.PlayerCount).Returns(players.Count);
-            deckMock.Setup(m => m.StartingPlayer).Returns(players[0]);
-            Assert.AreEqual(1, players[0].QueueRankInHand(deckMock.Object));
-            Assert.AreEqual(2, players[1].QueueRankInHand(deckMock.Object));
-            Assert.AreEqual(3, players[2].QueueRankInHand(deckMock.Object));
-            Assert.AreEqual(4, players[3].QueueRankInHand(deckMock.Object));
-            Assert.AreEqual(5, players[4].QueueRankInHand(deckMock.Object));
+            var handMock = new Mock<IHand>();
+            handMock.Setup(m => m.Players).Returns(players);
+            handMock.Setup(m => m.PlayerCount).Returns(players.Count);
+            handMock.Setup(m => m.StartingPlayer).Returns(players[0]);
+            Assert.AreEqual(1, players[0].QueueRankInHand(handMock.Object));
+            Assert.AreEqual(2, players[1].QueueRankInHand(handMock.Object));
+            Assert.AreEqual(3, players[2].QueueRankInHand(handMock.Object));
+            Assert.AreEqual(4, players[3].QueueRankInHand(handMock.Object));
+            Assert.AreEqual(5, players[4].QueueRankInHand(handMock.Object));
         }
 
         [TestMethod]

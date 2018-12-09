@@ -26,7 +26,7 @@
         var playerIndex = Model.Hand.Game.Players.IndexOf(cardPlayed.Key);
         <td>
             <div>Player @(playerIndex + 1)</div>
-            <img src="@("\\Images\\" + CardUtil.GetPictureFilename(cardPlayed) + ".png")" />
+            <img src="@("\\Images\\" + CardUtil.GetPictureFilename(cardPlayed.Value) + ".png")" />
         </td>
     }
     </tr>
