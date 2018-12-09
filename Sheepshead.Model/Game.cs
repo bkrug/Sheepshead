@@ -142,7 +142,7 @@ namespace Sheepshead.Model
         {
             var turnType = TurnType;
             var currentDeck = _gameStateDesciber.CurrentDeck;
-            var currentTrick = currentDeck.PickPhaseComplete ? _gameStateDesciber.CurrentTrick : null;
+            var currentTrick = currentDeck?.PickPhaseComplete == true ? _gameStateDesciber.CurrentTrick : null;
             var currentPlayer =
                 turnType == TurnType.PlayTrick 
                 ? currentTrick?.PlayersWithoutTurn?.FirstOrDefault()
