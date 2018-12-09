@@ -9,7 +9,7 @@ namespace Sheepshead.Model
     {
         public Guid GameId { get; set; }
         public TurnType TurnType { get; set; }
-        public IDeck Deck { get; set; }
+        public IHand Deck { get; set; }
     }
 
     public enum TurnType

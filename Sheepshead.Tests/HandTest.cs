@@ -51,7 +51,7 @@ namespace Sheepshead.Tests
         [TestMethod]
         public void Hand_Scores_5Player_DefenseLooseOneCoin()
         {
-            var deckMock = new Mock<IDeck>();
+            var deckMock = new Mock<IHand>();
             var pickerMock = new Mock<IPlayer>();
             var partnerMock = new Mock<IPlayer>();
             var player1Mock = new Mock<IPlayer>();
@@ -96,7 +96,7 @@ namespace Sheepshead.Tests
         [TestMethod]
         public void Hand_Scores_5Player_DefenseLooseTwoCoins()
         {
-            var deckMock = new Mock<IDeck>();
+            var deckMock = new Mock<IHand>();
             var pickerMock = new Mock<IPlayer>();
             var partnerMock = new Mock<IPlayer>();
             var player1Mock = new Mock<IPlayer>();
@@ -141,7 +141,7 @@ namespace Sheepshead.Tests
         [TestMethod]
         public void Hand_Scores_5Player_DefenseLooseThreeCoins()
         {
-            var deckMock = new Mock<IDeck>();
+            var deckMock = new Mock<IHand>();
             var pickerMock = new Mock<IPlayer>();
             var partnerMock = new Mock<IPlayer>();
             var player1Mock = new Mock<IPlayer>();
@@ -186,7 +186,7 @@ namespace Sheepshead.Tests
         [TestMethod]
         public void Hand_Scores_5Player_DefenseWinsOneCoin()
         {
-            var deckMock = new Mock<IDeck>();
+            var deckMock = new Mock<IHand>();
             var pickerMock = new Mock<IPlayer>();
             var partnerMock = new Mock<IPlayer>();
             var player1Mock = new Mock<IPlayer>();
@@ -231,7 +231,7 @@ namespace Sheepshead.Tests
         [TestMethod]
         public void Hand_Scores_5Player_DefenseWinsTwoCoins()
         {
-            var deckMock = new Mock<IDeck>();
+            var deckMock = new Mock<IHand>();
             var pickerMock = new Mock<IPlayer>();
             var partnerMock = new Mock<IPlayer>();
             var player1Mock = new Mock<IPlayer>();
@@ -276,7 +276,7 @@ namespace Sheepshead.Tests
         [TestMethod]
         public void Hand_Scores_5Player_DefenseWinsThreeCoins()
         {
-            var deckMock = new Mock<IDeck>();
+            var deckMock = new Mock<IHand>();
             var pickerMock = new Mock<IPlayer>();
             var partnerMock = new Mock<IPlayer>();
             var player1Mock = new Mock<IPlayer>();
@@ -321,7 +321,7 @@ namespace Sheepshead.Tests
         [TestMethod]
         public void Hand_Scores_5Player_NoPartner()
         {
-            var deckMock = new Mock<IDeck>();
+            var deckMock = new Mock<IHand>();
             var pickerMock = new Mock<IPlayer>();
             var player1Mock = new Mock<IPlayer>();
             var player2Mock = new Mock<IPlayer>();
@@ -365,7 +365,7 @@ namespace Sheepshead.Tests
         [TestMethod]
         public void Hand_Scores_5Player_NoPartner_PickerWinsNoTricks()
         {
-            var deckMock = new Mock<IDeck>();
+            var deckMock = new Mock<IHand>();
             var pickerMock = new Mock<IPlayer>();
             var player1Mock = new Mock<IPlayer>();
             var player2Mock = new Mock<IPlayer>();
@@ -409,7 +409,7 @@ namespace Sheepshead.Tests
         [TestMethod]
         public void Hand_Scores_3Player_DefenseWinsThreeCoins()
         {
-            var deckMock = new Mock<IDeck>();
+            var deckMock = new Mock<IHand>();
             var pickerMock = new Mock<IPlayer>();
             var player1Mock = new Mock<IPlayer>();
             var player2Mock = new Mock<IPlayer>();
@@ -450,7 +450,7 @@ namespace Sheepshead.Tests
         [TestMethod]
         public void Hand_Scores_3Player_DefenseWinsOneCoins()
         {
-            var deckMock = new Mock<IDeck>();
+            var deckMock = new Mock<IHand>();
             var pickerMock = new Mock<IPlayer>();
             var player1Mock = new Mock<IPlayer>();
             var player2Mock = new Mock<IPlayer>();
@@ -491,7 +491,7 @@ namespace Sheepshead.Tests
         [TestMethod]
         public void Hand_Scores_3Player_DefenseLoosesOneCoins()
         {
-            var deckMock = new Mock<IDeck>();
+            var deckMock = new Mock<IHand>();
             var pickerMock = new Mock<IPlayer>();
             var player1Mock = new Mock<IPlayer>();
             var player2Mock = new Mock<IPlayer>();
@@ -532,7 +532,7 @@ namespace Sheepshead.Tests
         [TestMethod]
         public void Hand_Scores_3Player_DefenseLoosesThreeCoins()
         {
-            var deckMock = new Mock<IDeck>();
+            var deckMock = new Mock<IHand>();
             var pickerMock = new Mock<IPlayer>();
             var player1Mock = new Mock<IPlayer>();
             var player2Mock = new Mock<IPlayer>();
@@ -573,7 +573,7 @@ namespace Sheepshead.Tests
         [TestMethod]
         public void Hand_Scores_Leasters_5Player_WithoutBlind()
         {
-            var deckMock = new Mock<IDeck>();
+            var deckMock = new Mock<IHand>();
             var player1Mock = new Mock<IPlayer>();
             var player2Mock = new Mock<IPlayer>();
             var player3Mock = new Mock<IPlayer>();
@@ -614,7 +614,7 @@ namespace Sheepshead.Tests
         [TestMethod]
         public void Hand_Scores_Leasters_5Player_AllTricksToOnePlayer_WithoutBlind()
         {
-            var deckMock = new Mock<IDeck>();
+            var deckMock = new Mock<IHand>();
             var player1Mock = new Mock<IPlayer>();
             var player2Mock = new Mock<IPlayer>();
             var player3Mock = new Mock<IPlayer>();
@@ -655,7 +655,7 @@ namespace Sheepshead.Tests
         [TestMethod]
         public void Hand_Scores_Leasters_3Player_WithoutBlind()
         {
-            var deckMock = new Mock<IDeck>();
+            var deckMock = new Mock<IHand>();
             var player1Mock = new Mock<IPlayer>();
             var player2Mock = new Mock<IPlayer>();
             var player3Mock = new Mock<IPlayer>();
@@ -698,7 +698,7 @@ namespace Sheepshead.Tests
             var gameMock = new Mock<IGame>();
             gameMock.Setup(m => m.PartnerMethod).Returns(PartnerMethod.JackOfDiamonds);
             gameMock.Setup(m => m.PlayerCount).Returns(5);
-            gameMock.Setup(m => m.Decks).Returns(new List<IDeck>());
+            gameMock.Setup(m => m.Decks).Returns(new List<IHand>());
             gameMock.Setup(m => m.LastDeckIsComplete()).Returns(true);
             gameMock.Setup(m => m.LeastersEnabled).Returns(true);
             var hand = new Hand(gameMock.Object, null);
@@ -734,7 +734,7 @@ namespace Sheepshead.Tests
             {
                 var blinds = new List<SheepCard>() { SheepCard.KING_DIAMONDS, SheepCard.ACE_CLUBS };
                 var droppedCards = new List<SheepCard>() { SheepCard.N7_SPADES, SheepCard.N8_SPADES };
-                var mockDeck = new Mock<IDeck>();
+                var mockDeck = new Mock<IHand>();
                 mockDeck.Setup(m => m.Blinds).Returns(blinds);
                 mockDeck.Setup(m => m.Buried).Returns(droppedCards);
                 mockDeck.Setup(m => m.Game.PartnerMethod).Returns(PartnerMethod.JackOfDiamonds);
@@ -758,7 +758,7 @@ namespace Sheepshead.Tests
         public void Hand_Constructor_PartnerCard_PickerHasJackDiamonds()
         {
             var blinds = new List<SheepCard>() { SheepCard.JACK_DIAMONDS, SheepCard.JACK_HEARTS };
-            var mockDeck = new Mock<IDeck>();
+            var mockDeck = new Mock<IHand>();
             mockDeck.Setup(m => m.Blinds).Returns(blinds);
             mockDeck.Setup(m => m.Game.PartnerMethod).Returns(PartnerMethod.JackOfDiamonds);
             mockDeck.Setup(m => m.PlayerCount).Returns(5);
@@ -779,7 +779,7 @@ namespace Sheepshead.Tests
         public void Hand_Constructor_PartnerCard_PickerHasAllQueensJacks()
         {
             var blinds = new List<SheepCard>() { SheepCard.JACK_DIAMONDS, SheepCard.JACK_HEARTS };
-            var mockDeck = new Mock<IDeck>();
+            var mockDeck = new Mock<IHand>();
             mockDeck.Setup(m => m.Blinds).Returns(blinds);
             mockDeck.Setup(m => m.Game.PartnerMethod).Returns(PartnerMethod.JackOfDiamonds);
             mockDeck.Setup(m => m.PlayerCount).Returns(5);
@@ -800,7 +800,7 @@ namespace Sheepshead.Tests
         public void Hand_Constructor_NoPartner_3Player()
         {
             var blinds = new List<SheepCard>() { SheepCard.KING_DIAMONDS, SheepCard.ACE_CLUBS };
-            var mockDeck = new Mock<IDeck>();
+            var mockDeck = new Mock<IHand>();
             mockDeck.Setup(m => m.Blinds).Returns(blinds);
             mockDeck.Setup(m => m.PlayerCount).Returns(3);
             var mockPicker = new Mock<IPlayer>();
@@ -816,7 +816,7 @@ namespace Sheepshead.Tests
         public void Hand_Leasters()
         {
             var gameMock = new Mock<IGame>();
-            gameMock.Setup(m => m.Decks).Returns(new List<IDeck>());
+            gameMock.Setup(m => m.Decks).Returns(new List<IHand>());
             gameMock.Setup(m => m.LastDeckIsComplete()).Returns(true);
             var hand = new Hand(gameMock.Object, null);
             hand.SetPicker(null, new List<SheepCard>());
@@ -837,7 +837,7 @@ namespace Sheepshead.Tests
         {
             var gameMock = new Mock<IGame>();
             gameMock.Setup(m => m.PlayerCount).Returns(5);
-            gameMock.Setup(m => m.Decks).Returns(new List<IDeck>());
+            gameMock.Setup(m => m.Decks).Returns(new List<IHand>());
             gameMock.Setup(m => m.LastDeckIsComplete()).Returns(true);
             var hand = new Hand(gameMock.Object, null);
             var endEventCalled = false;
@@ -865,7 +865,7 @@ namespace Sheepshead.Tests
             gameMock.Setup(m => m.PartnerMethod).Returns(PartnerMethod.JackOfDiamonds);
             gameMock.Setup(d => d.PlayerCount).Returns(5);
             gameMock.Setup(m => m.LastDeckIsComplete()).Returns(true);
-            gameMock.Setup(m => m.Decks).Returns(new List<IDeck>());
+            gameMock.Setup(m => m.Decks).Returns(new List<IHand>());
             var player1 = new Mock<IPlayer>();
             var player2 = new Mock<IPlayer>();
             var pickerMock = new Mock<IPlayer>();
@@ -914,7 +914,7 @@ namespace Sheepshead.Tests
             gameMock.Setup(m => m.PartnerMethod).Returns(PartnerMethod.JackOfDiamonds);
             gameMock.Setup(d => d.PlayerCount).Returns(5);
             gameMock.Setup(m => m.LastDeckIsComplete()).Returns(true);
-            gameMock.Setup(m => m.Decks).Returns(new List<IDeck>());
+            gameMock.Setup(m => m.Decks).Returns(new List<IHand>());
             var player1 = new Mock<IPlayer>();
             var player2 = new Mock<IPlayer>();
             var pickerMock = new Mock<IPlayer>();

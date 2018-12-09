@@ -7,9 +7,9 @@ namespace Sheepshead.Model
 {
     public interface IPickProcessor
     {
-        IComputerPlayer PlayNonHumanPickTurns(IDeck deck, IHandFactory handFactory);
-        void BuryCards(IDeck deck, IHumanPlayer picker, List<SheepCard> cardsToBury, bool goItAlone);
-        IHand ContinueFromHumanPickTurn(IHumanPlayer human, bool willPick, IDeck deck, IHandFactory handFactory, IPickProcessor pickProcessorOuter);
+        IComputerPlayer PlayNonHumanPickTurns(IHand deck, IHandFactory handFactory);
+        void BuryCards(IHand deck, IHumanPlayer picker, List<SheepCard> cardsToBury, bool goItAlone);
+        IHand ContinueFromHumanPickTurn(IHumanPlayer human, bool willPick, IHand deck, IHandFactory handFactory, IPickProcessor pickProcessorOuter);
     }
 
     public class PickProcessor : IPickProcessor
@@ -18,7 +18,7 @@ namespace Sheepshead.Model
         {
         }
 
-        public IComputerPlayer PlayNonHumanPickTurns(IDeck deck, IHandFactory handFactory)
+        public IComputerPlayer PlayNonHumanPickTurns(IHand deck, IHandFactory handFactory)
         {
             var picker = PlayNonHumanPickTurns(deck);
             if (picker != null)
@@ -28,7 +28,7 @@ namespace Sheepshead.Model
             return picker;
         }
 
-        private IComputerPlayer PlayNonHumanPickTurns(IDeck deck)
+        private IComputerPlayer PlayNonHumanPickTurns(IHand deck)
         {
             foreach (var player in deck.PlayersWithoutPickTurn.ToList())
             {
@@ -44,7 +44,7 @@ namespace Sheepshead.Model
             return null;
         }
 
-        private void AcceptComputerPicker(IDeck deck, IComputerPlayer picker, IHandFactory handFactory)
+        private void AcceptComputerPicker(IHand deck, IComputerPlayer picker, IHandFactory handFactory)
         {
             var buriedCards = picker.DropCardsForPick(deck);
             deck.Buried = buriedCards;
@@ -58,7 +58,7 @@ namespace Sheepshead.Model
             }
         }
 
-        private void AcceptLeasters(IDeck deck, IHandFactory handFactory)
+        private void AcceptLeasters(IHand deck, IHandFactory handFactory)
         {
             if (deck.Game.LeastersEnabled)
                 handFactory.GetHand(deck, null, new List<SheepCard>());
@@ -67,7 +67,7 @@ namespace Sheepshead.Model
         /// <summary>
         /// Use this method to bury cards in a Jack-of-Diamonds game.
         /// </summary>
-        public void BuryCards(IDeck deck, IHumanPlayer picker, List<SheepCard> cardsToBury, bool goItAlone)
+        public void BuryCards(IHand deck, IHumanPlayer picker, List<SheepCard> cardsToBury, bool goItAlone)
         {
             if (deck.Picker != picker)
                 throw new NotPlayersTurnException("A non-picker cannot bury cards.");
@@ -80,7 +80,7 @@ namespace Sheepshead.Model
         /// <summary>
         /// Use this method to bury cards in a Called-Ace game.
         /// </summary>
-        public void BuryCards(IDeck deck, IHumanPlayer picker, List<SheepCard> cardsToBury, bool goItAlone, SheepCard partnerCard)
+        public void BuryCards(IHand deck, IHumanPlayer picker, List<SheepCard> cardsToBury, bool goItAlone, SheepCard partnerCard)
         {
             if (picker.Cards.Contains(partnerCard))
                 throw new ArgumentException("Picker has the parner card");
@@ -93,7 +93,7 @@ namespace Sheepshead.Model
         }
         private static List<SheepCard> _validCalledAceCards = new List<SheepCard>() { SheepCard.ACE_CLUBS, SheepCard.ACE_HEARTS, SheepCard.ACE_SPADES };
 
-        public IHand ContinueFromHumanPickTurn(IHumanPlayer human, bool willPick, IDeck deck, IHandFactory handFactory, IPickProcessor pickProcessorOuter)
+        public IHand ContinueFromHumanPickTurn(IHumanPlayer human, bool willPick, IHand deck, IHandFactory handFactory, IPickProcessor pickProcessorOuter)
         {
             if (deck.PlayersWithoutPickTurn.FirstOrDefault() != human)
                 throw new NotPlayersTurnException("This is not the player's turn to pick.");

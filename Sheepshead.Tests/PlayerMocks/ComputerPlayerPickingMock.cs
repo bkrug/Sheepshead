@@ -21,7 +21,7 @@ namespace Sheepshead.Tests.PlayerMocks
             _calledAceCard = calledAceCard;
         }
 
-        public List<SheepCard> DropCardsForPick(IDeck deck)
+        public List<SheepCard> DropCardsForPick(IHand deck)
         {
             return new List<SheepCard>() { 0, (SheepCard)1 };
         }
@@ -31,7 +31,7 @@ namespace Sheepshead.Tests.PlayerMocks
             throw new NotImplementedException();
         }
 
-        public int QueueRankInDeck(IDeck deck)
+        public int QueueRankInDeck(IHand deck)
         {
             throw new NotImplementedException();
         }
@@ -41,22 +41,22 @@ namespace Sheepshead.Tests.PlayerMocks
             throw new NotImplementedException();
         }
 
-        public bool WillPick(IDeck deck)
+        public bool WillPick(IHand deck)
         {
             return _doesPick;
         }
 
-        public SheepCard? ChooseCalledAce(IDeck deck)
+        public SheepCard? ChooseCalledAce(IHand deck)
         {
             return _calledAceCard;
         }
 
-        public List<SheepCard> LegalCalledAces(IDeck deck)
+        public List<SheepCard> LegalCalledAces(IHand deck)
         {
             throw new NotImplementedException();
         }
 
-        public bool GoItAlone(IDeck deck)
+        public bool GoItAlone(IHand deck)
         {
             return false;
         }

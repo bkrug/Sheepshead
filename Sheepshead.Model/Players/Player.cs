@@ -19,7 +19,7 @@ namespace Sheepshead.Model.Players
             return rank + 1;
         }
 
-        public int QueueRankInDeck(IDeck deck)
+        public int QueueRankInDeck(IHand deck)
         {
             if (deck.StartingPlayer == null) throw new NullReferenceException();
             var indexOfMe = deck.Players.IndexOf(this);
@@ -29,13 +29,13 @@ namespace Sheepshead.Model.Players
             return rank + 1;
         }
 
-        public List<SheepCard> LegalCalledAces(IDeck deck)
+        public List<SheepCard> LegalCalledAces(IHand deck)
         {
             var suits = LegalCalledAceSuits(deck);
             return suits.LegalSuits.Select(g => GetCardOfSuit(suits.CardType, g.Key)).ToList();
         }
 
-        protected LegalCalledAces LegalCalledAceSuits(IDeck deck)
+        protected LegalCalledAces LegalCalledAceSuits(IHand deck)
         {
             var allPickersCards = Cards
                 .Union(deck.Blinds)
@@ -117,7 +117,7 @@ namespace Sheepshead.Model.Players
         string Name { get; set; }
         List<SheepCard> Cards { get; }
         int QueueRankInTrick(ITrick trick);
-        int QueueRankInDeck(IDeck deck);
-        List<SheepCard> LegalCalledAces(IDeck deck);
+        int QueueRankInDeck(IHand deck);
+        List<SheepCard> LegalCalledAces(IHand deck);
     }
 }

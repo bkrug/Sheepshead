@@ -8,12 +8,12 @@ namespace Sheepshead.Model
 {
     public interface IHandFactory
     {
-        IHand GetHand(IDeck deck, IPlayer picker, List<SheepCard> buried);
+        IHand GetHand(IHand deck, IPlayer picker, List<SheepCard> buried);
     }
 
     public class HandFactory : IHandFactory
     {
-        public IHand GetHand(IDeck deck, IPlayer picker, List<SheepCard> buried)
+        public IHand GetHand(IHand deck, IPlayer picker, List<SheepCard> buried)
         {
             deck.SetPicker(picker, buried);
             return deck;

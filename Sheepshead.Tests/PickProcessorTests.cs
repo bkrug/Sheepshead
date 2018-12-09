@@ -15,7 +15,7 @@ namespace Sheepshead.Tests
         [TestMethod]
         public void PickProcessor_PlayNonHumanPickTurns_EveryonePasses()
         {
-            var deckMock = new Mock<IDeck>();
+            var deckMock = new Mock<IHand>();
 
             var refusingPlayers = new List<IPlayer>() {
                 new Mock<IComputerPlayer>().Object,
@@ -48,7 +48,7 @@ namespace Sheepshead.Tests
         [TestMethod]
         public void PickProcessor_PlayNonHumanPickTurns_PlayTillHumanTurn()
         {
-            var deckMock = new Mock<IDeck>();
+            var deckMock = new Mock<IHand>();
 
             var refusingPlayers = new List<IPlayer>() {
                 new Mock<IComputerPlayer>().Object,
@@ -80,7 +80,7 @@ namespace Sheepshead.Tests
         [TestMethod]
         public void PickProcessor_PlayNonHumanPickTurns_NextPlayerIsHuman()
         {
-            var deckMock = new Mock<IDeck>();
+            var deckMock = new Mock<IHand>();
 
             var refusingPlayers = new List<IPlayer>() {
                 new Mock<IComputerPlayer>().Object,
@@ -110,7 +110,7 @@ namespace Sheepshead.Tests
         [TestMethod]
         public void PickProcessor_PlayNonHumanPickTurns_FindPicker()
         {
-            var deckMock = new Mock<IDeck>();
+            var deckMock = new Mock<IHand>();
 
             var refusingPlayers = new List<IPlayer>() {
                 new Mock<IComputerPlayer>().Object,
@@ -143,7 +143,7 @@ namespace Sheepshead.Tests
         public void PickProcessor_PlayNonHumanPickTurns_CalledAce_FindPicker_PickPartner()
         {
             SheepCard? _actualPartnerCard = null;
-            var deckMock = new Mock<IDeck>();
+            var deckMock = new Mock<IHand>();
             var refusingPlayers = new List<IPlayer>() {
                 new Mock<IComputerPlayer>().Object,
                 new Mock<IHumanPlayer>().Object
@@ -168,7 +168,7 @@ namespace Sheepshead.Tests
         public void PickProcessor_PlayNonHumanPickTurns_CalledAce_FindPicker_NoPartner()
         {
             SheepCard? _actualPartnerCard = SheepCard.N7_HEARTS;
-            var deckMock = new Mock<IDeck>();
+            var deckMock = new Mock<IHand>();
             var refusingPlayers = new List<IPlayer>() {
                 new Mock<IComputerPlayer>().Object,
                 new Mock<IHumanPlayer>().Object
@@ -202,7 +202,7 @@ namespace Sheepshead.Tests
             };
             var playersWithoutTurn = players.ToList();
             var expectedPicker = players[2];
-            var deckMock = new Mock<IDeck>();
+            var deckMock = new Mock<IHand>();
             deckMock.Setup(m => m.Players).Returns(players);
             deckMock.SetupGet(m => m.PlayersWithoutPickTurn).Returns(playersWithoutTurn);
             deckMock.SetupGet(m => m.PlayersRefusingPick).Returns(new List<IPlayer>());
@@ -228,16 +228,16 @@ namespace Sheepshead.Tests
             humanMock.Setup(m => m.Cards).Returns(humanCards);
             var pickProcessorMock = new Mock<IPickProcessor>();
             pickProcessorMock
-                .Setup(m => m.PlayNonHumanPickTurns(It.IsAny<IDeck>(), It.IsAny<IHandFactory>()))
+                .Setup(m => m.PlayNonHumanPickTurns(It.IsAny<IHand>(), It.IsAny<IHandFactory>()))
                 .Callback(() => Assert.Fail("Should not have let non humans pick."));
             var handMock = new Mock<IHand>();
             var handFactoryMock = new Mock<IHandFactory>();
             handFactoryMock
-                .Setup(m => m.GetHand(It.IsAny<IDeck>(), It.IsAny<IPlayer>(), It.IsAny<List<SheepCard>>()))
-                .Callback((IDeck deck, IPlayer player, List<SheepCard> cards) => handMock.Setup(m => m.Picker).Returns(humanMock.Object))
+                .Setup(m => m.GetHand(It.IsAny<IHand>(), It.IsAny<IPlayer>(), It.IsAny<List<SheepCard>>()))
+                .Callback((IHand deck, IPlayer player, List<SheepCard> cards) => handMock.Setup(m => m.Picker).Returns(humanMock.Object))
                 .Returns(() => handMock.Object);
             var blinds = new List<SheepCard>() { 0, (SheepCard)1 };
-            var deckMock = new Mock<IDeck>();
+            var deckMock = new Mock<IHand>();
             deckMock.Setup(m => m.Blinds).Returns(blinds);
             deckMock.Setup(m => m.PlayersWithoutPickTurn).Returns(new List<IPlayer>() { humanMock.Object, new Mock<IComputerPlayer>().Object });
 
@@ -258,7 +258,7 @@ namespace Sheepshead.Tests
             var handMock = new Mock<IHand>();
             var nonHumansGotToPlay = false;
             pickProcessorMock
-                .Setup(m => m.PlayNonHumanPickTurns(It.IsAny<IDeck>(), It.IsAny<IHandFactory>()))
+                .Setup(m => m.PlayNonHumanPickTurns(It.IsAny<IHand>(), It.IsAny<IHandFactory>()))
                 .Callback(() => {
                     handMock.Setup(m => m.Picker).Returns(expectedPicker);
                     nonHumansGotToPlay = true;
@@ -266,10 +266,10 @@ namespace Sheepshead.Tests
                 .Returns(expectedPicker);
             var handFactoryMock = new Mock<IHandFactory>();
             handFactoryMock
-                .Setup(m => m.GetHand(It.IsAny<IDeck>(), It.IsAny<IPlayer>(), It.IsAny<List<SheepCard>>()))
-                .Callback((IDeck deck, IPlayer player, List<SheepCard> cards) => Assert.Fail("Hand should not be created by ContinueFromHumanPick() method."));
+                .Setup(m => m.GetHand(It.IsAny<IHand>(), It.IsAny<IPlayer>(), It.IsAny<List<SheepCard>>()))
+                .Callback((IHand deck, IPlayer player, List<SheepCard> cards) => Assert.Fail("Hand should not be created by ContinueFromHumanPick() method."));
             var refusingPlayers = new List<IPlayer>();
-            var deckMock = new Mock<IDeck>();
+            var deckMock = new Mock<IHand>();
             //To delete: deckMock.Setup(m => m.Hand).Returns(handMock.Object);
             deckMock.Setup(m => m.PlayersRefusingPick).Returns(refusingPlayers);
             deckMock.Setup(m => m.PlayersWithoutPickTurn).Returns(new List<IPlayer>() { humanMock.Object, expectedPicker });
@@ -289,7 +289,7 @@ namespace Sheepshead.Tests
             var computerPlayer = new Mock<IComputerPlayer>().Object;
             var pickProcessorMock = new Mock<IPickProcessor>();
             var handFactoryMock = new Mock<IHandFactory>();
-            var deckMock = new Mock<IDeck>();
+            var deckMock = new Mock<IHand>();
             deckMock.Setup(m => m.Blinds).Returns(new List<SheepCard>());
             deckMock.Setup(m => m.PlayersWithoutPickTurn).Returns(new List<IPlayer>() { computerPlayer, humanMock.Object });
 
@@ -314,7 +314,7 @@ namespace Sheepshead.Tests
             var buried = new List<SheepCard>();
             var humanMock = new Mock<IHumanPlayer>();
             humanMock.Setup(m => m.Cards).Returns(playerCards);
-            var deckMock = new Mock<IDeck>();
+            var deckMock = new Mock<IHand>();
             deckMock.Setup(m => m.Buried).Returns(buried);
             deckMock.Setup(m => m.Picker).Returns(humanMock.Object);
             deckMock.Setup(m => m.GoItAlone()).Callback(() => Assert.Fail("Should not have tried to go it alone"));
@@ -335,7 +335,7 @@ namespace Sheepshead.Tests
             var humanMock = new Mock<IHumanPlayer>();
             humanMock.Setup(m => m.Cards).Returns(playerCards);
             var goItAloneSet = false;
-            var deckMock = new Mock<IDeck>();
+            var deckMock = new Mock<IHand>();
             deckMock.Setup(m => m.Buried).Returns(buried);
             deckMock.Setup(m => m.Picker).Returns(humanMock.Object);
             deckMock.Setup(m => m.GoItAlone()).Callback(() => goItAloneSet = true);
@@ -353,7 +353,7 @@ namespace Sheepshead.Tests
         {
             var humanMock = new Mock<IHumanPlayer>();
             humanMock.Setup(m => m.Cards).Returns(new List<SheepCard>());
-            var deckMock = new Mock<IDeck>();
+            var deckMock = new Mock<IHand>();
             deckMock.Setup(m => m.Buried).Returns(new List<SheepCard>());
             deckMock.Setup(m => m.Picker).Returns(new Mock<IComputerPlayer>().Object);
 
@@ -373,7 +373,7 @@ namespace Sheepshead.Tests
         {
             var pickerMock = new Mock<IHumanPlayer>();
             SheepCard? innerPartnerCard = SheepCard.ACE_CLUBS;
-            var deckMock = new Mock<IDeck>();
+            var deckMock = new Mock<IHand>();
             deckMock.Setup(m => m.PartnerCard).Returns(() => innerPartnerCard);
             deckMock.Setup(m => m.SetPartnerCard(It.IsAny<SheepCard?>())).Callback((SheepCard? sc) => innerPartnerCard = sc);
             deckMock.Setup(m => m.Picker).Returns(pickerMock.Object);
@@ -395,7 +395,7 @@ namespace Sheepshead.Tests
         {
             var pickerMock = new Mock<IHumanPlayer>();
             SheepCard? innerPartnerCard = SheepCard.ACE_CLUBS;
-            var deckMock = new Mock<IDeck>();
+            var deckMock = new Mock<IHand>();
             deckMock.Setup(m => m.PartnerCard).Returns(() => innerPartnerCard);
             deckMock.Setup(m => m.SetPartnerCard(It.IsAny<SheepCard?>())).Callback((SheepCard? sc) => innerPartnerCard = sc);
             deckMock.Setup(m => m.Picker).Returns(pickerMock.Object);
@@ -421,7 +421,7 @@ namespace Sheepshead.Tests
         {
             var pickerMock = new Mock<IHumanPlayer>();
             SheepCard? innerPartnerCard = SheepCard.ACE_CLUBS;
-            var deckMock = new Mock<IDeck>();
+            var deckMock = new Mock<IHand>();
             deckMock.Setup(m => m.PartnerCard).Returns(() => innerPartnerCard);
             deckMock.Setup(m => m.SetPartnerCard(It.IsAny<SheepCard?>())).Callback((SheepCard? sc) => innerPartnerCard = sc);
             deckMock.Setup(m => m.Picker).Returns(pickerMock.Object);
@@ -447,7 +447,7 @@ namespace Sheepshead.Tests
         {
             var pickerMock = new Mock<IHumanPlayer>();
             SheepCard? innerPartnerCard = SheepCard.ACE_CLUBS;
-            var deckMock = new Mock<IDeck>();
+            var deckMock = new Mock<IHand>();
             deckMock.Setup(m => m.PartnerCard).Returns(() => innerPartnerCard);
             deckMock.Setup(m => m.SetPartnerCard(It.IsAny<SheepCard?>())).Callback((SheepCard? sc) => innerPartnerCard = sc);
             deckMock.Setup(m => m.Picker).Returns(pickerMock.Object);

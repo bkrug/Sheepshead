@@ -6,8 +6,8 @@ namespace Sheepshead.Model
 {
     public interface IGameStateDescriber
     {
-        List<IDeck> Decks { get; }
-        IDeck CurrentDeck { get; }
+        List<IHand> Decks { get; }
+        IHand CurrentDeck { get; }
         ITrick CurrentTrick { get; }
         TurnType GetTurnType();
         bool LastDeckIsComplete();
@@ -15,9 +15,9 @@ namespace Sheepshead.Model
 
     public class GameStateDescriber : IGameStateDescriber
     {
-        public List<IDeck> Decks { get; } = new List<IDeck>();
+        public List<IHand> Decks { get; } = new List<IHand>();
 
-        public IDeck CurrentDeck => LastDeckIsComplete() ? null : Decks.Last();
+        public IHand CurrentDeck => LastDeckIsComplete() ? null : Decks.Last();
 
         public ITrick CurrentTrick {
             get {

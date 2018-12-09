@@ -281,12 +281,12 @@ namespace Sheepshead.Tests
                 throw new NotImplementedException();
             }
 
-            public int QueueRankInDeck(IDeck deck)
+            public int QueueRankInDeck(IHand deck)
             {
                 throw new NotImplementedException();
             }
 
-            public List<SheepCard> LegalCalledAces(IDeck deck)
+            public List<SheepCard> LegalCalledAces(IHand deck)
             {
                 throw new NotImplementedException();
             }
@@ -327,7 +327,7 @@ namespace Sheepshead.Tests
             var mockHand = new Mock<IHand>();
             var trickList = new List<ITrick>();
             mockHand.Setup(m => m.Tricks).Returns(trickList);
-            mockHand.Setup(m => m.Deck).Returns(new Mock<IDeck>().Object);
+            mockHand.Setup(m => m.Deck).Returns(new Mock<IHand>().Object);
             ITrick passedTrick = null;
             mockHand.Setup(m => m.AddTrick(It.IsAny<ITrick>())).Callback((ITrick givenTrick) =>
             {

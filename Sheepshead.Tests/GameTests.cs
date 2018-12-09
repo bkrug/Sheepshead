@@ -89,7 +89,7 @@ namespace Sheepshead.Tests
             };
             var playersDifferentOrder = players.Skip(2).Union(players.Take(2)).ToList();
             var trickMock = new Mock<ITrick>();
-            var deckMock = new Mock<IDeck>();
+            var deckMock = new Mock<IHand>();
             deckMock.Setup(m => m.Tricks).Returns(new List<ITrick>() { trickMock.Object });
             trickMock.Setup(m => m.PlayersWithoutTurn).Returns(players);
             var gameStateDescriberMock = new Mock<IGameStateDescriber>();
@@ -113,7 +113,7 @@ namespace Sheepshead.Tests
             };
             var refusingPick = players.Take(1).ToList();
             var unplayedPlayers = players.Skip(1).ToList();
-            var deckMock = new Mock<IDeck>();
+            var deckMock = new Mock<IHand>();
             deckMock.Setup(m => m.PlayersRefusingPick).Returns(refusingPick);
             deckMock.Setup(m => m.PlayersWithoutPickTurn).Returns(unplayedPlayers);
             var gameStateDescriberMock = new Mock<IGameStateDescriber>();
@@ -121,7 +121,7 @@ namespace Sheepshead.Tests
             gameStateDescriberMock.Setup(m => m.GetTurnType()).Returns(TurnType.Pick);
             var handFactoryMock = new Mock<IHandFactory>();
             handFactoryMock
-                .Setup(m => m.GetHand(It.IsAny<IDeck>(), It.IsAny<IPlayer>(), It.IsAny<List<SheepCard>>()))
+                .Setup(m => m.GetHand(It.IsAny<IHand>(), It.IsAny<IPlayer>(), It.IsAny<List<SheepCard>>()))
                 .Callback(() => Assert.Fail("Should not have attempted to create a hand"));
 
             var game = new Game(players, PartnerMethod.JackOfDiamonds, null, handFactoryMock.Object, gameStateDescriberMock.Object);
@@ -144,13 +144,13 @@ namespace Sheepshead.Tests
             var expectedPicker = playerList[2] as IComputerPlayer;
             var refusingPick = playerList.Take(1).ToList();
             var handCreated = false;
-            var deckMock = new Mock<IDeck>();
+            var deckMock = new Mock<IHand>();
             deckMock.Setup(m => m.PlayersWithoutPickTurn).Returns(unplayedPlayers);
             deckMock.Setup(m => m.PlayersRefusingPick).Returns(refusingPick);
             deckMock.Setup(m => m.Game.PartnerMethod);
             var handFactoryMock = new Mock<IHandFactory>();
             handFactoryMock
-                .Setup(m => m.GetHand(It.IsAny<IDeck>(), expectedPicker, It.IsAny<List<SheepCard>>()))
+                .Setup(m => m.GetHand(It.IsAny<IHand>(), expectedPicker, It.IsAny<List<SheepCard>>()))
                 .Callback(() => handCreated = true);
             var gameStateDescriberMock = new Mock<IGameStateDescriber>();
             gameStateDescriberMock.Setup(m => m.CurrentDeck).Returns(deckMock.Object);
@@ -176,7 +176,7 @@ namespace Sheepshead.Tests
             var unplayedPlayers = playerList.Skip(1).ToList();
             var refusingPick = playerList.Take(1).ToList();
             var handCreated = false;
-            var deckMock = new Mock<IDeck>();
+            var deckMock = new Mock<IHand>();
             deckMock.SetupGet(m => m.PlayersWithoutPickTurn).Returns(unplayedPlayers);
             deckMock.SetupGet(m => m.PlayersRefusingPick).Returns(refusingPick);
             deckMock.SetupGet(m => m.Game.LeastersEnabled).Returns(true);

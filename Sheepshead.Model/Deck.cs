@@ -6,7 +6,7 @@ using Sheepshead.Model.Wrappers;
 
 namespace Sheepshead.Model
 {
-    public partial class Hand : IHand, IDeck
+    public partial class Hand : IHand
     {
         public IGame Game { get; private set; }
         public List<SheepCard> Blinds { get; private set; } = new List<SheepCard>();
@@ -117,10 +117,6 @@ namespace Sheepshead.Model
         {
             get { return _pickPlayerOrderer ?? (_pickPlayerOrderer = new PlayerOrderer()); }
         }
-    }
-
-    public interface IDeck : IHand
-    {
     }
 
     public class PreviousDeckIncompleteException : Exception

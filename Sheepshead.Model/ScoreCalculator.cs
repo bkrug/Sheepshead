@@ -10,7 +10,7 @@ namespace Sheepshead.Model
     public class ScoreCalculator
     {
         IHand _hand;
-        IDeck Deck => _hand.Deck;
+        IHand Deck => _hand.Deck;
         bool Leasters => _hand.Leasters;
         IPlayer Picker => _hand.Picker;
         IPlayer Partner => _hand.Partner;

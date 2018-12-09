@@ -38,10 +38,10 @@ namespace Sheepshead.Tests
             var mockGame = new Mock<IGame>();
             mockGame.Setup(m => m.Players).Returns(playerList);
             mockGame.Setup(m => m.PlayerCount).Returns(5);
-            var mockDeck = new Mock<IDeck>();
+            var mockDeck = new Mock<IHand>();
             mockDeck.Setup(m => m.Game).Returns(mockGame.Object);
-            IDeck deck2;
-            var deckList = new List<IDeck>() { mockDeck.Object };
+            IHand deck2;
+            var deckList = new List<IHand>() { mockDeck.Object };
             mockGame.Setup(m => m.Decks).Returns(deckList);
             mockGame.Setup(m => m.LastDeckIsComplete()).Returns(true);
 

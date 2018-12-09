@@ -44,9 +44,9 @@ namespace Sheepshead.Tests
             return trickMock;
         }
 
-        private Mock<IDeck> GenerateDeckMock(List<IPlayer> playerList)
+        private Mock<IHand> GenerateDeckMock(List<IPlayer> playerList)
         {
-            var deckMock = new Mock<IDeck>();
+            var deckMock = new Mock<IHand>();
             deckMock.Setup(m => m.PlayerCount).Returns(5);
             deckMock.Setup(m => m.Players).Returns(playerList);
             return deckMock;
@@ -100,7 +100,7 @@ namespace Sheepshead.Tests
                 SheepCard.N7_HEARTS,
                 SheepCard.N8_HEARTS
             });
-            var deckMock = new Mock<IDeck>();
+            var deckMock = new Mock<IHand>();
             deckMock.Setup(m => m.Blinds).Returns(new List<SheepCard>() { 
                 SheepCard.N8_SPADES,
                 SheepCard.QUEEN_HEARTS
@@ -123,7 +123,7 @@ namespace Sheepshead.Tests
                 SheepCard.N7_HEARTS,
                 SheepCard.N8_HEARTS
             });
-            var deckMock = new Mock<IDeck>();
+            var deckMock = new Mock<IHand>();
             deckMock.Setup(m => m.Blinds).Returns(new List<SheepCard>() {
                 SheepCard.N7_CLUBS,
                 SheepCard.QUEEN_HEARTS
@@ -148,7 +148,7 @@ namespace Sheepshead.Tests
                 SheepCard.N7_HEARTS,
                 SheepCard.N8_HEARTS
             });
-            var deckMock = new Mock<IDeck>();
+            var deckMock = new Mock<IHand>();
             deckMock.Setup(m => m.Blinds).Returns(new List<SheepCard>() {
                 SheepCard.ACE_HEARTS,
                 SheepCard.QUEEN_HEARTS
@@ -163,7 +163,7 @@ namespace Sheepshead.Tests
         [TestMethod]
         public void Player_LegalCalledAces_TwoAcesAreLegal()
         {
-            var deckMock = new Mock<IDeck>();
+            var deckMock = new Mock<IHand>();
             deckMock.Setup(m => m.Buried).Returns(new List<SheepCard>());
             deckMock.Setup(m => m.Blinds).Returns(new List<SheepCard>() { SheepCard.N9_CLUBS, SheepCard.N9_SPADES });
             var player = new HumanPlayer();
@@ -177,7 +177,7 @@ namespace Sheepshead.Tests
         [TestMethod]
         public void Player_LegalCalledAces_TwoTensAreLegal()
         {
-            var deckMock = new Mock<IDeck>();
+            var deckMock = new Mock<IHand>();
             deckMock.Setup(m => m.Buried).Returns(new List<SheepCard>());
             deckMock.Setup(m => m.Blinds).Returns(new List<SheepCard>() { SheepCard.ACE_CLUBS, SheepCard.N10_SPADES });
             var player = new HumanPlayer();
@@ -191,7 +191,7 @@ namespace Sheepshead.Tests
         [TestMethod]
         public void Player_LegalCalledAces_TwoNothingIsLegal()
         {
-            var deckMock = new Mock<IDeck>();
+            var deckMock = new Mock<IHand>();
             deckMock.Setup(m => m.Buried).Returns(new List<SheepCard>());
             deckMock.Setup(m => m.Blinds).Returns(new List<SheepCard>() { SheepCard.QUEEN_CLUBS, SheepCard.JACK_SPADES });
             var player = new HumanPlayer();
@@ -212,7 +212,7 @@ namespace Sheepshead.Tests
                 new AdvancedPlayer(),
                 new AdvancedPlayer()
             };
-            var deckMock = new Mock<IDeck>();
+            var deckMock = new Mock<IHand>();
             deckMock.Setup(m => m.Players).Returns(players);
             deckMock.Setup(m => m.PlayerCount).Returns(players.Count);
             deckMock.Setup(m => m.StartingPlayer).Returns(players[0]);

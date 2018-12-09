@@ -8,7 +8,7 @@ namespace Sheepshead.Model
 {
     public partial class Hand : IHand
     {
-        public IDeck Deck => this;
+        public IHand Deck => this;
         public IPlayer Picker { get; private set; }
         public IPlayer Partner { get; private set; }
         public SheepCard? PartnerCard { get; private set; }
@@ -105,7 +105,7 @@ namespace Sheepshead.Model
 
     public interface IHand
     {
-        IDeck Deck { get; }
+        IHand Deck { get; }
         IPlayer Picker { get; }
         IPlayer Partner { get; }
         SheepCard? PartnerCard { get; }

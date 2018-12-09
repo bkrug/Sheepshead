@@ -17,7 +17,7 @@ namespace Sheepshead.Model.Players
             _playCreator = new PlayCreator();
         }
 
-        public override bool WillPick(IDeck deck)
+        public override bool WillPick(IHand deck)
         {
             var playerQueueRankInTrick = QueueRankInDeck(deck);
             var middleQueueRankInTrick = (deck.PlayerCount + 1) / 2;
@@ -28,7 +28,7 @@ namespace Sheepshead.Model.Players
             return willPick;
         }
 
-        protected override List<SheepCard> DropCardsForPickInternal(IDeck deck)
+        protected override List<SheepCard> DropCardsForPickInternal(IHand deck)
         {
             return Cards
                 .OrderBy(c => CardUtil.GetSuit(c) != Suit.TRUMP ? 1 : 2)
@@ -37,7 +37,7 @@ namespace Sheepshead.Model.Players
                 .ToList();
         }
 
-        public override bool GoItAlone(IDeck deck)
+        public override bool GoItAlone(IHand deck)
         {
             var trumpCount = Cards.Count(c => CardUtil.GetSuit(c) == Suit.TRUMP);
             var queenJackCount = Cards.Count(c => new[] { CardType.JACK, CardType.QUEEN }.Contains(CardUtil.GetFace(c)));

@@ -16,7 +16,7 @@ namespace Sheepshead.Model
         public bool LeastersEnabled { get; }
         public List<IPlayer> Players { get; }
         public List<IHumanPlayer> UnassignedPlayers => Players.OfType<IHumanPlayer>().Where(p => !p.AssignedToClient).ToList();
-        public List<IDeck> Decks => _gameStateDesciber.Decks;
+        public List<IHand> Decks => _gameStateDesciber.Decks;
         public IRandomWrapper _random { get; private set; }
         private IHandFactory _handFactory;
         private IGameStateDescriber _gameStateDesciber;
@@ -301,7 +301,7 @@ namespace Sheepshead.Model
         bool LeastersEnabled { get; }
         List<IPlayer> Players { get; }
         List<IHumanPlayer> UnassignedPlayers { get; }
-        List<IDeck> Decks { get; }
+        List<IHand> Decks { get; }
         TurnType TurnType { get; }
         TurnState TurnState { get; }
         PartnerMethod PartnerMethod { get; }
