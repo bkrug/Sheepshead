@@ -63,24 +63,6 @@ namespace Sheepshead.Model
             }
         }
 
-        private SheepCard? ChoosePartnerCard(IPlayer picker)
-        {
-            var potentialPartnerCards = new[] {
-                SheepCard.JACK_DIAMONDS,
-                SheepCard.JACK_HEARTS,
-                SheepCard.JACK_SPADES,
-                SheepCard.JACK_CLUBS,
-                SheepCard.QUEEN_DIAMONDS,
-                SheepCard.QUEEN_HEARTS,
-                SheepCard.QUEEN_SPADES,
-                SheepCard.QUEEN_CLUBS
-            };
-            SheepCard? partnerCard = potentialPartnerCards.Any(c => !picker.Cards.Contains(c))
-                ? potentialPartnerCards.First(c => !picker.Cards.Contains(c))
-                : (SheepCard?)null;
-            return partnerCard;
-        }
-
         public void AddTrick(ITrick trick)
         {
             _tricks.Add(trick);
@@ -122,7 +104,7 @@ namespace Sheepshead.Model
         public void SetPartnerCard(SheepCard? sheepCard)
         {
             if (Deck.Game.PartnerMethod != PartnerMethod.CalledAce)
-                throw new InvalidOperationException("Can only set partner card if partner method is 'called ace'.");
+                throw new InvalidOperationException("The method SetPartnerCard() is only for 'called ace' games. The picker card is assigned automatically for 'jack of diamonds' games.");
             PartnerCard = sheepCard;
         }
     }
