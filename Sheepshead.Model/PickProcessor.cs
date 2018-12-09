@@ -47,8 +47,9 @@ namespace Sheepshead.Model
         private void AcceptComputerPicker(IHand deck, IComputerPlayer picker, IHandFactory handFactory)
         {
             var buriedCards = picker.DropCardsForPick(deck);
+            //TODO: set the buried property from within SetPicker
             deck.Buried = buriedCards;
-            handFactory.GetHand(deck, picker, buriedCards);
+            deck.SetPicker(picker, buriedCards);
             if (deck.Game.PlayerCount == 3 || picker.GoItAlone(deck))
                 return;
             if (deck.Game.PartnerMethod == PartnerMethod.CalledAce)
@@ -61,7 +62,7 @@ namespace Sheepshead.Model
         private void AcceptLeasters(IHand deck, IHandFactory handFactory)
         {
             if (deck.Game.LeastersEnabled)
-                handFactory.GetHand(deck, null, new List<SheepCard>());
+                deck.SetPicker(null, new List<SheepCard>());
         }
 
         /// <summary>
@@ -93,21 +94,19 @@ namespace Sheepshead.Model
         }
         private static List<SheepCard> _validCalledAceCards = new List<SheepCard>() { SheepCard.ACE_CLUBS, SheepCard.ACE_HEARTS, SheepCard.ACE_SPADES };
 
-        public IHand ContinueFromHumanPickTurn(IHumanPlayer human, bool willPick, IHand deck, IHandFactory handFactory, IPickProcessor pickProcessorOuter)
+        public IHand ContinueFromHumanPickTurn(IHumanPlayer human, bool willPick, IHand hand, IHandFactory handFactory, IPickProcessor pickProcessorOuter)
         {
-            if (deck.PlayersWithoutPickTurn.FirstOrDefault() != human)
+            if (hand.PlayersWithoutPickTurn.FirstOrDefault() != human)
                 throw new NotPlayersTurnException("This is not the player's turn to pick.");
-            IHand hand;
             if (willPick)
             {
-                human.Cards.AddRange(deck.Blinds);
-                hand = handFactory.GetHand(deck, human, new List<SheepCard>());
+                human.Cards.AddRange(hand.Blinds);
+                hand.SetPicker(human, new List<SheepCard>());
             }
             else
             {
-                deck.PlayersRefusingPick.Add(human);
-                pickProcessorOuter.PlayNonHumanPickTurns(deck, handFactory);
-                hand = deck;
+                hand.PlayersRefusingPick.Add(human);
+                pickProcessorOuter.PlayNonHumanPickTurns(hand, handFactory);
             }
             return hand;
         }

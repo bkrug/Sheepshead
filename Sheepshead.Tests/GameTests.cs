@@ -120,9 +120,6 @@ namespace Sheepshead.Tests
             gameStateDescriberMock.Setup(m => m.CurrentDeck).Returns(deckMock.Object);
             gameStateDescriberMock.Setup(m => m.GetTurnType()).Returns(TurnType.Pick);
             var handFactoryMock = new Mock<IHandFactory>();
-            handFactoryMock
-                .Setup(m => m.GetHand(It.IsAny<IHand>(), It.IsAny<IPlayer>(), It.IsAny<List<SheepCard>>()))
-                .Callback(() => Assert.Fail("Should not have attempted to create a hand"));
 
             var game = new Game(players, PartnerMethod.JackOfDiamonds, null, handFactoryMock.Object, gameStateDescriberMock.Object);
             var picker = game.PlayNonHumanPickTurns();
@@ -143,15 +140,11 @@ namespace Sheepshead.Tests
             var unplayedPlayers = playerList.Skip(1).ToList();
             var expectedPicker = playerList[2] as IComputerPlayer;
             var refusingPick = playerList.Take(1).ToList();
-            var handCreated = false;
             var deckMock = new Mock<IHand>();
             deckMock.Setup(m => m.PlayersWithoutPickTurn).Returns(unplayedPlayers);
             deckMock.Setup(m => m.PlayersRefusingPick).Returns(refusingPick);
             deckMock.Setup(m => m.Game.PartnerMethod);
             var handFactoryMock = new Mock<IHandFactory>();
-            handFactoryMock
-                .Setup(m => m.GetHand(It.IsAny<IHand>(), expectedPicker, It.IsAny<List<SheepCard>>()))
-                .Callback(() => handCreated = true);
             var gameStateDescriberMock = new Mock<IGameStateDescriber>();
             gameStateDescriberMock.Setup(m => m.CurrentDeck).Returns(deckMock.Object);
             gameStateDescriberMock.Setup(m => m.GetTurnType()).Returns(TurnType.Pick);
@@ -159,7 +152,6 @@ namespace Sheepshead.Tests
             var game = new Game(playerList, PartnerMethod.JackOfDiamonds, null, handFactoryMock.Object, gameStateDescriberMock.Object);
             var picker = game.PlayNonHumanPickTurns();
 
-            Assert.IsTrue(handCreated);
             Assert.AreEqual(expectedPicker, picker);
         }
 
@@ -175,15 +167,11 @@ namespace Sheepshead.Tests
             };
             var unplayedPlayers = playerList.Skip(1).ToList();
             var refusingPick = playerList.Take(1).ToList();
-            var handCreated = false;
             var deckMock = new Mock<IHand>();
             deckMock.SetupGet(m => m.PlayersWithoutPickTurn).Returns(unplayedPlayers);
             deckMock.SetupGet(m => m.PlayersRefusingPick).Returns(refusingPick);
             deckMock.SetupGet(m => m.Game.LeastersEnabled).Returns(true);
             var handFactoryMock = new Mock<IHandFactory>();
-            handFactoryMock.Setup(m => m.GetHand(deckMock.Object, null, It.IsAny<List<SheepCard>>()))
-                .Callback(() => handCreated = true)
-                .Returns(() => new Mock<IHand>().Object);
             var gameStateDescriberMock = new Mock<IGameStateDescriber>();
             gameStateDescriberMock.Setup(m => m.CurrentDeck).Returns(deckMock.Object);
             gameStateDescriberMock.Setup(m => m.GetTurnType()).Returns(TurnType.Pick);
@@ -191,7 +179,6 @@ namespace Sheepshead.Tests
             var game = new Game(playerList, PartnerMethod.JackOfDiamonds, null, handFactoryMock.Object, gameStateDescriberMock.Object);
             var picker = game.PlayNonHumanPickTurns();
 
-            Assert.IsTrue(handCreated);
             Assert.IsNull(picker);
         }
 
