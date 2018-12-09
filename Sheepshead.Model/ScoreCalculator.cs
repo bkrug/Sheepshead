@@ -10,7 +10,6 @@ namespace Sheepshead.Model
     public class ScoreCalculator
     {
         IHand _hand;
-        IHand Deck => _hand;
         bool Leasters => _hand.Leasters;
         IPlayer Picker => _hand.Picker;
         IPlayer Partner => _hand.Partner;
@@ -47,7 +46,7 @@ namespace Sheepshead.Model
         {
             var handPoints = new Dictionary<IPlayer, int>
             {
-                { Picker, Deck.Buried.Sum(c => CardUtil.GetPoints(c)) }
+                { Picker, _hand.Buried.Sum(c => CardUtil.GetPoints(c)) }
             };
             defensePoints = 0;
             challengersWonOneTrick = false;
@@ -99,7 +98,7 @@ namespace Sheepshead.Model
                 var partnerCard = PartnerCard.HasValue ? Enum.GetName(typeof(SheepCard), PartnerCard.Value) : "no parter card.";
                 throw new Exception("Picker and Partner are the same person! " + partnerCard);
             }
-            Deck.Players
+            _hand.Players
                 .Except(new List<IPlayer>() { Partner, Picker })
                 .ToList()
                 .ForEach(p => handCoins.Add(p, defensiveCoins));
@@ -126,7 +125,7 @@ namespace Sheepshead.Model
                                     .ToDictionary(g => g.Key, g => g.Sum(wd => wd.Points));
 
             var leasterWinner = trickPoints.OrderBy(c => c.Value).First().Key;
-            var trickCoins = Deck.Players.ToDictionary(p => p, p => p == leasterWinner ? Deck.PlayerCount - 1 : -1);
+            var trickCoins = _hand.Players.ToDictionary(p => p, p => p == leasterWinner ? _hand.PlayerCount - 1 : -1);
 
             return new HandScores()
             {

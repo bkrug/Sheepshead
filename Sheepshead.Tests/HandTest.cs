@@ -795,7 +795,6 @@ namespace Sheepshead.Tests
 
             var pickerMock = new Mock<IPlayer>();
             pickerMock.Setup(m => m.Cards).Returns(new List<SheepCard>());
-            //To delete: gameMock.Setup(m => m.Blinds).Returns(new List<SheepCard>());
             gameMock.Setup(m => m.PlayerCount).Returns(5);
             gameMock.Setup(m => m.PartnerMethod).Returns(PartnerMethod.CalledAce);
             var hand2 = new Hand(gameMock.Object, null);
@@ -878,8 +877,6 @@ namespace Sheepshead.Tests
         public void Hand_PresumedPartner_2PlayersTie()
         {
             var gameMock = new Mock<IGame>();
-            //To delete: handMock.Setup(d => d.Blinds).Returns(new List<SheepCard>());
-            //To delete: handMock.Setup(d => d.Buried).Returns(new List<SheepCard>());
             gameMock.Setup(m => m.PartnerMethod).Returns(PartnerMethod.JackOfDiamonds);
             gameMock.Setup(d => d.PlayerCount).Returns(5);
             gameMock.Setup(m => m.LastDeckIsComplete()).Returns(true);

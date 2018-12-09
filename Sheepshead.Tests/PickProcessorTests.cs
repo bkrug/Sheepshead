@@ -270,7 +270,6 @@ namespace Sheepshead.Tests
                 .Callback((IHand deck, IPlayer player, List<SheepCard> cards) => Assert.Fail("Hand should not be created by ContinueFromHumanPick() method."));
             var refusingPlayers = new List<IPlayer>();
             var deckMock = new Mock<IHand>();
-            //To delete: deckMock.Setup(m => m.Hand).Returns(handMock.Object);
             deckMock.Setup(m => m.PlayersRefusingPick).Returns(refusingPlayers);
             deckMock.Setup(m => m.PlayersWithoutPickTurn).Returns(new List<IPlayer>() { humanMock.Object, expectedPicker });
             
