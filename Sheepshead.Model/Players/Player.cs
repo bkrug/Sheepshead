@@ -19,27 +19,27 @@ namespace Sheepshead.Model.Players
             return rank + 1;
         }
 
-        public int QueueRankInHand(IHand deck)
+        public int QueueRankInHand(IHand hand)
         {
-            if (deck.StartingPlayer == null) throw new NullReferenceException();
-            var indexOfMe = deck.Players.IndexOf(this);
-            var indexOfStartingPlayer = deck.Players.IndexOf(deck.StartingPlayer);
+            if (hand.StartingPlayer == null) throw new NullReferenceException();
+            var indexOfMe = hand.Players.IndexOf(this);
+            var indexOfStartingPlayer = hand.Players.IndexOf(hand.StartingPlayer);
             var rank = indexOfMe - indexOfStartingPlayer;
-            if (rank < 0) rank += deck.PlayerCount;
+            if (rank < 0) rank += hand.PlayerCount;
             return rank + 1;
         }
 
-        public List<SheepCard> LegalCalledAces(IHand deck)
+        public List<SheepCard> LegalCalledAces(IHand hand)
         {
-            var suits = LegalCalledAceSuits(deck);
+            var suits = LegalCalledAceSuits(hand);
             return suits.LegalSuits.Select(g => GetCardOfSuit(suits.CardType, g.Key)).ToList();
         }
 
-        protected LegalCalledAces LegalCalledAceSuits(IHand deck)
+        protected LegalCalledAces LegalCalledAceSuits(IHand hand)
         {
             var allPickersCards = Cards
-                .Union(deck.Blinds)
-                .Union(deck.Buried)
+                .Union(hand.Blinds)
+                .Union(hand.Buried)
                 .ToList();
             var allAces = new List<SheepCard>() { SheepCard.ACE_CLUBS, SheepCard.ACE_HEARTS, SheepCard.ACE_SPADES };
             var allTens = new List<SheepCard>() { SheepCard.N10_CLUBS, SheepCard.N10_HEARTS, SheepCard.N10_SPADES };
@@ -117,7 +117,7 @@ namespace Sheepshead.Model.Players
         string Name { get; set; }
         List<SheepCard> Cards { get; }
         int QueueRankInTrick(ITrick trick);
-        int QueueRankInHand(IHand deck);
-        List<SheepCard> LegalCalledAces(IHand deck);
+        int QueueRankInHand(IHand hand);
+        List<SheepCard> LegalCalledAces(IHand hand);
     }
 }

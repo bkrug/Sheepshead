@@ -31,7 +31,7 @@ namespace Sheepshead.Tests.PlayerMocks
             throw new NotImplementedException();
         }
 
-        public int QueueRankInHand(IHand deck)
+        public int QueueRankInHand(IHand hand)
         {
             throw new NotImplementedException();
         }
@@ -41,22 +41,22 @@ namespace Sheepshead.Tests.PlayerMocks
             throw new NotImplementedException();
         }
 
-        public bool WillPick(IHand deck)
+        public bool WillPick(IHand hand)
         {
             return _doesPick;
         }
 
-        public SheepCard? ChooseCalledAce(IHand deck)
+        public SheepCard? ChooseCalledAce(IHand hand)
         {
             return _calledAceCard;
         }
 
-        public List<SheepCard> LegalCalledAces(IHand deck)
+        public List<SheepCard> LegalCalledAces(IHand hand)
         {
             throw new NotImplementedException();
         }
 
-        public bool GoItAlone(IHand deck)
+        public bool GoItAlone(IHand hand)
         {
             return false;
         }

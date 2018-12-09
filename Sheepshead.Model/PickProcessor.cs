@@ -7,9 +7,9 @@ namespace Sheepshead.Model
 {
     public interface IPickProcessor
     {
-        IComputerPlayer PlayNonHumanPickTurns(IHand deck);
-        void BuryCards(IHand deck, IHumanPlayer picker, List<SheepCard> cardsToBury, bool goItAlone);
-        IHand ContinueFromHumanPickTurn(IHumanPlayer human, bool willPick, IHand deck, IPickProcessor pickProcessorOuter);
+        IComputerPlayer PlayNonHumanPickTurns(IHand hand);
+        void BuryCards(IHand hand, IHumanPlayer picker, List<SheepCard> cardsToBury, bool goItAlone);
+        IHand ContinueFromHumanPickTurn(IHumanPlayer human, bool willPick, IHand hand, IPickProcessor pickProcessorOuter);
     }
 
     public class PickProcessor : IPickProcessor
@@ -18,70 +18,70 @@ namespace Sheepshead.Model
         {
         }
 
-        public IComputerPlayer PlayNonHumanPickTurns(IHand deck)
+        public IComputerPlayer PlayNonHumanPickTurns(IHand hand)
         {
-            var picker = PlayNonHumanPickTurnsPrivate(deck);
+            var picker = PlayNonHumanPickTurnsPrivate(hand);
             if (picker != null)
-                AcceptComputerPicker(deck, picker);
-            else if (picker == null && !deck.PlayersWithoutPickTurn.Any())
-                AcceptLeasters(deck);
+                AcceptComputerPicker(hand, picker);
+            else if (picker == null && !hand.PlayersWithoutPickTurn.Any())
+                AcceptLeasters(hand);
             return picker;
         }
 
-        private IComputerPlayer PlayNonHumanPickTurnsPrivate(IHand deck)
+        private IComputerPlayer PlayNonHumanPickTurnsPrivate(IHand hand)
         {
-            foreach (var player in deck.PlayersWithoutPickTurn.ToList())
+            foreach (var player in hand.PlayersWithoutPickTurn.ToList())
             {
                 var computerPlayer = player as IComputerPlayer;
                 if (computerPlayer == null)
                     return null; //Must be human's turn.
-                deck.PlayersWithoutPickTurn.Remove(player);
-                if (computerPlayer.WillPick(deck))
+                hand.PlayersWithoutPickTurn.Remove(player);
+                if (computerPlayer.WillPick(hand))
                     return computerPlayer;
                 else
-                    deck.PlayersRefusingPick.Add(computerPlayer);
+                    hand.PlayersRefusingPick.Add(computerPlayer);
             }
             return null;
         }
 
-        private void AcceptComputerPicker(IHand deck, IComputerPlayer picker)
+        private void AcceptComputerPicker(IHand hand, IComputerPlayer picker)
         {
-            var buriedCards = picker.DropCardsForPick(deck);
+            var buriedCards = picker.DropCardsForPick(hand);
             //TODO: set the buried property from within SetPicker
-            deck.Buried = buriedCards;
-            deck.SetPicker(picker, buriedCards);
-            if (deck.Game.PlayerCount == 3 || picker.GoItAlone(deck))
+            hand.Buried = buriedCards;
+            hand.SetPicker(picker, buriedCards);
+            if (hand.Game.PlayerCount == 3 || picker.GoItAlone(hand))
                 return;
-            if (deck.Game.PartnerMethod == PartnerMethod.CalledAce)
+            if (hand.Game.PartnerMethod == PartnerMethod.CalledAce)
             {
-                var partnerCard = picker.ChooseCalledAce(deck);
-                deck.SetPartnerCard(partnerCard);
+                var partnerCard = picker.ChooseCalledAce(hand);
+                hand.SetPartnerCard(partnerCard);
             }
         }
 
-        private void AcceptLeasters(IHand deck)
+        private void AcceptLeasters(IHand hand)
         {
-            if (deck.Game.LeastersEnabled)
-                deck.SetPicker(null, new List<SheepCard>());
+            if (hand.Game.LeastersEnabled)
+                hand.SetPicker(null, new List<SheepCard>());
         }
 
         /// <summary>
         /// Use this method to bury cards in a Jack-of-Diamonds game.
         /// </summary>
-        public void BuryCards(IHand deck, IHumanPlayer picker, List<SheepCard> cardsToBury, bool goItAlone)
+        public void BuryCards(IHand hand, IHumanPlayer picker, List<SheepCard> cardsToBury, bool goItAlone)
         {
-            if (deck.Picker != picker)
+            if (hand.Picker != picker)
                 throw new NotPlayersTurnException("A non-picker cannot bury cards.");
             cardsToBury.ForEach(c => picker.Cards.Remove(c));
-            cardsToBury.ForEach(c => deck.Buried.Add(c));
+            cardsToBury.ForEach(c => hand.Buried.Add(c));
             if (goItAlone)
-                deck.GoItAlone();
+                hand.GoItAlone();
         }
 
         /// <summary>
         /// Use this method to bury cards in a Called-Ace game.
         /// </summary>
-        public void BuryCards(IHand deck, IHumanPlayer picker, List<SheepCard> cardsToBury, bool goItAlone, SheepCard partnerCard)
+        public void BuryCards(IHand hand, IHumanPlayer picker, List<SheepCard> cardsToBury, bool goItAlone, SheepCard partnerCard)
         {
             if (picker.Cards.Contains(partnerCard))
                 throw new ArgumentException("Picker has the parner card");
@@ -89,8 +89,8 @@ namespace Sheepshead.Model
                 throw new ArgumentException($"Picker does not have a card in the {CardUtil.GetSuit(partnerCard).ToString()} suit");
             if (!_validCalledAceCards.Contains(partnerCard))
                 throw new ArgumentException($"{CardUtil.ToAbbr(partnerCard)} is not a valid partner card.");
-            deck.SetPartnerCard(partnerCard);
-            BuryCards(deck, picker, cardsToBury, goItAlone);
+            hand.SetPartnerCard(partnerCard);
+            BuryCards(hand, picker, cardsToBury, goItAlone);
         }
         private static List<SheepCard> _validCalledAceCards = new List<SheepCard>() { SheepCard.ACE_CLUBS, SheepCard.ACE_HEARTS, SheepCard.ACE_SPADES };
 

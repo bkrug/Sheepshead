@@ -275,12 +275,12 @@ namespace Sheepshead.Tests
                 throw new NotImplementedException();
             }
 
-            public int QueueRankInHand(IHand deck)
+            public int QueueRankInHand(IHand hand)
             {
                 throw new NotImplementedException();
             }
 
-            public List<SheepCard> LegalCalledAces(IHand deck)
+            public List<SheepCard> LegalCalledAces(IHand hand)
             {
                 throw new NotImplementedException();
             }
@@ -371,7 +371,7 @@ namespace Sheepshead.Tests
             mockCompleteTrick.Setup(m => m.Winner()).Returns(new TrickWinner() { Player = player4.Object, Points = 94 });
 
             var trick1 = new Trick(mockHand.Object);
-            Assert.AreEqual(player1.Object, trick1.StartingPlayer, "The starting player for first trick should be the same as the starting player for the deck.");
+            Assert.AreEqual(player1.Object, trick1.StartingPlayer, "The starting player for first trick should be the same as the starting player for the hand.");
 
             trickList.Remove(trick1);
             trickList.Add(mockCompleteTrick.Object);

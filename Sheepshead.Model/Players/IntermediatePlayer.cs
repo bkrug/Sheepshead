@@ -17,14 +17,14 @@ namespace Sheepshead.Model.Players
             _playCreator = new PlayCreator();
         }
 
-        public override bool WillPick(IHand deck)
+        public override bool WillPick(IHand hand)
         {
             var highPointCards = Cards.Count(c => CardUtil.GetPoints(c) >= 10);
             var avgRank = Cards.Average(c => CardUtil.GetRank(c));
-            var playerQueueRankInTrick = QueueRankInHand(deck);
-            var middleQueueRankInTrick = (deck.PlayerCount + 1) / 2;
+            var playerQueueRankInTrick = QueueRankInHand(hand);
+            var middleQueueRankInTrick = (hand.PlayerCount + 1) / 2;
 
-            if (deck.PlayerCount == 5)
+            if (hand.PlayerCount == 5)
             {
                 var willPick = avgRank <= 6
                     || avgRank <= 13 && highPointCards > 2
@@ -40,14 +40,14 @@ namespace Sheepshead.Model.Players
             }
         }
 
-        protected override List<SheepCard> DropCardsForPickInternal(IHand deck)
+        protected override List<SheepCard> DropCardsForPickInternal(IHand hand)
         {
             return new BuriedCardSelector(Cards).CardsToBury;
         }
 
-        public override SheepCard? ChooseCalledAce(IHand deck)
+        public override SheepCard? ChooseCalledAce(IHand hand)
         {
-            var acceptableSuits = LegalCalledAceSuits(deck);
+            var acceptableSuits = LegalCalledAceSuits(hand);
             if (!acceptableSuits.LegalSuits.Any())
                 return null;
             var selectedSuit = acceptableSuits.LegalSuits

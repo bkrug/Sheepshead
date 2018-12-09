@@ -9,31 +9,31 @@ namespace Sheepshead.Model.Players
     {
         public abstract SheepCard GetMove(ITrick trick);
 
-        public abstract bool WillPick(IHand deck);
+        public abstract bool WillPick(IHand hand);
 
-        public abstract SheepCard? ChooseCalledAce(IHand deck);
+        public abstract SheepCard? ChooseCalledAce(IHand hand);
 
-        public List<SheepCard> DropCardsForPick(IHand deck)
+        public List<SheepCard> DropCardsForPick(IHand hand)
         {
-            foreach (var card in deck.Blinds.Where(c => !Cards.Contains(c)))
+            foreach (var card in hand.Blinds.Where(c => !Cards.Contains(c)))
                 Cards.Add(card);
-            return DropCardsForPickInternal(deck);
+            return DropCardsForPickInternal(hand);
         }
 
-        public virtual bool GoItAlone(IHand deck)
+        public virtual bool GoItAlone(IHand hand)
         {
             return false;
         }
 
-        protected abstract List<SheepCard> DropCardsForPickInternal(IHand deck);
+        protected abstract List<SheepCard> DropCardsForPickInternal(IHand hand);
     }
 
     public interface IComputerPlayer : IPlayer
     {
         SheepCard GetMove(ITrick trick);
-        bool WillPick(IHand deck);
-        List<SheepCard> DropCardsForPick(IHand deck);
-        bool GoItAlone(IHand deck);
-        SheepCard? ChooseCalledAce(IHand deck);
+        bool WillPick(IHand hand);
+        List<SheepCard> DropCardsForPick(IHand hand);
+        bool GoItAlone(IHand hand);
+        SheepCard? ChooseCalledAce(IHand hand);
     }
 }

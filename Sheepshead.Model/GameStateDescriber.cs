@@ -30,12 +30,12 @@ namespace Sheepshead.Model
 
         public TurnType GetTurnType()
         {
-            var deck = Hands.LastOrDefault();
+            var hand = Hands.LastOrDefault();
             if (!Hands.Any() || LastHandIsComplete())
                 return TurnType.BeginHand;
-            else if (!deck.PickPhaseComplete)
+            else if (!hand.PickPhaseComplete)
                 return TurnType.Pick;
-            else if (!deck.Buried.Any() && !deck.Leasters)
+            else if (!hand.Buried.Any() && !hand.Leasters)
                 return TurnType.Bury;
             else
                 return TurnType.PlayTrick;

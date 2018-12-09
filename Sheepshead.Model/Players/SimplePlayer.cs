@@ -12,19 +12,19 @@ namespace Sheepshead.Model.Players
             return this.Cards.First(c => trick.IsLegalAddition(c, this));
         }
 
-        public override bool WillPick(IHand deck)
+        public override bool WillPick(IHand hand)
         {
-            return QueueRankInHand(deck) == deck.PlayerCount;
+            return QueueRankInHand(hand) == hand.PlayerCount;
         }
 
-        protected override List<SheepCard> DropCardsForPickInternal(IHand deck)
+        protected override List<SheepCard> DropCardsForPickInternal(IHand hand)
         {
             return Cards.OrderByDescending(c => CardUtil.GetRank(c)).Take(2).ToList();
         }
 
-        public override SheepCard? ChooseCalledAce(IHand deck)
+        public override SheepCard? ChooseCalledAce(IHand hand)
         {
-            var legalCards = LegalCalledAceSuits(deck);
+            var legalCards = LegalCalledAceSuits(hand);
             var acceptableSuits = legalCards.LegalSuits.Select(g => g.Key);
             if (!acceptableSuits.Any())
                 return null;
