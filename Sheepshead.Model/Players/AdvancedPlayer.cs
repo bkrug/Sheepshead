@@ -19,7 +19,7 @@ namespace Sheepshead.Model.Players
 
         public override bool WillPick(IHand deck)
         {
-            var playerQueueRankInTrick = QueueRankInDeck(deck);
+            var playerQueueRankInTrick = QueueRankInHand(deck);
             var middleQueueRankInTrick = (deck.PlayerCount + 1) / 2;
             var trumpCount = this.Cards.Count(c => CardUtil.GetSuit(c) == Suit.TRUMP);
             var willPick = playerQueueRankInTrick > middleQueueRankInTrick && trumpCount >= 3

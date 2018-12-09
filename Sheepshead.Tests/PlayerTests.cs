@@ -44,12 +44,12 @@ namespace Sheepshead.Tests
             return trickMock;
         }
 
-        private Mock<IHand> GenerateDeckMock(List<IPlayer> playerList)
+        private Mock<IHand> GenerateHandMock(List<IPlayer> playerList)
         {
-            var deckMock = new Mock<IHand>();
-            deckMock.Setup(m => m.PlayerCount).Returns(5);
-            deckMock.Setup(m => m.Players).Returns(playerList);
-            return deckMock;
+            var handMock = new Mock<IHand>();
+            handMock.Setup(m => m.PlayerCount).Returns(5);
+            handMock.Setup(m => m.Players).Returns(playerList);
+            return handMock;
         }
 
         private IPlayer player1 = new Player();
@@ -63,25 +63,25 @@ namespace Sheepshead.Tests
             var mainPlayer = new SimplePlayer();
             {
                 var playerList = new List<IPlayer>() { player1, player2, mainPlayer, player3, player4 };
-                var deckMock = GenerateDeckMock(playerList);
+                var deckMock = GenerateHandMock(playerList);
                 deckMock.Setup(m => m.StartingPlayer).Returns(player2);
                 Assert.IsFalse(mainPlayer.WillPick(deckMock.Object), "Simple Player should not pick if he is not last.");
             }
             {
                 var playerList = new List<IPlayer>() { player1, player2, mainPlayer, player3, player4 };
-                var deckMock = GenerateDeckMock(playerList);
+                var deckMock = GenerateHandMock(playerList);
                 deckMock.Setup(m => m.StartingPlayer).Returns(player3);
                 Assert.IsTrue(mainPlayer.WillPick(deckMock.Object), "Simple Player should pick if he is last.");
             }
             {
                 var playerList = new List<IPlayer>() { player1, player2, player3, player4, mainPlayer };
-                var deckMock = GenerateDeckMock(playerList);
+                var deckMock = GenerateHandMock(playerList);
                 deckMock.Setup(m => m.StartingPlayer).Returns(player1);
                 Assert.IsTrue(mainPlayer.WillPick(deckMock.Object), "Simple Player should pick if he is last.");
             }
             {
                 var playerList = new List<IPlayer>() { player1, player2, player3, player4, mainPlayer };
-                var deckMock = GenerateDeckMock(playerList);
+                var deckMock = GenerateHandMock(playerList);
                 deckMock.Setup(m => m.StartingPlayer).Returns(player3);
                 Assert.IsFalse(mainPlayer.WillPick(deckMock.Object), "Simple Player should not pick if he is not last.");
             }
@@ -203,7 +203,7 @@ namespace Sheepshead.Tests
         }
 
         [TestMethod]
-        public void Player_QueueRankInDeck()
+        public void Player_QueueRankInHand()
         {
             var players = new List<IPlayer>() {
                 new AdvancedPlayer(),
@@ -216,11 +216,11 @@ namespace Sheepshead.Tests
             deckMock.Setup(m => m.Players).Returns(players);
             deckMock.Setup(m => m.PlayerCount).Returns(players.Count);
             deckMock.Setup(m => m.StartingPlayer).Returns(players[0]);
-            Assert.AreEqual(1, players[0].QueueRankInDeck(deckMock.Object));
-            Assert.AreEqual(2, players[1].QueueRankInDeck(deckMock.Object));
-            Assert.AreEqual(3, players[2].QueueRankInDeck(deckMock.Object));
-            Assert.AreEqual(4, players[3].QueueRankInDeck(deckMock.Object));
-            Assert.AreEqual(5, players[4].QueueRankInDeck(deckMock.Object));
+            Assert.AreEqual(1, players[0].QueueRankInHand(deckMock.Object));
+            Assert.AreEqual(2, players[1].QueueRankInHand(deckMock.Object));
+            Assert.AreEqual(3, players[2].QueueRankInHand(deckMock.Object));
+            Assert.AreEqual(4, players[3].QueueRankInHand(deckMock.Object));
+            Assert.AreEqual(5, players[4].QueueRankInHand(deckMock.Object));
         }
 
         [TestMethod]

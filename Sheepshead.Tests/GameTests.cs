@@ -117,7 +117,7 @@ namespace Sheepshead.Tests
             deckMock.Setup(m => m.PlayersRefusingPick).Returns(refusingPick);
             deckMock.Setup(m => m.PlayersWithoutPickTurn).Returns(unplayedPlayers);
             var gameStateDescriberMock = new Mock<IGameStateDescriber>();
-            gameStateDescriberMock.Setup(m => m.CurrentDeck).Returns(deckMock.Object);
+            gameStateDescriberMock.Setup(m => m.CurrentHand).Returns(deckMock.Object);
             gameStateDescriberMock.Setup(m => m.GetTurnType()).Returns(TurnType.Pick);
             
             var game = new Game(players, PartnerMethod.JackOfDiamonds, null, gameStateDescriberMock.Object);
@@ -144,7 +144,7 @@ namespace Sheepshead.Tests
             deckMock.Setup(m => m.PlayersRefusingPick).Returns(refusingPick);
             deckMock.Setup(m => m.Game.PartnerMethod);
             var gameStateDescriberMock = new Mock<IGameStateDescriber>();
-            gameStateDescriberMock.Setup(m => m.CurrentDeck).Returns(deckMock.Object);
+            gameStateDescriberMock.Setup(m => m.CurrentHand).Returns(deckMock.Object);
             gameStateDescriberMock.Setup(m => m.GetTurnType()).Returns(TurnType.Pick);
 
             var game = new Game(playerList, PartnerMethod.JackOfDiamonds, null, gameStateDescriberMock.Object);
@@ -170,7 +170,7 @@ namespace Sheepshead.Tests
             deckMock.SetupGet(m => m.PlayersRefusingPick).Returns(refusingPick);
             deckMock.SetupGet(m => m.Game.LeastersEnabled).Returns(true);
             var gameStateDescriberMock = new Mock<IGameStateDescriber>();
-            gameStateDescriberMock.Setup(m => m.CurrentDeck).Returns(deckMock.Object);
+            gameStateDescriberMock.Setup(m => m.CurrentHand).Returns(deckMock.Object);
             gameStateDescriberMock.Setup(m => m.GetTurnType()).Returns(TurnType.Pick);
 
             var game = new Game(playerList, PartnerMethod.JackOfDiamonds, null, gameStateDescriberMock.Object);

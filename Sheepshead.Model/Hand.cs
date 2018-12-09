@@ -8,7 +8,6 @@ namespace Sheepshead.Model
 {
     public partial class Hand : IHand
     {
-        public IHand Deck => this;
         public IPlayer Picker { get; private set; }
         public IPlayer Partner { get; private set; }
         public SheepCard? PartnerCard { get; private set; }
@@ -137,14 +136,6 @@ namespace Sheepshead.Model
     {
         public Dictionary<IPlayer, int> Coins { get; set; }
         public Dictionary<IPlayer, int> Points { get; set; }
-    }
-
-    public class DeckHasHandException : ApplicationException
-    {
-        public DeckHasHandException(string message)
-            : base(message)
-        {
-        }
     }
 
     public static class HandUtils

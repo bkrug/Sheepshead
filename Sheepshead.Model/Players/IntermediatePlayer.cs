@@ -21,7 +21,7 @@ namespace Sheepshead.Model.Players
         {
             var highPointCards = Cards.Count(c => CardUtil.GetPoints(c) >= 10);
             var avgRank = Cards.Average(c => CardUtil.GetRank(c));
-            var playerQueueRankInTrick = QueueRankInDeck(deck);
+            var playerQueueRankInTrick = QueueRankInHand(deck);
             var middleQueueRankInTrick = (deck.PlayerCount + 1) / 2;
 
             if (deck.PlayerCount == 5)

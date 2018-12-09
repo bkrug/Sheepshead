@@ -16,7 +16,7 @@ namespace Sheepshead.Model
         public bool LeastersEnabled { get; }
         public List<IPlayer> Players { get; }
         public List<IHumanPlayer> UnassignedPlayers => Players.OfType<IHumanPlayer>().Where(p => !p.AssignedToClient).ToList();
-        public List<IHand> Decks => _gameStateDesciber.Decks;
+        public List<IHand> Hands => _gameStateDesciber.Hands;
         public IRandomWrapper _random { get; private set; }
         private IGameStateDescriber _gameStateDesciber;
         public TurnType TurnType => _gameStateDesciber.GetTurnType();
@@ -24,7 +24,7 @@ namespace Sheepshead.Model
         public TurnState TurnState => new TurnState
         {
             GameId = Id,
-            Hand = _gameStateDesciber.CurrentDeck,
+            Hand = _gameStateDesciber.CurrentHand,
             TurnType = TurnType
         };
 
@@ -58,26 +58,26 @@ namespace Sheepshead.Model
             }
         }
 
-        public bool LastDeckIsComplete()
+        public bool LastHandIsComplete()
         {
-            return _gameStateDesciber.LastDeckIsComplete();
+            return _gameStateDesciber.LastHandIsComplete();
         }
 
         public IHand ContinueFromHumanPickTurn(IHumanPlayer human, bool willPick)
         {
             if (TurnType != TurnType.Pick)
                 throw new WrongGamePhaseExcpetion("Game must be in the Pick phase.");
-            var deck = _gameStateDesciber.CurrentDeck;
-            return new PickProcessor().ContinueFromHumanPickTurn(human, willPick, deck, new PickProcessor());
+            var hand = _gameStateDesciber.CurrentHand;
+            return new PickProcessor().ContinueFromHumanPickTurn(human, willPick, hand, new PickProcessor());
         }
 
         public IComputerPlayer PlayNonHumanPickTurns(bool returnNullIfHumanNext = false)
         {
-            if (returnNullIfHumanNext && _gameStateDesciber.CurrentDeck.PlayersWithoutPickTurn.FirstOrDefault() is IHumanPlayer)
+            if (returnNullIfHumanNext && _gameStateDesciber.CurrentHand.PlayersWithoutPickTurn.FirstOrDefault() is IHumanPlayer)
                 return null;
             if (TurnType != TurnType.Pick)
                 throw new WrongGamePhaseExcpetion("Game must be in the Pick phase.");
-            return new PickProcessor().PlayNonHumanPickTurns(_gameStateDesciber.CurrentDeck);
+            return new PickProcessor().PlayNonHumanPickTurns(_gameStateDesciber.CurrentHand);
         }
 
         public void BuryCards(IHumanPlayer player, List<SheepCard> cards, bool goItAlone, SheepCard? partnerCard)
@@ -85,9 +85,9 @@ namespace Sheepshead.Model
             if (TurnType != TurnType.Bury)
                 throw new WrongGamePhaseExcpetion("Game must be in the Bury phase.");
             if (PartnerMethod == PartnerMethod.JackOfDiamonds || !partnerCard.HasValue)
-                new PickProcessor().BuryCards(Decks.Last(), player, cards, goItAlone);
+                new PickProcessor().BuryCards(Hands.Last(), player, cards, goItAlone);
             else
-                new PickProcessor().BuryCards(Decks.Last(), player, cards, goItAlone, partnerCard.Value);
+                new PickProcessor().BuryCards(Hands.Last(), player, cards, goItAlone, partnerCard.Value);
         }
 
         public void PlayNonHumansInTrick()
@@ -139,13 +139,13 @@ namespace Sheepshead.Model
         public PlayState PlayState(Guid requestingPlayerId)
         {
             var turnType = TurnType;
-            var currentDeck = _gameStateDesciber.CurrentDeck;
+            var currentDeck = _gameStateDesciber.CurrentHand;
             var currentTrick = currentDeck?.PickPhaseComplete == true ? _gameStateDesciber.CurrentTrick : null;
             var currentPlayer =
                 turnType == TurnType.PlayTrick 
                 ? currentTrick?.PlayersWithoutTurn?.FirstOrDefault()
                 : null;
-            var tricks = Decks.LastOrDefault(d => d.PickPhaseComplete)?.Tricks ?? new List<ITrick>();
+            var tricks = Hands.LastOrDefault(d => d.PickPhaseComplete)?.Tricks ?? new List<ITrick>();
             var humanPlayer = currentPlayer as IHumanPlayer;
             var requestingPlayer = Players.OfType<IHumanPlayer>().SingleOrDefault(p => p.Id == requestingPlayerId);
             return new PlayState
@@ -165,7 +165,7 @@ namespace Sheepshead.Model
         public PickState PickState(Guid requestingPlayerId)
         {
             var turnType = TurnType;
-            var currentDeck = Decks.LastOrDefault();
+            var currentDeck = Hands.LastOrDefault();
             var currentPlayer = 
                 turnType == TurnType.Pick 
                 ? currentDeck?.PlayersWithoutPickTurn?.FirstOrDefault() 
@@ -192,7 +192,7 @@ namespace Sheepshead.Model
         public BuryState BuryState(Guid requestingPlayerId)
         {
             var turnType = TurnType;
-            var currentDeck = _gameStateDesciber.CurrentDeck;
+            var currentDeck = _gameStateDesciber.CurrentHand;
             var currentPlayer =
                 turnType == TurnType.Bury 
                 ? currentDeck?.Picker
@@ -212,7 +212,7 @@ namespace Sheepshead.Model
 
         public TrickResults GetTrickWinners()
         {
-            var currentDeck = Decks.LastOrDefault(d => d.PickPhaseComplete);
+            var currentDeck = Hands.LastOrDefault(d => d.PickPhaseComplete);
             var tricks = currentDeck?.Tricks ?? new List<ITrick>();
             var winners = tricks.Where(t => t.PlayersWithoutTurn.Count == 0).Select(t => t?.Winner()?.Player?.Name).ToList();
             return new TrickResults()
@@ -226,7 +226,7 @@ namespace Sheepshead.Model
 
         public List<GameCoins> GameCoins()
         {
-            var coins = Decks
+            var coins = Hands
                 .Select(d => d.Scores()?.Coins)
                 .Where(c => c != null)
                 .ToList();
@@ -299,12 +299,12 @@ namespace Sheepshead.Model
         bool LeastersEnabled { get; }
         List<IPlayer> Players { get; }
         List<IHumanPlayer> UnassignedPlayers { get; }
-        List<IHand> Decks { get; }
+        List<IHand> Hands { get; }
         TurnType TurnType { get; }
         TurnState TurnState { get; }
         PartnerMethod PartnerMethod { get; }
         void RearrangePlayers();
-        bool LastDeckIsComplete();
+        bool LastHandIsComplete();
         IHand ContinueFromHumanPickTurn(IHumanPlayer human, bool willPick);
         IComputerPlayer PlayNonHumanPickTurns(bool returnNullIfHumanNext = false);
         void BuryCards(IHumanPlayer player, List<SheepCard> cards, bool goItAlone, SheepCard? parnterCard);

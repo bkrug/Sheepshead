@@ -19,7 +19,7 @@ namespace Sheepshead.Model.Players
             return rank + 1;
         }
 
-        public int QueueRankInDeck(IHand deck)
+        public int QueueRankInHand(IHand deck)
         {
             if (deck.StartingPlayer == null) throw new NullReferenceException();
             var indexOfMe = deck.Players.IndexOf(this);
@@ -117,7 +117,7 @@ namespace Sheepshead.Model.Players
         string Name { get; set; }
         List<SheepCard> Cards { get; }
         int QueueRankInTrick(ITrick trick);
-        int QueueRankInDeck(IHand deck);
+        int QueueRankInHand(IHand deck);
         List<SheepCard> LegalCalledAces(IHand deck);
     }
 }

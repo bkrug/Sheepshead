@@ -21,7 +21,7 @@ namespace Sheepshead.Tests.PlayerMocks
             _calledAceCard = calledAceCard;
         }
 
-        public List<SheepCard> DropCardsForPick(IHand deck)
+        public List<SheepCard> DropCardsForPick(IHand hand)
         {
             return new List<SheepCard>() { 0, (SheepCard)1 };
         }
@@ -31,7 +31,7 @@ namespace Sheepshead.Tests.PlayerMocks
             throw new NotImplementedException();
         }
 
-        public int QueueRankInDeck(IHand deck)
+        public int QueueRankInHand(IHand deck)
         {
             throw new NotImplementedException();
         }

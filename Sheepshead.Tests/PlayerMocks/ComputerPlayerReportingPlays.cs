@@ -31,7 +31,7 @@ namespace Sheepshead.Tests.PlayerMocks
             return _moveToMake;
         }
 
-        public int QueueRankInDeck(IHand deck)
+        public int QueueRankInHand(IHand deck)
         {
             throw new NotImplementedException();
         }

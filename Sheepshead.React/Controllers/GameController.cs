@@ -25,8 +25,8 @@ namespace Sheepshead.React.Controllers
         public IActionResult HandSummary(string gameId)
         {
             IGame game = GetGame(gameId);
-            var mustRedeal = game.Decks.LastOrDefault(d => d.IsComplete())?.MustRedeal;
-            var hand = game.Decks.LastOrDefault(d => d.PickPhaseComplete);
+            var mustRedeal = game.Hands.LastOrDefault(d => d.IsComplete())?.MustRedeal;
+            var hand = game.Hands.LastOrDefault(d => d.PickPhaseComplete);
             var scores = hand?.Scores();
             return Json(new
             {
@@ -108,14 +108,14 @@ namespace Sheepshead.React.Controllers
         {
             var game = GetGame(gameId);
             var trickWinner = game.GetTrickWinners();
-            var hand = game.Decks.LastOrDefault();
+            var hand = game.Hands.LastOrDefault();
             return Json(new
             {
                 trickWinner.Picker,
                 trickWinner.Partner,
                 trickWinner.PartnerCard,
                 trickWinner.TrickWinners,
-                leastersHand = game.Decks.LastOrDefault(d => d.PickPhaseComplete)?.Leasters ?? false,
+                leastersHand = game.Hands.LastOrDefault(d => d.PickPhaseComplete)?.Leasters ?? false,
                 tricks = hand?.Tricks
                              ?.Select(trick =>
                                 new KeyValuePair<string, List<CardSummary>>(
@@ -130,7 +130,7 @@ namespace Sheepshead.React.Controllers
         public IActionResult StartDeck(string gameId, string playerId)
         {
             IGame game = GetGame(gameId);
-            var mustRedeal = game.Decks.LastOrDefault()?.MustRedeal ?? false;
+            var mustRedeal = game.Hands.LastOrDefault()?.MustRedeal ?? false;
             if (game.TurnState.TurnType == TurnType.BeginHand || mustRedeal)
                 new Hand(game);
             var playState = game.PlayState(Guid.Parse(playerId));

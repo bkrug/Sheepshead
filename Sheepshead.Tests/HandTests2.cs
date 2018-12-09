@@ -13,7 +13,7 @@ namespace Sheepshead.Tests
     public class HandTests2
     {
         [TestMethod]
-        public void Hand_MakeDeck()
+        public void Hand_Constructor()
         {
             var playerList = new List<IPlayer>();
             for (var i = 0; i < 5; ++i)
@@ -21,7 +21,7 @@ namespace Sheepshead.Tests
             var game = new Game(playerList, PartnerMethod.JackOfDiamonds, new RandomWrapper(), null);
             var hand = new Hand(game, new RandomWrapper());
             Assert.AreEqual(2, hand.Blinds.Count(), "There should be two blinds after dealing");
-            Assert.AreEqual(5, game.Players.Count(), "There should be five doctores");
+            Assert.AreEqual(5, game.Players.Count(), "There should be five players");
             foreach (var player in hand.Game.Players)
                 Assert.AreEqual(6, player.Cards.Count(), "There are 6 cards in each players hand.");
         }
@@ -42,18 +42,18 @@ namespace Sheepshead.Tests
             mockHand.Setup(m => m.Game).Returns(mockGame.Object);
             IHand hand;
             var deckList = new List<IHand>() { mockHand.Object };
-            mockGame.Setup(m => m.Decks).Returns(deckList);
-            mockGame.Setup(m => m.LastDeckIsComplete()).Returns(true);
+            mockGame.Setup(m => m.Hands).Returns(deckList);
+            mockGame.Setup(m => m.LastHandIsComplete()).Returns(true);
 
             mockHand.Setup(m => m.StartingPlayer).Returns(player1.Object);
             hand = new Hand(mockGame.Object, new RandomWrapper());
-            //We won't test the Starting Player for the first deck in the game.  It should be random.
+            //We won't test the Starting Player for the first hand in the game.  It should be random.
             Assert.AreEqual(player2.Object, hand.StartingPlayer, "The starting player for one hand should be the player to the left of the previous starting player.");
 
-            mockGame.Object.Decks.RemoveAt(1);
+            mockGame.Object.Hands.RemoveAt(1);
             mockHand.Setup(m => m.StartingPlayer).Returns(player2.Object);
             hand = new Hand(mockGame.Object, new RandomWrapper());
-            //We won't test the Starting Player for the first deck in the game.  It should be random.
+            //We won't test the Starting Player for the first hand in the game.  It should be random.
             Assert.AreEqual(player3.Object, hand.StartingPlayer, "Again, the starting player for one hand should be the player to the left of the previous starting player.");
         }
     }

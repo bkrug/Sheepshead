@@ -679,8 +679,8 @@ namespace Sheepshead.Tests
             var gameMock = new Mock<IGame>();
             gameMock.Setup(m => m.PartnerMethod).Returns(PartnerMethod.JackOfDiamonds);
             gameMock.Setup(m => m.PlayerCount).Returns(5);
-            gameMock.Setup(m => m.Decks).Returns(new List<IHand>());
-            gameMock.Setup(m => m.LastDeckIsComplete()).Returns(true);
+            gameMock.Setup(m => m.Hands).Returns(new List<IHand>());
+            gameMock.Setup(m => m.LastHandIsComplete()).Returns(true);
             gameMock.Setup(m => m.LeastersEnabled).Returns(true);
             var hand = new Hand(gameMock.Object, null);
 
@@ -710,7 +710,7 @@ namespace Sheepshead.Tests
 
         //TODO: Split into two tests
         [TestMethod]
-        public void Hand_Constructor_PartnerCard_PickerWithoutJackDiamonds()
+        public void Hand_SetPicker_PartnerCard_PickerWithoutJackDiamonds()
         {
             {
                 var blinds = new List<SheepCard>() { SheepCard.KING_DIAMONDS, SheepCard.ACE_CLUBS };
@@ -732,7 +732,7 @@ namespace Sheepshead.Tests
         }
 
         [TestMethod]
-        public void Hand_Constructor_PartnerCard_PickerHasJackDiamonds()
+        public void Hand_SetPicker_PartnerCard_PickerHasJackDiamonds()
         {
             var blinds = new List<SheepCard>() { SheepCard.JACK_DIAMONDS, SheepCard.JACK_HEARTS };
             var droppedCards = new List<SheepCard>() { SheepCard.JACK_CLUBS, SheepCard.JACK_HEARTS };
@@ -751,7 +751,7 @@ namespace Sheepshead.Tests
         }
 
         [TestMethod]
-        public void Hand_Constructor_PartnerCard_PickerHasAllQueensJacks()
+        public void Hand_SetPicker_PartnerCard_PickerHasAllQueensJacks()
         {
             var blinds = new List<SheepCard>() { SheepCard.JACK_DIAMONDS, SheepCard.JACK_HEARTS };
             var buriedCards = new List<SheepCard>() { SheepCard.JACK_HEARTS, SheepCard.JACK_DIAMONDS };
@@ -770,7 +770,7 @@ namespace Sheepshead.Tests
         }
 
         [TestMethod]
-        public void Hand_Constructor_NoPartner_3Player()
+        public void Hand_SetPicker_NoPartner_3Player()
         {
             var blinds = new List<SheepCard>() { SheepCard.KING_DIAMONDS, SheepCard.ACE_CLUBS };
             var mockHand = new Mock<IHand>();
@@ -787,8 +787,8 @@ namespace Sheepshead.Tests
         public void Hand_Leasters()
         {
             var gameMock = new Mock<IGame>();
-            gameMock.Setup(m => m.Decks).Returns(new List<IHand>());
-            gameMock.Setup(m => m.LastDeckIsComplete()).Returns(true);
+            gameMock.Setup(m => m.Hands).Returns(new List<IHand>());
+            gameMock.Setup(m => m.LastHandIsComplete()).Returns(true);
             var hand = new Hand(gameMock.Object, null);
             hand.SetPicker(null, new List<SheepCard>());
             Assert.IsTrue(hand.Leasters, "When there is no picker, play leasters.");
@@ -807,8 +807,8 @@ namespace Sheepshead.Tests
         {
             var gameMock = new Mock<IGame>();
             gameMock.Setup(m => m.PlayerCount).Returns(5);
-            gameMock.Setup(m => m.Decks).Returns(new List<IHand>());
-            gameMock.Setup(m => m.LastDeckIsComplete()).Returns(true);
+            gameMock.Setup(m => m.Hands).Returns(new List<IHand>());
+            gameMock.Setup(m => m.LastHandIsComplete()).Returns(true);
             var hand = new Hand(gameMock.Object, null);
             var endEventCalled = false;
             hand.OnHandEnd += (Object sender, EventArgs e) => {
@@ -832,8 +832,8 @@ namespace Sheepshead.Tests
             var gameMock = new Mock<IGame>();
             gameMock.Setup(m => m.PartnerMethod).Returns(PartnerMethod.JackOfDiamonds);
             gameMock.Setup(d => d.PlayerCount).Returns(5);
-            gameMock.Setup(m => m.LastDeckIsComplete()).Returns(true);
-            gameMock.Setup(m => m.Decks).Returns(new List<IHand>());
+            gameMock.Setup(m => m.LastHandIsComplete()).Returns(true);
+            gameMock.Setup(m => m.Hands).Returns(new List<IHand>());
             var player1 = new Mock<IPlayer>();
             var player2 = new Mock<IPlayer>();
             var pickerMock = new Mock<IPlayer>();
@@ -879,8 +879,8 @@ namespace Sheepshead.Tests
             var gameMock = new Mock<IGame>();
             gameMock.Setup(m => m.PartnerMethod).Returns(PartnerMethod.JackOfDiamonds);
             gameMock.Setup(d => d.PlayerCount).Returns(5);
-            gameMock.Setup(m => m.LastDeckIsComplete()).Returns(true);
-            gameMock.Setup(m => m.Decks).Returns(new List<IHand>());
+            gameMock.Setup(m => m.LastHandIsComplete()).Returns(true);
+            gameMock.Setup(m => m.Hands).Returns(new List<IHand>());
             var player1 = new Mock<IPlayer>();
             var player2 = new Mock<IPlayer>();
             var pickerMock = new Mock<IPlayer>();

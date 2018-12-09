@@ -26,10 +26,10 @@ namespace Sheepshead.Model
 
         public Hand(IGame game, IRandomWrapper random)
         {
-            if (!game.LastDeckIsComplete())
-                throw new PreviousDeckIncompleteException("Cannot add a deck until the prvious one is complete.");
+            if (!game.LastHandIsComplete())
+                throw new PreviousHandIncompleteException("Cannot add a hand until the prvious one is complete.");
             Game = game;
-            Game.Decks.Add(this);
+            Game.Hands.Add(this);
             _random = random;
             if (_random != null)
             {
@@ -96,10 +96,10 @@ namespace Sheepshead.Model
 
         private void SetStartingPlayer()
         {
-            var index = Game.Decks.IndexOf(this);
+            var index = Game.Hands.IndexOf(this);
             var indexOfPlayer = (index == 0)
                 ? _random.Next(Game.PlayerCount) 
-                : Game.Players.IndexOf(Game.Decks[index - 1].StartingPlayer) + 1;
+                : Game.Players.IndexOf(Game.Hands[index - 1].StartingPlayer) + 1;
             if (indexOfPlayer == Game.PlayerCount) indexOfPlayer = 0;
             StartingPlayer = Game.Players[indexOfPlayer];
         }
@@ -119,8 +119,8 @@ namespace Sheepshead.Model
         }
     }
 
-    public class PreviousDeckIncompleteException : Exception
+    public class PreviousHandIncompleteException : Exception
     {
-        public PreviousDeckIncompleteException(string message) : base(message) { }
+        public PreviousHandIncompleteException(string message) : base(message) { }
     }
 }

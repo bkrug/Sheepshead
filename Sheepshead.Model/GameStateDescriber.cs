@@ -6,32 +6,32 @@ namespace Sheepshead.Model
 {
     public interface IGameStateDescriber
     {
-        List<IHand> Decks { get; }
-        IHand CurrentDeck { get; }
+        List<IHand> Hands { get; }
+        IHand CurrentHand { get; }
         ITrick CurrentTrick { get; }
         TurnType GetTurnType();
-        bool LastDeckIsComplete();
+        bool LastHandIsComplete();
     }
 
     public class GameStateDescriber : IGameStateDescriber
     {
-        public List<IHand> Decks { get; } = new List<IHand>();
+        public List<IHand> Hands { get; } = new List<IHand>();
 
-        public IHand CurrentDeck => LastDeckIsComplete() ? null : Decks.Last();
+        public IHand CurrentHand => LastHandIsComplete() ? null : Hands.Last();
 
         public ITrick CurrentTrick {
             get {
-                var trick = Decks.LastOrDefault()?.Tricks?.LastOrDefault();
-                if (trick == null || trick.IsComplete() && !Decks.LastOrDefault().IsComplete())
-                    trick = new Trick(Decks.LastOrDefault());
+                var trick = Hands.LastOrDefault()?.Tricks?.LastOrDefault();
+                if (trick == null || trick.IsComplete() && !Hands.LastOrDefault().IsComplete())
+                    trick = new Trick(Hands.LastOrDefault());
                 return trick;
             }
         }
 
         public TurnType GetTurnType()
         {
-            var deck = Decks.LastOrDefault();
-            if (!Decks.Any() || LastDeckIsComplete())
+            var deck = Hands.LastOrDefault();
+            if (!Hands.Any() || LastHandIsComplete())
                 return TurnType.BeginHand;
             else if (!deck.PickPhaseComplete)
                 return TurnType.Pick;
@@ -41,10 +41,10 @@ namespace Sheepshead.Model
                 return TurnType.PlayTrick;
         }
 
-        public bool LastDeckIsComplete()
+        public bool LastHandIsComplete()
         {
-            var lastDeck = Decks.LastOrDefault();
-            return lastDeck == null || lastDeck.IsComplete();
+            var lastHand = Hands.LastOrDefault();
+            return lastHand == null || lastHand.IsComplete();
         }
     }
 }
