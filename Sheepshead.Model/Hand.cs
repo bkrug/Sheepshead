@@ -58,14 +58,14 @@ namespace Sheepshead.Model
         public void AddTrick(ITrick trick)
         {
             _tricks.Add(trick);
-            if (_tricks.Count == (Model.Game.CARDS_IN_DECK / Deck.PlayerCount))
+            if (_tricks.Count == (Model.Game.CARDS_IN_DECK / Game.PlayerCount))
                 trick.OnTrickEnd += (Object sender, EventArgs e) => { OnHandEndHandler(); };
         }
 
         private HandScores _scores = null;
         public HandScores Scores()
         {
-            if (Tricks.Count == Deck.Game.TrickCount && Tricks.Last().IsComplete())
+            if (Tricks.Count == Game.TrickCount && Tricks.Last().IsComplete())
                 return _scores = (_scores ?? new ScoreCalculator(this).InternalScores());
             return null;
         }
@@ -75,7 +75,7 @@ namespace Sheepshead.Model
             if (MustRedeal)
                 return true;
             const int CARDS_IN_PLAY = 30;
-            var trickCount = CARDS_IN_PLAY / Deck.PlayerCount;
+            var trickCount = CARDS_IN_PLAY / Game.PlayerCount;
             return _tricks.Count() == trickCount && _tricks.Last().IsComplete();
         }
 
@@ -97,7 +97,7 @@ namespace Sheepshead.Model
 
         public void SetPartnerCard(SheepCard? sheepCard)
         {
-            if (Deck.Game.PartnerMethod != PartnerMethod.CalledAce)
+            if (Game.PartnerMethod != PartnerMethod.CalledAce)
                 throw new InvalidOperationException("The method SetPartnerCard() is only for 'called ace' games. The picker card is assigned automatically for 'jack of diamonds' games.");
             PartnerCard = sheepCard;
         }
@@ -161,7 +161,7 @@ namespace Sheepshead.Model
 
         public static SheepCard? ChoosePartnerCard(IHand hand, IPlayer picker)
         {
-            if (hand.Deck.PlayerCount == 3 || hand.Deck.Game.PartnerMethod == PartnerMethod.CalledAce)
+            if (hand.Game.PlayerCount == 3 || hand.Game.PartnerMethod == PartnerMethod.CalledAce)
                 return null;
             var potentialPartnerCards = new[] {
                 SheepCard.JACK_DIAMONDS,
@@ -175,8 +175,8 @@ namespace Sheepshead.Model
             };
             var pickerDoesNotHave = potentialPartnerCards.Where(c => 
                 !picker.Cards.Contains(c) 
-                && !hand.Deck.Blinds.Contains(c) 
-                && !hand.Deck.Buried.Contains(c));
+                && !hand.Blinds.Contains(c) 
+                && !hand.Buried.Contains(c));
             return pickerDoesNotHave.Any() ? pickerDoesNotHave.First() : (SheepCard?)null;
         }
     }
