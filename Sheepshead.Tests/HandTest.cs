@@ -741,7 +741,7 @@ namespace Sheepshead.Tests
                 var hand = new Hand(mockDeck.Object, mockPicker.Object, droppedCards);
                 Assert.AreEqual(SheepCard.JACK_DIAMONDS, hand.PartnerCard, "Jack of diamonds should be partner card right now");
                 var expectedPickerCards = new List<SheepCard>() { SheepCard.KING_DIAMONDS, SheepCard.ACE_CLUBS, SheepCard.N9_SPADES, SheepCard.N10_SPADES };
-                Assert.IsTrue(SameContents(expectedPickerCards, mockPicker.Object.Cards), "Picker dropped some cards to pick the blinds.");
+                CollectionAssert.AreEquivalent(expectedPickerCards, mockPicker.Object.Cards, "Picker dropped some cards to pick the blinds.");
             }
         }
 
@@ -792,20 +792,6 @@ namespace Sheepshead.Tests
             mockPicker.Setup(m => m.Cards).Returns(new List<SheepCard>() { SheepCard.JACK_DIAMONDS });
             var hand = new Hand(mockDeck.Object, mockPicker.Object, new List<SheepCard>());
             Assert.AreEqual(null, hand.PartnerCard, "No partner card should be selected since it is a three player game.");
-        }
-
-        private bool SameContents(List<SheepCard> list1, List<SheepCard> list2)
-        {
-            var tempList = list1.ToList();
-            var match = true;
-            foreach (var item in list1)
-            {
-                if (tempList.Contains(item))
-                    tempList.Remove(item);
-                else
-                    match = false;
-            }
-            return !tempList.Any() && match;
         }
 
         [TestMethod]
