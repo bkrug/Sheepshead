@@ -114,7 +114,7 @@ namespace Sheepshead.Tests
             for (var g = 0; g < handsToPlay; ++g)
             {
                 var deck = new Hand(game);
-                var picker = game.PlayNonHumanPickTurns() as ComputerPlayer;
+                var picker = game.PlayNonHumanPickTurns();
                 var buriedCards = picker != null ? picker.DropCardsForPick(deck) : new List<SheepCard>();
                 while (!deck.IsComplete())
                 {

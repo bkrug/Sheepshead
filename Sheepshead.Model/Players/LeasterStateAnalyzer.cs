@@ -40,7 +40,7 @@ namespace Sheepshead.Model.Players
         public bool HaveIAlreadyWon(IPlayer thisPlayer, ITrick trick)
         {
             return trick.Hand.Tricks
-                .Where(t => t.CardsPlayed.Count == trick.Hand.Deck.Game.PlayerCount)
+                .Where(t => t.CardsPlayed.Count == trick.Hand.Game.PlayerCount)
                 .Any(t => t.Winner().Player == thisPlayer);
         }
 
@@ -62,7 +62,7 @@ namespace Sheepshead.Model.Players
         public bool HaveHighPointsBeenPlayed(ITrick trick)
         {
             var totalPoints = trick.CardsPlayed.Sum(cp => CardUtil.GetPoints(cp.Value));
-            return trick.Hand.Deck.Game.PlayerCount == 3
+            return trick.Hand.Game.PlayerCount == 3
                 ? totalPoints >= 10
                 : totalPoints >= 12;
         }

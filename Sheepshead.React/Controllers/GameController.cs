@@ -39,7 +39,7 @@ namespace Sheepshead.React.Controllers
                                     trick.CardsPlayed.Select(c => CardUtil.GetCardSummary(c.Value)).ToList()
                                 )
                              ),
-                mustRedeal = mustRedeal,
+                mustRedeal,
                 buried = hand.Buried.Select(c => CardUtil.GetCardSummary(c)).ToList()
             });
         }

@@ -17,7 +17,7 @@ namespace Sheepshead.Tests
             handMock.Setup(m => m.Tricks).Returns(trickList);
             handMock.Setup(m => m.PartnerCard).Returns(SheepCard.KING_CLUBS);
             handMock.Setup(m => m.AddTrick(It.IsAny<ITrick>())).Callback((ITrick newTrick) => { trickList.Add(newTrick); });
-            handMock.Setup(m => m.Deck.Game.PartnerMethod).Returns(PartnerMethod.JackOfDiamonds);
+            handMock.Setup(m => m.Game.PartnerMethod).Returns(PartnerMethod.JackOfDiamonds);
             return handMock.Object;
         }
 
@@ -83,7 +83,7 @@ namespace Sheepshead.Tests
             picker.Setup(m => m.Cards).Returns(new List<SheepCard>() { SheepCard.N9_HEARTS, SheepCard.N9_DIAMONDS, SheepCard.QUEEN_HEARTS, SheepCard.N9_CLUBS, SheepCard.ACE_CLUBS, SheepCard.KING_CLUBS });
             var hand = new Mock<IHand>();
             hand.Setup(m => m.Deck.Buried).Returns(new List<SheepCard>() { SheepCard.N10_CLUBS, SheepCard.N10_SPADES });
-            hand.Setup(m => m.Deck.Game.PartnerMethod).Returns(PartnerMethod.CalledAce);
+            hand.Setup(m => m.Game.PartnerMethod).Returns(PartnerMethod.CalledAce);
             hand.Setup(m => m.PartnerCard).Returns(SheepCard.ACE_HEARTS);
             hand.Setup(m => m.Picker).Returns(picker.Object);
             var calculator = new Mock<IStartingPlayerCalculator>();
@@ -96,7 +96,7 @@ namespace Sheepshead.Tests
         public void Trick_IsLegal_PickerCanLeadWithCardOfCalledSuit()
         {
             var hand = new Mock<IHand>();
-            hand.Setup(m => m.Deck.Game.PartnerMethod).Returns(PartnerMethod.CalledAce);
+            hand.Setup(m => m.Game.PartnerMethod).Returns(PartnerMethod.CalledAce);
             hand.Setup(m => m.PartnerCard).Returns(SheepCard.ACE_HEARTS);
             hand.Setup(m => m.Deck.Buried).Returns(new List<SheepCard>() { SheepCard.N10_HEARTS, SheepCard.N10_SPADES });
             var picker = new Mock<IPlayer>();
@@ -111,7 +111,7 @@ namespace Sheepshead.Tests
         public void Trick_IsLegal_PickerCanLeadWithCardOfCalledSuit1()
         {
             var hand = new Mock<IHand>();
-            hand.Setup(m => m.Deck.Game.PartnerMethod).Returns(PartnerMethod.CalledAce);
+            hand.Setup(m => m.Game.PartnerMethod).Returns(PartnerMethod.CalledAce);
             hand.Setup(m => m.PartnerCard).Returns(SheepCard.ACE_HEARTS);
             hand.Setup(m => m.Deck.Buried).Returns(new List<SheepCard>() { SheepCard.N8_SPADES, SheepCard.N10_SPADES });
             var picker = new Mock<IPlayer>();
@@ -149,7 +149,7 @@ namespace Sheepshead.Tests
             previousTrick.Setup(m => m.CardsPlayed).Returns(new Dictionary<IPlayer, SheepCard>() { { new Mock<IPlayer>().Object, SheepCard.N7_HEARTS } });
             var hand = new Mock<IHand>();
             hand.Setup(m => m.Deck.Buried).Returns(new List<SheepCard>() { SheepCard.N10_CLUBS, SheepCard.N10_SPADES });
-            hand.Setup(m => m.Deck.Game.PartnerMethod).Returns(PartnerMethod.CalledAce);
+            hand.Setup(m => m.Game.PartnerMethod).Returns(PartnerMethod.CalledAce);
             hand.Setup(m => m.PartnerCard).Returns(SheepCard.ACE_HEARTS);
             hand.Setup(m => m.Picker).Returns(picker.Object);
             hand.Setup(m => m.Tricks).Returns(new List<ITrick>() { previousTrick.Object });
@@ -165,7 +165,7 @@ namespace Sheepshead.Tests
             var partner = new Mock<IPlayer>();
             partner.Setup(m => m.Cards).Returns(new List<SheepCard>() { SheepCard.N10_HEARTS, SheepCard.N7_HEARTS, SheepCard.ACE_HEARTS, SheepCard.JACK_DIAMONDS, SheepCard.N7_SPADES, SheepCard.ACE_SPADES });
             var hand = new Mock<IHand>();
-            hand.Setup(m => m.Deck.Game.PartnerMethod).Returns(PartnerMethod.CalledAce);
+            hand.Setup(m => m.Game.PartnerMethod).Returns(PartnerMethod.CalledAce);
             hand.Setup(m => m.PartnerCard).Returns(SheepCard.ACE_HEARTS);
             var calculator = new Mock<IStartingPlayerCalculator>();
             calculator.Setup(m => m.GetStartingPlayer(hand.Object, It.IsAny<ITrick>())).Returns(partner.Object);
@@ -179,7 +179,7 @@ namespace Sheepshead.Tests
             var partner = new Mock<IPlayer>();
             partner.Setup(m => m.Cards).Returns(new List<SheepCard>() { SheepCard.N10_HEARTS, SheepCard.N7_HEARTS, SheepCard.ACE_HEARTS, SheepCard.JACK_DIAMONDS, SheepCard.N7_SPADES, SheepCard.ACE_SPADES });
             var hand = new Mock<IHand>();
-            hand.Setup(m => m.Deck.Game.PartnerMethod).Returns(PartnerMethod.CalledAce);
+            hand.Setup(m => m.Game.PartnerMethod).Returns(PartnerMethod.CalledAce);
             hand.Setup(m => m.PartnerCard).Returns(SheepCard.ACE_HEARTS);
             var calculator = new Mock<IStartingPlayerCalculator>();
             calculator.Setup(m => m.GetStartingPlayer(hand.Object, It.IsAny<ITrick>())).Returns(partner.Object);
@@ -200,7 +200,7 @@ namespace Sheepshead.Tests
             previousTrick.Setup(m => m.CardsPlayed).Returns(new Dictionary<IPlayer, SheepCard>() { { new Mock<IPlayer>().Object, SheepCard.N7_DIAMONDS } });
             previousTrick.Setup(m => m.CardsPlayed).Returns(new Dictionary<IPlayer, SheepCard>() { { new Mock<IPlayer>().Object, SheepCard.N7_HEARTS } });
             var hand = new Mock<IHand>();
-            hand.Setup(m => m.Deck.Game.PartnerMethod).Returns(PartnerMethod.CalledAce);
+            hand.Setup(m => m.Game.PartnerMethod).Returns(PartnerMethod.CalledAce);
             hand.Setup(m => m.PartnerCard).Returns(SheepCard.ACE_HEARTS);
             hand.Setup(m => m.Tricks).Returns(new List<ITrick>() { previousTrick.Object });
             var calculator = new Mock<IStartingPlayerCalculator>();

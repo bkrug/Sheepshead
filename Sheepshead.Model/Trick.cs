@@ -61,7 +61,7 @@ namespace Sheepshead.Model
 
             //There are some rules for the lead card in a trick.
             if (!_cards.Any())
-                return Hand.Deck.Game.PartnerMethod == PartnerMethod.JackOfDiamonds 
+                return Hand.Game.PartnerMethod == PartnerMethod.JackOfDiamonds 
                     || Hand.PartnerCard == null
                     || IsLegalStartingCardInCalledAceGame(card, player);
 
