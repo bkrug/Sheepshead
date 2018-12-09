@@ -17,15 +17,15 @@ namespace Sheepshead.Model.Players
     {
         public bool? AllOpponentsHavePlayed(IPlayer thisPlayer, ITrick trick)
         {
-            if (trick.CardsPlayed.Count == trick.Hand.Deck.Game.PlayerCount - 1)
+            if (trick.CardsPlayed.Count == trick.Hand.Game.PlayerCount - 1)
                 return true;
             var playerIsPartner = PlayerKnowsSelfToBePartner(thisPlayer, trick);
             var playerIsOffense = trick.Hand.Picker == thisPlayer || playerIsPartner;
             if (playerIsOffense)
             {
                 var opponentCount = trick.Hand.PartnerCard.HasValue
-                    ? trick.Hand.Deck.Game.PlayerCount - 2
-                    : trick.Hand.Deck.Game.PlayerCount - 1;
+                    ? trick.Hand.Game.PlayerCount - 2
+                    : trick.Hand.Game.PlayerCount - 1;
                 var opponentsWithTurns = playerIsPartner
                     ? trick.CardsPlayed.Keys.Count(p => trick.Hand.Picker != p && thisPlayer != p)
                     : trick.CardsPlayed.Keys.Count(p => trick.Hand.Picker != p && trick.Hand.PresumedParnter != p);

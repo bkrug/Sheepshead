@@ -30,7 +30,7 @@ namespace Sheepshead.Tests
             trickMock.Setup(m => m.Hand.PartnerCard).Returns(SheepCard.JACK_DIAMONDS);
             trickMock.Setup(m => m.Hand.Partner).Returns(partnerMock.Object);
             trickMock.Setup(m => m.Hand.PresumedParnter).Returns(partnerMock.Object);
-            trickMock.Setup(m => m.Hand.Deck.Game.PlayerCount).Returns(5);
+            trickMock.Setup(m => m.Hand.Game.PlayerCount).Returns(5);
             var analyzer = new GameStateAnalyzer();
             var actual = analyzer.AllOpponentsHavePlayed(playerMock.Object, trickMock.Object);
             Assert.AreEqual(true, actual);
@@ -55,7 +55,7 @@ namespace Sheepshead.Tests
             trickMock.Setup(m => m.Hand.PartnerCard).Returns(SheepCard.JACK_DIAMONDS);
             trickMock.Setup(m => m.Hand.Partner).Returns((IPlayer)null);
             trickMock.Setup(m => m.Hand.PresumedParnter).Returns((IPlayer)null);
-            trickMock.Setup(m => m.Hand.Deck.Game.PlayerCount).Returns(5);
+            trickMock.Setup(m => m.Hand.Game.PlayerCount).Returns(5);
             var analyzer = new GameStateAnalyzer();
             var actual = analyzer.AllOpponentsHavePlayed(playerMock.Object, trickMock.Object);
             Assert.AreEqual(true, actual);
@@ -78,7 +78,7 @@ namespace Sheepshead.Tests
             trickMock.Setup(m => m.Hand.Picker).Returns(pickerMock.Object);
             trickMock.Setup(m => m.Hand.PartnerCard).Returns(SheepCard.JACK_DIAMONDS);
             trickMock.Setup(m => m.Hand.PresumedParnter).Returns((IPlayer)null);
-            trickMock.Setup(m => m.Hand.Deck.Game.PlayerCount).Returns(5);
+            trickMock.Setup(m => m.Hand.Game.PlayerCount).Returns(5);
             var analyzer = new GameStateAnalyzer();
             var actual = analyzer.AllOpponentsHavePlayed(playerMock.Object, trickMock.Object);
             Assert.AreEqual(null, actual);
@@ -102,7 +102,7 @@ namespace Sheepshead.Tests
             trickMock.Setup(m => m.Hand.PartnerCard).Returns(SheepCard.JACK_DIAMONDS);
             trickMock.Setup(m => m.Hand.Partner).Returns((IPlayer)null);
             trickMock.Setup(m => m.Hand.PresumedParnter).Returns(partnerMock.Object);
-            trickMock.Setup(m => m.Hand.Deck.Game.PlayerCount).Returns(5);
+            trickMock.Setup(m => m.Hand.Game.PlayerCount).Returns(5);
             var analyzer = new GameStateAnalyzer();
             var actual = analyzer.AllOpponentsHavePlayed(playerMock.Object, trickMock.Object);
             Assert.AreEqual(false, actual);
@@ -126,7 +126,7 @@ namespace Sheepshead.Tests
             trickMock.Setup(m => m.Hand.PartnerCard).Returns(SheepCard.JACK_DIAMONDS);
             trickMock.Setup(m => m.Hand.Partner).Returns(partnerMock.Object);
             trickMock.Setup(m => m.Hand.PresumedParnter).Returns((IPlayer)null);
-            trickMock.Setup(m => m.Hand.Deck.Game.PlayerCount).Returns(5);
+            trickMock.Setup(m => m.Hand.Game.PlayerCount).Returns(5);
             var analyzer = new GameStateAnalyzer();
             var actual = analyzer.AllOpponentsHavePlayed(playerMock.Object, trickMock.Object);
             Assert.AreEqual(false, actual);
@@ -149,7 +149,7 @@ namespace Sheepshead.Tests
             trickMock.Setup(m => m.Hand.Picker).Returns(pickerMock.Object);
             trickMock.Setup(m => m.Hand.PresumedParnter).Returns((IPlayer)null);
             trickMock.Setup(m => m.Hand.PartnerCard).Returns(partnerCard);
-            trickMock.Setup(m => m.Hand.Deck.Game.PlayerCount).Returns(5);
+            trickMock.Setup(m => m.Hand.Game.PlayerCount).Returns(5);
             var analyzer = new GameStateAnalyzer();
             var actual = analyzer.AllOpponentsHavePlayed(playerMock.Object, trickMock.Object);
             Assert.AreEqual(true, actual);
@@ -174,7 +174,7 @@ namespace Sheepshead.Tests
             trickMock.Setup(m => m.Hand.PresumedParnter).Returns((Player)null);
             trickMock.Setup(m => m.Hand.PartnerCard).Returns(partnerCard);
             trickMock.Setup(m => m.Hand.Partner).Returns((IPlayer)null);
-            trickMock.Setup(m => m.Hand.Deck.Game.PlayerCount).Returns(5);
+            trickMock.Setup(m => m.Hand.Game.PlayerCount).Returns(5);
             var analyzer = new GameStateAnalyzer();
             var actual = analyzer.AllOpponentsHavePlayed(playerMock.Object, trickMock.Object);
             Assert.AreEqual(true, actual);
@@ -198,7 +198,7 @@ namespace Sheepshead.Tests
             trickMock.Setup(m => m.Hand.PresumedParnter).Returns((IPlayer)null);
             trickMock.Setup(m => m.Hand.Partner).Returns(partnerMock.Object);
             trickMock.Setup(m => m.Hand.PartnerCard).Returns(partnerCard);
-            trickMock.Setup(m => m.Hand.Deck.Game.PlayerCount).Returns(5);
+            trickMock.Setup(m => m.Hand.Game.PlayerCount).Returns(5);
             var analyzer = new GameStateAnalyzer();
             var actual = analyzer.AllOpponentsHavePlayed(playerMock.Object, trickMock.Object);
             Assert.AreEqual(null, actual);
@@ -222,7 +222,7 @@ namespace Sheepshead.Tests
             trickMock.Setup(m => m.Hand.PresumedParnter).Returns(partnerMock.Object);
             trickMock.Setup(m => m.Hand.PartnerCard).Returns(partnerCard);
             trickMock.Setup(m => m.Hand.Partner).Returns((IPlayer)null);
-            trickMock.Setup(m => m.Hand.Deck.Game.PlayerCount).Returns(5);
+            trickMock.Setup(m => m.Hand.Game.PlayerCount).Returns(5);
             var analyzer = new GameStateAnalyzer();
             var actual = analyzer.AllOpponentsHavePlayed(playerMock.Object, trickMock.Object);
             Assert.AreEqual(false, actual);
@@ -244,7 +244,7 @@ namespace Sheepshead.Tests
             trickMock.Setup(m => m.Hand.Picker).Returns(playerMock.Object);
             trickMock.Setup(m => m.Hand.PresumedParnter).Returns((Player)null);
             trickMock.Setup(m => m.Hand.PartnerCard).Returns(partnerCard);
-            trickMock.Setup(m => m.Hand.Deck.Game.PlayerCount).Returns(5);
+            trickMock.Setup(m => m.Hand.Game.PlayerCount).Returns(5);
             var analyzer = new GameStateAnalyzer();
             var actual = analyzer.AllOpponentsHavePlayed(playerMock.Object, trickMock.Object);
             Assert.AreEqual(false, actual);

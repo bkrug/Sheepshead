@@ -40,7 +40,7 @@ namespace Sheepshead.React.Controllers
                                 )
                              ),
                 mustRedeal = mustRedeal,
-                buried = hand.Deck.Buried.Select(c => CardUtil.GetCardSummary(c)).ToList()
+                buried = hand.Buried.Select(c => CardUtil.GetCardSummary(c)).ToList()
             });
         }
 
