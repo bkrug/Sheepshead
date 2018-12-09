@@ -29,7 +29,6 @@ namespace Sheepshead.Tests
             };
             var trickMock = new Mock<ITrick>();
             trickMock.Setup(m => m.CardsPlayed).Returns(cardsPlayed);
-            trickMock.Setup(m => m.Hand.Deck.Game.PlayerCount).Returns(5);
             trickMock.Setup(m => m.IsLegalAddition(SheepCard.QUEEN_HEARTS, playerMock.Object)).Returns(true);
             trickMock.Setup(m => m.IsLegalAddition(SheepCard.N7_DIAMONDS, playerMock.Object)).Returns(true);
             var analyzer = new LeasterStateAnalyzer();
@@ -55,7 +54,6 @@ namespace Sheepshead.Tests
             };
             var trickMock = new Mock<ITrick>();
             trickMock.Setup(m => m.CardsPlayed).Returns(cardsPlayed);
-            trickMock.Setup(m => m.Hand.Deck.Game.PlayerCount).Returns(5);
             trickMock.Setup(m => m.IsLegalAddition(SheepCard.N8_HEARTS, playerMock.Object)).Returns(true);
             var analyzer = new LeasterStateAnalyzer();
             var actual = analyzer.CanIWin(playerMock.Object, trickMock.Object);
@@ -80,7 +78,6 @@ namespace Sheepshead.Tests
             };
             var trickMock = new Mock<ITrick>();
             trickMock.Setup(m => m.CardsPlayed).Returns(cardsPlayed);
-            trickMock.Setup(m => m.Hand.Deck.Game.PlayerCount).Returns(5);
             trickMock.Setup(m => m.IsLegalAddition(SheepCard.QUEEN_HEARTS, playerMock.Object)).Returns(true);
             trickMock.Setup(m => m.IsLegalAddition(SheepCard.N7_DIAMONDS, playerMock.Object)).Returns(true);
             var analyzer = new LeasterStateAnalyzer();
@@ -106,7 +103,6 @@ namespace Sheepshead.Tests
             };
             var trickMock = new Mock<ITrick>();
             trickMock.Setup(m => m.CardsPlayed).Returns(cardsPlayed);
-            trickMock.Setup(m => m.Hand.Deck.Game.PlayerCount).Returns(5);
             trickMock.Setup(m => m.IsLegalAddition(SheepCard.QUEEN_SPADES, playerMock.Object)).Returns(true);
             trickMock.Setup(m => m.IsLegalAddition(SheepCard.JACK_HEARTS, playerMock.Object)).Returns(true);
             var analyzer = new LeasterStateAnalyzer();

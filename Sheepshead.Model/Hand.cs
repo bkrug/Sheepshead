@@ -105,7 +105,6 @@ namespace Sheepshead.Model
 
     public interface IHand
     {
-        IHand Deck { get; }
         IPlayer Picker { get; }
         IPlayer Partner { get; }
         SheepCard? PartnerCard { get; }
