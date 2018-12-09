@@ -11,7 +11,7 @@ namespace Sheepshead.Model
         private Dictionary<IPlayer, SheepCard> _cards = new Dictionary<IPlayer, SheepCard>();
 
         public IHand Hand { get; private set; }
-        public IGame Game { get { return Hand.Deck.Game; } }
+        public IGame Game { get { return Hand.Game; } }
         public IPlayer StartingPlayer { get; private set; }
         public Dictionary<IPlayer, SheepCard> CardsPlayed { get { return new Dictionary<IPlayer, SheepCard>(_cards); } }
         public event EventHandler<EventArgs> OnTrickEnd;

@@ -80,7 +80,7 @@ namespace Sheepshead.Model.Players
             }
             else
             {
-                if (trick.Hand.Deck.Game.PartnerMethod == PartnerMethod.CalledAce && trick.Hand.PartnerCard.HasValue)
+                if (trick.Hand.Game.PartnerMethod == PartnerMethod.CalledAce && trick.Hand.PartnerCard.HasValue)
                 {
                     var partnerCardSuit = CardUtil.GetSuit(trick.Hand.PartnerCard.Value);
                     return Cards

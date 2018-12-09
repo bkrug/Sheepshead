@@ -31,7 +31,7 @@ namespace Sheepshead.Model.Players
 
         public bool EarlyInTrick(ITrick trick)
         {
-            if (trick.Hand.Deck.Game.PlayerCount == 3)
+            if (trick.Hand.Game.PlayerCount == 3)
                 return trick.CardsPlayed.Count < 2;
             else
                 return trick.CardsPlayed.Count < 3;

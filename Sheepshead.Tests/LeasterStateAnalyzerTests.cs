@@ -124,7 +124,7 @@ namespace Sheepshead.Tests
             };
             var trickMock = new Mock<ITrick>();
             trickMock.Setup(m => m.CardsPlayed).Returns(cardsPlayed);
-            trickMock.Setup(m => m.Hand.Deck.Game.PlayerCount).Returns(5);
+            trickMock.Setup(m => m.Hand.Game.PlayerCount).Returns(5);
             var analyzer = new LeasterStateAnalyzer();
             var actual = analyzer.EarlyInTrick(trickMock.Object);
             Assert.AreEqual(true, actual);
@@ -140,7 +140,7 @@ namespace Sheepshead.Tests
             };
             var trickMock = new Mock<ITrick>();
             trickMock.Setup(m => m.CardsPlayed).Returns(cardsPlayed);
-            trickMock.Setup(m => m.Hand.Deck.Game.PlayerCount).Returns(5);
+            trickMock.Setup(m => m.Hand.Game.PlayerCount).Returns(5);
             var analyzer = new LeasterStateAnalyzer();
             var actual = analyzer.EarlyInTrick(trickMock.Object);
             Assert.AreEqual(false, actual);
@@ -154,7 +154,7 @@ namespace Sheepshead.Tests
             };
             var trickMock = new Mock<ITrick>();
             trickMock.Setup(m => m.CardsPlayed).Returns(cardsPlayed);
-            trickMock.Setup(m => m.Hand.Deck.Game.PlayerCount).Returns(3);
+            trickMock.Setup(m => m.Hand.Game.PlayerCount).Returns(3);
             var analyzer = new LeasterStateAnalyzer();
             var actual = analyzer.EarlyInTrick(trickMock.Object);
             Assert.AreEqual(true, actual);
@@ -169,7 +169,7 @@ namespace Sheepshead.Tests
             };
             var trickMock = new Mock<ITrick>();
             trickMock.Setup(m => m.CardsPlayed).Returns(cardsPlayed);
-            trickMock.Setup(m => m.Hand.Deck.Game.PlayerCount).Returns(3);
+            trickMock.Setup(m => m.Hand.Game.PlayerCount).Returns(3);
             var analyzer = new LeasterStateAnalyzer();
             var actual = analyzer.EarlyInTrick(trickMock.Object);
             Assert.AreEqual(false, actual);
