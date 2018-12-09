@@ -12,7 +12,6 @@ namespace Sheepshead.Model
         public IPlayer Picker { get; private set; }
         public IPlayer Partner { get; private set; }
         public SheepCard? PartnerCard { get; private set; }
-        public int[] PartnerCardPlayed { get; private set; }
         private List<ITrick> _tricks = new List<ITrick>();
         public List<ITrick> Tricks { get { return _tricks.ToList(); } }
         public IPlayer StartingPlayer { get { return Deck.StartingPlayer; } }
@@ -36,7 +35,6 @@ namespace Sheepshead.Model
                     PartnerCard = ChoosePartnerCard(picker);
                 picker.Cards.Where(c => burried.Contains(c)).ToList().ForEach(c => picker.Cards.Remove(c));
             }
-            PartnerCardPlayed = null;
         }
 
         public IPlayer PresumedParnter
@@ -113,11 +111,6 @@ namespace Sheepshead.Model
         public void SetPartner(IPlayer partner, ITrick trick)
         {
             Partner = partner;
-            if (trick == null)
-                return;
-            PartnerCardPlayed = new[] { -1, -1 };
-            PartnerCardPlayed[0] = Tricks.IndexOf(trick);
-            PartnerCardPlayed[1] = trick.QueueRankOfPartner.Value;
         }
 
         public void GoItAlone()
@@ -141,7 +134,6 @@ namespace Sheepshead.Model
         SheepCard? PartnerCard { get; }
         IPlayer PresumedParnter { get; }
         void GoItAlone();
-        int[] PartnerCardPlayed { get; }
         List<ITrick> Tricks { get; }
         void AddTrick(ITrick trick);
         HandScores Scores();

@@ -831,39 +831,6 @@ namespace Sheepshead.Tests
         }
 
         [TestMethod]
-        public void Hand_PartnerCardPlayed()
-        {
-            var player1 = new Mock<IPlayer>();
-            var player2 = new Mock<IPlayer>();
-            var player3 = new Mock<IPlayer>();
-            var player4 = new Mock<IPlayer>();
-            var player5 = new Mock<IPlayer>();
-            player3.Setup(m => m.Cards).Returns(new List<SheepCard>());
-            var playerList = new List<IPlayer>() { player1.Object, player2.Object, player3.Object, player4.Object, player5.Object };
-            var cards = new List<SheepCard>();
-            for (var i = 0; i < 32; ++i) { cards.Add(0); }
-            var deckMock = new Mock<IDeck>();
-            deckMock.Setup(m => m.StartingPlayer).Returns(player2.Object);
-            deckMock.Setup(m => m.Game.PartnerMethod).Returns(PartnerMethod.JackOfDiamonds);
-            deckMock.Setup(m => m.PlayerCount).Returns(5);
-            deckMock.Setup(m => m.Players).Returns(playerList);
-            deckMock.Setup(m => m.Blinds).Returns(new List<SheepCard>() { SheepCard.N7_HEARTS, SheepCard.JACK_DIAMONDS });
-            deckMock.Setup(m => m.Buried).Returns(new List<SheepCard>() { SheepCard.ACE_SPADES, SheepCard.N10_CLUBS });
-
-            var hand = new Hand(deckMock.Object, player3.Object, deckMock.Object.Buried);
-            var trickMocks = new List<Mock<ITrick>>();
-            for (var i = 0; i < 6; ++i)
-            {
-                trickMocks.Add(new Mock<ITrick>());
-                hand.AddTrick(trickMocks.Last().Object);
-            }
-            trickMocks[2].Setup(m => m.QueueRankOfPartner).Returns(3);
-            hand.SetPartner(playerList[3], hand.Tricks[2]);
-            Assert.AreEqual(hand.PartnerCardPlayed[0], 2);
-            Assert.AreEqual(hand.PartnerCardPlayed[1], 3);
-        }
-
-        [TestMethod]
         public void Hand_PresumedPartner_BasedOnLead()
         {
             var deckMock = new Mock<IDeck>();
