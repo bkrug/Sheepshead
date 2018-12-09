@@ -113,12 +113,12 @@ namespace Sheepshead.Tests
             var game = new Game(players, partnerMethod, enableLeasters: true);
             for (var g = 0; g < handsToPlay; ++g)
             {
-                var deck = new Hand(game);
+                var hand = new Hand(game);
                 var picker = game.PlayNonHumanPickTurns();
-                var buriedCards = picker != null ? picker.DropCardsForPick(deck) : new List<SheepCard>();
-                while (!deck.IsComplete())
+                var buriedCards = picker != null ? picker.DropCardsForPick(hand) : new List<SheepCard>();
+                while (!hand.IsComplete())
                 {
-                    var trick = new Trick(deck);
+                    var trick = new Trick(hand);
                     game.PlayNonHumansInTrick();
                 }
             }

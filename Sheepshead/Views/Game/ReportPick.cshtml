@@ -1,6 +1,6 @@
-﻿@model Sheepshead.Models.Deck
+﻿@model Sheepshead.Model.Hand
 @using Sheepshead.Model.Players
-@using Sheepshead.Models
+@using Sheepshead.Model
 
 @{
     ViewBag.Title = "Picker Found";
@@ -21,7 +21,7 @@
         Player @(Model.Game.Players.IndexOf(Model.Game.Players.First(p => p is IHumanPlayer)) + 1)
     </div>
 
-    @if (Model.Hand != null && Model.Hand.Leasters)
+    @if (Model.PickPhaseComplete && Model.Leasters)
     {
         <div class="display-label" />
         <div class="display-field">
@@ -29,7 +29,7 @@
         </div>
     }
 
-    @if (Model.Hand != null && Model.Hand.Picker != null)
+    @if (Model.PickPhaseComplete && Model.Picker != null)
     {
         <div class="display-label">
             Picker
@@ -39,23 +39,23 @@
         </div>
     }
 
-    @if (Model.Hand != null && Model.Hand.Partner != null)
+    @if (Model.PickPhaseComplete && Model.Partner != null)
     {
         <div class="display-label">
             Partner
         </div>
         <div class="display-field">
-            Player @(Model.Game.Players.IndexOf(Model.Hand.Partner) + 1)
+            Player @(Model.Game.Players.IndexOf(Model.Partner) + 1)
         </div>
     }
 
-    @if (Model.Hand != null && Model.Hand.PartnerCard != null)
+    @if (Model.PickPhaseComplete && Model.PartnerCard != null)
     {
         <div class="display-label">
             Partner Card
         </div>
         <div class="display-field">
-            @(Model.Hand.PartnerCard.ToString())
+            @(Model.PartnerCard.ToString())
         </div>
     }
 </fieldset>

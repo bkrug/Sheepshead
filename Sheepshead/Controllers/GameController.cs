@@ -49,8 +49,8 @@ namespace Sheepshead.Controllers
             var turnState = game.TurnState;
             switch (game.TurnType)
             {
-                case TurnType.BeginDeck:
-                    turnState.Deck = new Hand(game, _rnd);
+                case TurnType.BeginHand:
+                    turnState.Hand = new Hand(game, _rnd);
                     break;
                 case TurnType.Pick:
                     game.PlayNonHumanPickTurns(true);
@@ -69,7 +69,7 @@ namespace Sheepshead.Controllers
             var game = repository.GetById(Guid.Parse(id));
             switch (game.TurnType)
             {
-                case TurnType.BeginDeck:
+                case TurnType.BeginHand:
                     break;
                 case TurnType.Pick:
                     Pick(game, willPick.Value);

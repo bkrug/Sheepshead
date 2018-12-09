@@ -1,6 +1,5 @@
-﻿@model Sheepshead.Models.Trick
-@using Sheepshead.Model.Players
-@using Sheepshead.Models
+﻿@model Sheepshead.Model.Trick
+@using Sheepshead.Model
 @{
     ViewBag.Title = "Trick Done";
 }
@@ -9,7 +8,7 @@
         Trick Winner
 </div>
 <div class="display-field">
-    Player @(Model.Hand.Deck.Game.Players.IndexOf(Model.Winner().Player) + 1)
+    Player @(Model.Hand.Game.Players.IndexOf(Model.Winner().Player) + 1)
 </div>
 
 <div class="display-label">
@@ -24,10 +23,10 @@
     <tr>
     @foreach (var cardPlayed in Model.CardsPlayed)
     {
-        var playerIndex = Model.Hand.Deck.Game.Players.IndexOf(cardPlayed.Key);
+        var playerIndex = Model.Hand.Game.Players.IndexOf(cardPlayed.Key);
         <td>
             <div>Player @(playerIndex + 1)</div>
-            <img src="@("\\Images\\" + CardUtil.GetPictureFilename(cardPlayed.Value) + ".png")" />
+            <img src="@("\\Images\\" + CardUtil.GetPictureFilename(cardPlayed) + ".png")" />
         </td>
     }
     </tr>

@@ -24,7 +24,7 @@ namespace Sheepshead.Model
         public TurnState TurnState => new TurnState
         {
             GameId = Id,
-            Deck = _gameStateDesciber.CurrentDeck,
+            Hand = _gameStateDesciber.CurrentDeck,
             TurnType = TurnType
         };
 

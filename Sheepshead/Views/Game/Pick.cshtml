@@ -1,29 +1,30 @@
-﻿@model Sheepshead.Models.TurnState
+﻿@model Sheepshead.Model.TurnState
 @using Sheepshead.Model.Players
-@using Sheepshead.Models
+@using Sheepshead.Model
 @Scripts.Render("~/Libraries/jquery-2.1.1.min.js")
 @Scripts.Render("~/Scripts/pick.js")
 @{
     Layout = null;
 }
 
-@{ Html.RenderPartial("ReportPick", Model.Deck); }
+@{ Html.RenderPartial("ReportPick", Model.Hand); }
 
-@if (Model.Deck.Hand == null || Model.Deck.Hand.Picker == null) 
+@if (!Model.Hand.PickPhaseComplete || Model.Hand.Picker == null)
 {
     <p>Previous players did not pick.</p>
 }
-else {
+else
+{
     <p>Another player has picked.</p>
 }
 
 <p>These are your cards</p>
-@foreach (var card in Model.Deck.Players.OfType<IHumanPlayer>().First().Cards)
+@foreach (var card in Model.Hand.Players.OfType<IHumanPlayer>().First().Cards)
 {
     <img src="@("\\Images\\" + CardUtil.GetPictureFilename(card) + ".png")" />
 }
 
-@if (Model.Deck.Hand == null || Model.Deck.Hand.Picker == null) 
+@if (!Model.Hand.PickPhaseComplete || Model.Hand.Picker == null)
 {
     <p>Will you pick?</p>
     <form method="post">
@@ -32,8 +33,8 @@ else {
         <input id="yes-btn" type="button" value="Yes" />
         <input id="no-btn" type="button" value="No" />
     </form>
-} 
-else 
+}
+else
 {
     <form method="post">
         <input type="submit" value="Continue" />

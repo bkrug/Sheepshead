@@ -1,9 +1,8 @@
-﻿@model Sheepshead.Models.TurnState
-@using Sheepshead.Model.Players
-@using Sheepshead.Models
+﻿@model Sheepshead.Model.TurnState
+@using Sheepshead.Model
 @switch (Model.TurnType) {
-    case TurnType.BeginDeck:
-        Html.RenderPartial("BeginDeck", Model.Deck);
+    case TurnType.BeginHand:
+        Html.RenderPartial("BeginDeck", Model.Hand);
         break;
     case TurnType.Pick:
         Html.RenderPartial("Pick", Model);

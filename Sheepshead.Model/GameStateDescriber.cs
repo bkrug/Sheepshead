@@ -32,7 +32,7 @@ namespace Sheepshead.Model
         {
             var deck = Decks.LastOrDefault();
             if (!Decks.Any() || LastDeckIsComplete())
-                return TurnType.BeginDeck;
+                return TurnType.BeginHand;
             else if (!deck.PickPhaseComplete)
                 return TurnType.Pick;
             else if (!deck.Buried.Any() && !deck.Leasters)

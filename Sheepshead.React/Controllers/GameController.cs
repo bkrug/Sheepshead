@@ -131,7 +131,7 @@ namespace Sheepshead.React.Controllers
         {
             IGame game = GetGame(gameId);
             var mustRedeal = game.Decks.LastOrDefault()?.MustRedeal ?? false;
-            if (game.TurnState.TurnType == TurnType.BeginDeck || mustRedeal)
+            if (game.TurnState.TurnType == TurnType.BeginHand || mustRedeal)
                 new Hand(game);
             var playState = game.PlayState(Guid.Parse(playerId));
             return Json(playState);

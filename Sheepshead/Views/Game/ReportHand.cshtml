@@ -14,17 +14,17 @@
         Starting Player
     </div>  
     <div class="display-field">
-        Player @(Model.Deck.Game.Players.IndexOf(Model.Deck.StartingPlayer) + 1)
+        Player @(Model.Hand.Game.Players.IndexOf(Model.Hand.StartingPlayer) + 1)
     </div>
 
     <div class="display-label">
         Human Player
     </div>
     <div class="display-field">
-        Player @(Model.Deck.Game.Players.IndexOf(Model.Deck.Game.Players.First(p => p is IHumanPlayer)) + 1)
+        Player @(Model.Hand.Game.Players.IndexOf(Model.Hand.Game.Players.First(p => p is IHumanPlayer)) + 1)
     </div>
 
-    @if (Model.Deck.Hand != null && Model.Deck.Hand.Leasters)
+    @if (!Model.Hand.PickPhaseComplete && Model.Hand.Leasters)
     {
         <div class="display-label" />
         <div class="display-field">
@@ -32,20 +32,20 @@
         </div>
     }
     
-    @if (!Model.Deck.Hand.Leasters) 
+    @if (!Model.Hand.Leasters) 
     {
         <div class="display-label">
             Picker
         </div>
         <div class="display-field">
-            Player @(Model.Deck.Game.Players.IndexOf(Model.Picker) + 1)
+            Player @(Model.Hand.Game.Players.IndexOf(Model.Picker) + 1)
         </div>
 
         <div class="display-label">
             Partner
         </div>
         <div class="display-field">
-            Player @(Model.Deck.Game.Players.IndexOf(Model.Partner) + 1)
+            Player @(Model.Hand.Game.Players.IndexOf(Model.Partner) + 1)
         </div>
         
         <div class="display-label">
@@ -63,13 +63,13 @@
         <tr>
             @foreach (var playerScore in Model.Scores().Coins)
             {
-                <th>Player @(Model.Deck.Game.Players.IndexOf(playerScore.Key) + 1)</th>
+                <th>Player @(Model.Hand.Game.Players.IndexOf(playerScore.Key) + 1)</th>
             }
         </tr>
         <tr>
             @foreach (var playerScore in Model.Scores().Coins)
             {
-                <td>@(playerScore.Value)</td>
+                <td>@(playerScore)</td>
             }
         </tr>
     </table>

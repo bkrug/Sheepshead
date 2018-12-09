@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using Sheepshead.Model.Players;
 
 namespace Sheepshead.Model
 {
@@ -9,12 +7,12 @@ namespace Sheepshead.Model
     {
         public Guid GameId { get; set; }
         public TurnType TurnType { get; set; }
-        public IHand Deck { get; set; }
+        public IHand Hand { get; set; }
     }
 
     public enum TurnType
     {
-        BeginDeck, Pick, Bury, PlayTrick
+        BeginHand, Pick, Bury, PlayTrick
     }
 
     /// <summary>

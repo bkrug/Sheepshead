@@ -1,43 +1,43 @@
-﻿@model Sheepshead.Models.TurnState
+﻿@model Sheepshead.Model.TurnState
 @using Sheepshead.Model.Players
-@using Sheepshead.Models
+@using Sheepshead.Model
 @{
     ViewBag.Title = "Playing Trick";
 }
 
 <h2>Playing Trick</h2>
 
-@{ Html.RenderPartial("ReportPick", Model.Deck); }
-@if (Model.Deck.Hand.Tricks.Count() > 1)
+@{ Html.RenderPartial("ReportPick", Model.Hand); }
+@if (Model.Hand.Tricks.Count() > 1)
 { 
     <fieldset>
         <legend>Previous Trick</legend>
-        @{ Html.RenderPartial("ReportTrick", Model.Deck.Hand.Tricks.ElementAt(Model.Deck.Hand.Tricks.Count() - 2)); }
+        @{ Html.RenderPartial("ReportTrick", Model.Hand.Tricks.ElementAt(Model.Hand.Tricks.Count() - 2)); }
     </fieldset>
 }
 
 <p>Cards played this trick</p>
 <table>
     <tr>
-    @foreach (var cardPlayed in Model.Deck.Hand.Tricks.Last().CardsPlayed)
+    @foreach (var cardPlayed in Model.Hand.Tricks.Last().CardsPlayed)
     {
-        var playerIndex = Model.Deck.Game.Players.IndexOf(cardPlayed.Key);
+        var playerIndex = Model.Hand.Game.Players.IndexOf(cardPlayed.Key);
         <td>
             <div>Player @(playerIndex + 1)</div>
-            <img src="@("\\Images\\" + CardUtil.GetPictureFilename(cardPlayed.Value) + ".png")" />
+            <img src="@("\\Images\\" + CardUtil.GetPictureFilename(cardPlayed) + ".png")" />
         </td>
     }
     </tr>
 </table>
 <form method="post">
     <p>What card will you play?</p>
-    @foreach (var card in Model.Deck.Players.OfType<IHumanPlayer>().First().Cards)
+    @foreach (var card in Model.Hand.Players.OfType<IHumanPlayer>().First().Cards)
     {
-        var cardIndex = Model.Deck.Players.OfType<IHumanPlayer>().First().Cards.IndexOf(card);
-        var isLegal = Model.Deck.Hand.Tricks.Last().IsLegalAddition(card, Model.Deck.Players.OfType<IHumanPlayer>().First());
+        var cardIndex = Model.Hand.Players.OfType<IHumanPlayer>().First().Cards.IndexOf(card);
+        var isLegal = Model.Hand.Tricks.Last().IsLegalAddition(card, Model.Hand.Players.OfType<IHumanPlayer>().First());
         <input type="radio" name="indexOfCard" class="js-card-cb" value="@cardIndex.ToString()" data-index="@cardIndex.ToString()" style="@(isLegal ? "" : "display: none;")" />
         <img src="@("\\Images\\" + CardUtil.GetPictureFilename(card) + ".png")" class="@(isLegal ? "" : "ui-illegal")" />
     }
-    <input type="hidden" value="@(Model.Deck.Game.Id)" id="id" name="id"/>
+    <input type="hidden" value="@(Model.Hand.Game.Id)" id="id" name="id"/>
     <input type="submit" value="Play This Card" />
 </form>

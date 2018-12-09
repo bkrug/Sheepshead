@@ -109,7 +109,7 @@
     <Compile Include="PlayCreatorTests.cs" />
     <Compile Include="GameStateAnalyzerTests.cs" />
     <Compile Include="CardTests.cs" />
-    <Compile Include="DeckTests.cs" />
+    <Compile Include="HandTests2.cs" />
     <Compile Include="PickProcessorTests.cs" />
     <Compile Include="PlayerMocks\ComputerPlayerReportingPlays.cs" />
     <Compile Include="PlayerMocks\ComputerPlayerPickingMock.cs" />
