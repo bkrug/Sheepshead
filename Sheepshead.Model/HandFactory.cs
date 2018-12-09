@@ -15,7 +15,9 @@ namespace Sheepshead.Model
     {
         public IHand GetHand(IDeck deck, IPlayer picker, List<SheepCard> buried)
         {
-            return new Hand(deck, picker, buried);
+            var hand = new Hand(deck);
+            hand.SetPicker(picker, buried);
+            return hand;
         }
     }
 }

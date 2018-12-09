@@ -699,7 +699,7 @@ namespace Sheepshead.Tests
             mockDeck.Setup(m => m.Blinds).Returns(blinds);
             mockDeck.Setup(m => m.Game.PartnerMethod).Returns(PartnerMethod.JackOfDiamonds);
             mockDeck.Setup(m => m.PlayerCount).Returns(5);
-            var hand = new Hand(mockDeck.Object, new SimplePlayer(), new List<SheepCard>());
+            var hand = new Hand(mockDeck.Object);
 
             var mockCompleteTrick = new Mock<ITrick>();
             var mockIncompleteTrick = new Mock<ITrick>();
@@ -715,7 +715,7 @@ namespace Sheepshead.Tests
             hand.AddTrick(mockIncompleteTrick.Object);
             Assert.IsFalse(hand.IsComplete(), "Hand is not complete if the last trick is not complete.");
 
-            hand = new Hand(mockDeck.Object, new SimplePlayer(), new List<SheepCard>());
+            hand = new Hand(mockDeck.Object);
             hand.AddTrick(mockCompleteTrick.Object);
             hand.AddTrick(mockCompleteTrick.Object);
             hand.AddTrick(mockCompleteTrick.Object);
@@ -831,7 +831,7 @@ namespace Sheepshead.Tests
         {
             var deckMock = new Mock<IDeck>();
             deckMock.Setup(m => m.PlayerCount).Returns(5);
-            var hand = new Hand(deckMock.Object, null, null);
+            var hand = new Hand(deckMock.Object);
             var endEventCalled = false;
             hand.OnHandEnd += (Object sender, EventArgs e) => {
                 endEventCalled = true;
@@ -853,6 +853,7 @@ namespace Sheepshead.Tests
         {
             var deckMock = new Mock<IDeck>();
             deckMock.Setup(d => d.Blinds).Returns(new List<SheepCard>());
+            deckMock.Setup(d => d.Buried).Returns(new List<SheepCard>());
             deckMock.Setup(m => m.Game.PartnerMethod).Returns(PartnerMethod.JackOfDiamonds);
             deckMock.Setup(d => d.PlayerCount).Returns(5);
             var player1 = new Mock<IPlayer>();
@@ -861,7 +862,8 @@ namespace Sheepshead.Tests
             var player4 = new Mock<IPlayer>();
             var player5 = new Mock<IPlayer>();
             pickerMock.Setup(p => p.Cards).Returns(new List<SheepCard>());
-            var hand = new Hand(deckMock.Object, pickerMock.Object, new List<SheepCard>());
+            var hand = new Hand(deckMock.Object);
+            hand.SetPicker(pickerMock.Object, new List<SheepCard>());
             var cardsPlayed1 = new Dictionary<IPlayer, SheepCard>()
             {
                 { player4.Object, SheepCard.ACE_DIAMONDS  }
@@ -898,6 +900,7 @@ namespace Sheepshead.Tests
         {
             var deckMock = new Mock<IDeck>();
             deckMock.Setup(d => d.Blinds).Returns(new List<SheepCard>());
+            deckMock.Setup(d => d.Buried).Returns(new List<SheepCard>());
             deckMock.Setup(m => m.Game.PartnerMethod).Returns(PartnerMethod.JackOfDiamonds);
             deckMock.Setup(d => d.PlayerCount).Returns(5);
             var player1 = new Mock<IPlayer>();
@@ -906,7 +909,8 @@ namespace Sheepshead.Tests
             var player4 = new Mock<IPlayer>();
             var player5 = new Mock<IPlayer>();
             pickerMock.Setup(p => p.Cards).Returns(new List<SheepCard>());
-            var hand = new Hand(deckMock.Object, pickerMock.Object, new List<SheepCard>());
+            var hand = new Hand(deckMock.Object);
+            hand.SetPicker(pickerMock.Object, new List<SheepCard>());
             var cardsPlayed1 = new Dictionary<IPlayer, SheepCard>()
             {
                 { player4.Object, SheepCard.ACE_DIAMONDS  }

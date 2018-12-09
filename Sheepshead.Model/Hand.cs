@@ -18,24 +18,7 @@ namespace Sheepshead.Model
         public event EventHandler<EventArgs> OnHandEnd;
         public int PlayerCount => Deck.PlayerCount;
         public List<IPlayer> Players => Deck.Players;
-
         public bool Leasters { get { return Picker == null; } }
-
-        public Hand(IDeck deck, IPlayer picker, List<SheepCard> burried)
-        {
-            Deck = deck;
-            if (Deck.Hand != null)
-                throw new DeckHasHandException("The specified deck is already associated with a hand.");
-            Deck.Hand = this;
-            Picker = picker;
-            if (picker != null)
-            {
-                picker.Cards.AddRange(deck.Blinds.Where(c => !picker.Cards.Contains(c)));
-                if (Deck.PlayerCount == 5 && deck.Game.PartnerMethod == PartnerMethod.JackOfDiamonds)
-                    PartnerCard = ChoosePartnerCard(picker);
-                picker.Cards.Where(c => burried.Contains(c)).ToList().ForEach(c => picker.Cards.Remove(c));
-            }
-        }
 
         public Hand(IDeck deck)
         {
