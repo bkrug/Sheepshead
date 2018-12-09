@@ -812,13 +812,17 @@ namespace Sheepshead.Tests
         public void Hand_Leasters()
         {
             var deckMock = new Mock<IDeck>();
-            var hand = new Hand(deckMock.Object, null, null);
+            var hand = new Hand(deckMock.Object);
+            hand.SetPicker(null, new List<SheepCard>());
             Assert.IsTrue(hand.Leasters, "When there is no picker, play leasters.");
 
             var pickerMock = new Mock<IPlayer>();
             pickerMock.Setup(m => m.Cards).Returns(new List<SheepCard>());
             deckMock.Setup(m => m.Blinds).Returns(new List<SheepCard>());
-            var hand2 = new Hand(deckMock.Object, pickerMock.Object, new List<SheepCard>());
+            deckMock.Setup(m => m.PlayerCount).Returns(5);
+            deckMock.Setup(m => m.Game.PartnerMethod).Returns(PartnerMethod.CalledAce);
+            var hand2 = new Hand(deckMock.Object);
+            hand2.SetPicker(pickerMock.Object, new List<SheepCard>());
             Assert.IsFalse(hand2.Leasters, "When there is a picker, don't play leasters.");
         }
 
