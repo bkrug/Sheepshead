@@ -43,7 +43,7 @@ namespace Sheepshead.Tests
             gameStateDescriberMock.Setup(m => m.CurrentTrick).Returns(trickMock.Object);
             var playersDifferentOrder = playerList.Skip(2).Union(playerList.Take(2)).ToList();
 
-            var game = new Game(playersDifferentOrder, PartnerMethod.JackOfDiamonds, null, null, gameStateDescriberMock.Object);
+            var game = new Game(playersDifferentOrder, PartnerMethod.JackOfDiamonds, null, gameStateDescriberMock.Object);
             game.PlayNonHumansInTrick();
 
             Assert.IsTrue(((ComputerPlayerReportingPlays)playerList[0]).MadeMove);
@@ -71,7 +71,7 @@ namespace Sheepshead.Tests
             var gameStateDescriberMock = new Mock<IGameStateDescriber>();
             gameStateDescriberMock.Setup(m => m.CurrentTrick).Returns(trickMock.Object);
 
-            var game = new Game(playersDifferentOrder, PartnerMethod.JackOfDiamonds, null, null, gameStateDescriberMock.Object);
+            var game = new Game(playersDifferentOrder, PartnerMethod.JackOfDiamonds, null, gameStateDescriberMock.Object);
             game.PlayNonHumansInTrick();
 
             Assert.IsTrue(players.OfType<ComputerPlayerReportingPlays>().All(p => p.MadeMove), "All players have played.");
@@ -95,7 +95,7 @@ namespace Sheepshead.Tests
             var gameStateDescriberMock = new Mock<IGameStateDescriber>();
             gameStateDescriberMock.Setup(m => m.CurrentTrick).Returns(trickMock.Object);
 
-            var game = new Game(playersDifferentOrder, PartnerMethod.JackOfDiamonds, null, null, gameStateDescriberMock.Object);
+            var game = new Game(playersDifferentOrder, PartnerMethod.JackOfDiamonds, null, gameStateDescriberMock.Object);
             game.PlayNonHumansInTrick();
 
             Assert.IsTrue(players.OfType<ComputerPlayerReportingPlays>().All(p => !p.MadeMove), "Got this far without playing a computer player's turn.");
@@ -119,9 +119,8 @@ namespace Sheepshead.Tests
             var gameStateDescriberMock = new Mock<IGameStateDescriber>();
             gameStateDescriberMock.Setup(m => m.CurrentDeck).Returns(deckMock.Object);
             gameStateDescriberMock.Setup(m => m.GetTurnType()).Returns(TurnType.Pick);
-            var handFactoryMock = new Mock<IHandFactory>();
-
-            var game = new Game(players, PartnerMethod.JackOfDiamonds, null, handFactoryMock.Object, gameStateDescriberMock.Object);
+            
+            var game = new Game(players, PartnerMethod.JackOfDiamonds, null, gameStateDescriberMock.Object);
             var picker = game.PlayNonHumanPickTurns();
 
             Assert.IsNull(picker, "Picker should be null because the computer players didn't pick and we didn't ask the second human yet.");
@@ -144,12 +143,11 @@ namespace Sheepshead.Tests
             deckMock.Setup(m => m.PlayersWithoutPickTurn).Returns(unplayedPlayers);
             deckMock.Setup(m => m.PlayersRefusingPick).Returns(refusingPick);
             deckMock.Setup(m => m.Game.PartnerMethod);
-            var handFactoryMock = new Mock<IHandFactory>();
             var gameStateDescriberMock = new Mock<IGameStateDescriber>();
             gameStateDescriberMock.Setup(m => m.CurrentDeck).Returns(deckMock.Object);
             gameStateDescriberMock.Setup(m => m.GetTurnType()).Returns(TurnType.Pick);
 
-            var game = new Game(playerList, PartnerMethod.JackOfDiamonds, null, handFactoryMock.Object, gameStateDescriberMock.Object);
+            var game = new Game(playerList, PartnerMethod.JackOfDiamonds, null, gameStateDescriberMock.Object);
             var picker = game.PlayNonHumanPickTurns();
 
             Assert.AreEqual(expectedPicker, picker);
@@ -171,12 +169,11 @@ namespace Sheepshead.Tests
             deckMock.SetupGet(m => m.PlayersWithoutPickTurn).Returns(unplayedPlayers);
             deckMock.SetupGet(m => m.PlayersRefusingPick).Returns(refusingPick);
             deckMock.SetupGet(m => m.Game.LeastersEnabled).Returns(true);
-            var handFactoryMock = new Mock<IHandFactory>();
             var gameStateDescriberMock = new Mock<IGameStateDescriber>();
             gameStateDescriberMock.Setup(m => m.CurrentDeck).Returns(deckMock.Object);
             gameStateDescriberMock.Setup(m => m.GetTurnType()).Returns(TurnType.Pick);
 
-            var game = new Game(playerList, PartnerMethod.JackOfDiamonds, null, handFactoryMock.Object, gameStateDescriberMock.Object);
+            var game = new Game(playerList, PartnerMethod.JackOfDiamonds, null, gameStateDescriberMock.Object);
             var picker = game.PlayNonHumanPickTurns();
 
             Assert.IsNull(picker);
@@ -253,7 +250,7 @@ namespace Sheepshead.Tests
             var gamestateDescriberMock = new Mock<IGameStateDescriber>();
             gamestateDescriberMock.Setup(m => m.CurrentTrick).Returns(trickMock.Object);
 
-            var game = new Game(players, PartnerMethod.JackOfDiamonds, null, null, gamestateDescriberMock.Object);
+            var game = new Game(players, PartnerMethod.JackOfDiamonds, null, gamestateDescriberMock.Object);
             try
             {
                 game.RecordTurn((IHumanPlayer)players[2], SheepCard.N7_CLUBS);
@@ -290,7 +287,7 @@ namespace Sheepshead.Tests
             var gamestateDescriberMock = new Mock<IGameStateDescriber>();
             gamestateDescriberMock.Setup(m => m.CurrentTrick).Returns(trickMock.Object);
 
-            var game = new Game(players, PartnerMethod.JackOfDiamonds, null, null, gamestateDescriberMock.Object);
+            var game = new Game(players, PartnerMethod.JackOfDiamonds, null, gamestateDescriberMock.Object);
             try
             {
                 game.RecordTurn((IHumanPlayer)players[2], SheepCard.N8_HEARTS);
@@ -327,7 +324,7 @@ namespace Sheepshead.Tests
             var gamestateDescriberMock = new Mock<IGameStateDescriber>();
             gamestateDescriberMock.Setup(m => m.CurrentTrick).Returns(trickMock.Object);
 
-            var game = new Game(players, PartnerMethod.JackOfDiamonds, null, null, gamestateDescriberMock.Object);
+            var game = new Game(players, PartnerMethod.JackOfDiamonds, null, gamestateDescriberMock.Object);
             try
             {
                 game.RecordTurn((IHumanPlayer)players[2], SheepCard.N7_HEARTS);

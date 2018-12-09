@@ -7,9 +7,9 @@ namespace Sheepshead.Model
 {
     public interface IPickProcessor
     {
-        IComputerPlayer PlayNonHumanPickTurns(IHand deck, IHandFactory handFactory);
+        IComputerPlayer PlayNonHumanPickTurns(IHand deck);
         void BuryCards(IHand deck, IHumanPlayer picker, List<SheepCard> cardsToBury, bool goItAlone);
-        IHand ContinueFromHumanPickTurn(IHumanPlayer human, bool willPick, IHand deck, IHandFactory handFactory, IPickProcessor pickProcessorOuter);
+        IHand ContinueFromHumanPickTurn(IHumanPlayer human, bool willPick, IHand deck, IPickProcessor pickProcessorOuter);
     }
 
     public class PickProcessor : IPickProcessor
@@ -18,17 +18,17 @@ namespace Sheepshead.Model
         {
         }
 
-        public IComputerPlayer PlayNonHumanPickTurns(IHand deck, IHandFactory handFactory)
+        public IComputerPlayer PlayNonHumanPickTurns(IHand deck)
         {
-            var picker = PlayNonHumanPickTurns(deck);
+            var picker = PlayNonHumanPickTurnsPrivate(deck);
             if (picker != null)
-                AcceptComputerPicker(deck, picker, handFactory);
+                AcceptComputerPicker(deck, picker);
             else if (picker == null && !deck.PlayersWithoutPickTurn.Any())
-                AcceptLeasters(deck, handFactory);
+                AcceptLeasters(deck);
             return picker;
         }
 
-        private IComputerPlayer PlayNonHumanPickTurns(IHand deck)
+        private IComputerPlayer PlayNonHumanPickTurnsPrivate(IHand deck)
         {
             foreach (var player in deck.PlayersWithoutPickTurn.ToList())
             {
@@ -44,7 +44,7 @@ namespace Sheepshead.Model
             return null;
         }
 
-        private void AcceptComputerPicker(IHand deck, IComputerPlayer picker, IHandFactory handFactory)
+        private void AcceptComputerPicker(IHand deck, IComputerPlayer picker)
         {
             var buriedCards = picker.DropCardsForPick(deck);
             //TODO: set the buried property from within SetPicker
@@ -59,7 +59,7 @@ namespace Sheepshead.Model
             }
         }
 
-        private void AcceptLeasters(IHand deck, IHandFactory handFactory)
+        private void AcceptLeasters(IHand deck)
         {
             if (deck.Game.LeastersEnabled)
                 deck.SetPicker(null, new List<SheepCard>());
@@ -94,7 +94,7 @@ namespace Sheepshead.Model
         }
         private static List<SheepCard> _validCalledAceCards = new List<SheepCard>() { SheepCard.ACE_CLUBS, SheepCard.ACE_HEARTS, SheepCard.ACE_SPADES };
 
-        public IHand ContinueFromHumanPickTurn(IHumanPlayer human, bool willPick, IHand hand, IHandFactory handFactory, IPickProcessor pickProcessorOuter)
+        public IHand ContinueFromHumanPickTurn(IHumanPlayer human, bool willPick, IHand hand, IPickProcessor pickProcessorOuter)
         {
             if (hand.PlayersWithoutPickTurn.FirstOrDefault() != human)
                 throw new NotPlayersTurnException("This is not the player's turn to pick.");
@@ -106,7 +106,7 @@ namespace Sheepshead.Model
             else
             {
                 hand.PlayersRefusingPick.Add(human);
-                pickProcessorOuter.PlayNonHumanPickTurns(hand, handFactory);
+                pickProcessorOuter.PlayNonHumanPickTurns(hand);
             }
             return hand;
         }

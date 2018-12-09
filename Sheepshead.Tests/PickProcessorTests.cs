@@ -35,7 +35,7 @@ namespace Sheepshead.Tests
             deckMock.SetupGet(m => m.PlayersWithoutPickTurn).Returns(unplayedPlayers);
 
             var pickProcessor = new PickProcessor();
-            var picker = pickProcessor.PlayNonHumanPickTurns(deckMock.Object, new Mock<IHandFactory>().Object);
+            var picker = pickProcessor.PlayNonHumanPickTurns(deckMock.Object);
 
             Assert.IsNull(picker);
             Assert.AreSame(refusingPlayersOrig[0], refusingPlayers[0]);
@@ -67,7 +67,7 @@ namespace Sheepshead.Tests
             deckMock.SetupGet(m => m.PlayersWithoutPickTurn).Returns(unplayedPlayers);
 
             var pickProcessor = new PickProcessor();
-            var picker = pickProcessor.PlayNonHumanPickTurns(deckMock.Object, null);
+            var picker = pickProcessor.PlayNonHumanPickTurns(deckMock.Object);
 
             Assert.IsNull(picker);
             Assert.AreEqual(4, refusingPlayers.Count);
@@ -99,7 +99,7 @@ namespace Sheepshead.Tests
             deckMock.SetupGet(m => m.PlayersWithoutPickTurn).Returns(unplayedPlayers);
 
             var pickProcessor = new PickProcessor();
-            var picker = pickProcessor.PlayNonHumanPickTurns(deckMock.Object, null);
+            var picker = pickProcessor.PlayNonHumanPickTurns(deckMock.Object);
 
             Assert.IsNull(picker);
             Assert.AreEqual(2, refusingPlayers.Count);
@@ -130,7 +130,7 @@ namespace Sheepshead.Tests
             deckMock.SetupGet(m => m.PlayersWithoutPickTurn).Returns(unplayedPlayers);
 
             var pickProcessor = new PickProcessor();
-            var picker = pickProcessor.PlayNonHumanPickTurns(deckMock.Object, new Mock<IHandFactory>().Object);
+            var picker = pickProcessor.PlayNonHumanPickTurns(deckMock.Object);
 
             Assert.AreSame(unplayedPlayersOrig[1], picker);
             Assert.AreEqual(3, refusingPlayers.Count);
@@ -159,7 +159,7 @@ namespace Sheepshead.Tests
             deckMock.SetupGet(m => m.PlayersWithoutPickTurn).Returns(unplayedPlayers);
 
             deckMock.Setup(m => m.SetPartnerCard(It.IsAny<SheepCard?>())).Callback((SheepCard? c) => _actualPartnerCard = c);
-            var picker = new PickProcessor().PlayNonHumanPickTurns(deckMock.Object, new Mock<IHandFactory>().Object);
+            var picker = new PickProcessor().PlayNonHumanPickTurns(deckMock.Object);
 
             Assert.AreEqual(SheepCard.ACE_HEARTS, _actualPartnerCard.Value);
         }
@@ -184,7 +184,7 @@ namespace Sheepshead.Tests
             deckMock.SetupGet(m => m.PlayersWithoutPickTurn).Returns(unplayedPlayers);
 
             deckMock.Setup(m => m.SetPartnerCard(It.IsAny<SheepCard?>())).Callback((SheepCard? c) => _actualPartnerCard = c);
-            var picker = new PickProcessor().PlayNonHumanPickTurns(deckMock.Object, new Mock<IHandFactory>().Object);
+            var picker = new PickProcessor().PlayNonHumanPickTurns(deckMock.Object);
 
             Assert.IsNull(_actualPartnerCard);
         }
@@ -208,10 +208,8 @@ namespace Sheepshead.Tests
             deckMock.SetupGet(m => m.PlayersRefusingPick).Returns(new List<IPlayer>());
             deckMock.Setup(m => m.Game.PartnerMethod);
 
-            var handFactoryMock = new Mock<IHandFactory>();
-
             var pickProcessor = new PickProcessor();
-            var picker = pickProcessor.PlayNonHumanPickTurns(deckMock.Object, handFactoryMock.Object);
+            var picker = pickProcessor.PlayNonHumanPickTurns(deckMock.Object);
 
             Assert.AreSame(players[2], picker);
         }
@@ -224,9 +222,8 @@ namespace Sheepshead.Tests
             humanMock.Setup(m => m.Cards).Returns(humanCards);
             var pickProcessorMock = new Mock<IPickProcessor>();
             pickProcessorMock
-                .Setup(m => m.PlayNonHumanPickTurns(It.IsAny<IHand>(), It.IsAny<IHandFactory>()))
+                .Setup(m => m.PlayNonHumanPickTurns(It.IsAny<IHand>()))
                 .Callback(() => Assert.Fail("Should not have let non humans pick."));
-            var handFactoryMock = new Mock<IHandFactory>();
             var blinds = new List<SheepCard>() { 0, (SheepCard)1 };
             IPlayer actualPicker = null;
             var handMock = new Mock<IHand>();
@@ -235,7 +232,7 @@ namespace Sheepshead.Tests
             handMock.Setup(m => m.PlayersWithoutPickTurn).Returns(new List<IPlayer>() { humanMock.Object, new Mock<IComputerPlayer>().Object });
 
             var pickProcessor = new PickProcessor();
-            var hand = pickProcessor.ContinueFromHumanPickTurn(humanMock.Object, true, handMock.Object, handFactoryMock.Object, pickProcessorMock.Object);
+            var hand = pickProcessor.ContinueFromHumanPickTurn(humanMock.Object, true, handMock.Object, pickProcessorMock.Object);
 
             Assert.AreSame(humanMock.Object, actualPicker);
             Assert.IsTrue(humanCards.Contains(blinds[0]));
@@ -251,20 +248,19 @@ namespace Sheepshead.Tests
             var handMock = new Mock<IHand>();
             var nonHumansGotToPlay = false;
             pickProcessorMock
-                .Setup(m => m.PlayNonHumanPickTurns(It.IsAny<IHand>(), It.IsAny<IHandFactory>()))
+                .Setup(m => m.PlayNonHumanPickTurns(It.IsAny<IHand>()))
                 .Callback(() => {
                     handMock.Setup(m => m.Picker).Returns(expectedPicker);
                     nonHumansGotToPlay = true;
                 })
                 .Returns(expectedPicker);
-            var handFactoryMock = new Mock<IHandFactory>();
             var refusingPlayers = new List<IPlayer>();
             var deckMock = new Mock<IHand>();
             deckMock.Setup(m => m.PlayersRefusingPick).Returns(refusingPlayers);
             deckMock.Setup(m => m.PlayersWithoutPickTurn).Returns(new List<IPlayer>() { humanMock.Object, expectedPicker });
             
             var pickProcessor = new PickProcessor();
-            pickProcessor.ContinueFromHumanPickTurn(humanMock.Object, false, deckMock.Object, handFactoryMock.Object, pickProcessorMock.Object);
+            pickProcessor.ContinueFromHumanPickTurn(humanMock.Object, false, deckMock.Object, pickProcessorMock.Object);
 
             Assert.IsTrue(refusingPlayers.Contains(humanMock.Object));
             Assert.IsTrue(nonHumansGotToPlay);
@@ -277,7 +273,6 @@ namespace Sheepshead.Tests
             humanMock.Setup(m => m.Cards).Returns(new List<SheepCard>());
             var computerPlayer = new Mock<IComputerPlayer>().Object;
             var pickProcessorMock = new Mock<IPickProcessor>();
-            var handFactoryMock = new Mock<IHandFactory>();
             var deckMock = new Mock<IHand>();
             deckMock.Setup(m => m.Blinds).Returns(new List<SheepCard>());
             deckMock.Setup(m => m.PlayersWithoutPickTurn).Returns(new List<IPlayer>() { computerPlayer, humanMock.Object });
@@ -286,7 +281,7 @@ namespace Sheepshead.Tests
             var threwException = false;
             try
             {
-                var hand = pickProcessor.ContinueFromHumanPickTurn(humanMock.Object, true, deckMock.Object, handFactoryMock.Object, pickProcessorMock.Object);
+                var hand = pickProcessor.ContinueFromHumanPickTurn(humanMock.Object, true, deckMock.Object, pickProcessorMock.Object);
             }
             catch (NotPlayersTurnException)
             {

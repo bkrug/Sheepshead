@@ -59,7 +59,6 @@
     <Compile Include="GameService.cs" />
     <Compile Include="GameStateDescriber.cs" />
     <Compile Include="Hand.cs" />
-    <Compile Include="HandFactory.cs" />
     <Compile Include="Models\CardsPlayed.cs">
       <DependentUpon>SheepsheadModel.tt</DependentUpon>
     </Compile>

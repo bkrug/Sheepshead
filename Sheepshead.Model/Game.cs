@@ -18,7 +18,6 @@ namespace Sheepshead.Model
         public List<IHumanPlayer> UnassignedPlayers => Players.OfType<IHumanPlayer>().Where(p => !p.AssignedToClient).ToList();
         public List<IHand> Decks => _gameStateDesciber.Decks;
         public IRandomWrapper _random { get; private set; }
-        private IHandFactory _handFactory;
         private IGameStateDescriber _gameStateDesciber;
         public TurnType TurnType => _gameStateDesciber.GetTurnType();
         public PartnerMethod PartnerMethod { get; }
@@ -29,7 +28,7 @@ namespace Sheepshead.Model
             TurnType = TurnType
         };
 
-        public Game(List<IPlayer> players, PartnerMethod partnerMethod, bool enableLeasters) : this(players, partnerMethod, null, null, null)
+        public Game(List<IPlayer> players, PartnerMethod partnerMethod, bool enableLeasters) : this(players, partnerMethod, null, null)
         {
             LeastersEnabled = enableLeasters;
             Id = Guid.NewGuid();
@@ -39,12 +38,11 @@ namespace Sheepshead.Model
         /// <summary>
         /// This constructor is for passing in Mocks in unit tests.
         /// </summary>
-        public Game(List<IPlayer> players, PartnerMethod partnerMethod, IRandomWrapper random, IHandFactory handFactory, IGameStateDescriber gameStateDescriber)
+        public Game(List<IPlayer> players, PartnerMethod partnerMethod, IRandomWrapper random, IGameStateDescriber gameStateDescriber)
         {
             Players = players;
             PartnerMethod = partnerMethod;
             _random = random ?? new RandomWrapper();
-            _handFactory = handFactory ?? new HandFactory();
             _gameStateDesciber = gameStateDescriber ?? new GameStateDescriber();
             Id = Guid.NewGuid();
         }
@@ -70,7 +68,7 @@ namespace Sheepshead.Model
             if (TurnType != TurnType.Pick)
                 throw new WrongGamePhaseExcpetion("Game must be in the Pick phase.");
             var deck = _gameStateDesciber.CurrentDeck;
-            return new PickProcessor().ContinueFromHumanPickTurn(human, willPick, deck, _handFactory, new PickProcessor());
+            return new PickProcessor().ContinueFromHumanPickTurn(human, willPick, deck, new PickProcessor());
         }
 
         public IComputerPlayer PlayNonHumanPickTurns(bool returnNullIfHumanNext = false)
@@ -79,7 +77,7 @@ namespace Sheepshead.Model
                 return null;
             if (TurnType != TurnType.Pick)
                 throw new WrongGamePhaseExcpetion("Game must be in the Pick phase.");
-            return new PickProcessor().PlayNonHumanPickTurns(_gameStateDesciber.CurrentDeck, _handFactory);
+            return new PickProcessor().PlayNonHumanPickTurns(_gameStateDesciber.CurrentDeck);
         }
 
         public void BuryCards(IHumanPlayer player, List<SheepCard> cards, bool goItAlone, SheepCard? partnerCard)
