@@ -81,7 +81,7 @@ namespace Sheepshead.Model
             //Picker cannot lead with last card of Called Ace's suit.
             if (player == Hand.Picker
                 && CardUtil.GetSuit(card) == suitOfPartnerCard
-                && player.Cards.Union(Hand.Deck.Buried).ToList().Count(c => CardUtil.GetSuit(c) == suitOfPartnerCard) == 1)
+                && player.Cards.Union(Hand.Buried).ToList().Count(c => CardUtil.GetSuit(c) == suitOfPartnerCard) == 1)
                 return false;
             //Partner cannot lead with partner card.
             if (Hand.PartnerCard == card)
@@ -136,7 +136,7 @@ namespace Sheepshead.Model
 
         public int PlayerCount
         {
-            get { return Hand.Deck.Game.PlayerCount; }
+            get { return Hand.Game.PlayerCount; }
         }
 
         public List<IPlayer> Players

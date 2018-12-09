@@ -82,7 +82,7 @@ namespace Sheepshead.Tests
             var picker = new Mock<IPlayer>();
             picker.Setup(m => m.Cards).Returns(new List<SheepCard>() { SheepCard.N9_HEARTS, SheepCard.N9_DIAMONDS, SheepCard.QUEEN_HEARTS, SheepCard.N9_CLUBS, SheepCard.ACE_CLUBS, SheepCard.KING_CLUBS });
             var hand = new Mock<IHand>();
-            hand.Setup(m => m.Deck.Buried).Returns(new List<SheepCard>() { SheepCard.N10_CLUBS, SheepCard.N10_SPADES });
+            hand.Setup(m => m.Buried).Returns(new List<SheepCard>() { SheepCard.N10_CLUBS, SheepCard.N10_SPADES });
             hand.Setup(m => m.Game.PartnerMethod).Returns(PartnerMethod.CalledAce);
             hand.Setup(m => m.PartnerCard).Returns(SheepCard.ACE_HEARTS);
             hand.Setup(m => m.Picker).Returns(picker.Object);
