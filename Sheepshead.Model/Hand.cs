@@ -37,6 +37,24 @@ namespace Sheepshead.Model
             }
         }
 
+        public Hand(IDeck deck)
+        {
+            Deck = deck;
+            if (Deck.Hand != null)
+                throw new DeckHasHandException("The specified deck is already associated with a hand.");
+            Deck.Hand = this;
+        }
+
+        public void SetPicker(IPlayer picker, List<SheepCard> burried)
+        {
+            Picker = picker;
+            if (picker != null)
+            {
+                HandUtils.BuryCards(this, picker, burried);
+                PartnerCard = HandUtils.ChoosePartnerCard(this, picker);
+            }
+        }
+
         public IPlayer PresumedParnter
         {
             get
@@ -158,6 +176,39 @@ namespace Sheepshead.Model
         public DeckHasHandException(string message)
             : base(message)
         {
+        }
+    }
+
+    public static class HandUtils
+    {
+        public static void BuryCards(IHand hand, IPlayer picker, List<SheepCard> burried)
+        {
+            if (picker != null)
+            {
+                picker.Cards.AddRange(hand.Deck.Blinds.Where(c => !picker.Cards.Contains(c)));
+                picker.Cards.Where(c => burried.Contains(c)).ToList().ForEach(c => picker.Cards.Remove(c));
+            }
+        }
+
+        public static SheepCard? ChoosePartnerCard(IHand hand, IPlayer picker)
+        {
+            if (hand.Deck.PlayerCount == 3 || hand.Deck.Game.PartnerMethod == PartnerMethod.CalledAce)
+                return null;
+            var potentialPartnerCards = new[] {
+                SheepCard.JACK_DIAMONDS,
+                SheepCard.JACK_HEARTS,
+                SheepCard.JACK_SPADES,
+                SheepCard.JACK_CLUBS,
+                SheepCard.QUEEN_DIAMONDS,
+                SheepCard.QUEEN_HEARTS,
+                SheepCard.QUEEN_SPADES,
+                SheepCard.QUEEN_CLUBS
+            };
+            var pickerDoesNotHave = potentialPartnerCards.Where(c => 
+                !picker.Cards.Contains(c) 
+                && !hand.Deck.Blinds.Contains(c) 
+                && !hand.Deck.Buried.Contains(c));
+            return pickerDoesNotHave.Any() ? pickerDoesNotHave.First() : (SheepCard?)null;
         }
     }
 }

@@ -725,6 +725,7 @@ namespace Sheepshead.Tests
             Assert.IsTrue(hand.IsComplete(), "Hand is complete if there are enough tricks and the last is complete.");
         }
 
+        //TODO: Split into two tests
         [TestMethod]
         public void Hand_Constructor_PartnerCard_PickerWithoutJackDiamonds()
         {
@@ -738,8 +739,12 @@ namespace Sheepshead.Tests
                 var originalPickerCards = new List<SheepCard>() { SheepCard.N7_SPADES, SheepCard.N8_SPADES, SheepCard.N9_SPADES, SheepCard.N10_SPADES };
                 mockPicker.Setup(f => f.Cards).Returns(originalPickerCards);
                 var droppedCards = new List<SheepCard>() { SheepCard.N7_SPADES, SheepCard.N8_SPADES };
-                var hand = new Hand(mockDeck.Object, mockPicker.Object, droppedCards);
-                Assert.AreEqual(SheepCard.JACK_DIAMONDS, hand.PartnerCard, "Jack of diamonds should be partner card right now");
+                var mockHand = new Mock<IHand>();
+                mockHand.Setup(m => m.Deck).Returns(mockDeck.Object);
+                mockDeck.Setup(m => m.Buried).Returns(droppedCards);
+                var partnerCard = HandUtils.ChoosePartnerCard(mockHand.Object, mockPicker.Object);
+                HandUtils.BuryCards(mockHand.Object, mockPicker.Object, droppedCards);
+                Assert.AreEqual(SheepCard.JACK_DIAMONDS, partnerCard, "Jack of diamonds should be partner card right now");
                 var expectedPickerCards = new List<SheepCard>() { SheepCard.KING_DIAMONDS, SheepCard.ACE_CLUBS, SheepCard.N9_SPADES, SheepCard.N10_SPADES };
                 CollectionAssert.AreEquivalent(expectedPickerCards, mockPicker.Object.Cards, "Picker dropped some cards to pick the blinds.");
             }
@@ -759,8 +764,11 @@ namespace Sheepshead.Tests
             var droppedCards = new List<SheepCard>() { SheepCard.JACK_CLUBS, SheepCard.JACK_HEARTS };
             var mockPicker = new Mock<IPlayer>();
             mockPicker.Setup(m => m.Cards).Returns(pickerCards);
-            var hand = new Hand(mockDeck.Object, mockPicker.Object, droppedCards);
-            Assert.AreEqual(SheepCard.QUEEN_HEARTS, hand.PartnerCard, "Queen of hearts should be partner card right now");
+            var mockHand = new Mock<IHand>();
+            mockHand.Setup(m => m.Deck).Returns(mockDeck.Object);
+            mockDeck.Setup(m => m.Buried).Returns(droppedCards);
+            var partnerCard = HandUtils.ChoosePartnerCard(mockHand.Object, mockPicker.Object);
+            Assert.AreEqual(SheepCard.QUEEN_HEARTS, partnerCard, "Queen of hearts should be partner card right now");
         }
 
         [TestMethod]
@@ -777,8 +785,11 @@ namespace Sheepshead.Tests
             var buriedCards = new List<SheepCard>() { SheepCard.JACK_HEARTS, SheepCard.JACK_DIAMONDS };
             var mockPicker = new Mock<IPlayer>();
             mockPicker.Setup(m => m.Cards).Returns(pickerCards);
-            var hand = new Hand(mockDeck.Object, mockPicker.Object, buriedCards);
-            Assert.IsNull(hand.PartnerCard, "There should be no partner card.");
+            var mockHand = new Mock<IHand>();
+            mockHand.Setup(m => m.Deck).Returns(mockDeck.Object);
+            mockDeck.Setup(m => m.Buried).Returns(buriedCards);
+            var partnerCard = HandUtils.ChoosePartnerCard(mockHand.Object, mockPicker.Object);
+            Assert.IsNull(partnerCard, "There should be no partner card.");
         }
 
         [TestMethod]
@@ -790,8 +801,11 @@ namespace Sheepshead.Tests
             mockDeck.Setup(m => m.PlayerCount).Returns(3);
             var mockPicker = new Mock<IPlayer>();
             mockPicker.Setup(m => m.Cards).Returns(new List<SheepCard>() { SheepCard.JACK_DIAMONDS });
-            var hand = new Hand(mockDeck.Object, mockPicker.Object, new List<SheepCard>());
-            Assert.AreEqual(null, hand.PartnerCard, "No partner card should be selected since it is a three player game.");
+            var mockHand = new Mock<IHand>();
+            mockHand.Setup(m => m.Deck).Returns(mockDeck.Object);
+            mockDeck.Setup(m => m.Buried).Returns(new List<SheepCard>());
+            var partnerCard = HandUtils.ChoosePartnerCard(mockHand.Object, mockPicker.Object);
+            Assert.AreEqual(null, partnerCard, "No partner card should be selected since it is a three player game.");
         }
 
         [TestMethod]
