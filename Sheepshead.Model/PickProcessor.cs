@@ -54,7 +54,7 @@ namespace Sheepshead.Model
             if (deck.Game.PartnerMethod == PartnerMethod.CalledAce)
             {
                 var partnerCard = picker.ChooseCalledAce(deck);
-                deck.Hand.SetPartnerCard(partnerCard);
+                deck.SetPartnerCard(partnerCard);
             }
         }
 
@@ -69,12 +69,12 @@ namespace Sheepshead.Model
         /// </summary>
         public void BuryCards(IDeck deck, IHumanPlayer picker, List<SheepCard> cardsToBury, bool goItAlone)
         {
-            if (deck.Hand?.Picker != picker)
+            if (deck.Picker != picker)
                 throw new NotPlayersTurnException("A non-picker cannot bury cards.");
             cardsToBury.ForEach(c => picker.Cards.Remove(c));
             cardsToBury.ForEach(c => deck.Buried.Add(c));
             if (goItAlone)
-                deck.Hand.GoItAlone();
+                deck.GoItAlone();
         }
 
         /// <summary>
@@ -88,7 +88,7 @@ namespace Sheepshead.Model
                 throw new ArgumentException($"Picker does not have a card in the {CardUtil.GetSuit(partnerCard).ToString()} suit");
             if (!_validCalledAceCards.Contains(partnerCard))
                 throw new ArgumentException($"{CardUtil.ToAbbr(partnerCard)} is not a valid partner card.");
-            deck.Hand.SetPartnerCard(partnerCard);
+            deck.SetPartnerCard(partnerCard);
             BuryCards(deck, picker, cardsToBury, goItAlone);
         }
         private static List<SheepCard> _validCalledAceCards = new List<SheepCard>() { SheepCard.ACE_CLUBS, SheepCard.ACE_HEARTS, SheepCard.ACE_SPADES };
@@ -107,7 +107,7 @@ namespace Sheepshead.Model
             {
                 deck.PlayersRefusingPick.Add(human);
                 pickProcessorOuter.PlayNonHumanPickTurns(deck, handFactory);
-                hand = deck.Hand;
+                hand = deck;
             }
             return hand;
         }

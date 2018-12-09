@@ -38,7 +38,7 @@ namespace Sheepshead.React.Controllers
             if (!game.UnassignedPlayers.Any())
             {
                 game.MaybeGiveComputerPlayersNames();
-                new Deck(game);
+                new Hand(game);
             }
             return Json(new {
                 gameId = game.Id,

@@ -21,9 +21,9 @@ namespace Sheepshead.Model
 
         public ITrick CurrentTrick {
             get {
-                var trick = Decks.LastOrDefault()?.Hand?.Tricks?.LastOrDefault();
-                if (trick == null || trick.IsComplete() && !Decks.LastOrDefault().Hand.IsComplete())
-                    trick = new Trick(Decks.LastOrDefault().Hand);
+                var trick = Decks.LastOrDefault()?.Tricks?.LastOrDefault();
+                if (trick == null || trick.IsComplete() && !Decks.LastOrDefault().IsComplete())
+                    trick = new Trick(Decks.LastOrDefault());
                 return trick;
             }
         }
@@ -33,9 +33,9 @@ namespace Sheepshead.Model
             var deck = Decks.LastOrDefault();
             if (!Decks.Any() || LastDeckIsComplete())
                 return TurnType.BeginDeck;
-            else if (deck.Hand == null)
+            else if (!deck.PickPhaseComplete)
                 return TurnType.Pick;
-            else if (!deck.Buried.Any() && !deck.Hand.Leasters)
+            else if (!deck.Buried.Any() && !deck.Leasters)
                 return TurnType.Bury;
             else
                 return TurnType.PlayTrick;
@@ -44,7 +44,7 @@ namespace Sheepshead.Model
         public bool LastDeckIsComplete()
         {
             var lastDeck = Decks.LastOrDefault();
-            return lastDeck == null || lastDeck.IsComplete;
+            return lastDeck == null || lastDeck.IsComplete();
         }
     }
 }

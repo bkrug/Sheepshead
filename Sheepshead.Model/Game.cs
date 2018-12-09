@@ -142,12 +142,12 @@ namespace Sheepshead.Model
         {
             var turnType = TurnType;
             var currentDeck = _gameStateDesciber.CurrentDeck;
-            var currentTrick = currentDeck?.Hand != null ? _gameStateDesciber.CurrentTrick : null;
+            var currentTrick = currentDeck.PickPhaseComplete ? _gameStateDesciber.CurrentTrick : null;
             var currentPlayer =
                 turnType == TurnType.PlayTrick 
                 ? currentTrick?.PlayersWithoutTurn?.FirstOrDefault()
                 : null;
-            var tricks = this.Decks.Where(d => d.Hand != null).LastOrDefault()?.Hand?.Tricks ?? new List<ITrick>();
+            var tricks = Decks.LastOrDefault(d => d.PickPhaseComplete)?.Tricks ?? new List<ITrick>();
             var humanPlayer = currentPlayer as IHumanPlayer;
             var requestingPlayer = Players.OfType<IHumanPlayer>().SingleOrDefault(p => p.Id == requestingPlayerId);
             return new PlayState
@@ -180,7 +180,7 @@ namespace Sheepshead.Model
                 RequestingPlayerTurn = humanPlayer?.Id == requestingPlayerId,
                 PickChoices =
                     currentDeck?.PlayersRefusingPick.Select(p => new Tuple<string, bool>(p.Name, false))
-                    .Union(new List<Tuple<string, bool>> { new Tuple<string, bool>(currentDeck?.Hand?.Picker?.Name, true) })
+                    .Union(new List<Tuple<string, bool>> { new Tuple<string, bool>(currentDeck?.Picker?.Name, true) })
                     .Where(p => p.Item1 != null)
                     .ToList()
                     ?? new List<Tuple<string, bool>>(),
@@ -197,7 +197,7 @@ namespace Sheepshead.Model
             var currentDeck = _gameStateDesciber.CurrentDeck;
             var currentPlayer =
                 turnType == TurnType.Bury 
-                ? currentDeck?.Hand?.Picker
+                ? currentDeck?.Picker
                 : null;
             var humanPlayer = currentPlayer as IHumanPlayer;
             var requestingPlayer = Players.OfType<IHumanPlayer>().SingleOrDefault(p => p.Id == requestingPlayerId);
@@ -214,14 +214,14 @@ namespace Sheepshead.Model
 
         public TrickResults GetTrickWinners()
         {
-            var currentDeck = Decks.LastOrDefault(d => d.Hand != null);
-            var tricks = currentDeck?.Hand?.Tricks ?? new List<ITrick>();
+            var currentDeck = Decks.LastOrDefault(d => d.PickPhaseComplete);
+            var tricks = currentDeck?.Tricks ?? new List<ITrick>();
             var winners = tricks.Where(t => t.PlayersWithoutTurn.Count == 0).Select(t => t?.Winner()?.Player?.Name).ToList();
             return new TrickResults()
             {
-                Picker = currentDeck?.Hand?.Picker?.Name,
-                Partner = currentDeck?.Hand?.Partner?.Name,
-                PartnerCard = currentDeck?.Hand?.PartnerCard == null ? null : CardUtil.ToAbbr(currentDeck.Hand.PartnerCard.Value),
+                Picker = currentDeck?.Picker?.Name,
+                Partner = currentDeck?.Partner?.Name,
+                PartnerCard = currentDeck?.PartnerCard == null ? null : CardUtil.ToAbbr(currentDeck.PartnerCard.Value),
                 TrickWinners = winners
             };
         }
@@ -229,7 +229,7 @@ namespace Sheepshead.Model
         public List<GameCoins> GameCoins()
         {
             var coins = Decks
-                .Select(d => d.Hand?.Scores()?.Coins)
+                .Select(d => d.Scores()?.Coins)
                 .Where(c => c != null)
                 .ToList();
             return Players

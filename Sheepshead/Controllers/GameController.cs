@@ -50,7 +50,7 @@ namespace Sheepshead.Controllers
             switch (game.TurnType)
             {
                 case TurnType.BeginDeck:
-                    turnState.Deck = new Deck(game, _rnd);
+                    turnState.Deck = new Hand(game, _rnd);
                     break;
                 case TurnType.Pick:
                     game.PlayNonHumanPickTurns(true);

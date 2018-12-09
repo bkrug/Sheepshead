@@ -6,30 +6,22 @@ using Sheepshead.Model.Players;
 
 namespace Sheepshead.Model
 {
-    public class Hand : IHand
+    public partial class Hand : IHand
     {
-        public IDeck Deck { get; private set; }
+        public IDeck Deck => this;
         public IPlayer Picker { get; private set; }
         public IPlayer Partner { get; private set; }
         public SheepCard? PartnerCard { get; private set; }
         private List<ITrick> _tricks = new List<ITrick>();
         public List<ITrick> Tricks { get { return _tricks.ToList(); } }
-        public IPlayer StartingPlayer { get { return Deck.StartingPlayer; } }
         public event EventHandler<EventArgs> OnHandEnd;
-        public int PlayerCount => Deck.PlayerCount;
-        public List<IPlayer> Players => Deck.Players;
+        public int PlayerCount => Game.PlayerCount;
+        public List<IPlayer> Players => Game.Players;
         public bool Leasters { get { return Picker == null; } }
-
-        public Hand(IDeck deck)
-        {
-            Deck = deck;
-            if (Deck.Hand != null)
-                throw new DeckHasHandException("The specified deck is already associated with a hand.");
-            Deck.Hand = this;
-        }
 
         public void SetPicker(IPlayer picker, List<SheepCard> burried)
         {
+            PickPhaseComplete = true;
             Picker = picker;
             if (picker != null)
             {
@@ -66,7 +58,7 @@ namespace Sheepshead.Model
         public void AddTrick(ITrick trick)
         {
             _tricks.Add(trick);
-            if (_tricks.Count == (int)(Game.CARDS_IN_DECK / Deck.PlayerCount))
+            if (_tricks.Count == (Model.Game.CARDS_IN_DECK / Deck.PlayerCount))
                 trick.OnTrickEnd += (Object sender, EventArgs e) => { OnHandEndHandler(); };
         }
 
@@ -80,6 +72,8 @@ namespace Sheepshead.Model
 
         public bool IsComplete()
         {
+            if (MustRedeal)
+                return true;
             const int CARDS_IN_PLAY = 30;
             var trickCount = CARDS_IN_PLAY / Deck.PlayerCount;
             return _tricks.Count() == trickCount && _tricks.Last().IsComplete();
@@ -128,6 +122,16 @@ namespace Sheepshead.Model
         event EventHandler<EventArgs> OnHandEnd;
         void SetPartner(IPlayer partner, ITrick trick);
         void SetPartnerCard(SheepCard? sheepCard);
+        List<SheepCard> Blinds { get; }
+        List<SheepCard> Buried { get; set; }
+        IGame Game { get; }
+        List<IPlayer> PlayersRefusingPick { get; }
+        void PlayerWontPick(IPlayer player);
+        List<IPlayer> PlayersWithoutPickTurn { get; }
+        IPlayerOrderer PickPlayerOrderer { get; }
+        bool MustRedeal { get; }
+        void SetPicker(IPlayer picker, List<SheepCard> burried);
+        bool PickPhaseComplete { get; }
     }
 
     public class HandScores
@@ -150,7 +154,7 @@ namespace Sheepshead.Model
         {
             if (picker != null)
             {
-                picker.Cards.AddRange(hand.Deck.Blinds.Where(c => !picker.Cards.Contains(c)));
+                picker.Cards.AddRange(hand.Blinds.Where(c => !picker.Cards.Contains(c)));
                 picker.Cards.Where(c => burried.Contains(c)).ToList().ForEach(c => picker.Cards.Remove(c));
             }
         }

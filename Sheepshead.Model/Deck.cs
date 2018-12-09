@@ -6,35 +6,36 @@ using Sheepshead.Model.Wrappers;
 
 namespace Sheepshead.Model
 {
-    public class Deck : IDeck
+    public partial class Hand : IHand, IDeck
     {
         public IGame Game { get; private set; }
-        public List<SheepCard> Blinds { get; private set; }
-        public List<SheepCard> Buried { get; set; }
-        public IHand Hand { get; set; }
+        public List<SheepCard> Blinds { get; private set; } = new List<SheepCard>();
+        public List<SheepCard> Buried { get; set; } = new List<SheepCard>();
         public List<IPlayer> PlayersRefusingPick { get; } = new List<IPlayer>();
         public IPlayer StartingPlayer { get; private set; }
         public IRandomWrapper _random { get; private set; }
+        public bool PickPhaseComplete { get; private set; }
         /// <summary>
         /// Returns true when there is no picker and Leasters is off.
         /// </summary>
-        public bool MustRedeal => !Game.LeastersEnabled && Hand == null && !PlayersWithoutPickTurn.Any();
-        public bool IsComplete => Hand != null && Hand.IsComplete() || MustRedeal;
+        public bool MustRedeal => !Game.LeastersEnabled && !PlayersWithoutPickTurn.Any();
 
-        public Deck(IGame game) : this(game, new RandomWrapper())
+        public Hand(IGame game) : this(game, new RandomWrapper())
         {
         }
 
-        public Deck(IGame game, IRandomWrapper random)
+        public Hand(IGame game, IRandomWrapper random)
         {
             if (!game.LastDeckIsComplete())
                 throw new PreviousDeckIncompleteException("Cannot add a deck until the prvious one is complete.");
-            _random = random;
             Game = game;
-            var cards = ShuffleCards();
-            DealCards(cards);
-            game.Decks.Add(this);
-            SetStartingPlayer();
+            Game.Decks.Add(this);
+            _random = random;
+            if (_random != null)
+            {
+                DealCards(ShuffleCards());
+                SetStartingPlayer();
+            }
             Buried = new List<SheepCard>();
         }
 
@@ -108,16 +109,6 @@ namespace Sheepshead.Model
             PlayersRefusingPick.Add(player);
         }
 
-        public int PlayerCount
-        {
-            get { return Game.PlayerCount; }
-        }
-
-        public List<IPlayer> Players
-        {
-            get { return Game.Players; }
-        }
-
         public List<IPlayer> PlayersInTurnOrder => PickPlayerOrderer.PlayersInTurnOrder(Players, StartingPlayer);
         public List<IPlayer> PlayersWithoutPickTurn => PickPlayerOrderer.PlayersWithoutTurn(PlayersInTurnOrder, PlayersRefusingPick);
 
@@ -128,21 +119,8 @@ namespace Sheepshead.Model
         }
     }
 
-    public interface IDeck
+    public interface IDeck : IHand
     {
-        List<SheepCard> Blinds { get; }
-        List<SheepCard> Buried { get; set; }
-        IGame Game { get; }
-        IHand Hand { get; set; }
-        List<IPlayer> PlayersRefusingPick { get; }
-        void PlayerWontPick(IPlayer player);
-        IPlayer StartingPlayer { get; }
-        int PlayerCount { get; }
-        List<IPlayer> Players { get; }
-        List<IPlayer> PlayersWithoutPickTurn { get; }
-        IPlayerOrderer PickPlayerOrderer { get; }
-        bool MustRedeal { get; }
-        bool IsComplete { get; }
     }
 
     public class PreviousDeckIncompleteException : Exception

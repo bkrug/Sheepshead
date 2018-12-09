@@ -19,7 +19,7 @@ namespace Sheepshead.Tests
             for (var i = 0; i < 5; ++i)
                 playerList.Add(new Player());
             var game = new Game(playerList, PartnerMethod.JackOfDiamonds, new RandomWrapper(), null, null);
-            var deck = new Deck(game, new RandomWrapper());
+            var deck = new Hand(game, new RandomWrapper());
             Assert.AreEqual(2, deck.Blinds.Count(), "There should be two blinds after dealing");
             Assert.AreEqual(5, game.Players.Count(), "There should be five doctores");
             foreach (var player in deck.Game.Players)
@@ -46,13 +46,13 @@ namespace Sheepshead.Tests
             mockGame.Setup(m => m.LastDeckIsComplete()).Returns(true);
 
             mockDeck.Setup(m => m.StartingPlayer).Returns(player1.Object);
-            deck2 = new Deck(mockGame.Object, new RandomWrapper());
+            deck2 = new Hand(mockGame.Object, new RandomWrapper());
             //We won't test the Starting Player for the first deck in the game.  It should be random.
             Assert.AreEqual(player2.Object, deck2.StartingPlayer, "The starting player for one deck should be the player to the left of the previous starting player.");
 
             mockGame.Object.Decks.RemoveAt(1);
             mockDeck.Setup(m => m.StartingPlayer).Returns(player2.Object);
-            deck2 = new Deck(mockGame.Object, new RandomWrapper());
+            deck2 = new Hand(mockGame.Object, new RandomWrapper());
             //We won't test the Starting Player for the first deck in the game.  It should be random.
             Assert.AreEqual(player3.Object, deck2.StartingPlayer, "Again, the starting player for one deck should be the player to the left of the previous starting player.");
         }

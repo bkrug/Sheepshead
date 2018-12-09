@@ -695,11 +695,13 @@ namespace Sheepshead.Tests
         public void Hand_IsComplete()
         {
             var blinds = new List<SheepCard>() { SheepCard.KING_DIAMONDS, SheepCard.ACE_CLUBS };
-            var mockDeck = new Mock<IDeck>();
-            mockDeck.Setup(m => m.Blinds).Returns(blinds);
-            mockDeck.Setup(m => m.Game.PartnerMethod).Returns(PartnerMethod.JackOfDiamonds);
-            mockDeck.Setup(m => m.PlayerCount).Returns(5);
-            var hand = new Hand(mockDeck.Object);
+            var gameMock = new Mock<IGame>();
+            gameMock.Setup(m => m.PartnerMethod).Returns(PartnerMethod.JackOfDiamonds);
+            gameMock.Setup(m => m.PlayerCount).Returns(5);
+            gameMock.Setup(m => m.Decks).Returns(new List<IDeck>());
+            gameMock.Setup(m => m.LastDeckIsComplete()).Returns(true);
+            gameMock.Setup(m => m.LeastersEnabled).Returns(true);
+            var hand = new Hand(gameMock.Object, null);
 
             var mockCompleteTrick = new Mock<ITrick>();
             var mockIncompleteTrick = new Mock<ITrick>();
@@ -715,7 +717,7 @@ namespace Sheepshead.Tests
             hand.AddTrick(mockIncompleteTrick.Object);
             Assert.IsFalse(hand.IsComplete(), "Hand is not complete if the last trick is not complete.");
 
-            hand = new Hand(mockDeck.Object);
+            hand = new Hand(gameMock.Object, null);
             hand.AddTrick(mockCompleteTrick.Object);
             hand.AddTrick(mockCompleteTrick.Object);
             hand.AddTrick(mockCompleteTrick.Object);
@@ -731,17 +733,19 @@ namespace Sheepshead.Tests
         {
             {
                 var blinds = new List<SheepCard>() { SheepCard.KING_DIAMONDS, SheepCard.ACE_CLUBS };
+                var droppedCards = new List<SheepCard>() { SheepCard.N7_SPADES, SheepCard.N8_SPADES };
                 var mockDeck = new Mock<IDeck>();
                 mockDeck.Setup(m => m.Blinds).Returns(blinds);
+                mockDeck.Setup(m => m.Buried).Returns(droppedCards);
                 mockDeck.Setup(m => m.Game.PartnerMethod).Returns(PartnerMethod.JackOfDiamonds);
                 mockDeck.Setup(m => m.PlayerCount).Returns(5);
                 var mockPicker = new Mock<IPlayer>();
                 var originalPickerCards = new List<SheepCard>() { SheepCard.N7_SPADES, SheepCard.N8_SPADES, SheepCard.N9_SPADES, SheepCard.N10_SPADES };
                 mockPicker.Setup(f => f.Cards).Returns(originalPickerCards);
-                var droppedCards = new List<SheepCard>() { SheepCard.N7_SPADES, SheepCard.N8_SPADES };
                 var mockHand = new Mock<IHand>();
                 mockHand.Setup(m => m.Deck).Returns(mockDeck.Object);
-                mockDeck.Setup(m => m.Buried).Returns(droppedCards);
+                mockHand.Setup(m => m.Blinds).Returns(blinds);
+                mockHand.Setup(m => m.Buried).Returns(droppedCards);
                 var partnerCard = HandUtils.ChoosePartnerCard(mockHand.Object, mockPicker.Object);
                 HandUtils.BuryCards(mockHand.Object, mockPicker.Object, droppedCards);
                 Assert.AreEqual(SheepCard.JACK_DIAMONDS, partnerCard, "Jack of diamonds should be partner card right now");
@@ -811,17 +815,19 @@ namespace Sheepshead.Tests
         [TestMethod]
         public void Hand_Leasters()
         {
-            var deckMock = new Mock<IDeck>();
-            var hand = new Hand(deckMock.Object);
+            var gameMock = new Mock<IGame>();
+            gameMock.Setup(m => m.Decks).Returns(new List<IDeck>());
+            gameMock.Setup(m => m.LastDeckIsComplete()).Returns(true);
+            var hand = new Hand(gameMock.Object, null);
             hand.SetPicker(null, new List<SheepCard>());
             Assert.IsTrue(hand.Leasters, "When there is no picker, play leasters.");
 
             var pickerMock = new Mock<IPlayer>();
             pickerMock.Setup(m => m.Cards).Returns(new List<SheepCard>());
-            deckMock.Setup(m => m.Blinds).Returns(new List<SheepCard>());
-            deckMock.Setup(m => m.PlayerCount).Returns(5);
-            deckMock.Setup(m => m.Game.PartnerMethod).Returns(PartnerMethod.CalledAce);
-            var hand2 = new Hand(deckMock.Object);
+            //To delete: gameMock.Setup(m => m.Blinds).Returns(new List<SheepCard>());
+            gameMock.Setup(m => m.PlayerCount).Returns(5);
+            gameMock.Setup(m => m.PartnerMethod).Returns(PartnerMethod.CalledAce);
+            var hand2 = new Hand(gameMock.Object, null);
             hand2.SetPicker(pickerMock.Object, new List<SheepCard>());
             Assert.IsFalse(hand2.Leasters, "When there is a picker, don't play leasters.");
         }
@@ -829,9 +835,11 @@ namespace Sheepshead.Tests
         [TestMethod]
         public void Hand_OnEndHand()
         {
-            var deckMock = new Mock<IDeck>();
-            deckMock.Setup(m => m.PlayerCount).Returns(5);
-            var hand = new Hand(deckMock.Object);
+            var gameMock = new Mock<IGame>();
+            gameMock.Setup(m => m.PlayerCount).Returns(5);
+            gameMock.Setup(m => m.Decks).Returns(new List<IDeck>());
+            gameMock.Setup(m => m.LastDeckIsComplete()).Returns(true);
+            var hand = new Hand(gameMock.Object, null);
             var endEventCalled = false;
             hand.OnHandEnd += (Object sender, EventArgs e) => {
                 endEventCalled = true;
@@ -851,18 +859,20 @@ namespace Sheepshead.Tests
         [TestMethod]
         public void Hand_PresumedPartner_BasedOnLead()
         {
-            var deckMock = new Mock<IDeck>();
-            deckMock.Setup(d => d.Blinds).Returns(new List<SheepCard>());
-            deckMock.Setup(d => d.Buried).Returns(new List<SheepCard>());
-            deckMock.Setup(m => m.Game.PartnerMethod).Returns(PartnerMethod.JackOfDiamonds);
-            deckMock.Setup(d => d.PlayerCount).Returns(5);
+            var gameMock = new Mock<IGame>();
+            //To delete: deckMock.Setup(d => d.Blinds).Returns(new List<SheepCard>());
+            //To delete: deckMock.Setup(d => d.Buried).Returns(new List<SheepCard>());
+            gameMock.Setup(m => m.PartnerMethod).Returns(PartnerMethod.JackOfDiamonds);
+            gameMock.Setup(d => d.PlayerCount).Returns(5);
+            gameMock.Setup(m => m.LastDeckIsComplete()).Returns(true);
+            gameMock.Setup(m => m.Decks).Returns(new List<IDeck>());
             var player1 = new Mock<IPlayer>();
             var player2 = new Mock<IPlayer>();
             var pickerMock = new Mock<IPlayer>();
             var player4 = new Mock<IPlayer>();
             var player5 = new Mock<IPlayer>();
             pickerMock.Setup(p => p.Cards).Returns(new List<SheepCard>());
-            var hand = new Hand(deckMock.Object);
+            var hand = new Hand(gameMock.Object, null);
             hand.SetPicker(pickerMock.Object, new List<SheepCard>());
             var cardsPlayed1 = new Dictionary<IPlayer, SheepCard>()
             {
@@ -898,18 +908,20 @@ namespace Sheepshead.Tests
         [TestMethod]
         public void Hand_PresumedPartner_2PlayersTie()
         {
-            var deckMock = new Mock<IDeck>();
-            deckMock.Setup(d => d.Blinds).Returns(new List<SheepCard>());
-            deckMock.Setup(d => d.Buried).Returns(new List<SheepCard>());
-            deckMock.Setup(m => m.Game.PartnerMethod).Returns(PartnerMethod.JackOfDiamonds);
-            deckMock.Setup(d => d.PlayerCount).Returns(5);
+            var gameMock = new Mock<IGame>();
+            //To delete: deckMock.Setup(d => d.Blinds).Returns(new List<SheepCard>());
+            //To delete: deckMock.Setup(d => d.Buried).Returns(new List<SheepCard>());
+            gameMock.Setup(m => m.PartnerMethod).Returns(PartnerMethod.JackOfDiamonds);
+            gameMock.Setup(d => d.PlayerCount).Returns(5);
+            gameMock.Setup(m => m.LastDeckIsComplete()).Returns(true);
+            gameMock.Setup(m => m.Decks).Returns(new List<IDeck>());
             var player1 = new Mock<IPlayer>();
             var player2 = new Mock<IPlayer>();
             var pickerMock = new Mock<IPlayer>();
             var player4 = new Mock<IPlayer>();
             var player5 = new Mock<IPlayer>();
             pickerMock.Setup(p => p.Cards).Returns(new List<SheepCard>());
-            var hand = new Hand(deckMock.Object);
+            var hand = new Hand(gameMock.Object, null);
             hand.SetPicker(pickerMock.Object, new List<SheepCard>());
             var cardsPlayed1 = new Dictionary<IPlayer, SheepCard>()
             {
