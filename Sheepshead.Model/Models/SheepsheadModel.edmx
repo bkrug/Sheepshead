@@ -27,8 +27,8 @@
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="Blinds" Type="char" MaxLength="6" Nullable="false" />
-          <Property Name="Buried" Type="char" MaxLength="6" Nullable="false" />
+          <Property Name="BlindCards" Type="char" MaxLength="6" Nullable="false" />
+          <Property Name="BuriedCards" Type="char" MaxLength="6" Nullable="false" />
           <Property Name="RefusingPick" Type="varchar(max)" Nullable="false" />
           <Property Name="PartnerCard" Type="char" MaxLength="2" />
           <Property Name="GameId" Type="uniqueidentifier" Nullable="false" />
@@ -337,10 +337,6 @@
             <End Role="Hand" EntitySet="Hand" />
             <End Role="Coin" EntitySet="Coin" />
           </AssociationSet>
-          <AssociationSet Name="FK_Trick_Participant" Association="SheepsheadModel.FK_Trick_Participant">
-            <End Role="Participant" EntitySet="Participant" />
-            <End Role="Trick" EntitySet="Trick" />
-          </AssociationSet>
           <EntitySet Name="Point" EntityType="SheepsheadModel.Point" />
           <AssociationSet Name="FK_PointHand" Association="SheepsheadModel.FK_PointHand">
             <End Role="Hand" EntitySet="Hand" />
@@ -358,6 +354,10 @@
             <End Role="Participant" EntitySet="Participant" />
             <End Role="Hand" EntitySet="Hand" />
           </AssociationSet>
+          <AssociationSet Name="FK_Trick_Participant" Association="SheepsheadModel.FK_Trick_Participant">
+            <End Role="Participant" EntitySet="Participant" />
+            <End Role="Trick" EntitySet="Trick" />
+          </AssociationSet>
           </EntityContainer>
         <EntityType Name="Game">
           <Key>
@@ -374,8 +374,6 @@
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="Blinds" Type="String" Nullable="false" MaxLength="6" FixedLength="true" Unicode="false" />
-          <Property Name="Buried" Type="String" Nullable="false" MaxLength="6" FixedLength="true" Unicode="false" />
           <Property Name="RefusingPick" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="false" />
           <Property Name="PartnerCard" Type="String" MaxLength="2" FixedLength="true" Unicode="false" />
           <NavigationProperty Name="Game" Relationship="SheepsheadModel.FK_Hand_Game" FromRole="Hand" ToRole="Game" />
@@ -385,6 +383,8 @@
           <NavigationProperty Name="Points" Relationship="SheepsheadModel.FK_PointHand" FromRole="Hand" ToRole="Point" />
           <NavigationProperty Name="PartnerParticipant" Relationship="SheepsheadModel.FK_Hand_Partner" FromRole="Hand" ToRole="Participant" />
           <NavigationProperty Name="PickerParticipant" Relationship="SheepsheadModel.FK_Hand_Picker" FromRole="Hand" ToRole="Participant" />
+          <Property Name="BlindCards" Type="String" Nullable="false" MaxLength="6" FixedLength="true" Unicode="false" />
+          <Property Name="BuriedCards" Type="String" Nullable="false" MaxLength="6" FixedLength="true" Unicode="false" />
         </EntityType>
         <EntityType Name="Participant">
           <Key>
@@ -398,10 +398,10 @@
           <NavigationProperty Name="Hands2" Relationship="SheepsheadModel.FK_Hand_StartingParticipant" FromRole="Participant" ToRole="Hand" />
           <NavigationProperty Name="TrickPlays" Relationship="SheepsheadModel.FK_TrickPlay_Participant" FromRole="Participant" ToRole="TrickPlay" />
           <NavigationProperty Name="Coins" Relationship="SheepsheadModel.FK_Coin_Participant" FromRole="Participant" ToRole="Coin" />
-          <NavigationProperty Name="Trick" Relationship="SheepsheadModel.FK_Trick_Participant" FromRole="Participant" ToRole="Trick" />
           <NavigationProperty Name="Point" Relationship="SheepsheadModel.FK_Point_Participant" FromRole="Participant" ToRole="Point" />
           <NavigationProperty Name="Hands" Relationship="SheepsheadModel.FK_Hand_Partner" FromRole="Participant" ToRole="Hand" />
           <NavigationProperty Name="Hands1" Relationship="SheepsheadModel.FK_Hand_Picker" FromRole="Participant" ToRole="Hand" />
+          <NavigationProperty Name="Trick" Relationship="SheepsheadModel.FK_Trick_Participant" FromRole="Participant" ToRole="Trick" />
         </EntityType>
         <EntityType Name="Trick">
           <Key>
@@ -485,10 +485,6 @@
           <End Type="SheepsheadModel.Hand" Role="Hand" Multiplicity="1" />
           <End Type="SheepsheadModel.Coin" Role="Coin" Multiplicity="*" />
         </Association>
-        <Association Name="FK_Trick_Participant">
-          <End Type="SheepsheadModel.Participant" Role="Participant" Multiplicity="1" />
-          <End Type="SheepsheadModel.Trick" Role="Trick" Multiplicity="*" />
-        </Association>
         <EntityType Name="Point">
           <Key>
             <PropertyRef Name="Id" />
@@ -514,6 +510,10 @@
           <End Type="SheepsheadModel.Participant" Role="Participant" Multiplicity="0..1" />
           <End Type="SheepsheadModel.Hand" Role="Hand" Multiplicity="*" />
         </Association>
+        <Association Name="FK_Trick_Participant">
+          <End Type="SheepsheadModel.Participant" Role="Participant" Multiplicity="1" />
+          <End Type="SheepsheadModel.Trick" Role="Trick" Multiplicity="*" />
+        </Association>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -532,10 +532,10 @@
           <EntitySetMapping Name="Hand">
             <EntityTypeMapping TypeName="SheepsheadModel.Hand">
               <MappingFragment StoreEntitySet="Hand">
+                <ScalarProperty Name="BuriedCards" ColumnName="BuriedCards" />
+                <ScalarProperty Name="BlindCards" ColumnName="BlindCards" />
                 <ScalarProperty Name="PartnerCard" ColumnName="PartnerCard" />
                 <ScalarProperty Name="RefusingPick" ColumnName="RefusingPick" />
-                <ScalarProperty Name="Buried" ColumnName="Buried" />
-                <ScalarProperty Name="Blinds" ColumnName="Blinds" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>
@@ -623,14 +623,6 @@
               <ScalarProperty Name="Id" ColumnName="HandId" />
             </EndProperty>
           </AssociationSetMapping>
-          <AssociationSetMapping Name="FK_Trick_Participant" TypeName="SheepsheadModel.FK_Trick_Participant" StoreEntitySet="Trick">
-            <EndProperty Name="Trick">
-              <ScalarProperty Name="Id" ColumnName="Id" />
-            </EndProperty>
-            <EndProperty Name="Participant">
-              <ScalarProperty Name="Id" ColumnName="ParticipantId" />
-            </EndProperty>
-          </AssociationSetMapping>
           <EntitySetMapping Name="Point">
             <EntityTypeMapping TypeName="SheepsheadModel.Point">
               <MappingFragment StoreEntitySet="Point">
@@ -672,6 +664,14 @@
               <ScalarProperty Name="Id" ColumnName="PickerParticipantId" />
             </EndProperty>
             <Condition ColumnName="PickerParticipantId" IsNull="false" />
+          </AssociationSetMapping>
+          <AssociationSetMapping Name="FK_Trick_Participant" TypeName="SheepsheadModel.FK_Trick_Participant" StoreEntitySet="Trick">
+            <EndProperty Name="Trick">
+              <ScalarProperty Name="Id" ColumnName="Id" />
+            </EndProperty>
+            <EndProperty Name="Participant">
+              <ScalarProperty Name="Id" ColumnName="ParticipantId" />
+            </EndProperty>
           </AssociationSetMapping>
           </EntityContainerMapping>
 </Mapping></edmx:Mappings>

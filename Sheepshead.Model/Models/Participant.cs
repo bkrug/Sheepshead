@@ -28,13 +28,13 @@ public partial class Participant
 
         this.Coins = new HashSet<Coin>();
 
-        this.Trick = new HashSet<Trick>();
-
         this.Point = new HashSet<Point>();
 
         this.Hands = new HashSet<Hand>();
 
         this.Hands1 = new HashSet<Hand>();
+
+        this.Trick = new HashSet<Trick>();
 
     }
 
@@ -65,10 +65,6 @@ public partial class Participant
 
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
 
-    public virtual ICollection<Trick> Trick { get; set; }
-
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-
     public virtual ICollection<Point> Point { get; set; }
 
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
@@ -78,6 +74,10 @@ public partial class Participant
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
 
     public virtual ICollection<Hand> Hands1 { get; set; }
+
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+
+    public virtual ICollection<Trick> Trick { get; set; }
 
 }
 

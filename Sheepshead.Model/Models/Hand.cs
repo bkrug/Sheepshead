@@ -33,13 +33,13 @@ public partial class Hand
 
     public int Id { get; set; }
 
-    public string Blinds { get; set; }
-
-    public string Buried { get; set; }
-
     public string RefusingPick { get; set; }
 
     public string PartnerCard { get; set; }
+
+    public string BlindCards { get; set; }
+
+    public string BuriedCards { get; set; }
 
 
 

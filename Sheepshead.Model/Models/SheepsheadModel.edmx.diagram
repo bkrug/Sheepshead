@@ -19,16 +19,12 @@
         <EntityTypeShape EntityType="SheepsheadModel.Coin" Width="1.5" PointX="11.875" PointY="5.625" />
         <AssociationConnector Association="SheepsheadModel.FK_Coin_Participant" />
         <AssociationConnector Association="SheepsheadModel.FK_Hand_Coin" />
-        <AssociationConnector Association="SheepsheadModel.FK_Trick_Participant" ManuallyRouted="true" >
-          <ConnectorPoint PointX="4.625" PointY="9.2807421875" />
-          <ConnectorPoint PointX="8.25" PointY="9.2807421875" />
-          <ConnectorPoint PointX="8.25" PointY="8.2879850260416656" />
-        </AssociationConnector>
         <EntityTypeShape EntityType="SheepsheadModel.Point" Width="1.5" PointX="13.625" PointY="5.25" />
         <AssociationConnector Association="SheepsheadModel.FK_PointHand" />
         <AssociationConnector Association="SheepsheadModel.FK_Point_Participant" />
         <AssociationConnector Association="SheepsheadModel.FK_Hand_Partner" />
         <AssociationConnector Association="SheepsheadModel.FK_Hand_Picker" />
+        <AssociationConnector Association="SheepsheadModel.FK_Trick_Participant" />
         </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>
