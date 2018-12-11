@@ -6,6 +6,7 @@ using Moq;
 using Sheepshead.Model;
 using Sheepshead.Model.Players;
 using Sheepshead.Tests.PlayerMocks;
+using Sheepshead.Model.Models;
 
 namespace Sheepshead.Tests
 {
@@ -142,7 +143,7 @@ namespace Sheepshead.Tests
             var handMock = new Mock<IHand>();
             handMock.Setup(m => m.PlayersWithoutPickTurn).Returns(unplayedPlayers);
             handMock.Setup(m => m.PlayersRefusingPick).Returns(refusingPick);
-            handMock.Setup(m => m.Game.PartnerMethod);
+            handMock.Setup(m => m.IGame.PartnerMethodEnum);
             var gameStateDescriberMock = new Mock<IGameStateDescriber>();
             gameStateDescriberMock.Setup(m => m.CurrentHand).Returns(handMock.Object);
             gameStateDescriberMock.Setup(m => m.GetTurnType()).Returns(TurnType.Pick);
@@ -168,7 +169,7 @@ namespace Sheepshead.Tests
             var handMock = new Mock<IHand>();
             handMock.SetupGet(m => m.PlayersWithoutPickTurn).Returns(unplayedPlayers);
             handMock.SetupGet(m => m.PlayersRefusingPick).Returns(refusingPick);
-            handMock.SetupGet(m => m.Game.LeastersEnabled).Returns(true);
+            handMock.SetupGet(m => m.IGame.LeastersEnabled).Returns(true);
             var gameStateDescriberMock = new Mock<IGameStateDescriber>();
             gameStateDescriberMock.Setup(m => m.CurrentHand).Returns(handMock.Object);
             gameStateDescriberMock.Setup(m => m.GetTurnType()).Returns(TurnType.Pick);

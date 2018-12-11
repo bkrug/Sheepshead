@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Linq;
-using Sheepshead.Model;
-using Microsoft.AspNetCore.Mvc;
 using System.Reflection;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
+using Sheepshead.Model;
+using Sheepshead.Model.Models;
 
 namespace Sheepshead.React.Controllers
 {
@@ -38,7 +39,7 @@ namespace Sheepshead.React.Controllers
             if (!game.UnassignedPlayers.Any())
             {
                 game.MaybeGiveComputerPlayersNames();
-                new Hand(game);
+                new Model.Hand(game);
             }
             return Json(new {
                 gameId = game.Id,

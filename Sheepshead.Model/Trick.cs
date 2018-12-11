@@ -2,16 +2,16 @@
 using System.Collections.Generic;
 using System.Linq;
 using Sheepshead.Model.Players;
+using Sheepshead.Model;
 
-
-namespace Sheepshead.Model
+namespace Sheepshead.Model.Models
 {
-    public class Trick : ITrick
+    public partial class Trick : ITrick
     {
         private Dictionary<IPlayer, SheepCard> _cards = new Dictionary<IPlayer, SheepCard>();
 
-        public IHand Hand { get; private set; }
-        public IGame Game { get { return Hand.Game; } }
+        public IHand IHand { get; private set; }
+        public IGame IGame { get { return IHand.IGame; } }
         public IPlayer StartingPlayer { get; private set; }
         public Dictionary<IPlayer, SheepCard> CardsPlayed { get { return new Dictionary<IPlayer, SheepCard>(_cards); } }
         public event EventHandler<EventArgs> OnTrickEnd;
@@ -37,8 +37,8 @@ namespace Sheepshead.Model
 
         public Trick(IHand hand, IStartingPlayerCalculator startingPlayerCalculator)
         {
-            Hand = hand;
-            Hand.AddTrick(this);
+            IHand = hand;
+            IHand.AddTrick(this);
             StartingPlayer = startingPlayerCalculator.GetStartingPlayer(hand, this);
         }
 
@@ -46,8 +46,8 @@ namespace Sheepshead.Model
         {
             _cards.Add(player, card);
             player.Cards.Remove(card);
-            if (Hand.PartnerCard == card)
-                Hand.SetPartner(player, this);
+            if (IHand.PartnerCard == card)
+                IHand.SetPartner(player, this);
             OnMoveHandler(player, card);
             if (IsComplete())
                 OnTrickEndHandler();
@@ -61,8 +61,8 @@ namespace Sheepshead.Model
 
             //There are some rules for the lead card in a trick.
             if (!_cards.Any())
-                return Hand.Game.PartnerMethod == PartnerMethod.JackOfDiamonds 
-                    || Hand.PartnerCard == null
+                return IHand.IGame.PartnerMethodEnum == PartnerMethod.JackOfDiamonds 
+                    || IHand.PartnerCard == null
                     || IsLegalStartingCardInCalledAceGame(card, player);
 
             //Other cards must follow suit.
@@ -73,18 +73,18 @@ namespace Sheepshead.Model
 
         private bool IsLegalStartingCardInCalledAceGame(SheepCard card, IPlayer player)
         {
-            var suitOfPartnerCard = CardUtil.GetSuit(Hand.PartnerCard.Value);
+            var suitOfPartnerCard = CardUtil.GetSuit(IHand.PartnerCard.Value);
             //Once suit of partner card is lead, picker and partner may lead with that suit.
-            if (Hand.Tricks != null
-                && Hand.Tricks.Any(t => t != this && t.CardsPlayed.Any() && CardUtil.GetSuit(t.CardsPlayed.First().Value) == suitOfPartnerCard))
+            if (IHand.Tricks != null
+                && IHand.Tricks.Any(t => t != this && t.CardsPlayed.Any() && CardUtil.GetSuit(t.CardsPlayed.First().Value) == suitOfPartnerCard))
                 return true;
             //Picker cannot lead with last card of Called Ace's suit.
-            if (player == Hand.Picker
+            if (player == IHand.Picker
                 && CardUtil.GetSuit(card) == suitOfPartnerCard
-                && player.Cards.Union(Hand.Buried).ToList().Count(c => CardUtil.GetSuit(c) == suitOfPartnerCard) == 1)
+                && player.Cards.Union(IHand.Buried).ToList().Count(c => CardUtil.GetSuit(c) == suitOfPartnerCard) == 1)
                 return false;
             //Partner cannot lead with partner card.
-            if (Hand.PartnerCard == card)
+            if (IHand.PartnerCard == card)
                 return false;
             return true;
         }
@@ -131,35 +131,35 @@ namespace Sheepshead.Model
 
         public bool IsComplete()
         {
-            return CardsPlayed.Count() == Hand.PlayerCount;
+            return CardsPlayed.Count() == IHand.PlayerCount;
         }
 
         public int PlayerCount
         {
-            get { return Hand.Game.PlayerCount; }
+            get { return IHand.IGame.PlayerCount; }
         }
 
         public List<IPlayer> Players
         {
-            get { return Hand.Players; }
+            get { return IHand.Players; }
         }
 
         public int QueueRankOfPicker
         {
-            get { return Hand.Picker.QueueRankInTrick(this); }
+            get { return IHand.Picker.QueueRankInTrick(this); }
         }
 
         public int? QueueRankOfPartner
         {
-            get { return Hand.Partner == null ? (int?)null : Hand.Partner.QueueRankInTrick(this); } 
+            get { return IHand.Partner == null ? (int?)null : IHand.Partner.QueueRankInTrick(this); } 
         }
 
         public int IndexInHand
         {
-            get { return Hand.Tricks.IndexOf(this); }
+            get { return IHand.Tricks.IndexOf(this); }
         }
 
-        public SheepCard? PartnerCard { get { return Hand.PartnerCard; } }
+        public SheepCard? PartnerCard { get { return IHand.PartnerCard; } }
 
         public List<IPlayer> PlayersInTurnOrder => PickPlayerOrderer.PlayersInTurnOrder(Players, StartingPlayer);
         public List<IPlayer> PlayersWithoutTurn => PickPlayerOrderer.PlayersWithoutTurn(PlayersInTurnOrder, CardsPlayed.Keys.ToList());
@@ -178,8 +178,8 @@ namespace Sheepshead.Model
 
     public interface ITrick
     {
-        IHand Hand { get; }
-        IGame Game { get; }
+        IHand IHand { get; }
+        IGame IGame { get; }
         TrickWinner Winner();
         void Add(IPlayer player, SheepCard card);
         bool IsLegalAddition(SheepCard card, IPlayer player);

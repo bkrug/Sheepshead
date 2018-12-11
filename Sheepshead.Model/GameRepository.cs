@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Sheepshead.Model.Models;
 using Sheepshead.Model.Players;
 
 namespace Sheepshead.Model

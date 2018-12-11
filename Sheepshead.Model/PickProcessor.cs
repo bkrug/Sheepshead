@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Sheepshead.Model.Models;
 using Sheepshead.Model.Players;
 
 namespace Sheepshead.Model
@@ -50,9 +51,9 @@ namespace Sheepshead.Model
             //TODO: set the buried property from within SetPicker
             hand.Buried = buriedCards;
             hand.SetPicker(picker, buriedCards);
-            if (hand.Game.PlayerCount == 3 || picker.GoItAlone(hand))
+            if (hand.IGame.PlayerCount == 3 || picker.GoItAlone(hand))
                 return;
-            if (hand.Game.PartnerMethod == PartnerMethod.CalledAce)
+            if (hand.IGame.PartnerMethodEnum == PartnerMethod.CalledAce)
             {
                 var partnerCard = picker.ChooseCalledAce(hand);
                 hand.SetPartnerCard(partnerCard);
@@ -61,7 +62,7 @@ namespace Sheepshead.Model
 
         private void AcceptLeasters(IHand hand)
         {
-            if (hand.Game.LeastersEnabled)
+            if (hand.IGame.LeastersEnabled)
                 hand.SetPicker(null, new List<SheepCard>());
         }
 

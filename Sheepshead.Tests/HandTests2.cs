@@ -6,6 +6,8 @@ using Moq;
 using Sheepshead.Model;
 using Sheepshead.Model.Players;
 using Sheepshead.Model.Wrappers;
+using Sheepshead.Model.Models;
+using Hand = Sheepshead.Model.Hand;
 
 namespace Sheepshead.Tests
 {
@@ -22,7 +24,7 @@ namespace Sheepshead.Tests
             var hand = new Hand(game, new RandomWrapper());
             Assert.AreEqual(2, hand.Blinds.Count(), "There should be two blinds after dealing");
             Assert.AreEqual(5, game.Players.Count(), "There should be five players");
-            foreach (var player in hand.Game.Players)
+            foreach (var player in hand.IGame.Players)
                 Assert.AreEqual(6, player.Cards.Count(), "There are 6 cards in each players hand.");
         }
 
@@ -39,7 +41,7 @@ namespace Sheepshead.Tests
             mockGame.Setup(m => m.Players).Returns(playerList);
             mockGame.Setup(m => m.PlayerCount).Returns(5);
             var mockHand = new Mock<IHand>();
-            mockHand.Setup(m => m.Game).Returns(mockGame.Object);
+            mockHand.Setup(m => m.IGame).Returns(mockGame.Object);
             IHand hand;
             var deckList = new List<IHand>() { mockHand.Object };
             mockGame.Setup(m => m.Hands).Returns(deckList);

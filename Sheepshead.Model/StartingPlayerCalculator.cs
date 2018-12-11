@@ -1,5 +1,5 @@
-﻿using Sheepshead.Model.Players;
-
+﻿using Sheepshead.Model.Models;
+using Sheepshead.Model.Players;
 
 namespace Sheepshead.Model
 {

@@ -4,7 +4,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Sheepshead.Model;
 using Sheepshead.Model.Wrappers;
 using Sheepshead.Model.Players;
-
+using Sheepshead.Model.Models;
 
 namespace Sheepshead.Tests
 {

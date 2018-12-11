@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using Sheepshead.Model.Models;
 
 namespace Sheepshead.Model.Players
 {

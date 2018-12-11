@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Sheepshead.Model.Models;
 
 namespace Sheepshead.Model.Players
 {
@@ -102,7 +103,7 @@ namespace Sheepshead.Model.Players
 
         protected Boolean IamPartner(ITrick trick)
         {
-            return trick.Hand.Partner == this || trick.Hand.PartnerCard.HasValue && Cards.Contains(trick.Hand.PartnerCard.Value);
+            return trick.IHand.Partner == this || trick.IHand.PartnerCard.HasValue && Cards.Contains(trick.IHand.PartnerCard.Value);
         }
     }
 

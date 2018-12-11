@@ -4,7 +4,9 @@ using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using Sheepshead.Model;
+using Sheepshead.Model.Models;
 using Sheepshead.Model.Players;
+using Hand = Sheepshead.Model.Hand;
 
 namespace Sheepshead.Tests
 {
@@ -59,7 +61,7 @@ namespace Sheepshead.Tests
             pickerMock.Setup(p => p.Cards).Returns(new List<SheepCard>());
             var handMock = new Mock<IHand>();
             handMock.Setup(d => d.Blinds).Returns(new List<SheepCard>() { SheepCard.N8_CLUBS, SheepCard.N7_CLUBS });
-            handMock.Setup(m => m.Game.PartnerMethod).Returns(PartnerMethod.JackOfDiamonds);
+            handMock.Setup(m => m.IGame.PartnerMethodEnum).Returns(PartnerMethod.JackOfDiamonds);
             handMock.Setup(d => d.PlayerCount).Returns(5);
             handMock.Setup(d => d.Players).Returns(new List<IPlayer>() { partnerMock.Object, player1Mock.Object, pickerMock.Object, player2Mock.Object, player3Mock.Object });
             handMock.Setup(d => d.Buried).Returns(new List<SheepCard>() { SheepCard.ACE_CLUBS, SheepCard.N10_SPADES });
@@ -102,7 +104,7 @@ namespace Sheepshead.Tests
             pickerMock.Setup(p => p.Cards).Returns(new List<SheepCard>());
             var handMock = new Mock<IHand>();
             handMock.Setup(d => d.Blinds).Returns(new List<SheepCard>() { SheepCard.JACK_CLUBS, SheepCard.ACE_HEARTS });
-            handMock.Setup(m => m.Game.PartnerMethod).Returns(PartnerMethod.JackOfDiamonds);
+            handMock.Setup(m => m.IGame.PartnerMethodEnum).Returns(PartnerMethod.JackOfDiamonds);
             handMock.Setup(d => d.PlayerCount).Returns(5);
             handMock.Setup(d => d.Players).Returns(new List<IPlayer>() { partnerMock.Object, player1Mock.Object, pickerMock.Object, player2Mock.Object, player3Mock.Object });
             handMock.Setup(d => d.Buried).Returns(new List<SheepCard>() { SheepCard.KING_CLUBS, SheepCard.ACE_SPADES });
@@ -145,7 +147,7 @@ namespace Sheepshead.Tests
             pickerMock.Setup(p => p.Cards).Returns(new List<SheepCard>());
             var handMock = new Mock<IHand>();
             handMock.Setup(d => d.Blinds).Returns(new List<SheepCard>() { SheepCard.JACK_CLUBS, SheepCard.ACE_HEARTS });
-            handMock.Setup(m => m.Game.PartnerMethod).Returns(PartnerMethod.JackOfDiamonds);
+            handMock.Setup(m => m.IGame.PartnerMethodEnum).Returns(PartnerMethod.JackOfDiamonds);
             handMock.Setup(d => d.PlayerCount).Returns(5);
             handMock.Setup(d => d.Players).Returns(new List<IPlayer>() { partnerMock.Object, player1Mock.Object, pickerMock.Object, player2Mock.Object, player3Mock.Object });
             handMock.Setup(d => d.Buried).Returns(new List<SheepCard>() { SheepCard.KING_SPADES, SheepCard.N10_HEARTS });
@@ -188,7 +190,7 @@ namespace Sheepshead.Tests
             pickerMock.Setup(p => p.Cards).Returns(new List<SheepCard>());
             var handMock = new Mock<IHand>();
             handMock.Setup(d => d.Blinds).Returns(new List<SheepCard>() { SheepCard.KING_CLUBS, SheepCard.ACE_HEARTS });
-            handMock.Setup(m => m.Game.PartnerMethod).Returns(PartnerMethod.JackOfDiamonds);
+            handMock.Setup(m => m.IGame.PartnerMethodEnum).Returns(PartnerMethod.JackOfDiamonds);
             handMock.Setup(d => d.PlayerCount).Returns(5);
             handMock.Setup(d => d.Players).Returns(new List<IPlayer>() { partnerMock.Object, player1Mock.Object, pickerMock.Object, player2Mock.Object, player3Mock.Object });
             handMock.Setup(d => d.Buried).Returns(new List<SheepCard>() { SheepCard.KING_CLUBS, SheepCard.ACE_HEARTS });
@@ -231,7 +233,7 @@ namespace Sheepshead.Tests
             pickerMock.Setup(p => p.Cards).Returns(new List<SheepCard>());
             var handMock = new Mock<IHand>();
             handMock.Setup(d => d.Blinds).Returns(new List<SheepCard>() { SheepCard.KING_CLUBS, SheepCard.ACE_HEARTS });
-            handMock.Setup(m => m.Game.PartnerMethod).Returns(PartnerMethod.JackOfDiamonds);
+            handMock.Setup(m => m.IGame.PartnerMethodEnum).Returns(PartnerMethod.JackOfDiamonds);
             handMock.Setup(d => d.PlayerCount).Returns(5);
             handMock.Setup(d => d.Players).Returns(new List<IPlayer>() { partnerMock.Object, player1Mock.Object, pickerMock.Object, player2Mock.Object, player3Mock.Object });
             handMock.Setup(d => d.Buried).Returns(new List<SheepCard>() { SheepCard.QUEEN_HEARTS, SheepCard.JACK_DIAMONDS });
@@ -274,7 +276,7 @@ namespace Sheepshead.Tests
             pickerMock.Setup(p => p.Cards).Returns(new List<SheepCard>());
             var handMock = new Mock<IHand>();
             handMock.Setup(d => d.Blinds).Returns(new List<SheepCard>() { SheepCard.N8_HEARTS, SheepCard.JACK_HEARTS });
-            handMock.Setup(m => m.Game.PartnerMethod).Returns(PartnerMethod.JackOfDiamonds);
+            handMock.Setup(m => m.IGame.PartnerMethodEnum).Returns(PartnerMethod.JackOfDiamonds);
             handMock.Setup(d => d.PlayerCount).Returns(5);
             handMock.Setup(d => d.Players).Returns(new List<IPlayer>() { partnerMock.Object, player1Mock.Object, pickerMock.Object, player2Mock.Object, player3Mock.Object });
             handMock.Setup(d => d.Buried).Returns(new List<SheepCard>() { SheepCard.ACE_SPADES, SheepCard.ACE_HEARTS });
@@ -317,7 +319,7 @@ namespace Sheepshead.Tests
             pickerMock.Setup(p => p.Cards).Returns(new List<SheepCard>());
             var handMock = new Mock<IHand>();
             handMock.Setup(d => d.Blinds).Returns(new List<SheepCard>() { SheepCard.N8_CLUBS, SheepCard.N7_CLUBS });
-            handMock.Setup(m => m.Game.PartnerMethod).Returns(PartnerMethod.JackOfDiamonds);
+            handMock.Setup(m => m.IGame.PartnerMethodEnum).Returns(PartnerMethod.JackOfDiamonds);
             handMock.Setup(d => d.PlayerCount).Returns(5);
             handMock.Setup(d => d.Players).Returns(new List<IPlayer>() { player4Mock.Object, player1Mock.Object, pickerMock.Object, player2Mock.Object, player3Mock.Object });
             handMock.Setup(d => d.Buried).Returns(new List<SheepCard>() { SheepCard.ACE_CLUBS, SheepCard.N10_SPADES });
@@ -359,7 +361,7 @@ namespace Sheepshead.Tests
             pickerMock.Setup(p => p.Cards).Returns(new List<SheepCard>());
             var handMock = new Mock<IHand>();
             handMock.Setup(d => d.Blinds).Returns(new List<SheepCard>() { SheepCard.N8_CLUBS, SheepCard.N7_CLUBS });
-            handMock.Setup(m => m.Game.PartnerMethod).Returns(PartnerMethod.JackOfDiamonds);
+            handMock.Setup(m => m.IGame.PartnerMethodEnum).Returns(PartnerMethod.JackOfDiamonds);
             handMock.Setup(d => d.PlayerCount).Returns(5);
             handMock.Setup(d => d.Players).Returns(new List<IPlayer>() { player4Mock.Object, player1Mock.Object, pickerMock.Object, player2Mock.Object, player3Mock.Object });
             handMock.Setup(d => d.Buried).Returns(new List<SheepCard>() { SheepCard.ACE_CLUBS, SheepCard.N10_SPADES });
@@ -516,7 +518,7 @@ namespace Sheepshead.Tests
             var player2Mock = new Mock<IPlayer>();
             pickerMock.Setup(p => p.Cards).Returns(new List<SheepCard>());
             handMock.Setup(d => d.Blinds).Returns(new List<SheepCard>() { SheepCard.N10_HEARTS, SheepCard.N7_CLUBS });
-            handMock.Setup(d => d.Game.PlayerCount).Returns(3);
+            handMock.Setup(d => d.IGame.PlayerCount).Returns(3);
             handMock.Setup(d => d.Players).Returns(new List<IPlayer>() { player1Mock.Object, pickerMock.Object, player2Mock.Object });
             handMock.Setup(d => d.Buried).Returns(new List<SheepCard>() { SheepCard.ACE_CLUBS, SheepCard.KING_SPADES });
             handMock.Setup(m => m.Picker).Returns(pickerMock.Object);
@@ -666,12 +668,12 @@ namespace Sheepshead.Tests
         {
             var blinds = new List<SheepCard>() { SheepCard.KING_DIAMONDS, SheepCard.ACE_CLUBS };
             var gameMock = new Mock<IGame>();
-            gameMock.Setup(m => m.PartnerMethod).Returns(PartnerMethod.JackOfDiamonds);
+            gameMock.Setup(m => m.PartnerMethodEnum).Returns(PartnerMethod.JackOfDiamonds);
             gameMock.Setup(m => m.PlayerCount).Returns(5);
             gameMock.Setup(m => m.Hands).Returns(new List<IHand>());
             gameMock.Setup(m => m.LastHandIsComplete()).Returns(true);
             gameMock.Setup(m => m.LeastersEnabled).Returns(true);
-            var hand = new Hand(gameMock.Object, null);
+            var hand = new Model.Hand(gameMock.Object, null);
 
             var mockCompleteTrick = new Mock<ITrick>();
             var mockIncompleteTrick = new Mock<ITrick>();
@@ -707,8 +709,8 @@ namespace Sheepshead.Tests
                 var mockHand = new Mock<IHand>();
                 mockHand.Setup(m => m.Blinds).Returns(blinds);
                 mockHand.Setup(m => m.Buried).Returns(droppedCards);
-                mockHand.Setup(m => m.Game.PartnerMethod).Returns(PartnerMethod.JackOfDiamonds);
-                mockHand.Setup(m => m.Game.PlayerCount).Returns(5);
+                mockHand.Setup(m => m.IGame.PartnerMethodEnum).Returns(PartnerMethod.JackOfDiamonds);
+                mockHand.Setup(m => m.IGame.PlayerCount).Returns(5);
                 var mockPicker = new Mock<IPlayer>();
                 var originalPickerCards = new List<SheepCard>() { SheepCard.N7_SPADES, SheepCard.N8_SPADES, SheepCard.N9_SPADES, SheepCard.N10_SPADES };
                 mockPicker.Setup(f => f.Cards).Returns(originalPickerCards);
@@ -728,8 +730,8 @@ namespace Sheepshead.Tests
             var mockHand = new Mock<IHand>();
             mockHand.Setup(m => m.Buried).Returns(droppedCards);
             mockHand.Setup(m => m.Blinds).Returns(blinds);
-            mockHand.Setup(m => m.Game.PartnerMethod).Returns(PartnerMethod.JackOfDiamonds);
-            mockHand.Setup(m => m.Game.PlayerCount).Returns(5);
+            mockHand.Setup(m => m.IGame.PartnerMethodEnum).Returns(PartnerMethod.JackOfDiamonds);
+            mockHand.Setup(m => m.IGame.PlayerCount).Returns(5);
             var pickerCards = new List<SheepCard>() {
                 SheepCard.JACK_SPADES, SheepCard.JACK_CLUBS, SheepCard.QUEEN_DIAMONDS, SheepCard.N7_CLUBS, SheepCard.QUEEN_SPADES, SheepCard.QUEEN_CLUBS
             };
@@ -747,8 +749,8 @@ namespace Sheepshead.Tests
             var mockHand = new Mock<IHand>();
             mockHand.Setup(m => m.Blinds).Returns(blinds);
             mockHand.Setup(m => m.Buried).Returns(buriedCards);
-            mockHand.Setup(m => m.Game.PartnerMethod).Returns(PartnerMethod.JackOfDiamonds);
-            mockHand.Setup(m => m.Game.PlayerCount).Returns(5);
+            mockHand.Setup(m => m.IGame.PartnerMethodEnum).Returns(PartnerMethod.JackOfDiamonds);
+            mockHand.Setup(m => m.IGame.PlayerCount).Returns(5);
             var pickerCards = new List<SheepCard>() {
                 SheepCard.JACK_SPADES, SheepCard.JACK_CLUBS, SheepCard.QUEEN_DIAMONDS, SheepCard.QUEEN_HEARTS, SheepCard.QUEEN_SPADES, SheepCard.QUEEN_CLUBS
             };
@@ -765,7 +767,7 @@ namespace Sheepshead.Tests
             var mockHand = new Mock<IHand>();
             mockHand.Setup(m => m.Blinds).Returns(blinds);
             mockHand.Setup(m => m.Buried).Returns(new List<SheepCard>());
-            mockHand.Setup(m => m.Game.PlayerCount).Returns(3);
+            mockHand.Setup(m => m.IGame.PlayerCount).Returns(3);
             var mockPicker = new Mock<IPlayer>();
             mockPicker.Setup(m => m.Cards).Returns(new List<SheepCard>() { SheepCard.JACK_DIAMONDS });
             var partnerCard = HandUtils.ChoosePartnerCard(mockHand.Object, mockPicker.Object);
@@ -785,7 +787,7 @@ namespace Sheepshead.Tests
             var pickerMock = new Mock<IPlayer>();
             pickerMock.Setup(m => m.Cards).Returns(new List<SheepCard>());
             gameMock.Setup(m => m.PlayerCount).Returns(5);
-            gameMock.Setup(m => m.PartnerMethod).Returns(PartnerMethod.CalledAce);
+            gameMock.Setup(m => m.PartnerMethodEnum).Returns(PartnerMethod.CalledAce);
             var hand2 = new Hand(gameMock.Object, null);
             hand2.SetPicker(pickerMock.Object, new List<SheepCard>());
             Assert.IsFalse(hand2.Leasters, "When there is a picker, don't play leasters.");
@@ -819,7 +821,7 @@ namespace Sheepshead.Tests
         public void Hand_PresumedPartner_BasedOnLead()
         {
             var gameMock = new Mock<IGame>();
-            gameMock.Setup(m => m.PartnerMethod).Returns(PartnerMethod.JackOfDiamonds);
+            gameMock.Setup(m => m.PartnerMethodEnum).Returns(PartnerMethod.JackOfDiamonds);
             gameMock.Setup(d => d.PlayerCount).Returns(5);
             gameMock.Setup(m => m.LastHandIsComplete()).Returns(true);
             gameMock.Setup(m => m.Hands).Returns(new List<IHand>());
@@ -866,7 +868,7 @@ namespace Sheepshead.Tests
         public void Hand_PresumedPartner_2PlayersTie()
         {
             var gameMock = new Mock<IGame>();
-            gameMock.Setup(m => m.PartnerMethod).Returns(PartnerMethod.JackOfDiamonds);
+            gameMock.Setup(m => m.PartnerMethodEnum).Returns(PartnerMethod.JackOfDiamonds);
             gameMock.Setup(d => d.PlayerCount).Returns(5);
             gameMock.Setup(m => m.LastHandIsComplete()).Returns(true);
             gameMock.Setup(m => m.Hands).Returns(new List<IHand>());

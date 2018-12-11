@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Sheepshead.Model;
+using Sheepshead.Model.Models;
 using Sheepshead.Model.Players;
 using Sheepshead.Model.Wrappers;
 
@@ -14,9 +16,9 @@ namespace Sheepshead.Model
         private List<ITrick> _tricks = new List<ITrick>();
         public List<ITrick> Tricks { get { return _tricks.ToList(); } }
         public event EventHandler<EventArgs> OnHandEnd;
-        public int PlayerCount => Game.PlayerCount;
-        public List<IPlayer> Players => Game.Players;
-        public IGame Game { get; private set; }
+        public int PlayerCount => IGame.PlayerCount;
+        public List<IPlayer> Players => IGame.Players;
+        public IGame IGame { get; private set; }
         public List<SheepCard> Blinds { get; private set; } = new List<SheepCard>();
         public List<SheepCard> Buried { get; set; } = new List<SheepCard>();
         public List<IPlayer> PlayersRefusingPick { get; } = new List<IPlayer>();
@@ -33,7 +35,7 @@ namespace Sheepshead.Model
         /// <summary>
         /// Returns true when there is no picker and Leasters is off.
         /// </summary>
-        public bool MustRedeal => !Game.LeastersEnabled && !PlayersWithoutPickTurn.Any();
+        public bool MustRedeal => !IGame.LeastersEnabled && !PlayersWithoutPickTurn.Any();
         public bool Leasters { get { return Picker == null; } }
 
         public Hand(IGame game) : this(game, new RandomWrapper())
@@ -44,8 +46,8 @@ namespace Sheepshead.Model
         {
             if (!game.LastHandIsComplete())
                 throw new PreviousHandIncompleteException("Cannot add a hand until the prvious one is complete.");
-            Game = game;
-            Game.Hands.Add(this);
+            IGame = game;
+            IGame.Hands.Add(this);
             _random = random;
             if (_random != null)
             {
@@ -58,7 +60,7 @@ namespace Sheepshead.Model
         private Queue<SheepCard> ShuffleCards()
         {
             List<SheepCard> cards = CardUtil.UnshuffledList();
-            for (var i = Model.Game.CARDS_IN_DECK - 1; i > 0; --i)
+            for (var i = Models.Game.CARDS_IN_DECK - 1; i > 0; --i)
             {
                 var j = _random.Next(i);
                 var swap = cards[i];
@@ -73,9 +75,9 @@ namespace Sheepshead.Model
         private void DealCards(Queue<SheepCard> cards)
         {
             Blinds = new List<SheepCard>();
-            foreach (var player in Game.Players)
+            foreach (var player in IGame.Players)
                 player.Cards.RemoveAll(c => true);
-            switch (Game.PlayerCount)
+            switch (IGame.PlayerCount)
             {
                 case 3:
                     DealTwoCardsPerPlayer(cards);
@@ -103,7 +105,7 @@ namespace Sheepshead.Model
 
         private void DealTwoCardsPerPlayer(Queue<SheepCard> cards)
         {
-            foreach (var player in Game.Players)
+            foreach (var player in IGame.Players)
             {
                 player.Cards.Add(cards.Dequeue());
                 player.Cards.Add(cards.Dequeue());
@@ -112,12 +114,12 @@ namespace Sheepshead.Model
 
         private void SetStartingPlayer()
         {
-            var index = Game.Hands.IndexOf(this);
+            var index = IGame.Hands.IndexOf(this);
             var indexOfPlayer = (index == 0)
-                ? _random.Next(Game.PlayerCount)
-                : Game.Players.IndexOf(Game.Hands[index - 1].StartingPlayer) + 1;
-            if (indexOfPlayer == Game.PlayerCount) indexOfPlayer = 0;
-            StartingPlayer = Game.Players[indexOfPlayer];
+                ? _random.Next(IGame.PlayerCount)
+                : IGame.Players.IndexOf(IGame.Hands[index - 1].StartingPlayer) + 1;
+            if (indexOfPlayer == IGame.PlayerCount) indexOfPlayer = 0;
+            StartingPlayer = IGame.Players[indexOfPlayer];
         }
 
         public void PlayerWontPick(IPlayer player)
@@ -148,7 +150,7 @@ namespace Sheepshead.Model
 
         public void SetPartnerCard(SheepCard? sheepCard)
         {
-            if (Game.PartnerMethod != PartnerMethod.CalledAce)
+            if (IGame.PartnerMethodEnum != PartnerMethod.CalledAce)
                 throw new InvalidOperationException("The method SetPartnerCard() is only for 'called ace' games. The picker card is assigned automatically for 'jack of diamonds' games.");
             PartnerCard = sheepCard;
         }
@@ -181,14 +183,14 @@ namespace Sheepshead.Model
         public void AddTrick(ITrick trick)
         {
             _tricks.Add(trick);
-            if (_tricks.Count == (Model.Game.CARDS_IN_DECK / Game.PlayerCount))
+            if (_tricks.Count == (Models.Game.CARDS_IN_DECK / IGame.PlayerCount))
                 trick.OnTrickEnd += (Object sender, EventArgs e) => { OnHandEndHandler(); };
         }
 
         private HandScores _scores = null;
         public HandScores Scores()
         {
-            if (Tricks.Count == Game.TrickCount && Tricks.Last().IsComplete())
+            if (Tricks.Count == IGame.TrickCount && Tricks.Last().IsComplete())
                 return _scores = (_scores ?? new ScoreCalculator(this).InternalScores());
             return null;
         }
@@ -198,7 +200,7 @@ namespace Sheepshead.Model
             if (MustRedeal)
                 return true;
             const int CARDS_IN_PLAY = 30;
-            var trickCount = CARDS_IN_PLAY / Game.PlayerCount;
+            var trickCount = CARDS_IN_PLAY / IGame.PlayerCount;
             return _tricks.Count() == trickCount && _tricks.Last().IsComplete();
         }
 
@@ -211,7 +213,7 @@ namespace Sheepshead.Model
 
     public interface IHand
     {
-        IGame Game { get; }
+        IGame IGame { get; }
         IPlayer Picker { get; }
         IPlayer Partner { get; }
         SheepCard? PartnerCard { get; }
@@ -258,7 +260,7 @@ namespace Sheepshead.Model
 
         public static SheepCard? ChoosePartnerCard(IHand hand, IPlayer picker)
         {
-            if (hand.Game.PlayerCount == 3 || hand.Game.PartnerMethod == PartnerMethod.CalledAce)
+            if (hand.IGame.PlayerCount == 3 || hand.IGame.PartnerMethodEnum == PartnerMethod.CalledAce)
                 return null;
             var potentialPartnerCards = new[] {
                 SheepCard.JACK_DIAMONDS,

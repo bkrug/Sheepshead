@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using Sheepshead.Model;
+using Sheepshead.Model.Models;
 using Sheepshead.Model.Players;
 using Sheepshead.Tests.PlayerMocks;
 
@@ -23,7 +24,7 @@ namespace Sheepshead.Tests
             };
             var refusingPlayersOrig = refusingPlayers.ToList();
             handMock.SetupGet(m => m.PlayersRefusingPick).Returns(refusingPlayers);
-            handMock.SetupGet(m => m.Game.LeastersEnabled).Returns(true);
+            handMock.SetupGet(m => m.IGame.LeastersEnabled).Returns(true);
 
             var unplayedPlayersOrig = new List<IPlayer>()
             {
@@ -118,7 +119,7 @@ namespace Sheepshead.Tests
             };
             var refusingPlayersOrig = refusingPlayers.ToList();
             handMock.SetupGet(m => m.PlayersRefusingPick).Returns(refusingPlayers);
-            handMock.Setup(m => m.Game.PartnerMethod);
+            handMock.Setup(m => m.IGame.PartnerMethodEnum);
 
             var unplayedPlayersOrig = new List<IPlayer>()
             {
@@ -149,7 +150,7 @@ namespace Sheepshead.Tests
                 new Mock<IHumanPlayer>().Object
             };
             handMock.SetupGet(m => m.PlayersRefusingPick).Returns(refusingPlayers);
-            handMock.SetupGet(m => m.Game.PartnerMethod).Returns(PartnerMethod.CalledAce);
+            handMock.SetupGet(m => m.IGame.PartnerMethodEnum).Returns(PartnerMethod.CalledAce);
             var unplayedPlayers = new List<IPlayer>()
             {
                 new ComputerPlayerPickingMock(true, SheepCard.ACE_HEARTS),
@@ -174,7 +175,7 @@ namespace Sheepshead.Tests
                 new Mock<IHumanPlayer>().Object
             };
             handMock.SetupGet(m => m.PlayersRefusingPick).Returns(refusingPlayers);
-            handMock.SetupGet(m => m.Game.PartnerMethod).Returns(PartnerMethod.CalledAce);
+            handMock.SetupGet(m => m.IGame.PartnerMethodEnum).Returns(PartnerMethod.CalledAce);
             var unplayedPlayers = new List<IPlayer>()
             {
                 new ComputerPlayerPickingMock(true, null),
@@ -206,7 +207,7 @@ namespace Sheepshead.Tests
             handMock.Setup(m => m.Players).Returns(players);
             handMock.SetupGet(m => m.PlayersWithoutPickTurn).Returns(playersWithoutTurn);
             handMock.SetupGet(m => m.PlayersRefusingPick).Returns(new List<IPlayer>());
-            handMock.Setup(m => m.Game.PartnerMethod);
+            handMock.Setup(m => m.IGame.PartnerMethodEnum);
 
             var pickProcessor = new PickProcessor();
             var picker = pickProcessor.PlayNonHumanPickTurns(handMock.Object);

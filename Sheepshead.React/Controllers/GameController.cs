@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.AspNetCore.Mvc;
 using Sheepshead.Model;
+using Sheepshead.Model.Models;
 using Sheepshead.Model.Players;
 
 namespace Sheepshead.React.Controllers
@@ -132,7 +133,7 @@ namespace Sheepshead.React.Controllers
             IGame game = GetGame(gameId);
             var mustRedeal = game.Hands.LastOrDefault()?.MustRedeal ?? false;
             if (game.TurnState.TurnType == TurnType.BeginHand || mustRedeal)
-                new Hand(game);
+                new Model.Hand(game);
             var playState = game.PlayState(Guid.Parse(playerId));
             return Json(playState);
         }

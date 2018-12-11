@@ -6,7 +6,7 @@ using System.Web.Mvc;
 using Sheepshead.Model;
 using Sheepshead.Model.Wrappers;
 using Sheepshead.Model.Players;
-
+using Sheepshead.Model.Models;
 
 namespace Sheepshead.Controllers
 {
@@ -50,7 +50,7 @@ namespace Sheepshead.Controllers
             switch (game.TurnType)
             {
                 case TurnType.BeginHand:
-                    turnState.Hand = new Hand(game, _rnd);
+                    turnState.Hand = new Model.Hand(game, _rnd);
                     break;
                 case TurnType.Pick:
                     game.PlayNonHumanPickTurns(true);

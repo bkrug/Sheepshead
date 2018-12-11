@@ -1,26 +1,25 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Sheepshead.Model;
 using Sheepshead.Model.Players;
 using Sheepshead.Model.Wrappers;
 
-namespace Sheepshead.Model
+namespace Sheepshead.Model.Models
 {
-    public class Game : IGame
+    public partial class Game : IGame
     {
-        public Guid Id { get; }
         public const int CARDS_IN_DECK = 32;
         public int PlayerCount => Players.Count();
         public int TrickCount => (int)Math.Floor(32d / PlayerCount);
         public int HumanPlayerCount => Players.Count(p => p is IHumanPlayer);
-        public bool LeastersEnabled { get; }
         public List<IPlayer> Players { get; }
         public List<IHumanPlayer> UnassignedPlayers => Players.OfType<IHumanPlayer>().Where(p => !p.AssignedToClient).ToList();
         public List<IHand> Hands => _gameStateDesciber.Hands;
         public IRandomWrapper _random { get; private set; }
         private IGameStateDescriber _gameStateDesciber;
         public TurnType TurnType => _gameStateDesciber.GetTurnType();
-        public PartnerMethod PartnerMethod { get; }
+        public PartnerMethod PartnerMethodEnum { get { return PartnerMethod == "A" ? Models.PartnerMethod.CalledAce : Models.PartnerMethod.JackOfDiamonds; } private set { PartnerMethod = value == Models.PartnerMethod.CalledAce ? "A" : "J"; } }
         public TurnState TurnState => new TurnState
         {
             GameId = Id,
@@ -41,7 +40,7 @@ namespace Sheepshead.Model
         public Game(List<IPlayer> players, PartnerMethod partnerMethod, IRandomWrapper random, IGameStateDescriber gameStateDescriber)
         {
             Players = players;
-            PartnerMethod = partnerMethod;
+            PartnerMethodEnum = partnerMethod;
             _random = random ?? new RandomWrapper();
             _gameStateDesciber = gameStateDescriber ?? new GameStateDescriber();
             Id = Guid.NewGuid();
@@ -84,7 +83,7 @@ namespace Sheepshead.Model
         {
             if (TurnType != TurnType.Bury)
                 throw new WrongGamePhaseExcpetion("Game must be in the Bury phase.");
-            if (PartnerMethod == PartnerMethod.JackOfDiamonds || !partnerCard.HasValue)
+            if (PartnerMethodEnum == Models.PartnerMethod.JackOfDiamonds || !partnerCard.HasValue)
                 new PickProcessor().BuryCards(Hands.Last(), player, cards, goItAlone);
             else
                 new PickProcessor().BuryCards(Hands.Last(), player, cards, goItAlone, partnerCard.Value);
@@ -205,7 +204,7 @@ namespace Sheepshead.Model
                 RequestingPlayerTurn = humanPlayer?.Id == requestingPlayerId,
                 Blinds = turnType == TurnType.Bury ? currentDeck?.Blinds?.Select(b => CardUtil.GetCardSummary(b))?.ToList() : null,
                 PlayerCards = requestingPlayer?.Cards?.Select(c => CardUtil.GetCardSummary(c))?.ToList(),
-                PartnerMethod = PartnerMethod.ToString(),
+                PartnerMethod = PartnerMethodEnum.ToString(),
                 LegalCalledAces = humanPlayer?.LegalCalledAces(currentDeck).Select(c => CardUtil.GetCardSummary(c)).ToList()
             };
         }
@@ -302,7 +301,7 @@ namespace Sheepshead.Model
         List<IHand> Hands { get; }
         TurnType TurnType { get; }
         TurnState TurnState { get; }
-        PartnerMethod PartnerMethod { get; }
+        PartnerMethod PartnerMethodEnum { get; }
         void RearrangePlayers();
         bool LastHandIsComplete();
         IHand ContinueFromHumanPickTurn(IHumanPlayer human, bool willPick);

@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using Sheepshead.Model.Models;
+using System.Linq;
 
 namespace Sheepshead.Model.Players
 {
@@ -31,7 +32,7 @@ namespace Sheepshead.Model.Players
 
         public bool EarlyInTrick(ITrick trick)
         {
-            if (trick.Hand.Game.PlayerCount == 3)
+            if (trick.IHand.IGame.PlayerCount == 3)
                 return trick.CardsPlayed.Count < 2;
             else
                 return trick.CardsPlayed.Count < 3;
@@ -39,8 +40,8 @@ namespace Sheepshead.Model.Players
 
         public bool HaveIAlreadyWon(IPlayer thisPlayer, ITrick trick)
         {
-            return trick.Hand.Tricks
-                .Where(t => t.CardsPlayed.Count == trick.Hand.Game.PlayerCount)
+            return trick.IHand.Tricks
+                .Where(t => t.CardsPlayed.Count == trick.IHand.IGame.PlayerCount)
                 .Any(t => t.Winner().Player == thisPlayer);
         }
 
@@ -62,7 +63,7 @@ namespace Sheepshead.Model.Players
         public bool HaveHighPointsBeenPlayed(ITrick trick)
         {
             var totalPoints = trick.CardsPlayed.Sum(cp => CardUtil.GetPoints(cp.Value));
-            return trick.Hand.Game.PlayerCount == 3
+            return trick.IHand.IGame.PlayerCount == 3
                 ? totalPoints >= 10
                 : totalPoints >= 12;
         }

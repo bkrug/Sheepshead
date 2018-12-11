@@ -5,6 +5,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using Sheepshead.Model;
 using Sheepshead.Model.Players;
+using Sheepshead.Model.Models;
 
 namespace Sheepshead.Tests
 {

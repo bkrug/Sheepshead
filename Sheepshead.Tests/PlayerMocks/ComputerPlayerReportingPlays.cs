@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Sheepshead.Model;
+using Sheepshead.Model.Models;
 using Sheepshead.Model.Players;
 
 namespace Sheepshead.Tests.PlayerMocks

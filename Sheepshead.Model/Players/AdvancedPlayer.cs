@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Sheepshead.Model.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -49,7 +50,7 @@ namespace Sheepshead.Model.Players
         {
             if (Cards.Count == 1)
                 return Cards.Single();
-            if (trick.Hand.Leasters)
+            if (trick.IHand.Leasters)
                 return PlayLeasterMove(trick);
             if (trick.StartingPlayer == this)
                 return GetLeadMove(trick);
@@ -59,7 +60,7 @@ namespace Sheepshead.Model.Players
 
         private SheepCard GetLeadMove(ITrick trick)
         {
-            if (trick.Hand.Picker == this || IamPartner(trick))
+            if (trick.IHand.Picker == this || IamPartner(trick))
             {
                 if (Cards.Average(c => CardUtil.GetRank(c)) > 10)
                     return Cards
@@ -76,9 +77,9 @@ namespace Sheepshead.Model.Players
             }
             else
             {
-                if (trick.Hand.Game.PartnerMethod == PartnerMethod.CalledAce && trick.Hand.PartnerCard.HasValue)
+                if (trick.IHand.IGame.PartnerMethodEnum == Models.PartnerMethod.CalledAce && trick.IHand.PartnerCard.HasValue)
                 {
-                    var partnerCardSuit = CardUtil.GetSuit(trick.Hand.PartnerCard.Value);
+                    var partnerCardSuit = CardUtil.GetSuit(trick.IHand.PartnerCard.Value);
                     return Cards
                         .OrderBy(c => CardUtil.GetSuit(c) == partnerCardSuit ? 1 : 2)
                         .ThenBy(c => CardUtil.GetSuit(c) != Suit.TRUMP ? 1 : 2)

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using Sheepshead.Model;
+using Sheepshead.Model.Models;
 using Sheepshead.Model.Players;
 using Sheepshead.Tests.PlayerMocks;
 
@@ -260,8 +261,8 @@ namespace Sheepshead.Tests
             var trickMock = new Mock<ITrick>();
             trickMock.Setup(t => t.CardsPlayed).Returns(new Dictionary<IPlayer, SheepCard>());
             trickMock.Setup(t => t.StartingPlayer).Returns(advancedPlayer);
-            trickMock.Setup(t => t.Hand.Leasters).Returns(false);
-            trickMock.Setup(t => t.Hand.Picker).Returns(advancedPlayer);
+            trickMock.Setup(t => t.IHand.Leasters).Returns(false);
+            trickMock.Setup(t => t.IHand.Picker).Returns(advancedPlayer);
             var actual = advancedPlayer.GetMove(trickMock.Object);
             Assert.IsTrue(new List<SheepCard>() { SheepCard.QUEEN_CLUBS, SheepCard.QUEEN_HEARTS, SheepCard.QUEEN_SPADES }.Contains(actual));
         }
@@ -286,9 +287,9 @@ namespace Sheepshead.Tests
             var trickMock = new Mock<ITrick>();
             trickMock.Setup(t => t.CardsPlayed).Returns(new Dictionary<IPlayer, SheepCard>());
             trickMock.Setup(t => t.StartingPlayer).Returns(advancedPlayer);
-            trickMock.Setup(t => t.Hand.Leasters).Returns(false);
-            trickMock.Setup(t => t.Hand.Game.PartnerMethod).Returns(PartnerMethod.CalledAce);
-            trickMock.Setup(t => t.Hand.PartnerCard).Returns(SheepCard.ACE_SPADES);
+            trickMock.Setup(t => t.IHand.Leasters).Returns(false);
+            trickMock.Setup(t => t.IHand.IGame.PartnerMethodEnum).Returns(PartnerMethod.CalledAce);
+            trickMock.Setup(t => t.IHand.PartnerCard).Returns(SheepCard.ACE_SPADES);
             var actual = advancedPlayer.GetMove(trickMock.Object);
             Assert.AreEqual(SheepCard.N7_SPADES, actual);
         }
@@ -313,9 +314,9 @@ namespace Sheepshead.Tests
             var trickMock = new Mock<ITrick>();
             trickMock.Setup(t => t.CardsPlayed).Returns(new Dictionary<IPlayer, SheepCard>());
             trickMock.Setup(t => t.StartingPlayer).Returns(advancedPlayer);
-            trickMock.Setup(t => t.Hand.Leasters).Returns(false);
-            trickMock.Setup(t => t.Hand.Game.PartnerMethod).Returns(PartnerMethod.JackOfDiamonds);
-            trickMock.Setup(t => t.Hand.PartnerCard).Returns(SheepCard.JACK_DIAMONDS);
+            trickMock.Setup(t => t.IHand.Leasters).Returns(false);
+            trickMock.Setup(t => t.IHand.IGame.PartnerMethodEnum).Returns(PartnerMethod.JackOfDiamonds);
+            trickMock.Setup(t => t.IHand.PartnerCard).Returns(SheepCard.JACK_DIAMONDS);
             var actual = advancedPlayer.GetMove(trickMock.Object);
             Assert.IsTrue(!new List<SheepCard>() { SheepCard.KING_DIAMONDS, SheepCard.JACK_HEARTS }.Contains(actual));
         }

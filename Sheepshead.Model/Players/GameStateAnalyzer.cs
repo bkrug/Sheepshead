@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Sheepshead.Model.Models;
 
 namespace Sheepshead.Model.Players
 {
@@ -17,31 +18,31 @@ namespace Sheepshead.Model.Players
     {
         public bool? AllOpponentsHavePlayed(IPlayer thisPlayer, ITrick trick)
         {
-            if (trick.CardsPlayed.Count == trick.Hand.Game.PlayerCount - 1)
+            if (trick.CardsPlayed.Count == trick.IHand.IGame.PlayerCount - 1)
                 return true;
             var playerIsPartner = PlayerKnowsSelfToBePartner(thisPlayer, trick);
-            var playerIsOffense = trick.Hand.Picker == thisPlayer || playerIsPartner;
+            var playerIsOffense = trick.IHand.Picker == thisPlayer || playerIsPartner;
             if (playerIsOffense)
             {
-                var opponentCount = trick.Hand.PartnerCard.HasValue
-                    ? trick.Hand.Game.PlayerCount - 2
-                    : trick.Hand.Game.PlayerCount - 1;
+                var opponentCount = trick.IHand.PartnerCard.HasValue
+                    ? trick.IHand.IGame.PlayerCount - 2
+                    : trick.IHand.IGame.PlayerCount - 1;
                 var opponentsWithTurns = playerIsPartner
-                    ? trick.CardsPlayed.Keys.Count(p => trick.Hand.Picker != p && thisPlayer != p)
-                    : trick.CardsPlayed.Keys.Count(p => trick.Hand.Picker != p && trick.Hand.PresumedParnter != p);
+                    ? trick.CardsPlayed.Keys.Count(p => trick.IHand.Picker != p && thisPlayer != p)
+                    : trick.CardsPlayed.Keys.Count(p => trick.IHand.Picker != p && trick.IHand.PresumedParnter != p);
                 if (opponentsWithTurns < opponentCount)
                     return false;
-                if (!playerIsPartner && trick.Hand.PartnerCard.HasValue && trick.Hand.PresumedParnter == null)
+                if (!playerIsPartner && trick.IHand.PartnerCard.HasValue && trick.IHand.PresumedParnter == null)
                     return null;
                 return true;
             }
             else
             {
-                if (!trick.CardsPlayed.ContainsKey(trick.Hand.Picker))
+                if (!trick.CardsPlayed.ContainsKey(trick.IHand.Picker))
                     return false;
-                if (trick.Hand.PresumedParnter != null && !trick.CardsPlayed.ContainsKey(trick.Hand.PresumedParnter))
+                if (trick.IHand.PresumedParnter != null && !trick.CardsPlayed.ContainsKey(trick.IHand.PresumedParnter))
                     return false;
-                if (trick.Hand.PartnerCard.HasValue && trick.Hand.PresumedParnter == null)
+                if (trick.IHand.PartnerCard.HasValue && trick.IHand.PresumedParnter == null)
                     return null;
                 return true;
             }
@@ -50,19 +51,19 @@ namespace Sheepshead.Model.Players
         public bool MySideWinning(IPlayer thisPlayer, ITrick trick)
         {
             var winningPlay = GameStateUtils.GetWinningPlay(trick);
-            if (trick.Hand.Picker == thisPlayer)
-                return winningPlay.Key == trick.Hand.PresumedParnter;
+            if (trick.IHand.Picker == thisPlayer)
+                return winningPlay.Key == trick.IHand.PresumedParnter;
             if (PlayerKnowsSelfToBePartner(thisPlayer, trick))
-                return winningPlay.Key == trick.Hand.Picker;
-            return winningPlay.Key != trick.Hand.Picker 
-                && winningPlay.Key != trick.Hand.PresumedParnter
-                && !(trick.Hand.PartnerCard.HasValue && trick.Hand.PresumedParnter == null);
+                return winningPlay.Key == trick.IHand.Picker;
+            return winningPlay.Key != trick.IHand.Picker 
+                && winningPlay.Key != trick.IHand.PresumedParnter
+                && !(trick.IHand.PartnerCard.HasValue && trick.IHand.PresumedParnter == null);
         }
 
         private static bool PlayerKnowsSelfToBePartner(IPlayer thisPlayer, ITrick trick)
         {
-            return trick.Hand.Partner == thisPlayer
-                || trick.Hand.PartnerCard.HasValue && thisPlayer.Cards.Contains(trick.Hand.PartnerCard.Value);
+            return trick.IHand.Partner == thisPlayer
+                || trick.IHand.PartnerCard.HasValue && thisPlayer.Cards.Contains(trick.IHand.PartnerCard.Value);
         }
 
         public bool ICanWinTrick(IPlayer thisPlayer, ITrick trick)
@@ -79,7 +80,7 @@ namespace Sheepshead.Model.Players
 
         private static IEnumerable<SheepCard> GetUnrevealedCards(IPlayer thisPlayer, ITrick trick)
         {
-            var revealedAndPlayersOwnCards = trick.Hand.Tricks.SelectMany(t => t.CardsPlayed.Values).Union(thisPlayer.Cards);
+            var revealedAndPlayersOwnCards = trick.IHand.Tricks.SelectMany(t => t.CardsPlayed.Values).Union(thisPlayer.Cards);
             var allCards = Enum.GetValues(typeof(SheepCard)).OfType<SheepCard>();
             var unrevealedCards = allCards.Except(revealedAndPlayersOwnCards);
             return unrevealedCards;
