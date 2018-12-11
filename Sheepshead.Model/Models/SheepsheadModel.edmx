@@ -5,15 +5,14 @@
     <!-- SSDL content -->
     <edmx:StorageModels>
     <Schema Namespace="SheepsheadModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
-        <EntityType Name="CardsPlayed">
+        <EntityType Name="Coin">
           <Key>
-            <PropertyRef Name="PlayerId" />
-            <PropertyRef Name="TrickId" />
+            <PropertyRef Name="Id" />
           </Key>
-          <Property Name="PlayerId" Type="int" Nullable="false" />
-          <Property Name="TrickId" Type="int" Nullable="false" />
-          <Property Name="Card" Type="char" MaxLength="2" Nullable="false" />
-          <Property Name="SortOrder" Type="int" Nullable="false" />
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Count" Type="int" Nullable="false" />
+          <Property Name="ParticipantId" Type="int" Nullable="false" />
+          <Property Name="HandId" Type="int" Nullable="false" />
         </EntityType>
         <EntityType Name="Game">
           <Key>
@@ -31,20 +30,30 @@
           <Property Name="Blinds" Type="char" MaxLength="6" Nullable="false" />
           <Property Name="Buried" Type="char" MaxLength="6" Nullable="false" />
           <Property Name="RefusingPick" Type="varchar(max)" Nullable="false" />
-          <Property Name="StartingPlayerId" Type="int" Nullable="false" />
-          <Property Name="PickerId" Type="int" />
-          <Property Name="PartnerId" Type="int" />
           <Property Name="PartnerCard" Type="char" MaxLength="2" />
           <Property Name="GameId" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="PartnerParticipantId" Type="int" />
+          <Property Name="PickerParticipantId" Type="int" />
+          <Property Name="StartingParticipantId" Type="int" Nullable="false" />
         </EntityType>
-        <EntityType Name="Player">
+        <EntityType Name="Participant">
           <Key>
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="Name" Type="varchar(max)" Nullable="false" />
           <Property Name="Cards" Type="char" MaxLength="36" Nullable="false" />
+          <Property Name="Type" Type="nvarchar(max)" Nullable="false" />
           <Property Name="GameId" Type="uniqueidentifier" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Point">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Value" Type="int" Nullable="false" />
+          <Property Name="HandId" Type="int" Nullable="false" />
+          <Property Name="ParticipantId" Type="int" Nullable="false" />
         </EntityType>
         <EntityType Name="Trick">
           <Key>
@@ -52,29 +61,39 @@
           </Key>
           <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="HandId" Type="int" Nullable="false" />
-          <Property Name="StartingPlayerId" Type="int" Nullable="false" />
+          <Property Name="ParticipantId" Type="int" Nullable="false" />
         </EntityType>
-        <Association Name="FK_CardsPlayed_Player">
-          <End Role="Player" Type="Self.Player" Multiplicity="1" />
-          <End Role="CardsPlayed" Type="Self.CardsPlayed" Multiplicity="*" />
+        <EntityType Name="TrickPlay">
+          <Key>
+            <PropertyRef Name="ParticipantId" />
+            <PropertyRef Name="TrickId" />
+          </Key>
+          <Property Name="ParticipantId" Type="int" Nullable="false" />
+          <Property Name="TrickId" Type="int" Nullable="false" />
+          <Property Name="Card" Type="char" MaxLength="2" Nullable="false" />
+          <Property Name="SortOrder" Type="int" Nullable="false" />
+        </EntityType>
+        <Association Name="FK_Coin_Participant">
+          <End Role="Participant" Type="Self.Participant" Multiplicity="1" />
+          <End Role="Coin" Type="Self.Coin" Multiplicity="*" />
           <ReferentialConstraint>
-            <Principal Role="Player">
+            <Principal Role="Participant">
               <PropertyRef Name="Id" />
             </Principal>
-            <Dependent Role="CardsPlayed">
-              <PropertyRef Name="PlayerId" />
+            <Dependent Role="Coin">
+              <PropertyRef Name="ParticipantId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_CardsPlayed_Trick">
-          <End Role="Trick" Type="Self.Trick" Multiplicity="1" />
-          <End Role="CardsPlayed" Type="Self.CardsPlayed" Multiplicity="*" />
+        <Association Name="FK_Hand_Coin">
+          <End Role="Hand" Type="Self.Hand" Multiplicity="1" />
+          <End Role="Coin" Type="Self.Coin" Multiplicity="*" />
           <ReferentialConstraint>
-            <Principal Role="Trick">
+            <Principal Role="Hand">
               <PropertyRef Name="Id" />
             </Principal>
-            <Dependent Role="CardsPlayed">
-              <PropertyRef Name="TrickId" />
+            <Dependent Role="Coin">
+              <PropertyRef Name="HandId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -93,38 +112,38 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_Hand_Partner">
-          <End Role="Player" Type="Self.Player" Multiplicity="0..1" />
+          <End Role="Participant" Type="Self.Participant" Multiplicity="0..1" />
           <End Role="Hand" Type="Self.Hand" Multiplicity="*" />
           <ReferentialConstraint>
-            <Principal Role="Player">
+            <Principal Role="Participant">
               <PropertyRef Name="Id" />
             </Principal>
             <Dependent Role="Hand">
-              <PropertyRef Name="PartnerId" />
+              <PropertyRef Name="PartnerParticipantId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_Hand_Picker">
-          <End Role="Player" Type="Self.Player" Multiplicity="0..1" />
+          <End Role="Participant" Type="Self.Participant" Multiplicity="0..1" />
           <End Role="Hand" Type="Self.Hand" Multiplicity="*" />
           <ReferentialConstraint>
-            <Principal Role="Player">
+            <Principal Role="Participant">
               <PropertyRef Name="Id" />
             </Principal>
             <Dependent Role="Hand">
-              <PropertyRef Name="PickerId" />
+              <PropertyRef Name="PickerParticipantId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_Hand_StartingPlayer">
-          <End Role="Player" Type="Self.Player" Multiplicity="1" />
+        <Association Name="FK_Hand_StartingParticipant">
+          <End Role="Participant" Type="Self.Participant" Multiplicity="1" />
           <End Role="Hand" Type="Self.Hand" Multiplicity="*" />
           <ReferentialConstraint>
-            <Principal Role="Player">
+            <Principal Role="Participant">
               <PropertyRef Name="Id" />
             </Principal>
             <Dependent Role="Hand">
-              <PropertyRef Name="StartingPlayerId" />
+              <PropertyRef Name="StartingParticipantId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -132,13 +151,37 @@
           <End Role="Game" Type="Self.Game" Multiplicity="1">
             <OnDelete Action="Cascade" />
           </End>
-          <End Role="Player" Type="Self.Player" Multiplicity="*" />
+          <End Role="Participant" Type="Self.Participant" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Game">
               <PropertyRef Name="Id" />
             </Principal>
-            <Dependent Role="Player">
+            <Dependent Role="Participant">
               <PropertyRef Name="GameId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Point_Participant">
+          <End Role="Participant" Type="Self.Participant" Multiplicity="1" />
+          <End Role="Point" Type="Self.Point" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Participant">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Point">
+              <PropertyRef Name="ParticipantId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PointHand">
+          <End Role="Hand" Type="Self.Hand" Multiplicity="1" />
+          <End Role="Point" Type="Self.Point" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Hand">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Point">
+              <PropertyRef Name="HandId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -154,349 +197,484 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_Trick_Player">
-          <End Role="Player" Type="Self.Player" Multiplicity="1" />
+        <Association Name="FK_Trick_Participant">
+          <End Role="Participant" Type="Self.Participant" Multiplicity="1" />
           <End Role="Trick" Type="Self.Trick" Multiplicity="*" />
           <ReferentialConstraint>
-            <Principal Role="Player">
+            <Principal Role="Participant">
               <PropertyRef Name="Id" />
             </Principal>
             <Dependent Role="Trick">
-              <PropertyRef Name="StartingPlayerId" />
+              <PropertyRef Name="ParticipantId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_TrickPlay_Participant">
+          <End Role="Participant" Type="Self.Participant" Multiplicity="1" />
+          <End Role="TrickPlay" Type="Self.TrickPlay" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Participant">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="TrickPlay">
+              <PropertyRef Name="ParticipantId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_TrickPlay_Trick">
+          <End Role="Trick" Type="Self.Trick" Multiplicity="1" />
+          <End Role="TrickPlay" Type="Self.TrickPlay" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Trick">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="TrickPlay">
+              <PropertyRef Name="TrickId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
         <EntityContainer Name="SheepsheadModelStoreContainer">
-          <EntitySet Name="CardsPlayed" EntityType="Self.CardsPlayed" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Coin" EntityType="Self.Coin" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Game" EntityType="Self.Game" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Hand" EntityType="Self.Hand" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="Player" EntityType="Self.Player" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Participant" EntityType="Self.Participant" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Point" EntityType="Self.Point" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Trick" EntityType="Self.Trick" Schema="dbo" store:Type="Tables" />
-          <AssociationSet Name="FK_CardsPlayed_Player" Association="Self.FK_CardsPlayed_Player">
-            <End Role="Player" EntitySet="Player" />
-            <End Role="CardsPlayed" EntitySet="CardsPlayed" />
+          <EntitySet Name="TrickPlay" EntityType="Self.TrickPlay" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK_Coin_Participant" Association="Self.FK_Coin_Participant">
+            <End Role="Participant" EntitySet="Participant" />
+            <End Role="Coin" EntitySet="Coin" />
           </AssociationSet>
-          <AssociationSet Name="FK_CardsPlayed_Trick" Association="Self.FK_CardsPlayed_Trick">
-            <End Role="Trick" EntitySet="Trick" />
-            <End Role="CardsPlayed" EntitySet="CardsPlayed" />
+          <AssociationSet Name="FK_Hand_Coin" Association="Self.FK_Hand_Coin">
+            <End Role="Hand" EntitySet="Hand" />
+            <End Role="Coin" EntitySet="Coin" />
           </AssociationSet>
           <AssociationSet Name="FK_Hand_Game" Association="Self.FK_Hand_Game">
             <End Role="Game" EntitySet="Game" />
             <End Role="Hand" EntitySet="Hand" />
           </AssociationSet>
           <AssociationSet Name="FK_Hand_Partner" Association="Self.FK_Hand_Partner">
-            <End Role="Player" EntitySet="Player" />
+            <End Role="Participant" EntitySet="Participant" />
             <End Role="Hand" EntitySet="Hand" />
           </AssociationSet>
           <AssociationSet Name="FK_Hand_Picker" Association="Self.FK_Hand_Picker">
-            <End Role="Player" EntitySet="Player" />
+            <End Role="Participant" EntitySet="Participant" />
             <End Role="Hand" EntitySet="Hand" />
           </AssociationSet>
-          <AssociationSet Name="FK_Hand_StartingPlayer" Association="Self.FK_Hand_StartingPlayer">
-            <End Role="Player" EntitySet="Player" />
+          <AssociationSet Name="FK_Hand_StartingParticipant" Association="Self.FK_Hand_StartingParticipant">
+            <End Role="Participant" EntitySet="Participant" />
             <End Role="Hand" EntitySet="Hand" />
           </AssociationSet>
           <AssociationSet Name="FK_Player_Game" Association="Self.FK_Player_Game">
             <End Role="Game" EntitySet="Game" />
-            <End Role="Player" EntitySet="Player" />
+            <End Role="Participant" EntitySet="Participant" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Point_Participant" Association="Self.FK_Point_Participant">
+            <End Role="Participant" EntitySet="Participant" />
+            <End Role="Point" EntitySet="Point" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PointHand" Association="Self.FK_PointHand">
+            <End Role="Hand" EntitySet="Hand" />
+            <End Role="Point" EntitySet="Point" />
           </AssociationSet>
           <AssociationSet Name="FK_Trick_Hand" Association="Self.FK_Trick_Hand">
             <End Role="Hand" EntitySet="Hand" />
             <End Role="Trick" EntitySet="Trick" />
           </AssociationSet>
-          <AssociationSet Name="FK_Trick_Player" Association="Self.FK_Trick_Player">
-            <End Role="Player" EntitySet="Player" />
+          <AssociationSet Name="FK_Trick_Participant" Association="Self.FK_Trick_Participant">
+            <End Role="Participant" EntitySet="Participant" />
             <End Role="Trick" EntitySet="Trick" />
+          </AssociationSet>
+          <AssociationSet Name="FK_TrickPlay_Participant" Association="Self.FK_TrickPlay_Participant">
+            <End Role="Participant" EntitySet="Participant" />
+            <End Role="TrickPlay" EntitySet="TrickPlay" />
+          </AssociationSet>
+          <AssociationSet Name="FK_TrickPlay_Trick" Association="Self.FK_TrickPlay_Trick">
+            <End Role="Trick" EntitySet="Trick" />
+            <End Role="TrickPlay" EntitySet="TrickPlay" />
           </AssociationSet>
         </EntityContainer>
       </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="SheepsheadModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityContainer Name="SheepsheadEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Game" EntityType="SheepsheadModel.Game" />
+          <EntitySet Name="Hand" EntityType="SheepsheadModel.Hand" />
+          <EntitySet Name="Participant" EntityType="SheepsheadModel.Participant" />
+          <EntitySet Name="Trick" EntityType="SheepsheadModel.Trick" />
+          <EntitySet Name="TrickPlay" EntityType="SheepsheadModel.TrickPlay" />
+          <AssociationSet Name="FK_Hand_Game" Association="SheepsheadModel.FK_Hand_Game">
+            <End Role="Game" EntitySet="Game" />
+            <End Role="Hand" EntitySet="Hand" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Player_Game" Association="SheepsheadModel.FK_Player_Game">
+            <End Role="Game" EntitySet="Game" />
+            <End Role="Participant" EntitySet="Participant" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Hand_StartingParticipant" Association="SheepsheadModel.FK_Hand_StartingParticipant">
+            <End Role="Participant" EntitySet="Participant" />
+            <End Role="Hand" EntitySet="Hand" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Trick_Hand" Association="SheepsheadModel.FK_Trick_Hand">
+            <End Role="Hand" EntitySet="Hand" />
+            <End Role="Trick" EntitySet="Trick" />
+          </AssociationSet>
+          <AssociationSet Name="FK_TrickPlay_Participant" Association="SheepsheadModel.FK_TrickPlay_Participant">
+            <End Role="Participant" EntitySet="Participant" />
+            <End Role="TrickPlay" EntitySet="TrickPlay" />
+          </AssociationSet>
+          <AssociationSet Name="FK_TrickPlay_Trick" Association="SheepsheadModel.FK_TrickPlay_Trick">
+            <End Role="Trick" EntitySet="Trick" />
+            <End Role="TrickPlay" EntitySet="TrickPlay" />
+          </AssociationSet>
+          <EntitySet Name="Coin" EntityType="SheepsheadModel.Coin" />
+          <AssociationSet Name="FK_Coin_Participant" Association="SheepsheadModel.FK_Coin_Participant">
+            <End Role="Participant" EntitySet="Participant" />
+            <End Role="Coin" EntitySet="Coin" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Hand_Coin" Association="SheepsheadModel.FK_Hand_Coin">
+            <End Role="Hand" EntitySet="Hand" />
+            <End Role="Coin" EntitySet="Coin" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Trick_Participant" Association="SheepsheadModel.FK_Trick_Participant">
+            <End Role="Participant" EntitySet="Participant" />
+            <End Role="Trick" EntitySet="Trick" />
+          </AssociationSet>
+          <EntitySet Name="Point" EntityType="SheepsheadModel.Point" />
+          <AssociationSet Name="FK_PointHand" Association="SheepsheadModel.FK_PointHand">
+            <End Role="Hand" EntitySet="Hand" />
+            <End Role="Point" EntitySet="Point" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Point_Participant" Association="SheepsheadModel.FK_Point_Participant">
+            <End Role="Participant" EntitySet="Participant" />
+            <End Role="Point" EntitySet="Point" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Hand_Partner" Association="SheepsheadModel.FK_Hand_Partner">
+            <End Role="Participant" EntitySet="Participant" />
+            <End Role="Hand" EntitySet="Hand" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Hand_Picker" Association="SheepsheadModel.FK_Hand_Picker">
+            <End Role="Participant" EntitySet="Participant" />
+            <End Role="Hand" EntitySet="Hand" />
+          </AssociationSet>
+          </EntityContainer>
         <EntityType Name="Game">
           <Key>
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="Id" Type="Guid" Nullable="false" />
           <Property Name="LeastersEnabled" Type="Boolean" Nullable="false" />
-          <Property Name="PartnerMethod" Type="String" MaxLength="1" FixedLength="true" Unicode="false" Nullable="false" />
-          <NavigationProperty Name="Hands" Relationship="Self.FK_Hand_Game" FromRole="Game" ToRole="Hand" />
-          <NavigationProperty Name="Players" Relationship="Self.FK_Player_Game" FromRole="Game" ToRole="Player" />
+          <Property Name="PartnerMethod" Type="String" Nullable="false" MaxLength="1" FixedLength="true" Unicode="false" />
+          <NavigationProperty Name="Hand" Relationship="SheepsheadModel.FK_Hand_Game" FromRole="Game" ToRole="Hand" />
+          <NavigationProperty Name="Participant" Relationship="SheepsheadModel.FK_Player_Game" FromRole="Game" ToRole="Participant" />
         </EntityType>
         <EntityType Name="Hand">
           <Key>
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="Blinds" Type="String" MaxLength="6" FixedLength="true" Unicode="false" Nullable="false" />
-          <Property Name="Buried" Type="String" MaxLength="6" FixedLength="true" Unicode="false" Nullable="false" />
-          <Property Name="RefusingPick" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" Nullable="false" />
-          <Property Name="StartingPlayerId" Type="Int32" Nullable="false" />
-          <Property Name="PickerId" Type="Int32" />
-          <Property Name="PartnerId" Type="Int32" />
+          <Property Name="Blinds" Type="String" Nullable="false" MaxLength="6" FixedLength="true" Unicode="false" />
+          <Property Name="Buried" Type="String" Nullable="false" MaxLength="6" FixedLength="true" Unicode="false" />
+          <Property Name="RefusingPick" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="false" />
           <Property Name="PartnerCard" Type="String" MaxLength="2" FixedLength="true" Unicode="false" />
-          <Property Name="GameId" Type="Guid" Nullable="false" />
-          <NavigationProperty Name="Game" Relationship="Self.FK_Hand_Game" FromRole="Hand" ToRole="Game" />
-          <NavigationProperty Name="Partner" Relationship="Self.FK_Hand_Partner" FromRole="Hand" ToRole="Player" />
-          <NavigationProperty Name="Picker" Relationship="Self.FK_Hand_Picker" FromRole="Hand" ToRole="Player" />
-          <NavigationProperty Name="StartingPlayer" Relationship="Self.FK_Hand_StartingPlayer" FromRole="Hand" ToRole="Player" />
-          <NavigationProperty Name="Tricks" Relationship="Self.FK_Trick_Hand" FromRole="Hand" ToRole="Trick" />
+          <NavigationProperty Name="Game" Relationship="SheepsheadModel.FK_Hand_Game" FromRole="Hand" ToRole="Game" />
+          <NavigationProperty Name="StartingParticipant" Relationship="SheepsheadModel.FK_Hand_StartingParticipant" FromRole="Hand" ToRole="Participant" />
+          <NavigationProperty Name="Tricks" Relationship="SheepsheadModel.FK_Trick_Hand" FromRole="Hand" ToRole="Trick" />
+          <NavigationProperty Name="Coins" Relationship="SheepsheadModel.FK_Hand_Coin" FromRole="Hand" ToRole="Coin" />
+          <NavigationProperty Name="Points" Relationship="SheepsheadModel.FK_PointHand" FromRole="Hand" ToRole="Point" />
+          <NavigationProperty Name="PartnerParticipant" Relationship="SheepsheadModel.FK_Hand_Partner" FromRole="Hand" ToRole="Participant" />
+          <NavigationProperty Name="PickerParticipant" Relationship="SheepsheadModel.FK_Hand_Picker" FromRole="Hand" ToRole="Participant" />
         </EntityType>
-        <EntityType Name="Player">
+        <EntityType Name="Participant">
           <Key>
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="Name" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" Nullable="false" />
-          <Property Name="Cards" Type="String" MaxLength="36" FixedLength="true" Unicode="false" Nullable="false" />
-          <Property Name="GameId" Type="Guid" Nullable="false" />
-          <NavigationProperty Name="Game" Relationship="Self.FK_Player_Game" FromRole="Player" ToRole="Game" />
-          <NavigationProperty Name="Hands" Relationship="Self.FK_Hand_Partner" FromRole="Player" ToRole="Hand" />
-          <NavigationProperty Name="Hands1" Relationship="Self.FK_Hand_Picker" FromRole="Player" ToRole="Hand" />
-          <NavigationProperty Name="Hands2" Relationship="Self.FK_Hand_StartingPlayer" FromRole="Player" ToRole="Hand" />
-          <NavigationProperty Name="Tricks" Relationship="Self.FK_Trick_Player" FromRole="Player" ToRole="Trick" />
-          <NavigationProperty Name="CardsPlayed" Relationship="SheepsheadModel.FK_CardsPlayed_Player" FromRole="Player" ToRole="CardsPlayed" />
+          <Property Name="Name" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="Cards" Type="String" Nullable="false" MaxLength="36" FixedLength="true" Unicode="false" />
+          <Property Name="Type" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Game" Relationship="SheepsheadModel.FK_Player_Game" FromRole="Participant" ToRole="Game" />
+          <NavigationProperty Name="Hands2" Relationship="SheepsheadModel.FK_Hand_StartingParticipant" FromRole="Participant" ToRole="Hand" />
+          <NavigationProperty Name="TrickPlays" Relationship="SheepsheadModel.FK_TrickPlay_Participant" FromRole="Participant" ToRole="TrickPlay" />
+          <NavigationProperty Name="Coins" Relationship="SheepsheadModel.FK_Coin_Participant" FromRole="Participant" ToRole="Coin" />
+          <NavigationProperty Name="Trick" Relationship="SheepsheadModel.FK_Trick_Participant" FromRole="Participant" ToRole="Trick" />
+          <NavigationProperty Name="Point" Relationship="SheepsheadModel.FK_Point_Participant" FromRole="Participant" ToRole="Point" />
+          <NavigationProperty Name="Hands" Relationship="SheepsheadModel.FK_Hand_Partner" FromRole="Participant" ToRole="Hand" />
+          <NavigationProperty Name="Hands1" Relationship="SheepsheadModel.FK_Hand_Picker" FromRole="Participant" ToRole="Hand" />
         </EntityType>
         <EntityType Name="Trick">
           <Key>
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="HandId" Type="Int32" Nullable="false" />
-          <Property Name="StartingPlayerId" Type="Int32" Nullable="false" />
-          <NavigationProperty Name="Hand" Relationship="Self.FK_Trick_Hand" FromRole="Trick" ToRole="Hand" />
-          <NavigationProperty Name="StartingPlayer" Relationship="Self.FK_Trick_Player" FromRole="Trick" ToRole="Player" />
-          <NavigationProperty Name="CardsPlayed" Relationship="SheepsheadModel.FK_CardsPlayed_Trick" FromRole="Trick" ToRole="CardsPlayed" />
+          <NavigationProperty Name="Hand" Relationship="SheepsheadModel.FK_Trick_Hand" FromRole="Trick" ToRole="Hand" />
+          <NavigationProperty Name="TrickPlay" Relationship="SheepsheadModel.FK_TrickPlay_Trick" FromRole="Trick" ToRole="TrickPlay" />
+          <NavigationProperty Name="Participant" Relationship="SheepsheadModel.FK_Trick_Participant" FromRole="Trick" ToRole="Participant" />
         </EntityType>
-        <Association Name="FK_Hand_Game">
-          <End Role="Game" Type="Self.Game" Multiplicity="1">
-            <OnDelete Action="Cascade" />
-          </End>
-          <End Role="Hand" Type="Self.Hand" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Game">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="Hand">
-              <PropertyRef Name="GameId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_Player_Game">
-          <End Role="Game" Type="Self.Game" Multiplicity="1">
-            <OnDelete Action="Cascade" />
-          </End>
-          <End Role="Player" Type="Self.Player" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Game">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="Player">
-              <PropertyRef Name="GameId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_Hand_Partner">
-          <End Role="Player" Type="Self.Player" Multiplicity="0..1" />
-          <End Role="Hand" Type="Self.Hand" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Player">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="Hand">
-              <PropertyRef Name="PartnerId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_Hand_Picker">
-          <End Role="Player" Type="Self.Player" Multiplicity="0..1" />
-          <End Role="Hand" Type="Self.Hand" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Player">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="Hand">
-              <PropertyRef Name="PickerId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_Hand_StartingPlayer">
-          <End Role="Player" Type="Self.Player" Multiplicity="1" />
-          <End Role="Hand" Type="Self.Hand" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Player">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="Hand">
-              <PropertyRef Name="StartingPlayerId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_Trick_Hand">
-          <End Role="Hand" Type="Self.Hand" Multiplicity="1" />
-          <End Role="Trick" Type="Self.Trick" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Hand">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="Trick">
-              <PropertyRef Name="HandId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_Trick_Player">
-          <End Role="Player" Type="Self.Player" Multiplicity="1" />
-          <End Role="Trick" Type="Self.Trick" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Player">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="Trick">
-              <PropertyRef Name="StartingPlayerId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <EntityContainer Name="SheepsheadEntities" annotation:LazyLoadingEnabled="true">
-          <EntitySet Name="Games" EntityType="Self.Game" />
-          <EntitySet Name="Hands" EntityType="Self.Hand" />
-          <EntitySet Name="Players" EntityType="Self.Player" />
-          <EntitySet Name="Tricks" EntityType="Self.Trick" />
-          <AssociationSet Name="FK_Hand_Game" Association="Self.FK_Hand_Game">
-            <End Role="Game" EntitySet="Games" />
-            <End Role="Hand" EntitySet="Hands" />
-          </AssociationSet>
-          <AssociationSet Name="FK_Player_Game" Association="Self.FK_Player_Game">
-            <End Role="Game" EntitySet="Games" />
-            <End Role="Player" EntitySet="Players" />
-          </AssociationSet>
-          <AssociationSet Name="FK_Hand_Partner" Association="Self.FK_Hand_Partner">
-            <End Role="Player" EntitySet="Players" />
-            <End Role="Hand" EntitySet="Hands" />
-          </AssociationSet>
-          <AssociationSet Name="FK_Hand_Picker" Association="Self.FK_Hand_Picker">
-            <End Role="Player" EntitySet="Players" />
-            <End Role="Hand" EntitySet="Hands" />
-          </AssociationSet>
-          <AssociationSet Name="FK_Hand_StartingPlayer" Association="Self.FK_Hand_StartingPlayer">
-            <End Role="Player" EntitySet="Players" />
-            <End Role="Hand" EntitySet="Hands" />
-          </AssociationSet>
-          <AssociationSet Name="FK_Trick_Hand" Association="Self.FK_Trick_Hand">
-            <End Role="Hand" EntitySet="Hands" />
-            <End Role="Trick" EntitySet="Tricks" />
-          </AssociationSet>
-          <AssociationSet Name="FK_Trick_Player" Association="Self.FK_Trick_Player">
-            <End Role="Player" EntitySet="Players" />
-            <End Role="Trick" EntitySet="Tricks" />
-          </AssociationSet>
-          <EntitySet Name="CardsPlayed" EntityType="SheepsheadModel.CardsPlayed" />
-          <AssociationSet Name="FK_CardsPlayed_Player" Association="SheepsheadModel.FK_CardsPlayed_Player">
-            <End Role="Player" EntitySet="Players" />
-            <End Role="CardsPlayed" EntitySet="CardsPlayed" />
-          </AssociationSet>
-          <AssociationSet Name="FK_CardsPlayed_Trick" Association="SheepsheadModel.FK_CardsPlayed_Trick">
-            <End Role="Trick" EntitySet="Tricks" />
-            <End Role="CardsPlayed" EntitySet="CardsPlayed" />
-          </AssociationSet>
-        </EntityContainer>
-        <EntityType Name="CardsPlayed">
+        <EntityType Name="TrickPlay">
           <Key>
-            <PropertyRef Name="PlayerId" />
+            <PropertyRef Name="ParticipantId" />
             <PropertyRef Name="TrickId" />
           </Key>
-          <Property Name="PlayerId" Type="Int32" Nullable="false" />
+          <Property Name="ParticipantId" Type="Int32" Nullable="false" />
           <Property Name="TrickId" Type="Int32" Nullable="false" />
           <Property Name="Card" Type="String" Nullable="false" MaxLength="2" FixedLength="true" Unicode="false" />
           <Property Name="SortOrder" Type="Int32" Nullable="false" />
-          <NavigationProperty Name="Player" Relationship="SheepsheadModel.FK_CardsPlayed_Player" FromRole="CardsPlayed" ToRole="Player" />
-          <NavigationProperty Name="Trick" Relationship="SheepsheadModel.FK_CardsPlayed_Trick" FromRole="CardsPlayed" ToRole="Trick" />
+          <NavigationProperty Name="Participant" Relationship="SheepsheadModel.FK_TrickPlay_Participant" FromRole="TrickPlay" ToRole="Participant" />
+          <NavigationProperty Name="Trick" Relationship="SheepsheadModel.FK_TrickPlay_Trick" FromRole="TrickPlay" ToRole="Trick" />
         </EntityType>
-        <Association Name="FK_CardsPlayed_Player">
-          <End Type="SheepsheadModel.Player" Role="Player" Multiplicity="1" />
-          <End Type="SheepsheadModel.CardsPlayed" Role="CardsPlayed" Multiplicity="*" />
+        <Association Name="FK_Hand_Game">
+          <End Type="SheepsheadModel.Game" Role="Game" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="SheepsheadModel.Hand" Role="Hand" Multiplicity="*" />
+        </Association>
+        <Association Name="FK_Player_Game">
+          <End Type="SheepsheadModel.Game" Role="Game" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="SheepsheadModel.Participant" Role="Participant" Multiplicity="*" />
+        </Association>
+        <Association Name="FK_Hand_StartingParticipant">
+          <End Type="SheepsheadModel.Participant" Role="Participant" Multiplicity="1" />
+          <End Type="SheepsheadModel.Hand" Role="Hand" Multiplicity="*" />
+        </Association>
+        <Association Name="FK_Trick_Hand">
+          <End Type="SheepsheadModel.Hand" Role="Hand" Multiplicity="1" />
+          <End Type="SheepsheadModel.Trick" Role="Trick" Multiplicity="*" />
+        </Association>
+        <Association Name="FK_TrickPlay_Participant">
+          <End Type="SheepsheadModel.Participant" Role="Participant" Multiplicity="1" />
+          <End Type="SheepsheadModel.TrickPlay" Role="TrickPlay" Multiplicity="*" />
           <ReferentialConstraint>
-            <Principal Role="Player">
+            <Principal Role="Participant">
               <PropertyRef Name="Id" />
             </Principal>
-            <Dependent Role="CardsPlayed">
-              <PropertyRef Name="PlayerId" />
+            <Dependent Role="TrickPlay">
+              <PropertyRef Name="ParticipantId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_CardsPlayed_Trick">
+        <Association Name="FK_TrickPlay_Trick">
           <End Type="SheepsheadModel.Trick" Role="Trick" Multiplicity="1" />
-          <End Type="SheepsheadModel.CardsPlayed" Role="CardsPlayed" Multiplicity="*" />
+          <End Type="SheepsheadModel.TrickPlay" Role="TrickPlay" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Trick">
               <PropertyRef Name="Id" />
             </Principal>
-            <Dependent Role="CardsPlayed">
+            <Dependent Role="TrickPlay">
               <PropertyRef Name="TrickId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
-      </Schema>
+        <EntityType Name="Coin">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Count" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Participant" Relationship="SheepsheadModel.FK_Coin_Participant" FromRole="Coin" ToRole="Participant" />
+          <NavigationProperty Name="Hand" Relationship="SheepsheadModel.FK_Hand_Coin" FromRole="Coin" ToRole="Hand" />
+        </EntityType>
+        <Association Name="FK_Coin_Participant">
+          <End Type="SheepsheadModel.Participant" Role="Participant" Multiplicity="1" />
+          <End Type="SheepsheadModel.Coin" Role="Coin" Multiplicity="*" />
+        </Association>
+        <Association Name="FK_Hand_Coin">
+          <End Type="SheepsheadModel.Hand" Role="Hand" Multiplicity="1" />
+          <End Type="SheepsheadModel.Coin" Role="Coin" Multiplicity="*" />
+        </Association>
+        <Association Name="FK_Trick_Participant">
+          <End Type="SheepsheadModel.Participant" Role="Participant" Multiplicity="1" />
+          <End Type="SheepsheadModel.Trick" Role="Trick" Multiplicity="*" />
+        </Association>
+        <EntityType Name="Point">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Value" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Hand" Relationship="SheepsheadModel.FK_PointHand" FromRole="Point" ToRole="Hand" />
+          <NavigationProperty Name="Participant" Relationship="SheepsheadModel.FK_Point_Participant" FromRole="Point" ToRole="Participant" />
+        </EntityType>
+        <Association Name="FK_PointHand">
+          <End Type="SheepsheadModel.Hand" Role="Hand" Multiplicity="1" />
+          <End Type="SheepsheadModel.Point" Role="Point" Multiplicity="*" />
+        </Association>
+        <Association Name="FK_Point_Participant">
+          <End Type="SheepsheadModel.Participant" Role="Participant" Multiplicity="1" />
+          <End Type="SheepsheadModel.Point" Role="Point" Multiplicity="*" />
+        </Association>
+        <Association Name="FK_Hand_Partner">
+          <End Type="SheepsheadModel.Participant" Role="Participant" Multiplicity="0..1" />
+          <End Type="SheepsheadModel.Hand" Role="Hand" Multiplicity="*" />
+        </Association>
+        <Association Name="FK_Hand_Picker">
+          <End Type="SheepsheadModel.Participant" Role="Participant" Multiplicity="0..1" />
+          <End Type="SheepsheadModel.Hand" Role="Hand" Multiplicity="*" />
+        </Association>
+        </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
     <edmx:Mappings>
-      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
-        <EntityContainerMapping StorageEntityContainer="SheepsheadModelStoreContainer" CdmEntityContainer="SheepsheadEntities">
-          <EntitySetMapping Name="Games">
+    <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+  <EntityContainerMapping StorageEntityContainer="SheepsheadModelStoreContainer" CdmEntityContainer="SheepsheadEntities">
+          <EntitySetMapping Name="Game">
             <EntityTypeMapping TypeName="SheepsheadModel.Game">
               <MappingFragment StoreEntitySet="Game">
-                <ScalarProperty Name="Id" ColumnName="Id" />
-                <ScalarProperty Name="LeastersEnabled" ColumnName="LeastersEnabled" />
                 <ScalarProperty Name="PartnerMethod" ColumnName="PartnerMethod" />
+                <ScalarProperty Name="LeastersEnabled" ColumnName="LeastersEnabled" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="Hands">
+          <EntitySetMapping Name="Hand">
             <EntityTypeMapping TypeName="SheepsheadModel.Hand">
               <MappingFragment StoreEntitySet="Hand">
-                <ScalarProperty Name="Id" ColumnName="Id" />
-                <ScalarProperty Name="Blinds" ColumnName="Blinds" />
-                <ScalarProperty Name="Buried" ColumnName="Buried" />
-                <ScalarProperty Name="RefusingPick" ColumnName="RefusingPick" />
-                <ScalarProperty Name="StartingPlayerId" ColumnName="StartingPlayerId" />
-                <ScalarProperty Name="PickerId" ColumnName="PickerId" />
-                <ScalarProperty Name="PartnerId" ColumnName="PartnerId" />
                 <ScalarProperty Name="PartnerCard" ColumnName="PartnerCard" />
-                <ScalarProperty Name="GameId" ColumnName="GameId" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="Players">
-            <EntityTypeMapping TypeName="SheepsheadModel.Player">
-              <MappingFragment StoreEntitySet="Player">
+                <ScalarProperty Name="RefusingPick" ColumnName="RefusingPick" />
+                <ScalarProperty Name="Buried" ColumnName="Buried" />
+                <ScalarProperty Name="Blinds" ColumnName="Blinds" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
-                <ScalarProperty Name="Name" ColumnName="Name" />
-                <ScalarProperty Name="Cards" ColumnName="Cards" />
-                <ScalarProperty Name="GameId" ColumnName="GameId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="Tricks">
+          <EntitySetMapping Name="Participant">
+            <EntityTypeMapping TypeName="SheepsheadModel.Participant">
+              <MappingFragment StoreEntitySet="Participant">
+                <ScalarProperty Name="Type" ColumnName="Type" />
+                <ScalarProperty Name="Cards" ColumnName="Cards" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Trick">
             <EntityTypeMapping TypeName="SheepsheadModel.Trick">
               <MappingFragment StoreEntitySet="Trick">
                 <ScalarProperty Name="Id" ColumnName="Id" />
-                <ScalarProperty Name="HandId" ColumnName="HandId" />
-                <ScalarProperty Name="StartingPlayerId" ColumnName="StartingPlayerId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="CardsPlayed">
-            <EntityTypeMapping TypeName="SheepsheadModel.CardsPlayed">
-              <MappingFragment StoreEntitySet="CardsPlayed">
+          <EntitySetMapping Name="TrickPlay">
+            <EntityTypeMapping TypeName="SheepsheadModel.TrickPlay">
+              <MappingFragment StoreEntitySet="TrickPlay">
                 <ScalarProperty Name="SortOrder" ColumnName="SortOrder" />
                 <ScalarProperty Name="Card" ColumnName="Card" />
                 <ScalarProperty Name="TrickId" ColumnName="TrickId" />
-                <ScalarProperty Name="PlayerId" ColumnName="PlayerId" />
+                <ScalarProperty Name="ParticipantId" ColumnName="ParticipantId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-        </EntityContainerMapping>
-      </Mapping>
-    </edmx:Mappings>
+          <AssociationSetMapping Name="FK_Hand_Game" TypeName="SheepsheadModel.FK_Hand_Game" StoreEntitySet="Hand">
+            <EndProperty Name="Hand">
+              <ScalarProperty Name="Id" ColumnName="Id" />
+            </EndProperty>
+            <EndProperty Name="Game">
+              <ScalarProperty Name="Id" ColumnName="GameId" />
+            </EndProperty>
+          </AssociationSetMapping>
+          <AssociationSetMapping Name="FK_Player_Game" TypeName="SheepsheadModel.FK_Player_Game" StoreEntitySet="Participant">
+            <EndProperty Name="Participant">
+              <ScalarProperty Name="Id" ColumnName="Id" />
+            </EndProperty>
+            <EndProperty Name="Game">
+              <ScalarProperty Name="Id" ColumnName="GameId" />
+            </EndProperty>
+          </AssociationSetMapping>
+          <AssociationSetMapping Name="FK_Hand_StartingParticipant" TypeName="SheepsheadModel.FK_Hand_StartingParticipant" StoreEntitySet="Hand">
+            <EndProperty Name="Hand">
+              <ScalarProperty Name="Id" ColumnName="Id" />
+            </EndProperty>
+            <EndProperty Name="Participant">
+              <ScalarProperty Name="Id" ColumnName="StartingParticipantId" />
+            </EndProperty>
+          </AssociationSetMapping>
+          <AssociationSetMapping Name="FK_Trick_Hand" TypeName="SheepsheadModel.FK_Trick_Hand" StoreEntitySet="Trick">
+            <EndProperty Name="Trick">
+              <ScalarProperty Name="Id" ColumnName="Id" />
+            </EndProperty>
+            <EndProperty Name="Hand">
+              <ScalarProperty Name="Id" ColumnName="HandId" />
+            </EndProperty>
+          </AssociationSetMapping>
+          <EntitySetMapping Name="Coin">
+            <EntityTypeMapping TypeName="SheepsheadModel.Coin">
+              <MappingFragment StoreEntitySet="Coin">
+                <ScalarProperty Name="Count" ColumnName="Count" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <AssociationSetMapping Name="FK_Coin_Participant" TypeName="SheepsheadModel.FK_Coin_Participant" StoreEntitySet="Coin">
+            <EndProperty Name="Coin">
+              <ScalarProperty Name="Id" ColumnName="Id" />
+            </EndProperty>
+            <EndProperty Name="Participant">
+              <ScalarProperty Name="Id" ColumnName="ParticipantId" />
+            </EndProperty>
+          </AssociationSetMapping>
+          <AssociationSetMapping Name="FK_Hand_Coin" TypeName="SheepsheadModel.FK_Hand_Coin" StoreEntitySet="Coin">
+            <EndProperty Name="Coin">
+              <ScalarProperty Name="Id" ColumnName="Id" />
+            </EndProperty>
+            <EndProperty Name="Hand">
+              <ScalarProperty Name="Id" ColumnName="HandId" />
+            </EndProperty>
+          </AssociationSetMapping>
+          <AssociationSetMapping Name="FK_Trick_Participant" TypeName="SheepsheadModel.FK_Trick_Participant" StoreEntitySet="Trick">
+            <EndProperty Name="Trick">
+              <ScalarProperty Name="Id" ColumnName="Id" />
+            </EndProperty>
+            <EndProperty Name="Participant">
+              <ScalarProperty Name="Id" ColumnName="ParticipantId" />
+            </EndProperty>
+          </AssociationSetMapping>
+          <EntitySetMapping Name="Point">
+            <EntityTypeMapping TypeName="SheepsheadModel.Point">
+              <MappingFragment StoreEntitySet="Point">
+                <ScalarProperty Name="Value" ColumnName="Value" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <AssociationSetMapping Name="FK_PointHand" TypeName="SheepsheadModel.FK_PointHand" StoreEntitySet="Point">
+            <EndProperty Name="Point">
+              <ScalarProperty Name="Id" ColumnName="Id" />
+            </EndProperty>
+            <EndProperty Name="Hand">
+              <ScalarProperty Name="Id" ColumnName="HandId" />
+            </EndProperty>
+          </AssociationSetMapping>
+          <AssociationSetMapping Name="FK_Point_Participant" TypeName="SheepsheadModel.FK_Point_Participant" StoreEntitySet="Point">
+            <EndProperty Name="Point">
+              <ScalarProperty Name="Id" ColumnName="Id" />
+            </EndProperty>
+            <EndProperty Name="Participant">
+              <ScalarProperty Name="Id" ColumnName="ParticipantId" />
+            </EndProperty>
+          </AssociationSetMapping>
+          <AssociationSetMapping Name="FK_Hand_Partner" TypeName="SheepsheadModel.FK_Hand_Partner" StoreEntitySet="Hand">
+            <EndProperty Name="Hand">
+              <ScalarProperty Name="Id" ColumnName="Id" />
+            </EndProperty>
+            <EndProperty Name="Participant">
+              <ScalarProperty Name="Id" ColumnName="PartnerParticipantId" />
+            </EndProperty>
+            <Condition ColumnName="PartnerParticipantId" IsNull="false" />
+          </AssociationSetMapping>
+          <AssociationSetMapping Name="FK_Hand_Picker" TypeName="SheepsheadModel.FK_Hand_Picker" StoreEntitySet="Hand">
+            <EndProperty Name="Hand">
+              <ScalarProperty Name="Id" ColumnName="Id" />
+            </EndProperty>
+            <EndProperty Name="Participant">
+              <ScalarProperty Name="Id" ColumnName="PickerParticipantId" />
+            </EndProperty>
+            <Condition ColumnName="PickerParticipantId" IsNull="false" />
+          </AssociationSetMapping>
+          </EntityContainerMapping>
+</Mapping></edmx:Mappings>
   </edmx:Runtime>
   <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
   <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
@@ -510,7 +688,7 @@
         <DesignerProperty Name="ValidateOnBuild" Value="true" />
         <DesignerProperty Name="EnablePluralization" Value="False" />
         <DesignerProperty Name="IncludeForeignKeysInModel" Value="False" />
-        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="UseLegacyProvider" Value="False" />
         <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
       </DesignerInfoPropertySet>
     </Options>

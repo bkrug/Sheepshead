@@ -32,15 +32,19 @@ public partial class SheepsheadEntities : DbContext
     }
 
 
-    public virtual DbSet<Game> Games { get; set; }
+    public virtual DbSet<Game> Game { get; set; }
 
-    public virtual DbSet<Hand> Hands { get; set; }
+    public virtual DbSet<Hand> Hand { get; set; }
 
-    public virtual DbSet<Player> Players { get; set; }
+    public virtual DbSet<Participant> Participant { get; set; }
 
-    public virtual DbSet<Trick> Tricks { get; set; }
+    public virtual DbSet<Trick> Trick { get; set; }
 
-    public virtual DbSet<CardsPlayed> CardsPlayed { get; set; }
+    public virtual DbSet<TrickPlay> TrickPlay { get; set; }
+
+    public virtual DbSet<Coin> Coin { get; set; }
+
+    public virtual DbSet<Point> Point { get; set; }
 
 }
 

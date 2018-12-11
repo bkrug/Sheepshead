@@ -24,6 +24,10 @@ public partial class Hand
 
         this.Tricks = new HashSet<Trick>();
 
+        this.Coins = new HashSet<Coin>();
+
+        this.Points = new HashSet<Point>();
+
     }
 
 
@@ -35,29 +39,29 @@ public partial class Hand
 
     public string RefusingPick { get; set; }
 
-    public int StartingPlayerId { get; set; }
-
-    public Nullable<int> PickerId { get; set; }
-
-    public Nullable<int> PartnerId { get; set; }
-
     public string PartnerCard { get; set; }
-
-    public System.Guid GameId { get; set; }
 
 
 
     public virtual Game Game { get; set; }
 
-    public virtual Player Partner { get; set; }
-
-    public virtual Player Picker { get; set; }
-
-    public virtual Player StartingPlayer { get; set; }
+    public virtual Participant StartingParticipant { get; set; }
 
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
 
     public virtual ICollection<Trick> Tricks { get; set; }
+
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+
+    public virtual ICollection<Coin> Coins { get; set; }
+
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+
+    public virtual ICollection<Point> Points { get; set; }
+
+    public virtual Participant PartnerParticipant { get; set; }
+
+    public virtual Participant PickerParticipant { get; set; }
 
 }
 

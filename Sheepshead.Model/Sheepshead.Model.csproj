@@ -58,7 +58,7 @@
     <Compile Include="GameService.cs" />
     <Compile Include="GameStateDescriber.cs" />
     <Compile Include="Hand.cs" />
-    <Compile Include="Models\CardsPlayed.cs">
+    <Compile Include="Models\Coin.cs">
       <DependentUpon>SheepsheadModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Game.cs">
@@ -67,7 +67,10 @@
     <Compile Include="Models\Hand.cs">
       <DependentUpon>SheepsheadModel.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\Player.cs">
+    <Compile Include="Models\Participant.cs">
+      <DependentUpon>SheepsheadModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Point.cs">
       <DependentUpon>SheepsheadModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\SheepsheadModel.Context.cs">
@@ -86,6 +89,9 @@
       <DependentUpon>SheepsheadModel.edmx</DependentUpon>
     </Compile>
     <Compile Include="Models\Trick.cs">
+      <DependentUpon>SheepsheadModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\TrickPlay.cs">
       <DependentUpon>SheepsheadModel.tt</DependentUpon>
     </Compile>
     <Compile Include="PickPlayerOrderer.cs" />
@@ -128,6 +134,7 @@
       <DependentUpon>SheepsheadModel.edmx</DependentUpon>
       <LastGenOutput>SheepsheadModel.Context.cs</LastGenOutput>
     </Content>
+    <Content Include="Models\SheepsheadModel.edmx.sql" />
     <Content Include="Models\SheepsheadModel.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <DependentUpon>SheepsheadModel.edmx</DependentUpon>

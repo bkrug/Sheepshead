@@ -22,9 +22,9 @@ public partial class Game
     public Game()
     {
 
-        this.Hands = new HashSet<Hand>();
+        this.Hand = new HashSet<Hand>();
 
-        this.Players = new HashSet<Player>();
+        this.Participant = new HashSet<Participant>();
 
     }
 
@@ -39,11 +39,11 @@ public partial class Game
 
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
 
-    public virtual ICollection<Hand> Hands { get; set; }
+    public virtual ICollection<Hand> Hand { get; set; }
 
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
 
-    public virtual ICollection<Player> Players { get; set; }
+    public virtual ICollection<Participant> Participant { get; set; }
 
 }
 

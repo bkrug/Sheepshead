@@ -15,22 +15,18 @@ namespace Sheepshead.Model.Models
 using System;
     using System.Collections.Generic;
     
-public partial class CardsPlayed
+public partial class Coin
 {
 
-    public int PlayerId { get; set; }
+    public int Id { get; set; }
 
-    public int TrickId { get; set; }
-
-    public string Card { get; set; }
-
-    public int SortOrder { get; set; }
+    public int Count { get; set; }
 
 
 
-    public virtual Player Player { get; set; }
+    public virtual Participant Participant { get; set; }
 
-    public virtual Trick Trick { get; set; }
+    public virtual Hand Hand { get; set; }
 
 }
 
