@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using Sheepshead.Model.Players;
-using Sheepshead.Model;
 
 namespace Sheepshead.Model.Models
 {
