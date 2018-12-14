@@ -91,7 +91,7 @@ namespace Sheepshead.Tests
             var playersDifferentOrder = players.Skip(2).Union(players.Take(2)).ToList();
             var trickMock = new Mock<ITrick>();
             var handMock = new Mock<IHand>();
-            handMock.Setup(m => m.Tricks).Returns(new List<ITrick>() { trickMock.Object });
+            handMock.Setup(m => m.ITricks).Returns(new List<ITrick>() { trickMock.Object });
             trickMock.Setup(m => m.PlayersWithoutTurn).Returns(players);
             var gameStateDescriberMock = new Mock<IGameStateDescriber>();
             gameStateDescriberMock.Setup(m => m.CurrentTrick).Returns(trickMock.Object);

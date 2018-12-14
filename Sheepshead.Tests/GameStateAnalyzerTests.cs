@@ -542,7 +542,7 @@ namespace Sheepshead.Tests
                 trickMock2.Object,
                 trickMock3.Object
             };
-            trickMock3.Setup(m => m.IHand.Tricks).Returns(allTricks);
+            trickMock3.Setup(m => m.IHand.ITricks).Returns(allTricks);
 
             //Starting suite in the current trick is Spades.
             //All trump have been played or are in the current player's hand except jacks.
@@ -596,7 +596,7 @@ namespace Sheepshead.Tests
                 trickMock2.Object,
                 trickMock3.Object
             };
-            trickMock3.Setup(m => m.IHand.Tricks).Returns(allTricks);
+            trickMock3.Setup(m => m.IHand.ITricks).Returns(allTricks);
 
             //Starting suite in the current trick is Spades.
             //All trump have been played or are in the current player's hand.
@@ -650,7 +650,7 @@ namespace Sheepshead.Tests
                 trickMock2.Object,
                 trickMock3.Object
             };
-            trickMock3.Setup(m => m.IHand.Tricks).Returns(allTricks);
+            trickMock3.Setup(m => m.IHand.ITricks).Returns(allTricks);
 
             //Starting suite in the current trick is Spades.
             //All trump have been played or are in the current player's hand.
@@ -708,7 +708,7 @@ namespace Sheepshead.Tests
                 trickMock2.Object,
                 trickMock3.Object
             };
-            trickMock3.Setup(m => m.IHand.Tricks).Returns(allTricks);
+            trickMock3.Setup(m => m.IHand.ITricks).Returns(allTricks);
             trickMock3
                 .Setup(m => m.IsLegalAddition(It.IsAny<SheepCard>(), It.IsAny<IPlayer>()))
                 .Returns((SheepCard c, IPlayer p) => c == SheepCard.KING_SPADES);
@@ -765,7 +765,7 @@ namespace Sheepshead.Tests
                 trickMock2.Object,
                 trickMock3.Object
             };
-            trickMock3.Setup(m => m.IHand.Tricks).Returns(allTricks);
+            trickMock3.Setup(m => m.IHand.ITricks).Returns(allTricks);
             trickMock3.Setup(m => m.IsLegalAddition(It.IsAny<SheepCard>(), It.IsAny<IPlayer>())).Returns(true);
 
             //Starting suite in the current trick is Spades.
@@ -820,7 +820,7 @@ namespace Sheepshead.Tests
                 trickMock2.Object,
                 trickMock3.Object
             };
-            trickMock3.Setup(m => m.IHand.Tricks).Returns(allTricks);
+            trickMock3.Setup(m => m.IHand.ITricks).Returns(allTricks);
             trickMock3
                 .Setup(m => m.IsLegalAddition(It.IsAny<SheepCard>(), It.IsAny<IPlayer>()))
                 .Returns((SheepCard c, IPlayer p) => c == SheepCard.KING_SPADES || c == SheepCard.ACE_SPADES);

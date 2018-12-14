@@ -53,6 +53,7 @@
   <ItemGroup>
     <Compile Include="BaseRepository.cs" />
     <Compile Include="Card.cs" />
+    <Compile Include="EntityBoundList.cs" />
     <Compile Include="Game.cs" />
     <Compile Include="GameRepository.cs" />
     <Compile Include="GameService.cs" />
@@ -114,6 +115,7 @@
     <Compile Include="StartingPlayerCalculator.cs" />
     <Compile Include="Trick.cs" />
     <Compile Include="TurnState.cs" />
+    <Compile Include="TypeExtenders.cs" />
     <Compile Include="Wrappers\RandomWrapper.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -40,7 +40,7 @@ namespace Sheepshead.Model.Players
 
         public bool HaveIAlreadyWon(IPlayer thisPlayer, ITrick trick)
         {
-            return trick.IHand.Tricks
+            return trick.IHand.ITricks
                 .Where(t => t.CardsPlayed.Count == trick.IHand.IGame.PlayerCount)
                 .Any(t => t.Winner().Player == thisPlayer);
         }

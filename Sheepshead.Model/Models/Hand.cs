@@ -35,7 +35,7 @@ public partial class Hand
 
     public string RefusingPick { get; set; }
 
-    public string PartnerCard { get; set; }
+    public string PartnerCardString { get; set; }
 
     public string BlindCards { get; set; }
 

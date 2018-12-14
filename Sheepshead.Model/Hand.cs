@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Sheepshead.Model.Models;
 using Sheepshead.Model.Players;
 using Sheepshead.Model.Wrappers;
 
-namespace Sheepshead.Model
+namespace Sheepshead.Model.Models
 {
     public partial class Hand : IHand
     {
@@ -13,15 +12,15 @@ namespace Sheepshead.Model
         public IPlayer Partner { get; private set; }
         public SheepCard? PartnerCard { get; private set; }
         private List<ITrick> _tricks = new List<ITrick>();
-        public List<ITrick> Tricks { get { return _tricks.ToList(); } }
+        public List<ITrick> ITricks { get { return _tricks.ToList(); } }
         public event EventHandler<EventArgs> OnHandEnd;
         public int PlayerCount => IGame.PlayerCount;
         public List<IPlayer> Players => IGame.Players;
-        public IGame IGame { get; private set; }
+        public IGame IGame { get; protected set; }
         public List<SheepCard> Blinds { get; private set; } = new List<SheepCard>();
         public List<SheepCard> Buried { get; set; } = new List<SheepCard>();
         public List<IPlayer> PlayersRefusingPick { get; } = new List<IPlayer>();
-        public IPlayer StartingPlayer { get; private set; }
+        public IPlayer StartingPlayer { get; protected set; }
         public IRandomWrapper _random { get; private set; }
         public bool PickPhaseComplete { get; private set; }
         public List<IPlayer> PlayersInTurnOrder => PickPlayerOrderer.PlayersInTurnOrder(Players, StartingPlayer);
@@ -116,7 +115,7 @@ namespace Sheepshead.Model
             var index = IGame.Hands.IndexOf(this);
             var indexOfPlayer = (index == 0)
                 ? _random.Next(IGame.PlayerCount)
-                : IGame.Players.IndexOf(IGame.Hands[index - 1].StartingPlayer) + 1;
+                : IGame.Players.IndexOf(IGame.Hands.ElementAt(index - 1).StartingPlayer) + 1;
             if (indexOfPlayer == IGame.PlayerCount) indexOfPlayer = 0;
             StartingPlayer = IGame.Players[indexOfPlayer];
         }
@@ -162,7 +161,7 @@ namespace Sheepshead.Model
                     return null;
                 if (Partner != null)
                     return Partner;
-                var potentialPartnerGroups = Tricks
+                var potentialPartnerGroups = ITricks
                     .Where(t =>
                         t.CardsPlayed.First().Key != Picker
                         && CardUtil.GetSuit(t.CardsPlayed.First().Value) == Suit.TRUMP
@@ -189,7 +188,7 @@ namespace Sheepshead.Model
         private HandScores _scores = null;
         public HandScores Scores()
         {
-            if (Tricks.Count == IGame.TrickCount && Tricks.Last().IsComplete())
+            if (ITricks.Count == IGame.TrickCount && ITricks.Last().IsComplete())
                 return _scores = (_scores ?? new ScoreCalculator(this).InternalScores());
             return null;
         }
@@ -225,7 +224,7 @@ namespace Sheepshead.Model
         List<IPlayer> PlayersRefusingPick { get; }
         List<IPlayer> PlayersWithoutPickTurn { get; }
         IPlayerOrderer PickPlayerOrderer { get; }
-        List<ITrick> Tricks { get; }
+        List<ITrick> ITricks { get; }
         IPlayer PresumedParnter { get; }
         bool MustRedeal { get; }
         bool PickPhaseComplete { get; }

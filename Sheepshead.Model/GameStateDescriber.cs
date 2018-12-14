@@ -7,7 +7,7 @@ namespace Sheepshead.Model
 {
     public interface IGameStateDescriber
     {
-        List<IHand> Hands { get; }
+        IEnumerable<IHand> Hands { get; }
         IHand CurrentHand { get; }
         ITrick CurrentTrick { get; }
         TurnType GetTurnType();
@@ -16,13 +16,20 @@ namespace Sheepshead.Model
 
     public class GameStateDescriber : IGameStateDescriber
     {
-        public List<IHand> Hands { get; } = new List<IHand>();
+        private IGame _game;
+
+        public GameStateDescriber(IGame game)
+        {
+            _game = game;
+        }
+
+        public IEnumerable<IHand> Hands => _game.Hands.OfType<IHand>();
 
         public IHand CurrentHand => LastHandIsComplete() ? null : Hands.Last();
 
         public ITrick CurrentTrick {
             get {
-                var trick = Hands.LastOrDefault()?.Tricks?.LastOrDefault();
+                var trick = Hands.LastOrDefault()?.ITricks?.LastOrDefault();
                 if (trick == null || trick.IsComplete() && !Hands.LastOrDefault().IsComplete())
                     trick = new Trick(Hands.LastOrDefault());
                 return trick;

@@ -80,7 +80,7 @@ namespace Sheepshead.Model.Players
 
         private static IEnumerable<SheepCard> GetUnrevealedCards(IPlayer thisPlayer, ITrick trick)
         {
-            var revealedAndPlayersOwnCards = trick.IHand.Tricks.SelectMany(t => t.CardsPlayed.Values).Union(thisPlayer.Cards);
+            var revealedAndPlayersOwnCards = trick.IHand.ITricks.SelectMany(t => t.CardsPlayed.Values).Union(thisPlayer.Cards);
             var allCards = Enum.GetValues(typeof(SheepCard)).OfType<SheepCard>();
             var unrevealedCards = allCards.Except(revealedAndPlayersOwnCards);
             return unrevealedCards;

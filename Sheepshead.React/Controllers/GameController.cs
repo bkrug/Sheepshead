@@ -33,7 +33,7 @@ namespace Sheepshead.React.Controllers
             {
                 points = scores?.Points?.ToDictionary(k => k.Key.Name, k => k.Value),
                 coins = scores?.Coins?.ToDictionary(k => k.Key.Name, k => k.Value),
-                tricks = hand.Tricks
+                tricks = hand.ITricks
                              .Select(trick =>
                                 new KeyValuePair<string, List<CardSummary>> (
                                     trick.Winner().Player.Name,
@@ -117,7 +117,7 @@ namespace Sheepshead.React.Controllers
                 trickWinner.PartnerCard,
                 trickWinner.TrickWinners,
                 leastersHand = game.Hands.LastOrDefault(d => d.PickPhaseComplete)?.Leasters ?? false,
-                tricks = hand?.Tricks
+                tricks = hand?.ITricks
                              ?.Select(trick =>
                                 new KeyValuePair<string, List<CardSummary>>(
                                     trick.Winner()?.Player?.Name ?? "",
@@ -133,7 +133,7 @@ namespace Sheepshead.React.Controllers
             IGame game = GetGame(gameId);
             var mustRedeal = game.Hands.LastOrDefault()?.MustRedeal ?? false;
             if (game.TurnState.TurnType == TurnType.BeginHand || mustRedeal)
-                new Model.Hand(game);
+                new Hand(game);
             var playState = game.PlayState(Guid.Parse(playerId));
             return Json(playState);
         }

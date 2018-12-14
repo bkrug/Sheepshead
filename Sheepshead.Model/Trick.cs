@@ -74,8 +74,8 @@ namespace Sheepshead.Model.Models
         {
             var suitOfPartnerCard = CardUtil.GetSuit(IHand.PartnerCard.Value);
             //Once suit of partner card is lead, picker and partner may lead with that suit.
-            if (IHand.Tricks != null
-                && IHand.Tricks.Any(t => t != this && t.CardsPlayed.Any() && CardUtil.GetSuit(t.CardsPlayed.First().Value) == suitOfPartnerCard))
+            if (IHand.ITricks != null
+                && IHand.ITricks.Any(t => t != this && t.CardsPlayed.Any() && CardUtil.GetSuit(t.CardsPlayed.First().Value) == suitOfPartnerCard))
                 return true;
             //Picker cannot lead with last card of Called Ace's suit.
             if (player == IHand.Picker
@@ -155,7 +155,7 @@ namespace Sheepshead.Model.Models
 
         public int IndexInHand
         {
-            get { return IHand.Tricks.IndexOf(this); }
+            get { return IHand.ITricks.IndexOf(this); }
         }
 
         public SheepCard? PartnerCard { get { return IHand.PartnerCard; } }

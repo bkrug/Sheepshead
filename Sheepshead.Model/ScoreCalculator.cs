@@ -13,8 +13,8 @@ namespace Sheepshead.Model
         bool Leasters => _hand.Leasters;
         IPlayer Picker => _hand.Picker;
         IPlayer Partner => _hand.Partner;
-        List<ITrick> _tricks => _hand.Tricks;
-        List<ITrick> Tricks => _hand.Tricks;
+        List<ITrick> _tricks => _hand.ITricks;
+        List<ITrick> Tricks => _hand.ITricks;
         SheepCard? PartnerCard => _hand.PartnerCard;
 
         public ScoreCalculator(IHand hand)

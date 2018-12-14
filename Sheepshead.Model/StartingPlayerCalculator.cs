@@ -12,10 +12,10 @@ namespace Sheepshead.Model
     {
         public IPlayer GetStartingPlayer(IHand hand, ITrick currentTrick)
         {
-            var index = hand.Tricks.IndexOf(currentTrick);
+            var index = hand.ITricks.IndexOf(currentTrick);
             return (index == 0)
                 ? hand.StartingPlayer
-                : hand.Tricks[index - 1].Winner().Player;
+                : hand.ITricks[index - 1].Winner().Player;
         }
     }
 }

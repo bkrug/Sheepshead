@@ -6,7 +6,6 @@ using Moq;
 using Sheepshead.Model;
 using Sheepshead.Model.Models;
 using Sheepshead.Model.Players;
-using Hand = Sheepshead.Model.Hand;
 
 namespace Sheepshead.Tests
 {
@@ -67,7 +66,7 @@ namespace Sheepshead.Tests
             handMock.Setup(d => d.Buried).Returns(new List<SheepCard>() { SheepCard.ACE_CLUBS, SheepCard.N10_SPADES });
             handMock.Setup(m => m.Picker).Returns(pickerMock.Object);
             handMock.Setup(m => m.Partner).Returns(partnerMock.Object);
-            handMock.Setup(m => m.Tricks).Returns(new List<ITrick>()
+            handMock.Setup(m => m.ITricks).Returns(new List<ITrick>()
             {
                 MockTrickWinners(pickerMock, 21),
                 MockTrickWinners(partnerMock, 12),
@@ -110,7 +109,7 @@ namespace Sheepshead.Tests
             handMock.Setup(d => d.Buried).Returns(new List<SheepCard>() { SheepCard.KING_CLUBS, SheepCard.ACE_SPADES });
             handMock.Setup(m => m.Picker).Returns(pickerMock.Object);
             handMock.Setup(m => m.Partner).Returns(partnerMock.Object);
-            handMock.Setup(m => m.Tricks).Returns(new List<ITrick>()
+            handMock.Setup(m => m.ITricks).Returns(new List<ITrick>()
             {
                 MockTrickWinners(pickerMock, 21),
                 MockTrickWinners(partnerMock, 23),
@@ -153,7 +152,7 @@ namespace Sheepshead.Tests
             handMock.Setup(d => d.Buried).Returns(new List<SheepCard>() { SheepCard.KING_SPADES, SheepCard.N10_HEARTS });
             handMock.Setup(m => m.Picker).Returns(pickerMock.Object);
             handMock.Setup(m => m.Partner).Returns(partnerMock.Object);
-            handMock.Setup(m => m.Tricks).Returns(new List<ITrick>()
+            handMock.Setup(m => m.ITricks).Returns(new List<ITrick>()
             {
                 MockTrickWinners(pickerMock, 21),
                 MockTrickWinners(partnerMock, 23),
@@ -196,7 +195,7 @@ namespace Sheepshead.Tests
             handMock.Setup(d => d.Buried).Returns(new List<SheepCard>() { SheepCard.KING_CLUBS, SheepCard.ACE_HEARTS });
             handMock.Setup(m => m.Picker).Returns(pickerMock.Object);
             handMock.Setup(m => m.Partner).Returns(partnerMock.Object);
-            handMock.Setup(m => m.Tricks).Returns(new List<ITrick>()
+            handMock.Setup(m => m.ITricks).Returns(new List<ITrick>()
             {
                 MockTrickWinners(pickerMock, 20),
                 MockTrickWinners(pickerMock, 15),
@@ -239,7 +238,7 @@ namespace Sheepshead.Tests
             handMock.Setup(d => d.Buried).Returns(new List<SheepCard>() { SheepCard.QUEEN_HEARTS, SheepCard.JACK_DIAMONDS });
             handMock.Setup(m => m.Picker).Returns(pickerMock.Object);
             handMock.Setup(m => m.Partner).Returns(partnerMock.Object);
-            handMock.Setup(m => m.Tricks).Returns(new List<ITrick>()
+            handMock.Setup(m => m.ITricks).Returns(new List<ITrick>()
             {
                 MockTrickWinners(pickerMock, 10),
                 MockTrickWinners(partnerMock, 15),
@@ -282,7 +281,7 @@ namespace Sheepshead.Tests
             handMock.Setup(d => d.Buried).Returns(new List<SheepCard>() { SheepCard.ACE_SPADES, SheepCard.ACE_HEARTS });
             handMock.Setup(m => m.Picker).Returns(pickerMock.Object);
             handMock.Setup(m => m.Partner).Returns(partnerMock.Object);
-            handMock.Setup(m => m.Tricks).Returns(new List<ITrick>()
+            handMock.Setup(m => m.ITricks).Returns(new List<ITrick>()
             {
                 MockTrickWinners(player1Mock, 10),
                 MockTrickWinners(player1Mock, 6),
@@ -324,7 +323,7 @@ namespace Sheepshead.Tests
             handMock.Setup(d => d.Players).Returns(new List<IPlayer>() { player4Mock.Object, player1Mock.Object, pickerMock.Object, player2Mock.Object, player3Mock.Object });
             handMock.Setup(d => d.Buried).Returns(new List<SheepCard>() { SheepCard.ACE_CLUBS, SheepCard.N10_SPADES });
             handMock.Setup(m => m.Picker).Returns(pickerMock.Object);
-            handMock.Setup(m => m.Tricks).Returns(new List<ITrick>()
+            handMock.Setup(m => m.ITricks).Returns(new List<ITrick>()
             {
                 MockTrickWinners(pickerMock, 21),
                 MockTrickWinners(pickerMock, 12),
@@ -366,7 +365,7 @@ namespace Sheepshead.Tests
             handMock.Setup(d => d.Players).Returns(new List<IPlayer>() { player4Mock.Object, player1Mock.Object, pickerMock.Object, player2Mock.Object, player3Mock.Object });
             handMock.Setup(d => d.Buried).Returns(new List<SheepCard>() { SheepCard.ACE_CLUBS, SheepCard.N10_SPADES });
             handMock.Setup(m => m.Picker).Returns(pickerMock.Object);
-            handMock.Setup(m => m.Tricks).Returns(new List<ITrick>()
+            handMock.Setup(m => m.ITricks).Returns(new List<ITrick>()
             {
                 MockTrickWinners(player1Mock, 12),
                 MockTrickWinners(player1Mock, 17),
@@ -405,7 +404,7 @@ namespace Sheepshead.Tests
             handMock.Setup(d => d.Players).Returns(new List<IPlayer>() { player1Mock.Object, pickerMock.Object, player2Mock.Object });
             handMock.Setup(d => d.Buried).Returns(new List<SheepCard>() { SheepCard.ACE_CLUBS, SheepCard.ACE_DIAMONDS });
             handMock.Setup(m => m.Picker).Returns(pickerMock.Object);
-            handMock.Setup(m => m.Tricks).Returns(new List<ITrick>()
+            handMock.Setup(m => m.ITricks).Returns(new List<ITrick>()
             {
                 MockTrickWinners(player1Mock, 15),
                 MockTrickWinners(player1Mock, 16),
@@ -444,7 +443,7 @@ namespace Sheepshead.Tests
             handMock.Setup(d => d.Players).Returns(new List<IPlayer>() { player1Mock.Object, pickerMock.Object, player2Mock.Object });
             handMock.Setup(d => d.Buried).Returns(new List<SheepCard>() { SheepCard.ACE_CLUBS, SheepCard.KING_SPADES });
             handMock.Setup(m => m.Picker).Returns(pickerMock.Object);
-            handMock.Setup(m => m.Tricks).Returns(new List<ITrick>()
+            handMock.Setup(m => m.ITricks).Returns(new List<ITrick>()
             {
                 MockTrickWinners(pickerMock, 11),
                 MockTrickWinners(pickerMock, 22),
@@ -483,7 +482,7 @@ namespace Sheepshead.Tests
             handMock.Setup(d => d.Players).Returns(new List<IPlayer>() { player1Mock.Object, pickerMock.Object, player2Mock.Object });
             handMock.Setup(d => d.Buried).Returns(new List<SheepCard>() { SheepCard.ACE_CLUBS, SheepCard.KING_SPADES });
             handMock.Setup(m => m.Picker).Returns(pickerMock.Object);
-            handMock.Setup(m => m.Tricks).Returns(new List<ITrick>()
+            handMock.Setup(m => m.ITricks).Returns(new List<ITrick>()
             {
                 MockTrickWinners(pickerMock, 11),
                 MockTrickWinners(pickerMock, 22),
@@ -522,7 +521,7 @@ namespace Sheepshead.Tests
             handMock.Setup(d => d.Players).Returns(new List<IPlayer>() { player1Mock.Object, pickerMock.Object, player2Mock.Object });
             handMock.Setup(d => d.Buried).Returns(new List<SheepCard>() { SheepCard.ACE_CLUBS, SheepCard.KING_SPADES });
             handMock.Setup(m => m.Picker).Returns(pickerMock.Object);
-            handMock.Setup(m => m.Tricks).Returns(new List<ITrick>()
+            handMock.Setup(m => m.ITricks).Returns(new List<ITrick>()
             {
                 MockTrickWinners(pickerMock, 11),
                 MockTrickWinners(pickerMock, 22),
@@ -561,7 +560,7 @@ namespace Sheepshead.Tests
             handMock.Setup(d => d.PlayerCount).Returns(5);
             handMock.Setup(d => d.Players).Returns(new List<IPlayer>() { player4Mock.Object, player1Mock.Object, player5Mock.Object, player2Mock.Object, player3Mock.Object });
             handMock.Setup(m => m.Leasters).Returns(true);
-            handMock.Setup(m => m.Tricks).Returns(new List<ITrick>()
+            handMock.Setup(m => m.ITricks).Returns(new List<ITrick>()
             {
                 MockTrickWinners(player1Mock, 12),
                 MockTrickWinners(player1Mock, 17),
@@ -600,7 +599,7 @@ namespace Sheepshead.Tests
             handMock.Setup(d => d.PlayerCount).Returns(5);
             handMock.Setup(d => d.Players).Returns(new List<IPlayer>() { player4Mock.Object, player1Mock.Object, player5Mock.Object, player2Mock.Object, player3Mock.Object });
             handMock.Setup(m => m.Leasters).Returns(true);
-            handMock.Setup(m => m.Tricks).Returns(new List<ITrick>()
+            handMock.Setup(m => m.ITricks).Returns(new List<ITrick>()
             {
                 MockTrickWinners(player2Mock, 12),
                 MockTrickWinners(player2Mock, 17),
@@ -637,7 +636,7 @@ namespace Sheepshead.Tests
             handMock.Setup(d => d.PlayerCount).Returns(3);
             handMock.Setup(d => d.Players).Returns(new List<IPlayer>() { player1Mock.Object, player3Mock.Object, player2Mock.Object });
             handMock.Setup(m => m.Leasters).Returns(true);
-            handMock.Setup(m => m.Tricks).Returns(new List<ITrick>()
+            handMock.Setup(m => m.ITricks).Returns(new List<ITrick>()
             {
                 MockTrickWinners(player1Mock, 11),
                 MockTrickWinners(player1Mock, 22),
@@ -670,10 +669,10 @@ namespace Sheepshead.Tests
             var gameMock = new Mock<IGame>();
             gameMock.Setup(m => m.PartnerMethodEnum).Returns(PartnerMethod.JackOfDiamonds);
             gameMock.Setup(m => m.PlayerCount).Returns(5);
-            gameMock.Setup(m => m.Hands).Returns(new List<IHand>());
+            gameMock.Setup(m => m.Hands).Returns(new List<Hand>());
             gameMock.Setup(m => m.LastHandIsComplete()).Returns(true);
             gameMock.Setup(m => m.LeastersEnabled).Returns(true);
-            var hand = new Model.Hand(gameMock.Object, null);
+            var hand = new Hand(gameMock.Object, null);
 
             var mockCompleteTrick = new Mock<ITrick>();
             var mockIncompleteTrick = new Mock<ITrick>();
@@ -778,7 +777,7 @@ namespace Sheepshead.Tests
         public void Hand_Leasters()
         {
             var gameMock = new Mock<IGame>();
-            gameMock.Setup(m => m.Hands).Returns(new List<IHand>());
+            gameMock.Setup(m => m.Hands).Returns(new List<Hand>());
             gameMock.Setup(m => m.LastHandIsComplete()).Returns(true);
             var hand = new Hand(gameMock.Object, null);
             hand.SetPicker(null, new List<SheepCard>());
@@ -798,7 +797,7 @@ namespace Sheepshead.Tests
         {
             var gameMock = new Mock<IGame>();
             gameMock.Setup(m => m.PlayerCount).Returns(5);
-            gameMock.Setup(m => m.Hands).Returns(new List<IHand>());
+            gameMock.Setup(m => m.Hands).Returns(new List<Hand>());
             gameMock.Setup(m => m.LastHandIsComplete()).Returns(true);
             var hand = new Hand(gameMock.Object, null);
             var endEventCalled = false;
@@ -824,7 +823,7 @@ namespace Sheepshead.Tests
             gameMock.Setup(m => m.PartnerMethodEnum).Returns(PartnerMethod.JackOfDiamonds);
             gameMock.Setup(d => d.PlayerCount).Returns(5);
             gameMock.Setup(m => m.LastHandIsComplete()).Returns(true);
-            gameMock.Setup(m => m.Hands).Returns(new List<IHand>());
+            gameMock.Setup(m => m.Hands).Returns(new List<Hand>());
             var player1 = new Mock<IPlayer>();
             var player2 = new Mock<IPlayer>();
             var pickerMock = new Mock<IPlayer>();
@@ -871,7 +870,7 @@ namespace Sheepshead.Tests
             gameMock.Setup(m => m.PartnerMethodEnum).Returns(PartnerMethod.JackOfDiamonds);
             gameMock.Setup(d => d.PlayerCount).Returns(5);
             gameMock.Setup(m => m.LastHandIsComplete()).Returns(true);
-            gameMock.Setup(m => m.Hands).Returns(new List<IHand>());
+            gameMock.Setup(m => m.Hands).Returns(new List<Hand>());
             var player1 = new Mock<IPlayer>();
             var player2 = new Mock<IPlayer>();
             var pickerMock = new Mock<IPlayer>();

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Sheepshead.Model.Models;
+using System;
 using System.Collections.Generic;
 
 namespace Sheepshead.Model

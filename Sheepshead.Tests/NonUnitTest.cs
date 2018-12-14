@@ -8,7 +8,6 @@ using System.IO;
 using Moq;
 using System.Threading;
 using Sheepshead.Model.Models;
-using Hand = Sheepshead.Model.Hand;
 
 namespace Sheepshead.Tests
 {

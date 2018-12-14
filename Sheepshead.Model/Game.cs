@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Sheepshead.Model.Players;
@@ -14,7 +15,7 @@ namespace Sheepshead.Model.Models
         public int HumanPlayerCount => Players.Count(p => p is IHumanPlayer);
         public List<IPlayer> Players { get; }
         public List<IHumanPlayer> UnassignedPlayers => Players.OfType<IHumanPlayer>().Where(p => !p.AssignedToClient).ToList();
-        public List<IHand> Hands => _gameStateDesciber.Hands;
+        //public IList<IHand> IHands => new EntityBoundList<IHand, Hand>(Hands);
         public IRandomWrapper _random { get; private set; }
         private IGameStateDescriber _gameStateDesciber;
         public TurnType TurnType => _gameStateDesciber.GetTurnType();
@@ -28,6 +29,7 @@ namespace Sheepshead.Model.Models
 
         public Game(List<IPlayer> players, PartnerMethod partnerMethod, bool enableLeasters) : this(players, partnerMethod, null, null)
         {
+            Hands = new List<Hand>();
             LeastersEnabled = enableLeasters;
             Id = Guid.NewGuid();
         }
@@ -38,10 +40,11 @@ namespace Sheepshead.Model.Models
         /// </summary>
         public Game(List<IPlayer> players, PartnerMethod partnerMethod, IRandomWrapper random, IGameStateDescriber gameStateDescriber)
         {
+            Hands = new List<Hand>();
             Players = players;
             PartnerMethodEnum = partnerMethod;
             _random = random ?? new RandomWrapper();
-            _gameStateDesciber = gameStateDescriber ?? new GameStateDescriber();
+            _gameStateDesciber = gameStateDescriber ?? new GameStateDescriber(this);
             Id = Guid.NewGuid();
         }
 
@@ -143,7 +146,7 @@ namespace Sheepshead.Model.Models
                 turnType == TurnType.PlayTrick 
                 ? currentTrick?.PlayersWithoutTurn?.FirstOrDefault()
                 : null;
-            var tricks = Hands.LastOrDefault(d => d.PickPhaseComplete)?.Tricks ?? new List<ITrick>();
+            var tricks = Hands.LastOrDefault(d => d.PickPhaseComplete)?.ITricks ?? new List<ITrick>();
             var humanPlayer = currentPlayer as IHumanPlayer;
             var requestingPlayer = Players.OfType<IHumanPlayer>().SingleOrDefault(p => p.Id == requestingPlayerId);
             return new PlayState
@@ -211,7 +214,7 @@ namespace Sheepshead.Model.Models
         public TrickResults GetTrickWinners()
         {
             var currentDeck = Hands.LastOrDefault(d => d.PickPhaseComplete);
-            var tricks = currentDeck?.Tricks ?? new List<ITrick>();
+            var tricks = currentDeck?.ITricks ?? new List<ITrick>();
             var winners = tricks.Where(t => t.PlayersWithoutTurn.Count == 0).Select(t => t?.Winner()?.Player?.Name).ToList();
             return new TrickResults()
             {
@@ -297,7 +300,7 @@ namespace Sheepshead.Model.Models
         bool LeastersEnabled { get; }
         List<IPlayer> Players { get; }
         List<IHumanPlayer> UnassignedPlayers { get; }
-        List<IHand> Hands { get; }
+        ICollection<Hand> Hands { get; }
         TurnType TurnType { get; }
         TurnState TurnState { get; }
         PartnerMethod PartnerMethodEnum { get; }
