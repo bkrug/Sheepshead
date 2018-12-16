@@ -367,7 +367,7 @@
           <Property Name="LeastersEnabled" Type="Boolean" Nullable="false" />
           <Property Name="PartnerMethod" Type="String" Nullable="false" MaxLength="1" FixedLength="true" Unicode="false" />
           <NavigationProperty Name="Hands" Relationship="SheepsheadModel.FK_Hand_Game" FromRole="Game" ToRole="Hand" />
-          <NavigationProperty Name="Participant" Relationship="SheepsheadModel.FK_Player_Game" FromRole="Game" ToRole="Participant" />
+          <NavigationProperty Name="Participants" Relationship="SheepsheadModel.FK_Player_Game" FromRole="Game" ToRole="Participant" />
         </EntityType>
         <EntityType Name="Hand">
           <Key>

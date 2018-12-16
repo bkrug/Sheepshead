@@ -19,7 +19,7 @@ namespace Sheepshead.Model.Models
         public int PlayerCount => IGame.PlayerCount;
         public List<IPlayer> Players => IGame.Players;
         public IGame IGame { get; protected set; }
-        public List<SheepCard> Blinds { get; private set; } = new List<SheepCard>();
+        public IReadOnlyList<SheepCard> Blinds => (BlindCards ?? string.Empty).Split(';').Where(bc => !string.IsNullOrEmpty(bc)).Select(bc => CardUtil.GetCardFromAbbreviation(bc)).ToList();
         public List<SheepCard> Buried { get; set; } = new List<SheepCard>();
         public List<IPlayer> PlayersRefusingPick { get; } = new List<IPlayer>();
         public IPlayer StartingPlayer { get; protected set; }
@@ -75,7 +75,7 @@ namespace Sheepshead.Model.Models
 
         private void DealCards(Queue<SheepCard> cards)
         {
-            Blinds = new List<SheepCard>();
+            BlindCards = string.Empty;
             foreach (var player in IGame.Players)
                 player.Cards.RemoveAll(c => true);
             switch (IGame.PlayerCount)
@@ -101,7 +101,10 @@ namespace Sheepshead.Model.Models
 
         private void DealOneBlind(Queue<SheepCard> cards)
         {
-            Blinds.Add(cards.Dequeue());
+            var newBlind = cards.Dequeue();
+            var blindList = Blinds.ToList();
+            blindList.Add(newBlind);
+            BlindCards = String.Join(";", blindList.Select(bc => CardUtil.GetAbbreviation(bc)));
         }
 
         private void DealTwoCardsPerPlayer(Queue<SheepCard> cards)
@@ -223,7 +226,7 @@ namespace Sheepshead.Model.Models
         List<IPlayer> Players { get; }
         IPlayer StartingPlayer { get; }
         bool Leasters { get; }
-        List<SheepCard> Blinds { get; }
+        IReadOnlyList<SheepCard> Blinds { get; }
         List<SheepCard> Buried { get; set; }
         List<IPlayer> PlayersRefusingPick { get; }
         List<IPlayer> PlayersWithoutPickTurn { get; }

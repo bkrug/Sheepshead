@@ -24,7 +24,7 @@ public partial class Game
 
         this.Hands = new HashSet<Hand>();
 
-        this.Participant = new HashSet<Participant>();
+        this.Participants = new HashSet<Participant>();
 
     }
 
@@ -43,7 +43,7 @@ public partial class Game
 
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
 
-    public virtual ICollection<Participant> Participant { get; set; }
+    public virtual ICollection<Participant> Participants { get; set; }
 
 }
 
