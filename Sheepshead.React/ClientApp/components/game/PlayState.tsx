@@ -10,6 +10,7 @@
 }
 
 export class PickState {
+    pickPhaseHasStarted: boolean;
     turnType: string;
     currentTurn: string;
     requestingPlayerTurn: boolean;

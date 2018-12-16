@@ -166,27 +166,28 @@ namespace Sheepshead.Model.Models
         public PickState PickState(Guid requestingPlayerId)
         {
             var turnType = TurnType;
-            var currentDeck = Hands.LastOrDefault();
+            var currentHand = Hands.LastOrDefault();
             var currentPlayer = 
                 turnType == TurnType.Pick 
-                ? currentDeck?.PlayersWithoutPickTurn?.FirstOrDefault() 
+                ? currentHand?.PlayersWithoutPickTurn?.FirstOrDefault() 
                 : null;
             var humanPlayer = currentPlayer as IHumanPlayer;
             var requestingPlayer = Players.OfType<IHumanPlayer>().SingleOrDefault(p => p.Id == requestingPlayerId);
             return new PickState
             {
+                PickPhaseHasStarted = !currentHand.IsComplete(),
                 TurnType = turnType.ToString(),
                 RequestingPlayerTurn = humanPlayer?.Id == requestingPlayerId,
                 PickChoices =
-                    currentDeck?.PlayersRefusingPick.Select(p => new Tuple<string, bool>(p.Name, false))
-                    .Union(new List<Tuple<string, bool>> { new Tuple<string, bool>(currentDeck?.Picker?.Name, true) })
+                    currentHand?.PlayersRefusingPick.Select(p => new Tuple<string, bool>(p.Name, false))
+                    .Union(new List<Tuple<string, bool>> { new Tuple<string, bool>(currentHand?.Picker?.Name, true) })
                     .Where(p => p.Item1 != null)
                     .ToList()
                     ?? new List<Tuple<string, bool>>(),
                 PlayerCards = requestingPlayer?.Cards?.Select(c => CardUtil.GetCardSummary(c))?.ToList(),
                 HumanTurn = humanPlayer != null,
                 CurrentTurn = currentPlayer?.Name,
-                MustRedeal = currentDeck?.MustRedeal ?? false
+                MustRedeal = currentHand?.MustRedeal ?? false
             };
         }
 
