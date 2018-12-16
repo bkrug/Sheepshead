@@ -233,9 +233,11 @@ namespace Sheepshead.Model
             return _filenamesByCard.First(l => l.Value == filename).Key;
         }
 
-        public static SheepCard GetCardFromAbbreviation(string abbr)
+        public static SheepCard? GetCardFromAbbreviation(string abbr)
         {
-            return _abbreviationsByCard.First(l => l.Value == abbr).Key;
+            if (_abbreviationsByCard.Any(l => l.Value == abbr))
+                return _abbreviationsByCard.First(l => l.Value == abbr).Key;
+            return null;
         }
 
         public static string ToAbbr(SheepCard card)
@@ -243,6 +245,19 @@ namespace Sheepshead.Model
             var cardType = GetFace(card);
             var suit = GetStandardSuit(card);
             return CardTypeLetter[cardType] + SuiteLetter[suit];
+        }
+
+        public static string CardListToString(List<SheepCard> cardList)
+        {
+            return String.Join(";", cardList.Select(bc => GetAbbreviation(bc)));
+        }
+
+        public static List<SheepCard> StringToCardList(string cards)
+        {
+            return (cards ?? string.Empty).Split(';')
+                .Where(c => !string.IsNullOrEmpty(c))
+                .Select(c => GetCardFromAbbreviation(c).Value)
+                .ToList();
         }
 
         public static CardSummary GetCardSummary(SheepCard card, bool? legalMove = null)

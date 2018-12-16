@@ -19,8 +19,8 @@ namespace Sheepshead.Model.Models
         public int PlayerCount => IGame.PlayerCount;
         public List<IPlayer> Players => IGame.Players;
         public IGame IGame { get; protected set; }
-        public IReadOnlyList<SheepCard> Blinds => (BlindCards ?? string.Empty).Split(';').Where(bc => !string.IsNullOrEmpty(bc)).Select(bc => CardUtil.GetCardFromAbbreviation(bc)).ToList();
-        public List<SheepCard> Buried { get; set; } = new List<SheepCard>();
+        public IReadOnlyList<SheepCard> Blinds => CardUtil.StringToCardList(BlindCards);
+        public IReadOnlyList<SheepCard> Buried => CardUtil.StringToCardList(BuriedCards);
         public List<IPlayer> PlayersRefusingPick { get; } = new List<IPlayer>();
         public IPlayer StartingPlayer { get; protected set; }
         public IRandomWrapper _random { get; private set; }
@@ -55,13 +55,13 @@ namespace Sheepshead.Model.Models
                 DealCards(ShuffleCards());
                 SetStartingPlayer();
             }
-            Buried = new List<SheepCard>();
+            BuriedCards = string.Empty;
         }
 
         private Queue<SheepCard> ShuffleCards()
         {
             List<SheepCard> cards = CardUtil.UnshuffledList();
-            for (var i = Models.Game.CARDS_IN_DECK - 1; i > 0; --i)
+            for (var i = Game.CARDS_IN_DECK - 1; i > 0; --i)
             {
                 var j = _random.Next(i);
                 var swap = cards[i];
@@ -104,7 +104,7 @@ namespace Sheepshead.Model.Models
             var newBlind = cards.Dequeue();
             var blindList = Blinds.ToList();
             blindList.Add(newBlind);
-            BlindCards = String.Join(";", blindList.Select(bc => CardUtil.GetAbbreviation(bc)));
+            BlindCards = CardUtil.CardListToString(blindList);
         }
 
         private void DealTwoCardsPerPlayer(Queue<SheepCard> cards)
@@ -124,6 +124,12 @@ namespace Sheepshead.Model.Models
                 : IGame.Players.IndexOf(IGame.Hands.ElementAt(index - 1).StartingPlayer) + 1;
             if (indexOfPlayer == IGame.PlayerCount) indexOfPlayer = 0;
             StartingPlayer = IGame.Players[indexOfPlayer];
+        }
+
+        public void AddBuried(SheepCard card) {
+            var buriedList = Buried.ToList();
+            buriedList.Add(card);
+            BuriedCards = CardUtil.CardListToString(buriedList);
         }
 
         public void PlayerWontPick(IPlayer player)
@@ -227,7 +233,8 @@ namespace Sheepshead.Model.Models
         IPlayer StartingPlayer { get; }
         bool Leasters { get; }
         IReadOnlyList<SheepCard> Blinds { get; }
-        List<SheepCard> Buried { get; set; }
+        IReadOnlyList<SheepCard> Buried { get; }
+        void AddBuried(SheepCard card);
         List<IPlayer> PlayersRefusingPick { get; }
         List<IPlayer> PlayersWithoutPickTurn { get; }
         IPlayerOrderer PickPlayerOrderer { get; }

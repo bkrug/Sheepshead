@@ -299,6 +299,7 @@ namespace Sheepshead.Tests
             var humanMock = new Mock<IHumanPlayer>();
             humanMock.Setup(m => m.Cards).Returns(playerCards);
             var handMock = new Mock<IHand>();
+            handMock.Setup(m => m.AddBuried(It.IsAny<SheepCard>())).Callback((SheepCard sc) => buried.Add(sc));
             handMock.Setup(m => m.Buried).Returns(buried);
             handMock.Setup(m => m.Picker).Returns(humanMock.Object);
             handMock.Setup(m => m.GoItAlone()).Callback(() => Assert.Fail("Should not have tried to go it alone"));
@@ -320,6 +321,7 @@ namespace Sheepshead.Tests
             humanMock.Setup(m => m.Cards).Returns(playerCards);
             var goItAloneSet = false;
             var handMock = new Mock<IHand>();
+            handMock.Setup(m => m.AddBuried(It.IsAny<SheepCard>())).Callback((SheepCard sc) => buried.Add(sc));
             handMock.Setup(m => m.Buried).Returns(buried);
             handMock.Setup(m => m.Picker).Returns(humanMock.Object);
             handMock.Setup(m => m.GoItAlone()).Callback(() => goItAloneSet = true);

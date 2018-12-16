@@ -49,7 +49,8 @@ namespace Sheepshead.Model
         {
             var buriedCards = picker.DropCardsForPick(hand);
             //TODO: set the buried property from within SetPicker
-            hand.Buried = buriedCards;
+            hand.AddBuried(buriedCards[0]);
+            hand.AddBuried(buriedCards[1]);
             hand.SetPicker(picker, buriedCards);
             if (hand.IGame.PlayerCount == 3 || picker.GoItAlone(hand))
                 return;
@@ -74,7 +75,7 @@ namespace Sheepshead.Model
             if (hand.Picker != picker)
                 throw new NotPlayersTurnException("A non-picker cannot bury cards.");
             cardsToBury.ForEach(c => picker.Cards.Remove(c));
-            cardsToBury.ForEach(c => hand.Buried.Add(c));
+            cardsToBury.ForEach(c => hand.AddBuried(c));
             if (goItAlone)
                 hand.GoItAlone();
         }
