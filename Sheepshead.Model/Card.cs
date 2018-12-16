@@ -136,7 +136,7 @@ namespace Sheepshead.Model
             return list;
         }
 
-        private static Dictionary<SheepCard, string> list1 = new Dictionary<SheepCard, string>() {
+        private static Dictionary<SheepCard, string> _filenamesByCard = new Dictionary<SheepCard, string>() {
             { SheepCard.ACE_CLUBS, "1" },
             { SheepCard.ACE_SPADES, "2" },
             { SheepCard.ACE_HEARTS, "3" },
@@ -172,7 +172,7 @@ namespace Sheepshead.Model
         };
 
         //♣♠♥♦
-        private static Dictionary<SheepCard, string> list2 = new Dictionary<SheepCard, string>() {
+        private static Dictionary<SheepCard, string> _abbreviationsByCard = new Dictionary<SheepCard, string>() {
             { SheepCard.ACE_CLUBS, "A♣" },
             { SheepCard.ACE_SPADES, "A♠" },
             { SheepCard.ACE_HEARTS, "A♥" },
@@ -220,17 +220,22 @@ namespace Sheepshead.Model
 
         public static string GetPictureFilename(SheepCard card)
         {
-            return list1[card];
+            return _filenamesByCard[card];
         }
 
         public static string GetAbbreviation(SheepCard card)
         {
-            return list2[card];
+            return _abbreviationsByCard[card];
         }
 
         public static SheepCard GetCardFromFilename(string filename)
         {
-            return list1.First(l => l.Value == filename).Key;
+            return _filenamesByCard.First(l => l.Value == filename).Key;
+        }
+
+        public static SheepCard GetCardFromAbbreviation(string abbr)
+        {
+            return _abbreviationsByCard.First(l => l.Value == abbr).Key;
         }
 
         public static string ToAbbr(SheepCard card)

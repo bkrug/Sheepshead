@@ -10,7 +10,10 @@ namespace Sheepshead.Model.Models
     {
         public IPlayer Picker { get; private set; }
         public IPlayer Partner { get; private set; }
-        public SheepCard? PartnerCard { get; private set; }
+        public SheepCard? PartnerCard {
+            get { return CardUtil.GetCardFromAbbreviation(PartnerCardString); }
+            private set { PartnerCardString = value.HasValue ? CardUtil.GetAbbreviation(value.Value) : string.Empty; }
+        }
         public List<ITrick> ITricks { get { return Tricks == null ? new List<ITrick>() : Tricks.OfType<ITrick>().ToList(); } }
         public event EventHandler<EventArgs> OnHandEnd;
         public int PlayerCount => IGame.PlayerCount;
