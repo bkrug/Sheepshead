@@ -12,7 +12,7 @@ namespace Sheepshead.Model.Models
         public IHand IHand { get; private set; }
         public IGame IGame { get { return IHand.IGame; } }
         public IPlayer StartingPlayer { get; private set; }
-        public Dictionary<IPlayer, SheepCard> CardsPlayed { get { return new Dictionary<IPlayer, SheepCard>(_cards); } }
+        public virtual Dictionary<IPlayer, SheepCard> CardsPlayed { get { return new Dictionary<IPlayer, SheepCard>(_cards); } }
         public event EventHandler<EventArgs> OnTrickEnd;
         public event EventHandler<MoveEventArgs> OnMove;
 
@@ -128,7 +128,7 @@ namespace Sheepshead.Model.Models
             OnTrickEnd?.Invoke(this, e);
         }
 
-        public bool IsComplete()
+        public virtual bool IsComplete()
         {
             return CardsPlayed.Count() == IHand.PlayerCount;
         }

@@ -11,8 +11,7 @@ namespace Sheepshead.Model.Models
         public IPlayer Picker { get; private set; }
         public IPlayer Partner { get; private set; }
         public SheepCard? PartnerCard { get; private set; }
-        private List<ITrick> _tricks = new List<ITrick>();
-        public List<ITrick> ITricks { get { return _tricks.ToList(); } }
+        public List<ITrick> ITricks { get { return Tricks == null ? new List<ITrick>() : Tricks.OfType<ITrick>().ToList(); } }
         public event EventHandler<EventArgs> OnHandEnd;
         public int PlayerCount => IGame.PlayerCount;
         public List<IPlayer> Players => IGame.Players;
@@ -46,6 +45,7 @@ namespace Sheepshead.Model.Models
                 throw new PreviousHandIncompleteException("Cannot add a hand until the prvious one is complete.");
             IGame = game;
             IGame.Hands.Add(this);
+            Tricks = new List<Trick>();
             _random = random;
             if (_random != null)
             {
@@ -180,8 +180,9 @@ namespace Sheepshead.Model.Models
 
         public void AddTrick(ITrick trick)
         {
-            _tricks.Add(trick);
-            if (_tricks.Count == (Models.Game.CARDS_IN_DECK / IGame.PlayerCount))
+            if (trick is Trick)
+                Tricks.Add((Trick)trick);
+            if (Tricks.Count == (Game.CARDS_IN_DECK / IGame.PlayerCount))
                 trick.OnTrickEnd += (Object sender, EventArgs e) => { OnHandEndHandler(); };
         }
 
@@ -199,7 +200,7 @@ namespace Sheepshead.Model.Models
                 return true;
             const int CARDS_IN_PLAY = 30;
             var trickCount = CARDS_IN_PLAY / IGame.PlayerCount;
-            return _tricks.Count() == trickCount && _tricks.Last().IsComplete();
+            return Tricks.Count() == trickCount && Tricks.Last().IsComplete();
         }
 
         protected virtual void OnHandEndHandler()
