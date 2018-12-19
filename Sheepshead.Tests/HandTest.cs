@@ -666,13 +666,13 @@ namespace Sheepshead.Tests
         public void Hand_IsComplete()
         {
             var blinds = new List<SheepCard>() { SheepCard.KING_DIAMONDS, SheepCard.ACE_CLUBS };
-            var gameMock = new Mock<IGame>();
-            gameMock.Setup(m => m.PartnerMethodEnum).Returns(PartnerMethod.JackOfDiamonds);
-            gameMock.Setup(m => m.PlayerCount).Returns(5);
-            gameMock.Setup(m => m.Hands).Returns(new List<Hand>());
-            gameMock.Setup(m => m.LastHandIsComplete()).Returns(true);
-            gameMock.Setup(m => m.LeastersEnabled).Returns(true);
-            var hand = new Hand(gameMock.Object, null);
+            var gameMock = new MockGame();
+            gameMock.PartnerMethod = "J";
+            gameMock.LeastersEnabled = true;
+            gameMock.Hands = new List<Hand>();
+            gameMock.SetPlayerCount(5);
+            gameMock.SetLastHandIsComplete(true);
+            var hand = new Hand(gameMock, null);
 
             var mockCompleteTrick = new MockTrick();
             var mockIncompleteTrick = new MockTrick();
@@ -688,7 +688,7 @@ namespace Sheepshead.Tests
             hand.AddTrick(mockIncompleteTrick);
             Assert.IsFalse(hand.IsComplete(), "Hand is not complete if the last trick is not complete.");
 
-            hand = new Hand(gameMock.Object, null);
+            hand = new Hand(gameMock, null);
             hand.AddTrick(mockCompleteTrick);
             hand.AddTrick(mockCompleteTrick);
             hand.AddTrick(mockCompleteTrick);
@@ -776,18 +776,18 @@ namespace Sheepshead.Tests
         [TestMethod]
         public void Hand_Leasters()
         {
-            var gameMock = new Mock<IGame>();
-            gameMock.Setup(m => m.Hands).Returns(new List<Hand>());
-            gameMock.Setup(m => m.LastHandIsComplete()).Returns(true);
-            var hand = new Hand(gameMock.Object, null);
+            var gameMock = new MockGame();
+            gameMock.Hands = new List<Hand>();
+            gameMock.SetLastHandIsComplete(true);
+            var hand = new Hand(gameMock, null);
             hand.SetPicker(null, new List<SheepCard>());
             Assert.IsTrue(hand.Leasters, "When there is no picker, play leasters.");
 
             var pickerMock = new Mock<IPlayer>();
             pickerMock.Setup(m => m.Cards).Returns(new List<SheepCard>());
-            gameMock.Setup(m => m.PlayerCount).Returns(5);
-            gameMock.Setup(m => m.PartnerMethodEnum).Returns(PartnerMethod.CalledAce);
-            var hand2 = new Hand(gameMock.Object, null);
+            gameMock.SetPlayerCount(5);
+            gameMock.PartnerMethod = "A";
+            var hand2 = new Hand(gameMock, null);
             hand2.SetPicker(pickerMock.Object, new List<SheepCard>());
             Assert.IsFalse(hand2.Leasters, "When there is a picker, don't play leasters.");
         }
@@ -819,18 +819,18 @@ namespace Sheepshead.Tests
         [TestMethod]
         public void Hand_PresumedPartner_BasedOnLead()
         {
-            var gameMock = new Mock<IGame>();
-            gameMock.Setup(m => m.PartnerMethodEnum).Returns(PartnerMethod.JackOfDiamonds);
-            gameMock.Setup(d => d.PlayerCount).Returns(5);
-            gameMock.Setup(m => m.LastHandIsComplete()).Returns(true);
-            gameMock.Setup(m => m.Hands).Returns(new List<Hand>());
+            var gameMock = new MockGame();
+            gameMock.PartnerMethod = "J";
+            gameMock.SetPlayerCount(5);
+            gameMock.SetLastHandIsComplete(true);
+            gameMock.Hands = new List<Hand>();
             var player1 = new Mock<IPlayer>();
             var player2 = new Mock<IPlayer>();
             var pickerMock = new Mock<IPlayer>();
             var player4 = new Mock<IPlayer>();
             var player5 = new Mock<IPlayer>();
             pickerMock.Setup(p => p.Cards).Returns(new List<SheepCard>());
-            var hand = new Hand(gameMock.Object, null);
+            var hand = new Hand(gameMock, null);
             hand.SetPicker(pickerMock.Object, new List<SheepCard>());
             var cardsPlayed1 = new Dictionary<IPlayer, SheepCard>()
             {
@@ -866,18 +866,18 @@ namespace Sheepshead.Tests
         [TestMethod]
         public void Hand_PresumedPartner_2PlayersTie()
         {
-            var gameMock = new Mock<IGame>();
-            gameMock.Setup(m => m.PartnerMethodEnum).Returns(PartnerMethod.JackOfDiamonds);
-            gameMock.Setup(d => d.PlayerCount).Returns(5);
-            gameMock.Setup(m => m.LastHandIsComplete()).Returns(true);
-            gameMock.Setup(m => m.Hands).Returns(new List<Hand>());
+            var gameMock = new MockGame();
+            gameMock.PartnerMethod = "J";
+            gameMock.Hands = new List<Hand>();
+            gameMock.SetPlayerCount(5);
+            gameMock.SetLastHandIsComplete(true);
             var player1 = new Mock<IPlayer>();
             var player2 = new Mock<IPlayer>();
             var pickerMock = new Mock<IPlayer>();
             var player4 = new Mock<IPlayer>();
             var player5 = new Mock<IPlayer>();
             pickerMock.Setup(p => p.Cards).Returns(new List<SheepCard>());
-            var hand = new Hand(gameMock.Object, null);
+            var hand = new Hand(gameMock, null);
             hand.SetPicker(pickerMock.Object, new List<SheepCard>());
             var cardsPlayed1 = new Dictionary<IPlayer, SheepCard>()
             {
@@ -932,5 +932,39 @@ namespace Sheepshead.Tests
         }
 
         public override Dictionary<IPlayer, SheepCard> CardsPlayed => _cardsPlayed;
+    }
+
+    internal class MockGame : Game
+    {
+        private bool _lastHandIsComplete;
+        private int _playerCount;
+        private List<IPlayer> _players;
+        public override int PlayerCount => _playerCount;
+        public override List<IPlayer> Players => _players;
+
+        public MockGame()
+        {
+
+        }
+
+        public void SetPlayerCount(int count)
+        {
+            _playerCount = count;
+        }
+
+        public void SetPlayers(List<IPlayer> players)
+        {
+            _players = players;
+        }
+
+        public void SetLastHandIsComplete(bool val)
+        {
+            _lastHandIsComplete = val;
+        }
+
+        public override bool LastHandIsComplete()
+        {
+            return _lastHandIsComplete;
+        }
     }
 }

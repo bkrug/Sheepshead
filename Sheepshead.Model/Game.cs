@@ -10,16 +10,17 @@ namespace Sheepshead.Model.Models
     public partial class Game : IGame
     {
         public const int CARDS_IN_DECK = 32;
-        public int PlayerCount => Players.Count();
+        public virtual int PlayerCount => Players.Count();
         public int TrickCount => (int)Math.Floor(32d / PlayerCount);
         public int HumanPlayerCount => Players.Count(p => p is IHumanPlayer);
-        public List<IPlayer> Players { get; }
+        public virtual List<IPlayer> Players { get; }
         public List<IHumanPlayer> UnassignedPlayers => Players.OfType<IHumanPlayer>().Where(p => !p.AssignedToClient).ToList();
-        //public IList<IHand> IHands => new EntityBoundList<IHand, Hand>(Hands);
         public IRandomWrapper _random { get; private set; }
         private IGameStateDescriber _gameStateDesciber;
         public TurnType TurnType => _gameStateDesciber.GetTurnType();
-        public PartnerMethod PartnerMethodEnum { get { return PartnerMethod == "A" ? Models.PartnerMethod.CalledAce : Models.PartnerMethod.JackOfDiamonds; } private set { PartnerMethod = value == Models.PartnerMethod.CalledAce ? "A" : "J"; } }
+        public PartnerMethod PartnerMethodEnum {
+            get { return PartnerMethod == "A" ? Models.PartnerMethod.CalledAce : Models.PartnerMethod.JackOfDiamonds; }
+            private set { PartnerMethod = value == Models.PartnerMethod.CalledAce ? "A" : "J"; } }
         public TurnState TurnState => new TurnState
         {
             GameId = Id,
@@ -59,7 +60,7 @@ namespace Sheepshead.Model.Models
             }
         }
 
-        public bool LastHandIsComplete()
+        public virtual bool LastHandIsComplete()
         {
             return _gameStateDesciber.LastHandIsComplete();
         }

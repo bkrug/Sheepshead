@@ -18,7 +18,9 @@ namespace Sheepshead.Model.Models
         public event EventHandler<EventArgs> OnHandEnd;
         public int PlayerCount => IGame.PlayerCount;
         public List<IPlayer> Players => IGame.Players;
-        public IGame IGame { get; protected set; }
+        public IGame IGame {
+            get { return Game; }
+            protected set { Game = (Game)value; } }
         public IReadOnlyList<SheepCard> Blinds => CardUtil.StringToCardList(BlindCards);
         public IReadOnlyList<SheepCard> Buried => CardUtil.StringToCardList(BuriedCards);
         public List<IPlayer> PlayersRefusingPick { get; } = new List<IPlayer>();

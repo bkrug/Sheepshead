@@ -38,24 +38,24 @@ namespace Sheepshead.Tests
             var player4 = new Mock<IntermediatePlayer>();
             var player5 = new Mock<IntermediatePlayer>();
             var playerList = new List<IPlayer>() { player3.Object, player4.Object, player5.Object, player1.Object, player2.Object };
-            var mockGame = new Mock<IGame>();
-            mockGame.Setup(m => m.Players).Returns(playerList);
-            mockGame.Setup(m => m.PlayerCount).Returns(5);
+            var mockGame = new MockGame();
+            mockGame.SetPlayers(playerList);
+            mockGame.SetPlayerCount(5);
             var mockHand = new MockHand();
-            mockHand.SetIGame(mockGame.Object);
-            var deckList = new List<Hand>() { mockHand };
-            mockGame.Setup(m => m.Hands).Returns(deckList);
-            mockGame.Setup(m => m.LastHandIsComplete()).Returns(true);
+            mockHand.SetIGame(mockGame);
+            var handList = new List<Hand>() { mockHand };
+            mockGame.Hands = handList;
+            mockGame.SetLastHandIsComplete(true);
 
             mockHand.SetStartingPlayer(player1.Object);
             IHand hand;
-            hand = new Hand(mockGame.Object, new RandomWrapper());
+            hand = new Hand(mockGame, new RandomWrapper());
             //We won't test the Starting Player for the first hand in the game.  It should be random.
             Assert.AreEqual(player2.Object, hand.StartingPlayer, "The starting player for one hand should be the player to the left of the previous starting player.");
 
-            mockGame.Object.Hands.Remove(mockGame.Object.Hands.ElementAt(1));
+            mockGame.Hands.Remove(mockGame.Hands.ElementAt(1));
             mockHand.SetStartingPlayer(player2.Object);
-            hand = new Hand(mockGame.Object, new RandomWrapper());
+            hand = new Hand(mockGame, new RandomWrapper());
             //We won't test the Starting Player for the first hand in the game.  It should be random.
             Assert.AreEqual(player3.Object, hand.StartingPlayer, "Again, the starting player for one hand should be the player to the left of the previous starting player.");
         }
