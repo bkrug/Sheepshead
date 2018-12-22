@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Sheepshead.Model.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -16,7 +17,7 @@ namespace Sheepshead.Model.Players
             return Id;
         }
 
-        public HumanPlayer()
+        public HumanPlayer(Participant participant) : base(participant)
         {
         }
     }

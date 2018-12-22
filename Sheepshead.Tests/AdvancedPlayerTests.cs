@@ -29,7 +29,7 @@ namespace Sheepshead.Tests
         public void AdvancedPlayer_FivePlayerGame_ManyPowerfulTrump_ShouldPick()
         {
             var players = new List<IPlayer>() {
-                new AdvancedPlayer(),
+                new AdvancedPlayer(new Participant()),
                 new ComputerPlayerPickingMock(false),
                 new ComputerPlayerPickingMock(false),
                 new ComputerPlayerPickingMock(false),
@@ -54,7 +54,7 @@ namespace Sheepshead.Tests
         public void AdvancedPlayer_FivePlayerGame_ManyWeakTrumpFewPointsTowardsFront_ShouldPass()
         {
             var players = new List<IPlayer>() {
-                new AdvancedPlayer(),
+                new AdvancedPlayer(new Participant()),
                 new ComputerPlayerPickingMock(false),
                 new ComputerPlayerPickingMock(false),
                 new ComputerPlayerPickingMock(false),
@@ -83,7 +83,7 @@ namespace Sheepshead.Tests
                 new ComputerPlayerPickingMock(false),
                 new ComputerPlayerPickingMock(false),
                 new ComputerPlayerPickingMock(false),
-                new AdvancedPlayer()
+                new AdvancedPlayer(new Participant())
             };
             var advancedPlayer = players.OfType<AdvancedPlayer>().Single();
             advancedPlayer.Cards.Add(SheepCard.QUEEN_CLUBS);
@@ -108,7 +108,7 @@ namespace Sheepshead.Tests
                 new ComputerPlayerPickingMock(false),
                 new ComputerPlayerPickingMock(false),
                 new ComputerPlayerPickingMock(false),
-                new AdvancedPlayer()
+                new AdvancedPlayer(new Participant())
             };
             var advancedPlayer = players.OfType<AdvancedPlayer>().Single();
             advancedPlayer.Cards.Add(SheepCard.ACE_HEARTS);
@@ -129,7 +129,7 @@ namespace Sheepshead.Tests
         public void AdvancedPlayer_ThreePlayerGame_ManyPowerfulTrump_ShouldPick()
         {
             var players = new List<IPlayer>() {
-                new AdvancedPlayer(),
+                new AdvancedPlayer(new Participant()),
                 new ComputerPlayerPickingMock(false),
                 new ComputerPlayerPickingMock(false)
             };
@@ -156,7 +156,7 @@ namespace Sheepshead.Tests
         public void AdvancedPlayer_ThreePlayerGame_ManyWeakTrumpFewPointsTowardsFront_ShouldPass()
         {
             var players = new List<IPlayer>() {
-                new AdvancedPlayer(),
+                new AdvancedPlayer(new Participant()),
                 new ComputerPlayerPickingMock(false),
                 new ComputerPlayerPickingMock(false)
             };
@@ -185,7 +185,7 @@ namespace Sheepshead.Tests
             var players = new List<IPlayer>() {
                 new ComputerPlayerPickingMock(false),
                 new ComputerPlayerPickingMock(false),
-                new AdvancedPlayer()
+                new AdvancedPlayer(new Participant())
             };
             var advancedPlayer = players.OfType<AdvancedPlayer>().Single();
             advancedPlayer.Cards.Add(SheepCard.QUEEN_CLUBS);
@@ -212,7 +212,7 @@ namespace Sheepshead.Tests
             var players = new List<IPlayer>() {
                 new ComputerPlayerPickingMock(false),
                 new ComputerPlayerPickingMock(false),
-                new AdvancedPlayer()
+                new AdvancedPlayer(new Participant())
             };
             var advancedPlayer = players.OfType<AdvancedPlayer>().Single();
             advancedPlayer.Cards.Add(SheepCard.ACE_HEARTS);
@@ -245,7 +245,7 @@ namespace Sheepshead.Tests
         public void AdvancedPlayer_LeadTrick_OffensivePlayer_StrongCards_LeadWithStrongTrump1()
         {
             var players = new List<IPlayer>() {
-                new AdvancedPlayer(),
+                new AdvancedPlayer(new Participant()),
                 new ComputerPlayerPickingMock(false),
                 new ComputerPlayerPickingMock(false),
                 new ComputerPlayerPickingMock(false),
@@ -271,7 +271,7 @@ namespace Sheepshead.Tests
         public void AdvancedPlayer_LeadTrick_DefensivePlayer_LeadWithSuitOfCalledAce()
         {
             var players = new List<IPlayer>() {
-                new AdvancedPlayer(),
+                new AdvancedPlayer(new Participant()),
                 new ComputerPlayerPickingMock(false),
                 new ComputerPlayerPickingMock(false),
                 new ComputerPlayerPickingMock(false),
@@ -298,7 +298,7 @@ namespace Sheepshead.Tests
         public void AdvancedPlayer_LeadTrick_DefensivePlayer_LeadWithNonTrumpThatYouHaveFewOf()
         {
             var players = new List<IPlayer>() {
-                new AdvancedPlayer(),
+                new AdvancedPlayer(new Participant()),
                 new ComputerPlayerPickingMock(false),
                 new ComputerPlayerPickingMock(false),
                 new ComputerPlayerPickingMock(false),

@@ -8,6 +8,8 @@ namespace Sheepshead.Model.Players
 {
     public abstract class ComputerPlayer : Player, IComputerPlayer
     {
+        public ComputerPlayer(Participant participant):base(participant) { }
+
         public abstract SheepCard GetMove(ITrick trick);
 
         public abstract bool WillPick(IHand hand);

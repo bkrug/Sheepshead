@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Sheepshead.Model;
 using Sheepshead.Model.Models;
 
 namespace Sheepshead.Model.Players
@@ -12,7 +11,7 @@ namespace Sheepshead.Model.Players
         IGameStateAnalyzer _gameStateAnalyzer;
         IPlayCreator _playCreator;
 
-        public IntermediatePlayer()
+        public IntermediatePlayer(Participant participant) : base(participant)
         {
             _leasterStateAnalyzer = new LeasterStateAnalyzer();
             _gameStateAnalyzer = new GameStateAnalyzer();

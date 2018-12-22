@@ -15,7 +15,7 @@ namespace Sheepshead.Tests
         [TestMethod]
         public void SimplePlayer_GetMove()
         {
-            var mainPlayer = new SimplePlayer();
+            var mainPlayer = new SimplePlayer(new Participant());
             var card1 = SheepCard.JACK_CLUBS;
             var card2 = SheepCard.N8_HEARTS;
             mainPlayer.Cards.AddRange(new List<SheepCard>() { card1, card2 });
@@ -60,7 +60,7 @@ namespace Sheepshead.Tests
         [TestMethod]
         public void SimplePlayer_WillPick()
         {
-            var mainPlayer = new SimplePlayer();
+            var mainPlayer = new SimplePlayer(new Participant());
             {
                 var playerList = new List<IPlayer>() { player1, player2, mainPlayer, player3, player4 };
                 var handMock = GenerateHandMock(playerList);
@@ -90,7 +90,7 @@ namespace Sheepshead.Tests
         [TestMethod]
         public void Intermediate_DropCards()
         {
-            var picker = new IntermediatePlayer();
+            var picker = new IntermediatePlayer(new Participant());
             picker.Cards.AddRange(new List<SheepCard>()
             {
                 SheepCard.N7_DIAMONDS,
@@ -113,7 +113,7 @@ namespace Sheepshead.Tests
         [TestMethod]
         public void Intermediate_ChooseCalledAce()
         {
-            var picker = new IntermediatePlayer();
+            var picker = new IntermediatePlayer(new Participant());
             picker.Cards.AddRange(new List<SheepCard>()
             {
                 SheepCard.N7_DIAMONDS,
@@ -138,7 +138,7 @@ namespace Sheepshead.Tests
         [TestMethod]
         public void IntermediatePlayer_ChooseCalledAce_GetNothing()
         {
-            var picker = new IntermediatePlayer();
+            var picker = new IntermediatePlayer(new Participant());
             picker.Cards.AddRange(new List<SheepCard>()
             {
                 SheepCard.ACE_CLUBS,
@@ -166,7 +166,7 @@ namespace Sheepshead.Tests
             var handMock = new Mock<IHand>();
             handMock.Setup(m => m.Buried).Returns(new List<SheepCard>());
             handMock.Setup(m => m.Blinds).Returns(new List<SheepCard>() { SheepCard.N9_CLUBS, SheepCard.N9_SPADES });
-            var player = new HumanPlayer();
+            var player = new HumanPlayer(new Participant());
             player.Cards.AddRange(new List<SheepCard>() { SheepCard.JACK_DIAMONDS, SheepCard.N8_CLUBS, SheepCard.N8_SPADES, SheepCard.N8_HEARTS, SheepCard.ACE_HEARTS, SheepCard.QUEEN_HEARTS });
 
             var actual = player.LegalCalledAces(handMock.Object);
@@ -180,7 +180,7 @@ namespace Sheepshead.Tests
             var handMock = new Mock<IHand>();
             handMock.Setup(m => m.Buried).Returns(new List<SheepCard>());
             handMock.Setup(m => m.Blinds).Returns(new List<SheepCard>() { SheepCard.ACE_CLUBS, SheepCard.N10_SPADES });
-            var player = new HumanPlayer();
+            var player = new HumanPlayer(new Participant());
             player.Cards.AddRange(new List<SheepCard>() { SheepCard.JACK_DIAMONDS, SheepCard.N8_CLUBS, SheepCard.N8_SPADES, SheepCard.N8_HEARTS, SheepCard.ACE_HEARTS, SheepCard.ACE_SPADES });
 
             var actual = player.LegalCalledAces(handMock.Object);
@@ -194,7 +194,7 @@ namespace Sheepshead.Tests
             var handMock = new Mock<IHand>();
             handMock.Setup(m => m.Buried).Returns(new List<SheepCard>());
             handMock.Setup(m => m.Blinds).Returns(new List<SheepCard>() { SheepCard.QUEEN_CLUBS, SheepCard.JACK_SPADES });
-            var player = new HumanPlayer();
+            var player = new HumanPlayer(new Participant());
             player.Cards.AddRange(new List<SheepCard>() { SheepCard.JACK_DIAMONDS, SheepCard.N8_CLUBS, SheepCard.ACE_CLUBS, SheepCard.N9_CLUBS, SheepCard.QUEEN_HEARTS, SheepCard.QUEEN_DIAMONDS });
 
             var actual = player.LegalCalledAces(handMock.Object);
@@ -206,11 +206,11 @@ namespace Sheepshead.Tests
         public void Player_QueueRankInHand()
         {
             var players = new List<IPlayer>() {
-                new AdvancedPlayer(),
-                new AdvancedPlayer(),
-                new AdvancedPlayer(),
-                new AdvancedPlayer(),
-                new AdvancedPlayer()
+                new AdvancedPlayer(new Participant()),
+                new AdvancedPlayer(new Participant()),
+                new AdvancedPlayer(new Participant()),
+                new AdvancedPlayer(new Participant()),
+                new AdvancedPlayer(new Participant())
             };
             var handMock = new Mock<IHand>();
             handMock.Setup(m => m.Players).Returns(players);
@@ -227,11 +227,11 @@ namespace Sheepshead.Tests
         public void Player_QueueRankInTrick()
         {
             var players = new List<IPlayer>() {
-                new AdvancedPlayer(),
-                new AdvancedPlayer(),
-                new AdvancedPlayer(),
-                new AdvancedPlayer(),
-                new AdvancedPlayer()
+                new AdvancedPlayer(new Participant()),
+                new AdvancedPlayer(new Participant()),
+                new AdvancedPlayer(new Participant()),
+                new AdvancedPlayer(new Participant()),
+                new AdvancedPlayer(new Participant())
             };
             var trickMock = new Mock<ITrick>();
             trickMock.Setup(m => m.Players).Returns(players);

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using Sheepshead.Model;
@@ -331,12 +332,14 @@ namespace Sheepshead.Tests
         [TestMethod]
         public void Trick_StartingPlayer()
         {
-            var player1 = new Mock<IntermediatePlayer>();
-            var player2 = new Mock<SimplePlayer>();
-            var player3 = new Mock<SimplePlayer>();
-            var player4 = new Mock<IntermediatePlayer>();
-            var player5 = new Mock<IntermediatePlayer>();
-            var playerList = new List<IPlayer>() { player3.Object, player4.Object, player5.Object, player1.Object, player2.Object };
+            var player1 = new Mock<IPlayer>();
+            var player2 = new Mock<IPlayer>();
+            var player3 = new Mock<IPlayer>();
+            var player4 = new Mock<IPlayer>();
+            var player5 = new Mock<IPlayer>();
+            var playerMockList = new List<Mock<IPlayer>>() { player1, player2, player3, player4, player5 };
+            playerMockList.ForEach(m => m.Setup(mm => mm.Cards).Returns(new List<SheepCard>()));
+            var playerList = playerMockList.Select(m => m.Object).ToList();
             var mockHand = new Mock<IHand>();
             mockHand.Setup(m => m.StartingPlayer).Returns(player1.Object);
             var trickList = new List<ITrick>();
@@ -356,12 +359,14 @@ namespace Sheepshead.Tests
 
         private static List<IPlayer> GetPlayerList()
         {
-            var player1 = new Mock<IntermediatePlayer>();
-            var player2 = new Mock<SimplePlayer>();
-            var player3 = new Mock<SimplePlayer>();
-            var player4 = new Mock<IntermediatePlayer>();
-            var player5 = new Mock<IntermediatePlayer>();
-            var playerList = new List<IPlayer>() { player1.Object, player2.Object, player3.Object, player4.Object, player5.Object };
+            var player1 = new Mock<IPlayer>();
+            var player2 = new Mock<IPlayer>();
+            var player3 = new Mock<IPlayer>();
+            var player4 = new Mock<IPlayer>();
+            var player5 = new Mock<IPlayer>();
+            var playerMockList = new List<Mock<IPlayer>>() { player1, player2, player3, player4, player5 };
+            playerMockList.ForEach(m => m.Setup(mm => mm.Cards).Returns(new List<SheepCard>()));
+            var playerList = playerMockList.Select(m => m.Object).ToList();
             return playerList;
         }
 

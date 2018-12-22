@@ -12,13 +12,13 @@ namespace Sheepshead.Model.Models
             switch (Type)
             {
                 case "S":
-                    return new SimplePlayer();
+                    return new SimplePlayer(this);
                 case "I":
-                    return new IntermediatePlayer();
+                    return new IntermediatePlayer(this);
                 case "A":
-                    return new AdvancedPlayer();
+                    return new AdvancedPlayer(this);
                 default:
-                    return new HumanPlayer();
+                    return new HumanPlayer(this);
             }
         }
     }

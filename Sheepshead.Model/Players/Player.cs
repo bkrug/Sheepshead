@@ -7,8 +7,14 @@ namespace Sheepshead.Model.Players
 {
     public abstract class Player : IPlayer
     {
+        public Participant Participant { get; private set; }
         public virtual string Name { get; set; }
         public List<SheepCard> Cards { get; } = new List<SheepCard>();
+
+        public Player(Participant participant)
+        {
+            Participant = participant;
+        }
 
         public int QueueRankInTrick(ITrick trick)
         {

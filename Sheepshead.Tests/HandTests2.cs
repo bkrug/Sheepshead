@@ -32,12 +32,14 @@ namespace Sheepshead.Tests
         [TestMethod]
         public void Hand_StartingPlayer()
         {
-            var player1 = new Mock<IntermediatePlayer>();
-            var player2 = new Mock<SimplePlayer>();
-            var player3 = new Mock<SimplePlayer>();
-            var player4 = new Mock<IntermediatePlayer>();
-            var player5 = new Mock<IntermediatePlayer>();
-            var playerList = new List<IPlayer>() { player3.Object, player4.Object, player5.Object, player1.Object, player2.Object };
+            var player1 = new Mock<IPlayer>();
+            var player2 = new Mock<IPlayer>();
+            var player3 = new Mock<IPlayer>();
+            var player4 = new Mock<IPlayer>();
+            var player5 = new Mock<IPlayer>();
+            var playerMockList = new List<Mock<IPlayer>>() { player3, player4, player5, player1, player2 };
+            var playerList = playerMockList.Select(m => m.Object).ToList();
+            playerMockList.ForEach(m => m.Setup(mm => mm.Cards).Returns(new List<SheepCard>()));
             var mockGame = new MockGame();
             mockGame.SetPlayers(playerList);
             mockGame.SetPlayerCount(5);

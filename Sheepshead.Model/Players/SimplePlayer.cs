@@ -7,6 +7,8 @@ namespace Sheepshead.Model.Players
 {
     public class SimplePlayer : ComputerPlayer
     {
+        public SimplePlayer(Participant participant) : base(participant) { }
+
         public override SheepCard GetMove(ITrick trick)
         {
             return this.Cards.First(c => trick.IsLegalAddition(c, this));

@@ -11,7 +11,7 @@ namespace Sheepshead.Model.Players
         IGameStateAnalyzer _gameStateAnalyzer;
         IPlayCreator _playCreator;
 
-        public AdvancedPlayer()
+        public AdvancedPlayer(Participant participant) : base(participant)
         {
             _leasterStateAnalyzer = new LeasterStateAnalyzer();
             _gameStateAnalyzer = new GameStateAnalyzer();
