@@ -29,7 +29,22 @@ namespace Sheepshead.Model.Models
             TurnType = TurnType
         };
 
-        public Game(List<Participant> participants, PartnerMethod partnerMethod, bool enableLeasters) : this(participants, partnerMethod, null, null)
+        public Game(List<Participant> participants, PartnerMethod partnerMethod, bool enableLeasters)
+        {
+            Hands = new List<Hand>();
+            LeastersEnabled = enableLeasters;
+            Id = Guid.NewGuid();
+            Participants = participants;
+            PartnerMethodEnum = partnerMethod;
+            _random = new RandomWrapper();
+            _gameStateDesciber = new GameStateDescriber(this);
+        }
+
+        //TODO: Make this internal except to test project
+        /// <summary>
+        /// This constructor is for passing in Mocks in unit tests.
+        /// </summary>
+        public Game(List<IPlayer> mockPlayers, PartnerMethod partnerMethod, bool enableLeasters) : this(mockPlayers, partnerMethod, null, null)
         {
             Hands = new List<Hand>();
             LeastersEnabled = enableLeasters;
@@ -40,23 +55,6 @@ namespace Sheepshead.Model.Models
         /// <summary>
         /// This constructor is for passing in Mocks in unit tests.
         /// </summary>
-        public Game(List<Participant> participants, PartnerMethod partnerMethod, IRandomWrapper random, IGameStateDescriber gameStateDescriber)
-        {
-            Hands = new List<Hand>();
-            Participants = participants;
-            PartnerMethodEnum = partnerMethod;
-            _random = random ?? new RandomWrapper();
-            _gameStateDesciber = gameStateDescriber ?? new GameStateDescriber(this);
-            Id = Guid.NewGuid();
-        }
-
-        public Game(List<IPlayer> mockPlayers, PartnerMethod partnerMethod, bool enableLeasters) : this(mockPlayers, partnerMethod, null, null)
-        {
-            Hands = new List<Hand>();
-            LeastersEnabled = enableLeasters;
-            Id = Guid.NewGuid();
-        }
-
         public Game(List<IPlayer> mockPlayers, PartnerMethod partnerMethod, IRandomWrapper random, IGameStateDescriber gameStateDescriber)
         {
             Hands = new List<Hand>();

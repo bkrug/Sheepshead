@@ -19,7 +19,7 @@ namespace Sheepshead.Tests
             var participantList = new List<Participant>();
             for (var i = 0; i < 5; ++i)
                 participantList.Add(new Participant());
-            var game = new Game(participantList, PartnerMethod.JackOfDiamonds, new RandomWrapper(), null) {
+            var game = new Game(participantList, PartnerMethod.JackOfDiamonds, true) {
                 Hands = new List<Hand>()
             };
             var hand = new Hand(game);
