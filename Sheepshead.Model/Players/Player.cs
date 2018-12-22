@@ -8,7 +8,10 @@ namespace Sheepshead.Model.Players
     public abstract class Player : IPlayer
     {
         public Participant Participant { get; private set; }
-        public virtual string Name { get; set; }
+        public virtual string Name {
+            get { return Participant.Name; }
+            set { Participant.Name = value; }
+        }
         public List<SheepCard> Cards { get; } = new List<SheepCard>();
 
         public Player(Participant participant)
