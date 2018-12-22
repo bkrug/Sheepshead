@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Sheepshead.Model.Models;
@@ -12,11 +13,31 @@ namespace Sheepshead.Model.Players
             get { return Participant.Name; }
             set { Participant.Name = value; }
         }
-        public List<SheepCard> Cards { get; } = new List<SheepCard>();
+        public IReadOnlyList<SheepCard> Cards => CardUtil.StringToCardList(Participant.Cards);
 
         public Player(Participant participant)
         {
             Participant = participant;
+        }
+
+        public void AddCard(SheepCard card)
+        {
+            Participant.Cards = CardUtil.CardListToString(Cards.Union(new List<SheepCard>() { card }).ToList());
+        }
+
+        public void AddCardRange(List<SheepCard> cards)
+        {
+            Participant.Cards = CardUtil.CardListToString(Cards.Union(cards).ToList());
+        }
+
+        public void RemoveCard(SheepCard card)
+        {
+            Participant.Cards = CardUtil.CardListToString(Cards.Except(new List<SheepCard>() { card }).ToList());
+        }
+
+        public void RemoveAllCards()
+        {
+            Participant.Cards = string.Empty;
         }
 
         public int QueueRankInTrick(ITrick trick)
@@ -125,9 +146,13 @@ namespace Sheepshead.Model.Players
     public interface IPlayer
     {
         string Name { get; set; }
-        List<SheepCard> Cards { get; }
+        IReadOnlyList<SheepCard> Cards { get; }
         int QueueRankInTrick(ITrick trick);
         int QueueRankInHand(IHand hand);
         List<SheepCard> LegalCalledAces(IHand hand);
+        void AddCard(SheepCard card);
+        void AddCardRange(List<SheepCard> cards);
+        void RemoveCard(SheepCard card);
+        void RemoveAllCards();
     }
 }

@@ -713,11 +713,13 @@ namespace Sheepshead.Tests
                 var mockPicker = new Mock<IPlayer>();
                 var originalPickerCards = new List<SheepCard>() { SheepCard.N7_SPADES, SheepCard.N8_SPADES, SheepCard.N9_SPADES, SheepCard.N10_SPADES };
                 mockPicker.Setup(f => f.Cards).Returns(originalPickerCards);
+                mockPicker.Setup(f => f.AddCard(It.IsAny<SheepCard>())).Callback((SheepCard c) => originalPickerCards.Add(c));
+                mockPicker.Setup(f => f.RemoveCard(It.IsAny<SheepCard>())).Callback((SheepCard c) => originalPickerCards.Remove(c));
                 var partnerCard = HandUtils.ChoosePartnerCard(mockHand.Object, mockPicker.Object);
                 HandUtils.BuryCards(mockHand.Object, mockPicker.Object, droppedCards);
                 Assert.AreEqual(SheepCard.JACK_DIAMONDS, partnerCard, "Jack of diamonds should be partner card right now");
                 var expectedPickerCards = new List<SheepCard>() { SheepCard.KING_DIAMONDS, SheepCard.ACE_CLUBS, SheepCard.N9_SPADES, SheepCard.N10_SPADES };
-                CollectionAssert.AreEquivalent(expectedPickerCards, mockPicker.Object.Cards, "Picker dropped some cards to pick the blinds.");
+                CollectionAssert.AreEquivalent(expectedPickerCards, mockPicker.Object.Cards.ToList(), "Picker dropped some cards to pick the blinds.");
             }
         }
 

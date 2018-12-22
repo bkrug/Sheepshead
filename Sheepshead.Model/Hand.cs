@@ -79,7 +79,7 @@ namespace Sheepshead.Model.Models
         {
             BlindCards = string.Empty;
             foreach (var player in IGame.Players)
-                player.Cards.RemoveAll(c => true);
+                player.RemoveAllCards();
             switch (IGame.PlayerCount)
             {
                 case 3:
@@ -113,8 +113,8 @@ namespace Sheepshead.Model.Models
         {
             foreach (var player in IGame.Players)
             {
-                player.Cards.Add(cards.Dequeue());
-                player.Cards.Add(cards.Dequeue());
+                player.AddCard(cards.Dequeue());
+                player.AddCard(cards.Dequeue());
             }
         }
 
@@ -267,8 +267,8 @@ namespace Sheepshead.Model.Models
         {
             if (picker != null)
             {
-                picker.Cards.AddRange(hand.Blinds.Where(c => !picker.Cards.Contains(c)));
-                picker.Cards.Where(c => burried.Contains(c)).ToList().ForEach(c => picker.Cards.Remove(c));
+                hand.Blinds.Where(c => !picker.Cards.Contains(c)).ToList().ForEach(c => picker.AddCard(c));
+                picker.Cards.Where(c => burried.Contains(c)).ToList().ForEach(c => picker.RemoveCard(c));
             }
         }
 

@@ -18,7 +18,7 @@ namespace Sheepshead.Tests
             var mainPlayer = new SimplePlayer(new Participant());
             var card1 = SheepCard.JACK_CLUBS;
             var card2 = SheepCard.N8_HEARTS;
-            mainPlayer.Cards.AddRange(new List<SheepCard>() { card1, card2 });
+            new List<SheepCard>() { card1, card2 }.ForEach(c => mainPlayer.AddCard(c));
             var playerList = new List<IPlayer>() { new MockPlayer(), new MockPlayer(), mainPlayer, new MockPlayer(), new MockPlayer() };
             {
                 var trickMock = GenerateTrickMock(playerList);
@@ -91,7 +91,7 @@ namespace Sheepshead.Tests
         public void Intermediate_DropCards()
         {
             var picker = new IntermediatePlayer(new Participant());
-            picker.Cards.AddRange(new List<SheepCard>()
+            picker.AddCardRange(new List<SheepCard>()
             {
                 SheepCard.N7_DIAMONDS,
                 SheepCard.QUEEN_DIAMONDS,
@@ -114,7 +114,7 @@ namespace Sheepshead.Tests
         public void Intermediate_ChooseCalledAce()
         {
             var picker = new IntermediatePlayer(new Participant());
-            picker.Cards.AddRange(new List<SheepCard>()
+            picker.AddCardRange(new List<SheepCard>()
             {
                 SheepCard.N7_DIAMONDS,
                 SheepCard.QUEEN_SPADES,
@@ -139,7 +139,7 @@ namespace Sheepshead.Tests
         public void IntermediatePlayer_ChooseCalledAce_GetNothing()
         {
             var picker = new IntermediatePlayer(new Participant());
-            picker.Cards.AddRange(new List<SheepCard>()
+            picker.AddCardRange(new List<SheepCard>()
             {
                 SheepCard.ACE_CLUBS,
                 SheepCard.QUEEN_SPADES,
@@ -167,7 +167,7 @@ namespace Sheepshead.Tests
             handMock.Setup(m => m.Buried).Returns(new List<SheepCard>());
             handMock.Setup(m => m.Blinds).Returns(new List<SheepCard>() { SheepCard.N9_CLUBS, SheepCard.N9_SPADES });
             var player = new HumanPlayer(new Participant());
-            player.Cards.AddRange(new List<SheepCard>() { SheepCard.JACK_DIAMONDS, SheepCard.N8_CLUBS, SheepCard.N8_SPADES, SheepCard.N8_HEARTS, SheepCard.ACE_HEARTS, SheepCard.QUEEN_HEARTS });
+            player.AddCardRange(new List<SheepCard>() { SheepCard.JACK_DIAMONDS, SheepCard.N8_CLUBS, SheepCard.N8_SPADES, SheepCard.N8_HEARTS, SheepCard.ACE_HEARTS, SheepCard.QUEEN_HEARTS });
 
             var actual = player.LegalCalledAces(handMock.Object);
 
@@ -181,7 +181,7 @@ namespace Sheepshead.Tests
             handMock.Setup(m => m.Buried).Returns(new List<SheepCard>());
             handMock.Setup(m => m.Blinds).Returns(new List<SheepCard>() { SheepCard.ACE_CLUBS, SheepCard.N10_SPADES });
             var player = new HumanPlayer(new Participant());
-            player.Cards.AddRange(new List<SheepCard>() { SheepCard.JACK_DIAMONDS, SheepCard.N8_CLUBS, SheepCard.N8_SPADES, SheepCard.N8_HEARTS, SheepCard.ACE_HEARTS, SheepCard.ACE_SPADES });
+            player.AddCardRange(new List<SheepCard>() { SheepCard.JACK_DIAMONDS, SheepCard.N8_CLUBS, SheepCard.N8_SPADES, SheepCard.N8_HEARTS, SheepCard.ACE_HEARTS, SheepCard.ACE_SPADES });
 
             var actual = player.LegalCalledAces(handMock.Object);
 
@@ -195,7 +195,7 @@ namespace Sheepshead.Tests
             handMock.Setup(m => m.Buried).Returns(new List<SheepCard>());
             handMock.Setup(m => m.Blinds).Returns(new List<SheepCard>() { SheepCard.QUEEN_CLUBS, SheepCard.JACK_SPADES });
             var player = new HumanPlayer(new Participant());
-            player.Cards.AddRange(new List<SheepCard>() { SheepCard.JACK_DIAMONDS, SheepCard.N8_CLUBS, SheepCard.ACE_CLUBS, SheepCard.N9_CLUBS, SheepCard.QUEEN_HEARTS, SheepCard.QUEEN_DIAMONDS });
+            player.AddCardRange(new List<SheepCard>() { SheepCard.JACK_DIAMONDS, SheepCard.N8_CLUBS, SheepCard.ACE_CLUBS, SheepCard.N9_CLUBS, SheepCard.QUEEN_HEARTS, SheepCard.QUEEN_DIAMONDS });
 
             var actual = player.LegalCalledAces(handMock.Object);
 

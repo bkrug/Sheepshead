@@ -10,11 +10,8 @@ namespace Sheepshead.Tests.PlayerMocks
     {
         private bool _doesPick;
         private SheepCard? _calledAceCard;
-        public string Name => throw new NotImplementedException();
-
-        public List<SheepCard> Cards => throw new NotImplementedException();
-
         string IPlayer.Name { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        IReadOnlyList<SheepCard> IPlayer.Cards => throw new NotImplementedException();
 
         public ComputerPlayerPickingMock(bool doesPick, SheepCard? calledAceCard = null)
         {
@@ -60,6 +57,26 @@ namespace Sheepshead.Tests.PlayerMocks
         public bool GoItAlone(IHand hand)
         {
             return false;
+        }
+
+        public void AddCard(SheepCard card)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void RemoveCard(SheepCard card)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void RemoveAllCards()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void AddCardRange(List<SheepCard> cards)
+        {
+            throw new NotImplementedException();
         }
     }
 }

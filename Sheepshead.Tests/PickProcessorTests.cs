@@ -221,6 +221,8 @@ namespace Sheepshead.Tests
             var humanCards = new List<SheepCard>();
             var humanMock = new Mock<IHumanPlayer>();
             humanMock.Setup(m => m.Cards).Returns(humanCards);
+            humanMock.Setup(f => f.AddCard(It.IsAny<SheepCard>())).Callback((SheepCard c) => humanCards.Add(c));
+            humanMock.Setup(f => f.RemoveCard(It.IsAny<SheepCard>())).Callback((SheepCard c) => humanCards.Remove(c));
             var pickProcessorMock = new Mock<IPickProcessor>();
             pickProcessorMock
                 .Setup(m => m.PlayNonHumanPickTurns(It.IsAny<IHand>()))
@@ -298,6 +300,8 @@ namespace Sheepshead.Tests
             var buried = new List<SheepCard>();
             var humanMock = new Mock<IHumanPlayer>();
             humanMock.Setup(m => m.Cards).Returns(playerCards);
+            humanMock.Setup(f => f.AddCard(It.IsAny<SheepCard>())).Callback((SheepCard c) => playerCards.Add(c));
+            humanMock.Setup(f => f.RemoveCard(It.IsAny<SheepCard>())).Callback((SheepCard c) => playerCards.Remove(c));
             var handMock = new Mock<IHand>();
             handMock.Setup(m => m.AddBuried(It.IsAny<SheepCard>())).Callback((SheepCard sc) => buried.Add(sc));
             handMock.Setup(m => m.Buried).Returns(buried);
@@ -319,6 +323,8 @@ namespace Sheepshead.Tests
             var buried = new List<SheepCard>();
             var humanMock = new Mock<IHumanPlayer>();
             humanMock.Setup(m => m.Cards).Returns(playerCards);
+            humanMock.Setup(f => f.AddCard(It.IsAny<SheepCard>())).Callback((SheepCard c) => playerCards.Add(c));
+            humanMock.Setup(f => f.RemoveCard(It.IsAny<SheepCard>())).Callback((SheepCard c) => playerCards.Remove(c));
             var goItAloneSet = false;
             var handMock = new Mock<IHand>();
             handMock.Setup(m => m.AddBuried(It.IsAny<SheepCard>())).Callback((SheepCard sc) => buried.Add(sc));
@@ -366,6 +372,8 @@ namespace Sheepshead.Tests
             handMock.Setup(m => m.Buried).Returns(new List<SheepCard>());
             var pickerCards = new List<SheepCard>() { SheepCard.ACE_CLUBS, SheepCard.KING_DIAMONDS, SheepCard.QUEEN_CLUBS, SheepCard.N7_HEARTS, SheepCard.N10_SPADES, SheepCard.QUEEN_HEARTS, SheepCard.JACK_HEARTS, SheepCard.N9_DIAMONDS };
             pickerMock.Setup(m => m.Cards).Returns(pickerCards);
+            pickerMock.Setup(f => f.AddCard(It.IsAny<SheepCard>())).Callback((SheepCard c) => pickerCards.Add(c));
+            pickerMock.Setup(f => f.RemoveCard(It.IsAny<SheepCard>())).Callback((SheepCard c) => pickerCards.Remove(c));
             var cardsToBury = new List<SheepCard>() { SheepCard.N7_HEARTS, SheepCard.N10_SPADES };
             var partnerCard = SheepCard.ACE_HEARTS;
 

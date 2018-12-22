@@ -476,12 +476,13 @@ namespace Sheepshead.Tests
 
     public class MockPlayer : IPlayer
     {
-        public List<SheepCard> Cards { get; set; }
         public string Name { get; set; }
+
+        private List<SheepCard> _cards = new List<SheepCard>();
+        IReadOnlyList<SheepCard> IPlayer.Cards => _cards;
 
         public MockPlayer()
         {
-            Cards = new List<SheepCard>();
         }
 
         public int QueueRankInTrick(ITrick trick)
@@ -497,6 +498,26 @@ namespace Sheepshead.Tests
         public List<SheepCard> LegalCalledAces(IHand hand)
         {
             throw new NotImplementedException();
+        }
+
+        public void AddCard(SheepCard card)
+        {
+            _cards.Add(card);
+        }
+
+        public void RemoveCard(SheepCard card)
+        {
+            _cards.Remove(card);
+        }
+
+        public void RemoveAllCards()
+        {
+            _cards.Clear();
+        }
+
+        public void AddCardRange(List<SheepCard> cards)
+        {
+            _cards.AddRange(cards);
         }
     }
 }

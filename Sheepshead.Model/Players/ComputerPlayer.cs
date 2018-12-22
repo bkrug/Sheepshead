@@ -19,7 +19,7 @@ namespace Sheepshead.Model.Players
         public List<SheepCard> DropCardsForPick(IHand hand)
         {
             foreach (var card in hand.Blinds.Where(c => !Cards.Contains(c)))
-                Cards.Add(card);
+                AddCard(card);
             return DropCardsForPickInternal(hand);
         }
 

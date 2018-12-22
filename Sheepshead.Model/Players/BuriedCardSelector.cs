@@ -7,10 +7,10 @@ namespace Sheepshead.Model.Players
     {
         public Dictionary<Suit, int> CardsPerSuit { get; }
         private List<IGrouping<Suit, SheepCard>> _acesAndTensPerSuit { get; }
-        private List<SheepCard> _cards;
+        private IReadOnlyList<SheepCard> _cards;
         private List<SheepCard> _acesAndTens;
 
-        public BuriedCardSelector(List<SheepCard> cards)
+        public BuriedCardSelector(IReadOnlyList<SheepCard> cards)
         {
             CardsPerSuit = cards
                 .Where(c => CardUtil.GetSuit(c) != Suit.TRUMP)

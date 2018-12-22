@@ -51,7 +51,7 @@ namespace Sheepshead.Model.Models
         public void Add(IPlayer player, SheepCard card)
         {
             _cards.Add(player, card);
-            player.Cards.Remove(card);
+            player.RemoveCard(card);
             if (IHand.PartnerCard == card)
                 IHand.SetPartner(player, this);
             OnMoveHandler(player, card);
