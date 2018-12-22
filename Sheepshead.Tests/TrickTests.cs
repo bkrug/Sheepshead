@@ -261,32 +261,6 @@ namespace Sheepshead.Tests
             }
         }
 
-        public class MockPlayer : IPlayer
-        {
-            public List<SheepCard> Cards { get; set; }
-            public string Name { get; set; }
-
-            public MockPlayer()
-            {
-                Cards = new List<SheepCard>();
-            }
-
-            public int QueueRankInTrick(ITrick trick)
-            {
-                throw new NotImplementedException();
-            }
-
-            public int QueueRankInHand(IHand hand)
-            {
-                throw new NotImplementedException();
-            }
-
-            public List<SheepCard> LegalCalledAces(IHand hand)
-            {
-                throw new NotImplementedException();
-            }
-        }
-
         [TestMethod]
         public void Trick_SetPartner()
         {
@@ -348,7 +322,7 @@ namespace Sheepshead.Tests
                 for (var cardsInTrick = 0; cardsInTrick < playerCount; ++cardsInTrick)
                 {
                     Assert.IsFalse(trick.IsComplete(), "Trick should not be complete when there are " + cardsInTrick + " cards in the trick and " + playerCount + " players in the game.");
-                    trick.Add(new Player(), 0);
+                    trick.Add(new MockPlayer(), 0);
                 }
                 Assert.IsTrue(trick.IsComplete(), "Trick should be complete when there are " + playerCount + " cards in the trick and " + playerCount + " players in the game.");
             }
@@ -492,6 +466,32 @@ namespace Sheepshead.Tests
                 Assert.IsTrue(event1hit);
                 Assert.IsTrue(event2hit);
             }
+        }
+    }
+
+    public class MockPlayer : IPlayer
+    {
+        public List<SheepCard> Cards { get; set; }
+        public string Name { get; set; }
+
+        public MockPlayer()
+        {
+            Cards = new List<SheepCard>();
+        }
+
+        public int QueueRankInTrick(ITrick trick)
+        {
+            throw new NotImplementedException();
+        }
+
+        public int QueueRankInHand(IHand hand)
+        {
+            throw new NotImplementedException();
+        }
+
+        public List<SheepCard> LegalCalledAces(IHand hand)
+        {
+            throw new NotImplementedException();
         }
     }
 }

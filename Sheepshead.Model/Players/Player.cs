@@ -5,7 +5,7 @@ using Sheepshead.Model.Models;
 
 namespace Sheepshead.Model.Players
 {
-    public class Player : IPlayer
+    public abstract class Player : IPlayer
     {
         public virtual string Name { get; set; }
         public List<SheepCard> Cards { get; } = new List<SheepCard>();

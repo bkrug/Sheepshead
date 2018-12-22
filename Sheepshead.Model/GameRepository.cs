@@ -21,16 +21,16 @@ namespace Sheepshead.Model
 
         public IGame Create(int humanCount, int simpleCount, int intermediateCount, int advancedCount, PartnerMethod partnerMethod, bool leastersGame)
         {
-            var playerList = new List<IPlayer>();
+            var participant = new List<Participant>();
             for (var i = 0; i < humanCount; ++i)
-                playerList.Add(new HumanPlayer());
+                participant.Add(new Participant() { Type = "H" });
             for (var i = 0; i < simpleCount; ++i)
-                playerList.Add(new SimplePlayer());
+                participant.Add(new Participant() { Type = "S" });
             for (var i = 0; i < intermediateCount; ++i)
-                playerList.Add(new IntermediatePlayer());
+                participant.Add(new Participant() { Type = "M" });
             for (var i = 0; i < advancedCount; ++i)
-                playerList.Add(new AdvancedPlayer());
-            var newGame = new Game(playerList, partnerMethod, leastersGame);
+                participant.Add(new Participant() { Type = "I" });
+            var newGame = new Game(participant, partnerMethod, leastersGame);
             Save(newGame);
             newGame.RearrangePlayers();
             return newGame;

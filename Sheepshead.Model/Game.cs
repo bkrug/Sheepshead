@@ -13,7 +13,8 @@ namespace Sheepshead.Model.Models
         public virtual int PlayerCount => Players.Count();
         public int TrickCount => (int)Math.Floor(32d / PlayerCount);
         public int HumanPlayerCount => Players.Count(p => p is IHumanPlayer);
-        public virtual List<IPlayer> Players { get; }
+        private List<IPlayer> _mockPlayerList = null;
+        public virtual List<IPlayer> Players => _mockPlayerList ?? Participants.Select(p => p.Player).ToList();
         public List<IHumanPlayer> UnassignedPlayers => Players.OfType<IHumanPlayer>().Where(p => !p.AssignedToClient).ToList();
         public IRandomWrapper _random { get; private set; }
         private IGameStateDescriber _gameStateDesciber;
@@ -28,7 +29,7 @@ namespace Sheepshead.Model.Models
             TurnType = TurnType
         };
 
-        public Game(List<IPlayer> players, PartnerMethod partnerMethod, bool enableLeasters) : this(players, partnerMethod, null, null)
+        public Game(List<Participant> participants, PartnerMethod partnerMethod, bool enableLeasters) : this(participants, partnerMethod, null, null)
         {
             Hands = new List<Hand>();
             LeastersEnabled = enableLeasters;
@@ -39,10 +40,27 @@ namespace Sheepshead.Model.Models
         /// <summary>
         /// This constructor is for passing in Mocks in unit tests.
         /// </summary>
-        public Game(List<IPlayer> players, PartnerMethod partnerMethod, IRandomWrapper random, IGameStateDescriber gameStateDescriber)
+        public Game(List<Participant> participants, PartnerMethod partnerMethod, IRandomWrapper random, IGameStateDescriber gameStateDescriber)
         {
             Hands = new List<Hand>();
-            Players = players;
+            Participants = participants;
+            PartnerMethodEnum = partnerMethod;
+            _random = random ?? new RandomWrapper();
+            _gameStateDesciber = gameStateDescriber ?? new GameStateDescriber(this);
+            Id = Guid.NewGuid();
+        }
+
+        public Game(List<IPlayer> mockPlayers, PartnerMethod partnerMethod, bool enableLeasters) : this(mockPlayers, partnerMethod, null, null)
+        {
+            Hands = new List<Hand>();
+            LeastersEnabled = enableLeasters;
+            Id = Guid.NewGuid();
+        }
+
+        public Game(List<IPlayer> mockPlayers, PartnerMethod partnerMethod, IRandomWrapper random, IGameStateDescriber gameStateDescriber)
+        {
+            Hands = new List<Hand>();
+            _mockPlayerList = mockPlayers;
             PartnerMethodEnum = partnerMethod;
             _random = random ?? new RandomWrapper();
             _gameStateDesciber = gameStateDescriber ?? new GameStateDescriber(this);

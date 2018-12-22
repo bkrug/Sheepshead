@@ -94,6 +94,7 @@
     <Compile Include="Models\TrickPlay.cs">
       <DependentUpon>SheepsheadModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Participant.cs" />
     <Compile Include="PickPlayerOrderer.cs" />
     <Compile Include="PickProcessor.cs" />
     <Compile Include="Players\IntermediatePlayer.cs" />

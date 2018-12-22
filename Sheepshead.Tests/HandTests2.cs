@@ -16,10 +16,10 @@ namespace Sheepshead.Tests
         [TestMethod]
         public void Hand_Constructor()
         {
-            var playerList = new List<IPlayer>();
+            var participantList = new List<Participant>();
             for (var i = 0; i < 5; ++i)
-                playerList.Add(new Player());
-            var game = new Game(playerList, PartnerMethod.JackOfDiamonds, new RandomWrapper(), null) {
+                participantList.Add(new Participant());
+            var game = new Game(participantList, PartnerMethod.JackOfDiamonds, new RandomWrapper(), null) {
                 Hands = new List<Hand>()
             };
             var hand = new Hand(game);

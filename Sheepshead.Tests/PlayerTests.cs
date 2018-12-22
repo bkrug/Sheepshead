@@ -5,7 +5,6 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using Sheepshead.Model;
 using Sheepshead.Model.Players;
-using Sheepshead.Tests.PlayerMocks;
 using Sheepshead.Model.Models;
 
 namespace Sheepshead.Tests
@@ -20,7 +19,7 @@ namespace Sheepshead.Tests
             var card1 = SheepCard.JACK_CLUBS;
             var card2 = SheepCard.N8_HEARTS;
             mainPlayer.Cards.AddRange(new List<SheepCard>() { card1, card2 });
-            var playerList = new List<IPlayer>() { new Player(), new Player(), mainPlayer, new Player(), new Player() };
+            var playerList = new List<IPlayer>() { new MockPlayer(), new MockPlayer(), mainPlayer, new MockPlayer(), new MockPlayer() };
             {
                 var trickMock = GenerateTrickMock(playerList);
                 trickMock.Setup(m => m.IsLegalAddition(card1, mainPlayer)).Returns(true);
@@ -53,10 +52,10 @@ namespace Sheepshead.Tests
             return handMock;
         }
 
-        private IPlayer player1 = new Player();
-        private IPlayer player2 = new Player();
-        private IPlayer player3 = new Player();
-        private IPlayer player4 = new Player();
+        private IPlayer player1 = new MockPlayer();
+        private IPlayer player2 = new MockPlayer();
+        private IPlayer player3 = new MockPlayer();
+        private IPlayer player4 = new MockPlayer();
 
         [TestMethod]
         public void SimplePlayer_WillPick()
