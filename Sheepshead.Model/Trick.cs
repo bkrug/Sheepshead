@@ -9,8 +9,15 @@ namespace Sheepshead.Model.Models
     {
         private Dictionary<IPlayer, SheepCard> _cards = new Dictionary<IPlayer, SheepCard>();
 
-        public IHand IHand { get; private set; }
-        public IGame IGame { get { return IHand.IGame; } }
+        private IHand _mockHand = null;
+        public IHand IHand {
+            get { return _mockHand ?? Hand; }
+            private set {
+                _mockHand = null;
+                if (value is Hand) Hand = (Hand)value; else _mockHand = value;
+            }
+        }
+        public IGame IGame => IHand.IGame;
         public IPlayer StartingPlayer { get; private set; }
         public virtual Dictionary<IPlayer, SheepCard> CardsPlayed { get { return new Dictionary<IPlayer, SheepCard>(_cards); } }
         public event EventHandler<EventArgs> OnTrickEnd;
