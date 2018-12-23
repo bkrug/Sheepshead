@@ -145,6 +145,7 @@ namespace Sheepshead.Model.Players
 
     public interface IPlayer
     {
+        Participant Participant { get; }
         string Name { get; set; }
         IReadOnlyList<SheepCard> Cards { get; }
         int QueueRankInTrick(ITrick trick);

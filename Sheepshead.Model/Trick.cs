@@ -7,8 +7,6 @@ namespace Sheepshead.Model.Models
 {
     public partial class Trick : ITrick
     {
-        private Dictionary<IPlayer, SheepCard> _cards = new Dictionary<IPlayer, SheepCard>();
-
         private IHand _mockHand = null;
         public IHand IHand {
             get { return _mockHand ?? Hand; }
@@ -19,7 +17,17 @@ namespace Sheepshead.Model.Models
         }
         public IGame IGame => IHand.IGame;
         public IPlayer StartingPlayer { get; private set; }
-        public virtual Dictionary<IPlayer, SheepCard> CardsPlayed { get { return new Dictionary<IPlayer, SheepCard>(_cards); } }
+        public virtual Dictionary<IPlayer, SheepCard> CardsPlayed {
+            get {
+                if (TrickPlays == null)
+                    throw new NullReferenceException("TrickPlays is null");
+                if (TrickPlays.Any(tp => tp.Participant == null))
+                    throw new NullReferenceException("Participant is null");
+                return TrickPlays.Any() 
+                    ? TrickPlays.ToDictionary(tp => tp.Participant.Player, tp => CardUtil.GetCardFromAbbreviation(tp.Card).Value) 
+                    : new Dictionary<IPlayer, SheepCard>();
+            }
+        }
         public event EventHandler<EventArgs> OnTrickEnd;
         public event EventHandler<MoveEventArgs> OnMove;
 
@@ -30,9 +38,10 @@ namespace Sheepshead.Model.Models
                 var indexOfStartingPlayer = Players.IndexOf(StartingPlayer);
                 var playerList = Players.Skip(indexOfStartingPlayer).Union(Players.Take(indexOfStartingPlayer)).ToList();
                 var orderedMoves = new List<KeyValuePair<IPlayer, SheepCard>>();
+                var cards = CardsPlayed;
                 foreach (var player in playerList)
-                    if (_cards.ContainsKey(player))
-                        orderedMoves.Add(new KeyValuePair<IPlayer, SheepCard>( player, _cards[player] ));
+                    if (cards.ContainsKey(player))
+                        orderedMoves.Add(new KeyValuePair<IPlayer, SheepCard>( player, cards[player] ));
                 return orderedMoves;
             } 
         }
@@ -46,11 +55,19 @@ namespace Sheepshead.Model.Models
             IHand = hand;
             IHand.AddTrick(this);
             StartingPlayer = startingPlayerCalculator.GetStartingPlayer(hand, this);
+            if (TrickPlays == null)
+                TrickPlays = new List<TrickPlay>();
         }
 
         public void Add(IPlayer player, SheepCard card)
         {
-            _cards.Add(player, card);
+            TrickPlays.Add(new TrickPlay()
+            {
+                Trick = this,
+                Participant = player.Participant,
+                Card = CardUtil.GetAbbreviation(card),
+                SortOrder = TrickPlays.Count() + 1
+            });
             player.RemoveCard(card);
             if (IHand.PartnerCard == card)
                 IHand.SetPartner(player, this);
@@ -65,14 +82,15 @@ namespace Sheepshead.Model.Models
             if (player.Cards.Count() == 1)
                 return true;
 
+            var cards = CardsPlayed;
             //There are some rules for the lead card in a trick.
-            if (!_cards.Any())
+            if (!cards.Any())
                 return IHand.IGame.PartnerMethodEnum == PartnerMethod.JackOfDiamonds 
                     || IHand.PartnerCard == null
                     || IsLegalStartingCardInCalledAceGame(card, player);
 
             //Other cards must follow suit.
-            var firstCard = _cards.First().Value;
+            var firstCard = cards.First().Value;
             return player.Cards.Contains(card) 
                 && (CardUtil.GetSuit(card) == CardUtil.GetSuit(firstCard) || !player.Cards.Any(c => CardUtil.GetSuit(c) == CardUtil.GetSuit(firstCard)));
         }
@@ -97,11 +115,12 @@ namespace Sheepshead.Model.Models
 
         public TrickWinner Winner()
         {
-            if (!_cards.Any())
+            var cards = CardsPlayed;
+            if (!cards.Any())
                 return null;
-            var firstSuite = CardUtil.GetSuit(_cards.First().Value);
+            var firstSuite = CardUtil.GetSuit(cards.First().Value);
             var validCards = new List<KeyValuePair<IPlayer, SheepCard>>();
-            foreach(var keyValuePair in _cards) {
+            foreach(var keyValuePair in cards) {
                 var suite = CardUtil.GetSuit(keyValuePair.Value);
                 if (suite == firstSuite || suite == Suit.TRUMP)
                     validCards.Add(keyValuePair);
@@ -109,7 +128,7 @@ namespace Sheepshead.Model.Models
             return new TrickWinner()
             {
                 Player = validCards.OrderBy(kvp => CardUtil.GetRank(kvp.Value)).First().Key,
-                Points = _cards.Sum(c => CardUtil.GetPoints(c.Value))
+                Points = cards.Sum(c => CardUtil.GetPoints(c.Value))
             };
         }
 

@@ -22,7 +22,7 @@ public partial class Trick
     public Trick()
     {
 
-        this.TrickPlay = new HashSet<TrickPlay>();
+        this.TrickPlays = new HashSet<TrickPlay>();
 
     }
 
@@ -35,7 +35,7 @@ public partial class Trick
 
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
 
-    public virtual ICollection<TrickPlay> TrickPlay { get; set; }
+    public virtual ICollection<TrickPlay> TrickPlays { get; set; }
 
     public virtual Participant Participant { get; set; }
 

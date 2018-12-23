@@ -409,7 +409,7 @@
           </Key>
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <NavigationProperty Name="Hand" Relationship="SheepsheadModel.FK_Trick_Hand" FromRole="Trick" ToRole="Hand" />
-          <NavigationProperty Name="TrickPlay" Relationship="SheepsheadModel.FK_TrickPlay_Trick" FromRole="Trick" ToRole="TrickPlay" />
+          <NavigationProperty Name="TrickPlays" Relationship="SheepsheadModel.FK_TrickPlay_Trick" FromRole="Trick" ToRole="TrickPlay" />
           <NavigationProperty Name="Participant" Relationship="SheepsheadModel.FK_Trick_Participant" FromRole="Trick" ToRole="Participant" />
         </EntityType>
         <EntityType Name="TrickPlay">

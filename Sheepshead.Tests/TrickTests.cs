@@ -25,8 +25,10 @@ namespace Sheepshead.Tests
 
         private IPlayer GetPlayer(List<SheepCard> hand)
         {
+            var participant = new Participant();
             var playerMock = new Mock<IPlayer>();
             playerMock.Setup(m => m.Cards).Returns(hand);
+            playerMock.Setup(m => m.Participant).Returns(participant);
             return playerMock.Object;
         }
 
@@ -35,6 +37,7 @@ namespace Sheepshead.Tests
         {
             var firstPlayerMock = new Mock<IPlayer>();
             var firstPlayer = firstPlayerMock.Object;
+            firstPlayerMock.Setup(m => m.Participant).Returns(new Participant());
             firstPlayerMock.Setup(m => m.Cards).Returns(new List<SheepCard>() { SheepCard.N9_HEARTS });
             var hand = new List<SheepCard>() {
                 SheepCard.KING_HEARTS, SheepCard.N7_HEARTS, SheepCard.QUEEN_DIAMONDS, SheepCard.N8_CLUBS
@@ -54,6 +57,7 @@ namespace Sheepshead.Tests
             var firstPlayerMock = new Mock<IPlayer>();
             var firstPlayer = firstPlayerMock.Object;
             firstPlayerMock.Setup(m => m.Cards).Returns(new List<SheepCard>() { SheepCard.N9_SPADES });
+            firstPlayerMock.Setup(m => m.Participant).Returns(new Participant());
             var hand = new List<SheepCard>() {
                 SheepCard.KING_HEARTS, SheepCard.N7_HEARTS, SheepCard.QUEEN_CLUBS, SheepCard.N8_CLUBS
             };
@@ -115,6 +119,7 @@ namespace Sheepshead.Tests
             hand.Setup(m => m.IGame.PartnerMethodEnum).Returns(PartnerMethod.CalledAce);
             hand.Setup(m => m.PartnerCard).Returns(SheepCard.ACE_HEARTS);
             var picker = new Mock<IPlayer>();
+            picker.Setup(m => m.Participant).Returns(new Participant());
             picker.Setup(m => m.Cards).Returns(new List<SheepCard>() { SheepCard.N9_DIAMONDS, SheepCard.QUEEN_HEARTS, SheepCard.N8_HEARTS, SheepCard.ACE_CLUBS, SheepCard.KING_CLUBS, SheepCard.N9_HEARTS, });
             var calculator = new Mock<IStartingPlayerCalculator>();
             calculator.Setup(m => m.GetStartingPlayer(hand.Object, It.IsAny<ITrick>())).Returns(picker.Object);
@@ -127,6 +132,7 @@ namespace Sheepshead.Tests
         {
             var startingPlayer = new Mock<IPlayer>();
             startingPlayer.Setup(m => m.Cards).Returns(new List<SheepCard>());
+            startingPlayer.Setup(m => m.Participant).Returns(new Participant());
             var hand = new Mock<IHand>();
             hand.Setup(m => m.PartnerCard).Returns(SheepCard.ACE_HEARTS);
             var picker = new Mock<IPlayer>();
@@ -222,11 +228,11 @@ namespace Sheepshead.Tests
         [TestMethod]
         public void Trick_Winner()
         {
-            var player1 = new MockPlayer();
-            var player2 = new MockPlayer();
-            var player3 = new MockPlayer();
-            var player4 = new MockPlayer();
-            var player5 = new MockPlayer();
+            var player1 = new Participant().Player;
+            var player2 = new Participant().Player;
+            var player3 = new Participant().Player;
+            var player4 = new Participant().Player;
+            var player5 = new Participant().Player;
             {
                 var trick = new Trick(GetHand());
                 trick.Add(player1, SheepCard.N8_HEARTS);
@@ -278,6 +284,7 @@ namespace Sheepshead.Tests
             var player = new Mock<IPlayer>();
             player.Setup(c => c.Name).Returns("DesiredPlayer");
             player.Setup(c => c.Cards).Returns(new List<SheepCard>() { SheepCard.QUEEN_DIAMONDS});
+            player.Setup(c => c.Participant).Returns(new Participant());
             IPlayer partner = player.Object;
             var _methodCalled = false;
             mockHand.Setup(f => f.SetPartner(It.IsAny<IPlayer>(), It.IsAny<ITrick>())).Callback((IPlayer pl, ITrick tr) => {
@@ -366,6 +373,7 @@ namespace Sheepshead.Tests
             var player5 = new Mock<IPlayer>();
             var playerMockList = new List<Mock<IPlayer>>() { player1, player2, player3, player4, player5 };
             playerMockList.ForEach(m => m.Setup(mm => mm.Cards).Returns(new List<SheepCard>()));
+            playerMockList.ForEach(m => m.Setup(mm => mm.Participant).Returns(new Participant()));
             var playerList = playerMockList.Select(m => m.Object).ToList();
             return playerList;
         }
@@ -385,7 +393,8 @@ namespace Sheepshead.Tests
         [TestMethod]
         public void Trick_OrderedMoves()
         {
-            var playerList = GetPlayerList();
+            var participants = new List<Participant>() { new Participant(), new Participant(), new Participant(), new Participant(), new Participant() };
+            var playerList = participants.Select(p => p.Player).ToList();
             var startingPlayer = playerList[3];
             var cardList = new List<SheepCard>() { 0, (SheepCard)1, (SheepCard)2, (SheepCard)3, (SheepCard)4, };
             var trickList = new List<ITrick>();
@@ -480,6 +489,7 @@ namespace Sheepshead.Tests
 
         private List<SheepCard> _cards = new List<SheepCard>();
         IReadOnlyList<SheepCard> IPlayer.Cards => _cards;
+        public Participant Participant { get; } = new Participant();
 
         public MockPlayer()
         {
