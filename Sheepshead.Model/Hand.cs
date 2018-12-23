@@ -23,7 +23,7 @@ namespace Sheepshead.Model.Models
             protected set { Game = (Game)value; } }
         public IReadOnlyList<SheepCard> Blinds => CardUtil.StringToCardList(BlindCards);
         public IReadOnlyList<SheepCard> Buried => CardUtil.StringToCardList(BuriedCards);
-        public List<IPlayer> PlayersRefusingPick { get; } = new List<IPlayer>();
+        public IReadOnlyList<IPlayer> PlayersRefusingPick => this.ParticipantsRefusingPick.Select(p => p.Player).ToList();
         public IPlayer StartingPlayer { get; protected set; }
         public IRandomWrapper _random { get; private set; }
         public bool PickPhaseComplete { get; private set; }
@@ -136,7 +136,7 @@ namespace Sheepshead.Model.Models
 
         public void PlayerWontPick(IPlayer player)
         {
-            PlayersRefusingPick.Add(player);
+            ParticipantsRefusingPick.Add(player.Participant);
         }
 
         public void SetPicker(IPlayer picker, List<SheepCard> burried)
@@ -237,7 +237,7 @@ namespace Sheepshead.Model.Models
         IReadOnlyList<SheepCard> Blinds { get; }
         IReadOnlyList<SheepCard> Buried { get; }
         void AddBuried(SheepCard card);
-        List<IPlayer> PlayersRefusingPick { get; }
+        IReadOnlyList<IPlayer> PlayersRefusingPick { get; }
         List<IPlayer> PlayersWithoutPickTurn { get; }
         IPlayerOrderer PickPlayerOrderer { get; }
         List<ITrick> ITricks { get; }

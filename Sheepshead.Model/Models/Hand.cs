@@ -28,12 +28,12 @@ public partial class Hand
 
         this.Points = new HashSet<Point>();
 
+        this.ParticipantsRefusingPick = new HashSet<Participant>();
+
     }
 
 
     public int Id { get; set; }
-
-    public string RefusingPick { get; set; }
 
     public string PartnerCardString { get; set; }
 
@@ -62,6 +62,10 @@ public partial class Hand
     public virtual Participant PartnerParticipant { get; set; }
 
     public virtual Participant PickerParticipant { get; set; }
+
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+
+    public virtual ICollection<Participant> ParticipantsRefusingPick { get; set; }
 
 }
 

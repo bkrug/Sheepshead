@@ -40,7 +40,7 @@ namespace Sheepshead.Model
                 if (computerPlayer.WillPick(hand))
                     return computerPlayer;
                 else
-                    hand.PlayersRefusingPick.Add(computerPlayer);
+                    hand.PlayerWontPick(computerPlayer);
             }
             return null;
         }
@@ -107,7 +107,7 @@ namespace Sheepshead.Model
             }
             else
             {
-                hand.PlayersRefusingPick.Add(human);
+                hand.PlayerWontPick(human);
                 pickProcessorOuter.PlayNonHumanPickTurns(hand);
             }
             return hand;

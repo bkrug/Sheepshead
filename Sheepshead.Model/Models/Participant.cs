@@ -36,6 +36,8 @@ public partial class Participant
 
         this.Trick = new HashSet<Trick>();
 
+        this.HandWherePickRefused = new HashSet<Hand>();
+
     }
 
 
@@ -78,6 +80,10 @@ public partial class Participant
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
 
     public virtual ICollection<Trick> Trick { get; set; }
+
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+
+    public virtual ICollection<Hand> HandWherePickRefused { get; set; }
 
 }
 

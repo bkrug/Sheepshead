@@ -23,6 +23,7 @@ namespace Sheepshead.Tests
                 new Mock<IHumanPlayer>().Object
             };
             var refusingPlayersOrig = refusingPlayers.ToList();
+            handMock.Setup(m => m.PlayerWontPick(It.IsAny<IPlayer>())).Callback((IPlayer p) => refusingPlayers.Add(p));
             handMock.SetupGet(m => m.PlayersRefusingPick).Returns(refusingPlayers);
             handMock.SetupGet(m => m.IGame.LeastersEnabled).Returns(true);
 
@@ -57,6 +58,7 @@ namespace Sheepshead.Tests
             };
             var refusingPlayersOrig = refusingPlayers.ToList();
             handMock.SetupGet(m => m.PlayersRefusingPick).Returns(refusingPlayers);
+            handMock.Setup(m => m.PlayerWontPick(It.IsAny<IPlayer>())).Callback((IPlayer p) => refusingPlayers.Add(p));
 
             var unplayedPlayersOrig = new List<IPlayer>()
             {
@@ -119,6 +121,7 @@ namespace Sheepshead.Tests
             };
             var refusingPlayersOrig = refusingPlayers.ToList();
             handMock.SetupGet(m => m.PlayersRefusingPick).Returns(refusingPlayers);
+            handMock.Setup(m => m.PlayerWontPick(It.IsAny<IPlayer>())).Callback((IPlayer p) => refusingPlayers.Add(p));
             handMock.Setup(m => m.IGame.PartnerMethodEnum);
 
             var unplayedPlayersOrig = new List<IPlayer>()
@@ -245,12 +248,13 @@ namespace Sheepshead.Tests
         [TestMethod]
         public void PickProcessor_ContinueFromHumanPickTurn_HumanDeclinesButCompterPicks()
         {
-            var humanMock = new Mock<IHumanPlayer>();
-            var expectedPicker = new Mock<IComputerPlayer>().Object;
+            var humanMock = (new Participant() { Type = "H" }).Player as IHumanPlayer;
+            var expectedPicker = (new Participant() { Type = "S" }).Player as IComputerPlayer;
             var refusingPlayers = new List<IPlayer>();
             var handMock = new Mock<IHand>();
             handMock.Setup(m => m.PlayersRefusingPick).Returns(refusingPlayers);
-            handMock.Setup(m => m.PlayersWithoutPickTurn).Returns(new List<IPlayer>() { humanMock.Object, expectedPicker });
+            handMock.Setup(m => m.PlayerWontPick(It.IsAny<IPlayer>())).Callback((IPlayer p) => refusingPlayers.Add(p));
+            handMock.Setup(m => m.PlayersWithoutPickTurn).Returns(new List<IPlayer>() { humanMock, expectedPicker });
             var pickProcessorMock = new Mock<IPickProcessor>();
             var nonHumansGotToPlay = false;
             pickProcessorMock
@@ -262,9 +266,9 @@ namespace Sheepshead.Tests
                 .Returns(expectedPicker);
             
             var pickProcessor = new PickProcessor();
-            pickProcessor.ContinueFromHumanPickTurn(humanMock.Object, false, handMock.Object, pickProcessorMock.Object);
+            pickProcessor.ContinueFromHumanPickTurn(humanMock, false, handMock.Object, pickProcessorMock.Object);
 
-            Assert.IsTrue(refusingPlayers.Contains(humanMock.Object));
+            Assert.IsTrue(refusingPlayers.Contains(humanMock));
             Assert.IsTrue(nonHumansGotToPlay);
         }
 

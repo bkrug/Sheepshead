@@ -25,6 +25,7 @@
         <AssociationConnector Association="SheepsheadModel.FK_Hand_Partner" />
         <AssociationConnector Association="SheepsheadModel.FK_Hand_Picker" />
         <AssociationConnector Association="SheepsheadModel.FK_Trick_Participant" />
+        <AssociationConnector Association="SheepsheadModel.ParticipantRefusingPick" />
         </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

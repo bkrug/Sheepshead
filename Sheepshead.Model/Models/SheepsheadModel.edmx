@@ -29,7 +29,6 @@
           <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="BlindCards" Type="char" MaxLength="6" Nullable="false" />
           <Property Name="BuriedCards" Type="char" MaxLength="6" Nullable="false" />
-          <Property Name="RefusingPick" Type="varchar(max)" Nullable="false" />
           <Property Name="PartnerCard" Type="char" MaxLength="2" />
           <Property Name="GameId" Type="uniqueidentifier" Nullable="false" />
           <Property Name="PartnerParticipantId" Type="int" />
@@ -45,6 +44,14 @@
           <Property Name="Cards" Type="char" MaxLength="36" Nullable="false" />
           <Property Name="Type" Type="nvarchar(max)" Nullable="false" />
           <Property Name="GameId" Type="uniqueidentifier" Nullable="false" />
+        </EntityType>
+        <EntityType Name="ParticipantRefusingPick">
+          <Key>
+            <PropertyRef Name="HandId" />
+            <PropertyRef Name="ParticipantId" />
+          </Key>
+          <Property Name="HandId" Type="int" Nullable="false" />
+          <Property Name="ParticipantId" Type="int" Nullable="false" />
         </EntityType>
         <EntityType Name="Point">
           <Key>
@@ -147,6 +154,30 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_ParticipantRefusingPick_Hand">
+          <End Role="Hand" Type="Self.Hand" Multiplicity="1" />
+          <End Role="ParticipantRefusingPick" Type="Self.ParticipantRefusingPick" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Hand">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ParticipantRefusingPick">
+              <PropertyRef Name="HandId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ParticipantRefusingPick_Participant">
+          <End Role="Participant" Type="Self.Participant" Multiplicity="1" />
+          <End Role="ParticipantRefusingPick" Type="Self.ParticipantRefusingPick" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Participant">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ParticipantRefusingPick">
+              <PropertyRef Name="ParticipantId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_Player_Game">
           <End Role="Game" Type="Self.Game" Multiplicity="1">
             <OnDelete Action="Cascade" />
@@ -238,6 +269,7 @@
           <EntitySet Name="Game" EntityType="Self.Game" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Hand" EntityType="Self.Hand" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Participant" EntityType="Self.Participant" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ParticipantRefusingPick" EntityType="Self.ParticipantRefusingPick" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Point" EntityType="Self.Point" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Trick" EntityType="Self.Trick" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="TrickPlay" EntityType="Self.TrickPlay" Schema="dbo" store:Type="Tables" />
@@ -264,6 +296,14 @@
           <AssociationSet Name="FK_Hand_StartingParticipant" Association="Self.FK_Hand_StartingParticipant">
             <End Role="Participant" EntitySet="Participant" />
             <End Role="Hand" EntitySet="Hand" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ParticipantRefusingPick_Hand" Association="Self.FK_ParticipantRefusingPick_Hand">
+            <End Role="Hand" EntitySet="Hand" />
+            <End Role="ParticipantRefusingPick" EntitySet="ParticipantRefusingPick" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ParticipantRefusingPick_Participant" Association="Self.FK_ParticipantRefusingPick_Participant">
+            <End Role="Participant" EntitySet="Participant" />
+            <End Role="ParticipantRefusingPick" EntitySet="ParticipantRefusingPick" />
           </AssociationSet>
           <AssociationSet Name="FK_Player_Game" Association="Self.FK_Player_Game">
             <End Role="Game" EntitySet="Game" />
@@ -358,6 +398,10 @@
             <End Role="Participant" EntitySet="Participant" />
             <End Role="Trick" EntitySet="Trick" />
           </AssociationSet>
+          <AssociationSet Name="ParticipantRefusingPick" Association="SheepsheadModel.ParticipantRefusingPick">
+            <End Role="Hand" EntitySet="Hand" />
+            <End Role="Participant" EntitySet="Participant" />
+          </AssociationSet>
           </EntityContainer>
         <EntityType Name="Game">
           <Key>
@@ -374,7 +418,6 @@
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="RefusingPick" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="false" />
           <Property Name="PartnerCardString" Type="String" MaxLength="2" FixedLength="true" Unicode="false" />
           <NavigationProperty Name="Game" Relationship="SheepsheadModel.FK_Hand_Game" FromRole="Hand" ToRole="Game" />
           <NavigationProperty Name="StartingParticipant" Relationship="SheepsheadModel.FK_Hand_StartingParticipant" FromRole="Hand" ToRole="Participant" />
@@ -385,6 +428,7 @@
           <NavigationProperty Name="PickerParticipant" Relationship="SheepsheadModel.FK_Hand_Picker" FromRole="Hand" ToRole="Participant" />
           <Property Name="BlindCards" Type="String" Nullable="false" MaxLength="6" FixedLength="true" Unicode="false" />
           <Property Name="BuriedCards" Type="String" Nullable="false" MaxLength="6" FixedLength="true" Unicode="false" />
+          <NavigationProperty Name="ParticipantsRefusingPick" Relationship="SheepsheadModel.ParticipantRefusingPick" FromRole="Hand" ToRole="Participant" />
         </EntityType>
         <EntityType Name="Participant">
           <Key>
@@ -402,6 +446,7 @@
           <NavigationProperty Name="Hands" Relationship="SheepsheadModel.FK_Hand_Partner" FromRole="Participant" ToRole="Hand" />
           <NavigationProperty Name="Hands1" Relationship="SheepsheadModel.FK_Hand_Picker" FromRole="Participant" ToRole="Hand" />
           <NavigationProperty Name="Trick" Relationship="SheepsheadModel.FK_Trick_Participant" FromRole="Participant" ToRole="Trick" />
+          <NavigationProperty Name="HandWherePickRefused" Relationship="SheepsheadModel.ParticipantRefusingPick" FromRole="Participant" ToRole="Hand" />
         </EntityType>
         <EntityType Name="Trick">
           <Key>
@@ -514,6 +559,10 @@
           <End Type="SheepsheadModel.Participant" Role="Participant" Multiplicity="1" />
           <End Type="SheepsheadModel.Trick" Role="Trick" Multiplicity="*" />
         </Association>
+        <Association Name="ParticipantRefusingPick">
+          <End Type="SheepsheadModel.Hand" Role="Hand" Multiplicity="*" />
+          <End Type="SheepsheadModel.Participant" Role="Participant" Multiplicity="*" />
+        </Association>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -535,7 +584,6 @@
                 <ScalarProperty Name="BuriedCards" ColumnName="BuriedCards" />
                 <ScalarProperty Name="BlindCards" ColumnName="BlindCards" />
                 <ScalarProperty Name="PartnerCardString" ColumnName="PartnerCard" />
-                <ScalarProperty Name="RefusingPick" ColumnName="RefusingPick" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>
@@ -671,6 +719,14 @@
             </EndProperty>
             <EndProperty Name="Participant">
               <ScalarProperty Name="Id" ColumnName="ParticipantId" />
+            </EndProperty>
+          </AssociationSetMapping>
+          <AssociationSetMapping Name="ParticipantRefusingPick" TypeName="SheepsheadModel.ParticipantRefusingPick" StoreEntitySet="ParticipantRefusingPick">
+            <EndProperty Name="Participant">
+              <ScalarProperty Name="Id" ColumnName="ParticipantId" />
+            </EndProperty>
+            <EndProperty Name="Hand">
+              <ScalarProperty Name="Id" ColumnName="HandId" />
             </EndProperty>
           </AssociationSetMapping>
           </EntityContainerMapping>

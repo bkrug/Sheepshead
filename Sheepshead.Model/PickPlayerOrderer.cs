@@ -9,7 +9,7 @@ namespace Sheepshead.Model
     public interface IPlayerOrderer
     {
         List<IPlayer> PlayersInTurnOrder(List<IPlayer> players, IPlayer startingPlayer);
-        List<IPlayer> PlayersWithoutTurn(List<IPlayer> playersInPickOrder, List<IPlayer> playersRefusingPick);
+        List<IPlayer> PlayersWithoutTurn(List<IPlayer> playersInPickOrder, IReadOnlyList<IPlayer> playersRefusingPick);
     }
 
     public class PlayerOrderer : IPlayerOrderer
@@ -20,7 +20,7 @@ namespace Sheepshead.Model
             return players.Skip(startIndex).Union(players.Take(startIndex)).ToList();
         }
 
-        public List<IPlayer> PlayersWithoutTurn(List<IPlayer> playersInPickOrder, List<IPlayer> playersRefusingPick)
+        public List<IPlayer> PlayersWithoutTurn(List<IPlayer> playersInPickOrder, IReadOnlyList<IPlayer> playersRefusingPick)
         {
             var finishedCount = playersRefusingPick.Count();
             return playersInPickOrder.Skip(finishedCount).ToList();
