@@ -30,7 +30,7 @@ namespace Sheepshead.Model.Models
         }
         public IReadOnlyList<SheepCard> Blinds => CardUtil.StringToCardList(BlindCards);
         public IReadOnlyList<SheepCard> Buried => CardUtil.StringToCardList(BuriedCards);
-        public IReadOnlyList<IPlayer> PlayersRefusingPick => this.ParticipantsRefusingPick.Select(p => p.Player).ToList();
+        public IReadOnlyList<IPlayer> PlayersRefusingPick => (ParticipantsRefusingPick ?? new List<Participant>()).Select(p => p.Player).ToList();
         public IPlayer StartingPlayer {
             get { return StartingParticipant?.Player; }
             protected set { StartingParticipant = value?.Participant; }
@@ -146,6 +146,7 @@ namespace Sheepshead.Model.Models
 
         public void PlayerWontPick(IPlayer player)
         {
+            ParticipantsRefusingPick = ParticipantsRefusingPick ?? new List<Participant>();
             ParticipantsRefusingPick.Add(player.Participant);
         }
 
