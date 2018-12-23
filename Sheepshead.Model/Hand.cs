@@ -20,11 +20,15 @@ namespace Sheepshead.Model.Models
         public List<IPlayer> Players => IGame.Players;
         public IGame IGame {
             get { return Game; }
-            protected set { Game = (Game)value; } }
+            protected set { Game = (Game)value; }
+        }
         public IReadOnlyList<SheepCard> Blinds => CardUtil.StringToCardList(BlindCards);
         public IReadOnlyList<SheepCard> Buried => CardUtil.StringToCardList(BuriedCards);
         public IReadOnlyList<IPlayer> PlayersRefusingPick => this.ParticipantsRefusingPick.Select(p => p.Player).ToList();
-        public IPlayer StartingPlayer { get; protected set; }
+        public IPlayer StartingPlayer {
+            get { return StartingParticipant?.Player; }
+            protected set { StartingParticipant = value?.Participant; }
+        }
         public IRandomWrapper _random { get; private set; }
         public bool PickPhaseComplete { get; private set; }
         public List<IPlayer> PlayersInTurnOrder => PickPlayerOrderer.PlayersInTurnOrder(Players, StartingPlayer);

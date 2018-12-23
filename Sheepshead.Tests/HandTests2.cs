@@ -32,14 +32,12 @@ namespace Sheepshead.Tests
         [TestMethod]
         public void Hand_StartingPlayer()
         {
-            var player1 = new Mock<IPlayer>();
-            var player2 = new Mock<IPlayer>();
-            var player3 = new Mock<IPlayer>();
-            var player4 = new Mock<IPlayer>();
-            var player5 = new Mock<IPlayer>();
-            var playerMockList = new List<Mock<IPlayer>>() { player3, player4, player5, player1, player2 };
-            var playerList = playerMockList.Select(m => m.Object).ToList();
-            playerMockList.ForEach(m => m.Setup(mm => mm.Cards).Returns(new List<SheepCard>()));
+            var player1 = new Participant().Player;
+            var player2 = new Participant().Player;
+            var player3 = new Participant().Player;
+            var player4 = new Participant().Player;
+            var player5 = new Participant().Player;
+            var playerList = new List<IPlayer>() { player3, player4, player5, player1, player2 };
             var mockGame = new MockGame();
             mockGame.SetPlayers(playerList);
             mockGame.SetPlayerCount(5);
@@ -49,17 +47,17 @@ namespace Sheepshead.Tests
             mockGame.Hands = handList;
             mockGame.SetLastHandIsComplete(true);
 
-            mockHand.SetStartingPlayer(player1.Object);
+            mockHand.SetStartingPlayer(player1);
             IHand hand;
             hand = new Hand(mockGame, new RandomWrapper());
             //We won't test the Starting Player for the first hand in the game.  It should be random.
-            Assert.AreEqual(player2.Object, hand.StartingPlayer, "The starting player for one hand should be the player to the left of the previous starting player.");
+            Assert.AreEqual(player2, hand.StartingPlayer, "The starting player for one hand should be the player to the left of the previous starting player.");
 
             mockGame.Hands.Remove(mockGame.Hands.ElementAt(1));
-            mockHand.SetStartingPlayer(player2.Object);
+            mockHand.SetStartingPlayer(player2);
             hand = new Hand(mockGame, new RandomWrapper());
             //We won't test the Starting Player for the first hand in the game.  It should be random.
-            Assert.AreEqual(player3.Object, hand.StartingPlayer, "Again, the starting player for one hand should be the player to the left of the previous starting player.");
+            Assert.AreEqual(player3, hand.StartingPlayer, "Again, the starting player for one hand should be the player to the left of the previous starting player.");
         }
 
         private class MockHand : Hand
