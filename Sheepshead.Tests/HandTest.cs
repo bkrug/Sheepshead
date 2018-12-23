@@ -785,12 +785,11 @@ namespace Sheepshead.Tests
             hand.SetPicker(null, new List<SheepCard>());
             Assert.IsTrue(hand.Leasters, "When there is no picker, play leasters.");
 
-            var pickerMock = new Mock<IPlayer>();
-            pickerMock.Setup(m => m.Cards).Returns(new List<SheepCard>());
+            var picker = new Participant().Player;
             gameMock.SetPlayerCount(5);
             gameMock.PartnerMethod = "A";
             var hand2 = new Hand(gameMock, null);
-            hand2.SetPicker(pickerMock.Object, new List<SheepCard>());
+            hand2.SetPicker(picker, new List<SheepCard>());
             Assert.IsFalse(hand2.Leasters, "When there is a picker, don't play leasters.");
         }
 

@@ -8,8 +8,14 @@ namespace Sheepshead.Model.Models
 {
     public partial class Hand : IHand
     {
-        public IPlayer Picker { get; private set; }
-        public IPlayer Partner { get; private set; }
+        public IPlayer Picker {
+            get { return PickerParticipant?.Player; }
+            protected set { PickerParticipant = value?.Participant; }
+        }
+        public IPlayer Partner {
+            get { return PartnerParticipant?.Player; }
+            protected set { PartnerParticipant = value?.Participant; }
+        }
         public SheepCard? PartnerCard {
             get { return CardUtil.GetCardFromAbbreviation(PartnerCardString); }
             private set { PartnerCardString = value.HasValue ? CardUtil.GetAbbreviation(value.Value) : string.Empty; }
