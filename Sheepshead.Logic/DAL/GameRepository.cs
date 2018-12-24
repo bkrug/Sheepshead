@@ -2,6 +2,7 @@
 using Sheepshead.Logic.Models;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Sheepshead.Model.DAL
 {
@@ -16,35 +17,31 @@ namespace Sheepshead.Model.DAL
 
         public IEnumerable<Game> GetGames()
         {
-            return context.Game;
+            return context.Game.Include(g => g.Participant);
         }
 
         public Game GetGameById(Guid id)
         {
-            return context.Game.Find(id);
+            return context.Game.Include(g => g.Participant).SingleOrDefault(g => g.Id == id);
         }
 
         public IGame Create(int humanCount, int simpleCount, int intermediateCount, int advancedCount, PartnerMethod partnerMethod, bool leastersGame)
         {
-            var participant = new List<Participant>();
+            var participants = new List<Participant>();
             for (var i = 0; i < humanCount; ++i)
-                participant.Add(new Participant() { Type = "H" });
+                participants.Add(new Participant() { Type = "H" });
             for (var i = 0; i < simpleCount; ++i)
-                participant.Add(new Participant() { Type = "S" });
+                participants.Add(new Participant() { Type = "S" });
             for (var i = 0; i < intermediateCount; ++i)
-                participant.Add(new Participant() { Type = "M" });
+                participants.Add(new Participant() { Type = "M" });
             for (var i = 0; i < advancedCount; ++i)
-                participant.Add(new Participant() { Type = "I" });
-            var newGame = new Game(participant, partnerMethod, leastersGame);
+                participants.Add(new Participant() { Type = "I" });
+            //participants.ForEach(p => { p.Name = string.Empty; p.Cards = string.Empty; });
+            var newGame = new Game(participants, partnerMethod, leastersGame);
             newGame.RearrangePlayers();
             context.Game.Add(newGame);
             return newGame;
         }
-
-        //public void InsertGame(Game game)
-        //{
-        //    context.Games.Add(game);
-        //}
 
         public void DeleteGame(int gameId)
         {

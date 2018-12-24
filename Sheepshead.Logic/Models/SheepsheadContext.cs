@@ -23,8 +23,6 @@ namespace Sheepshead.Logic.Models
         {
             if (!optionsBuilder.IsConfigured)
             {
-//#warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
-                //optionsBuilder.UseSqlServer(@"data source=DESKTOP-SVNAB17\SQLEXPRESS;initial catalog=Sheepshead;integrated security=True;MultipleActiveResultSets=True;App=EntityFramework");
             }
         }
 
@@ -112,11 +110,9 @@ namespace Sheepshead.Logic.Models
                     .HasName("IX_FK_Player_Game");
 
                 entity.Property(e => e.Cards)
-                    .IsRequired()
-                    .HasColumnType("char(36)");
+                    .HasColumnType("char(35)");
 
                 entity.Property(e => e.Name)
-                    .IsRequired()
                     .IsUnicode(false);
 
                 entity.Property(e => e.Type).IsRequired();

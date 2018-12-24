@@ -22,6 +22,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Content Remove="appsettings.Debugger.json" />
+    <Content Remove="appsettings.Development.json" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Remove="ClientApp\components\directions\Directions.tsx" />
     <None Remove="ClientApp\components\game\ActionPane.tsx" />
     <None Remove="ClientApp\components\game\BuryPane.tsx" />
