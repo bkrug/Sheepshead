@@ -5,11 +5,11 @@ namespace Sheepshead.Model
 {
     public class GameService : IGameService
     {
-        private IGameRepository _repository;
+        private IOldGameRepository _repository;
 
         private GameService() { }
 
-        public GameService(IGameRepository repository)
+        public GameService(IOldGameRepository repository)
         {
             _repository = repository;
         }

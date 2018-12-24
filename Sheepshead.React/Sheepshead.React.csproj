@@ -109,7 +109,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Sheepshead.Model\Sheepshead.Model.csproj" />
+    <ProjectReference Include="..\Sheepshead.Logic\Sheepshead.Logic.csproj" />
   </ItemGroup>
 
   <ItemGroup>

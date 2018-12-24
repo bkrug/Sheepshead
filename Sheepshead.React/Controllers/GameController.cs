@@ -2,14 +2,17 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.AspNetCore.Mvc;
+using Sheepshead.Logic.Models;
 using Sheepshead.Model;
-using Sheepshead.Model.Models;
+using Sheepshead.Model.DAL;
 using Sheepshead.Model.Players;
 
 namespace Sheepshead.React.Controllers
 {
     public class GameController : Controller
     {
+        private GameRepository _gameRepository = new GameRepository(null); // new SheepsheadContext());
+
         [HttpGet]
         public IActionResult GameSummary(string gameId)
         {
@@ -26,8 +29,8 @@ namespace Sheepshead.React.Controllers
         public IActionResult HandSummary(string gameId)
         {
             IGame game = GetGame(gameId);
-            var mustRedeal = game.Hands.LastOrDefault(d => d.IsComplete())?.MustRedeal;
-            var hand = game.Hands.LastOrDefault(d => d.PickPhaseComplete);
+            var mustRedeal = game.Hand.LastOrDefault(d => d.IsComplete())?.MustRedeal;
+            var hand = game.Hand.LastOrDefault(d => d.PickPhaseComplete);
             var scores = hand?.Scores();
             return Json(new
             {
@@ -73,12 +76,14 @@ namespace Sheepshead.React.Controllers
         [HttpGet]
         public IActionResult GetPickState(string gameId, string playerId)
         {
-            IGame game = GetGame(gameId);
+            var game = GetGame(gameId);
             var playState = game.PickState(Guid.Parse(playerId));
             if (game.TurnType == TurnType.Pick && !playState.HumanTurn)
             {
                 game.PlayNonHumanPickTurns();
                 playState = game.PickState(Guid.Parse(playerId));
+                _gameRepository.UpdateGame(game);
+                _gameRepository.Save();
             }
             return Json(playState);
         }
@@ -94,12 +99,14 @@ namespace Sheepshead.React.Controllers
         [HttpGet]
         public IActionResult GetPlayState(string gameId, string playerId)
         {
-            IGame game = GetGame(gameId);
+            var game = GetGame(gameId);
             var playState = game.PlayState(Guid.Parse(playerId));
             if (game.TurnType == TurnType.PlayTrick && !playState.HumanTurn)
             {
                 game.PlayNonHumansInTrick();
                 playState = game.PlayState(Guid.Parse(playerId));
+                _gameRepository.UpdateGame(game);
+                _gameRepository.Save();
             }
             return Json(playState);
         }
@@ -109,14 +116,14 @@ namespace Sheepshead.React.Controllers
         {
             var game = GetGame(gameId);
             var trickWinner = game.GetTrickWinners();
-            var hand = game.Hands.LastOrDefault();
+            var hand = game.Hand.LastOrDefault();
             return Json(new
             {
                 trickWinner.Picker,
                 trickWinner.Partner,
                 trickWinner.PartnerCard,
                 trickWinner.TrickWinners,
-                leastersHand = game.Hands.LastOrDefault(d => d.PickPhaseComplete)?.Leasters ?? false,
+                leastersHand = game.Hand.LastOrDefault(d => d.PickPhaseComplete)?.Leasters ?? false,
                 tricks = hand?.ITricks
                              ?.Select(trick =>
                                 new KeyValuePair<string, List<CardSummary>>(
@@ -130,11 +137,13 @@ namespace Sheepshead.React.Controllers
         [HttpPost]
         public IActionResult StartDeck(string gameId, string playerId)
         {
-            IGame game = GetGame(gameId);
-            var mustRedeal = game.Hands.LastOrDefault()?.MustRedeal ?? false;
+            var game = GetGame(gameId);
+            var mustRedeal = game.Hand.LastOrDefault()?.MustRedeal ?? false;
             if (game.TurnState.TurnType == TurnType.BeginHand || mustRedeal)
                 new Hand(game);
             var playState = game.PlayState(Guid.Parse(playerId));
+            _gameRepository.UpdateGame(game);
+            _gameRepository.Save();
             return Json(playState);
         }
 
@@ -143,6 +152,8 @@ namespace Sheepshead.React.Controllers
         {
             GetGameAndHuman(gameId, playerId, out var game, out var human);
             var hand = game.ContinueFromHumanPickTurn(human, willPick);
+            _gameRepository.UpdateGame(game);
+            _gameRepository.Save();
             if (willPick)
                 return Json(game.PlayState(Guid.Parse(playerId)).Blinds);
             return Json(new List<int>());
@@ -155,6 +166,8 @@ namespace Sheepshead.React.Controllers
             var buriedCards = cards.Select(c => Enum.Parse<SheepCard>(c)).ToList();
             var partnerCardVal = !string.IsNullOrEmpty(partnerCard) ? (SheepCard?)Enum.Parse<SheepCard>(partnerCard): null;
             game.BuryCards(human, buriedCards, goItAlone, partnerCardVal);
+            _gameRepository.UpdateGame(game);
+            _gameRepository.Save();
             return Json(new { buryRecorded = true });
         }
 
@@ -165,20 +178,20 @@ namespace Sheepshead.React.Controllers
             var playedCard = Enum.Parse<SheepCard>(card);
             game.RecordTurn(human, playedCard);
             game.PlayNonHumansInTrick();
+            _gameRepository.UpdateGame(game);
+            _gameRepository.Save();
             return Json(new { playRecorded = true });
         }
 
-        private static IGame GetGame(string gameId)
+        private Game GetGame(string gameId)
         {
-            var repository = new GameRepository(GameDictionary.Instance.Dictionary);
-            return repository.GetById(Guid.Parse(gameId));
+            return _gameRepository.GetGameById(Guid.Parse(gameId));
         }
 
-        private static void GetGameAndHuman(string gameId, string playerId, out IGame game, out IHumanPlayer human)
+        private void GetGameAndHuman(string gameId, string playerId, out Game game, out IHumanPlayer human)
         {
             var playerGuid = Guid.Parse(playerId);
-            var repository = new GameRepository(GameDictionary.Instance.Dictionary);
-            game = repository.GetById(Guid.Parse(gameId));
+            game = _gameRepository.GetGameById(Guid.Parse(gameId));
             human = game.Players.OfType<IHumanPlayer>().Single(h => h.Id == playerGuid);
         }
     }

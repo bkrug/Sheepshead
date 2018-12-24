@@ -13,9 +13,9 @@ namespace Sheepshead.Model
         public IDictionary<Guid, IGame> Dictionary { get; } = new SelfClearingDictionary();
     }
 
-    public class GameRepository : BaseRepository<IGame>, IGameRepository
+    public class OldGameRepository : BaseRepository<IGame>, IOldGameRepository
     {
-        public GameRepository(IDictionary<Guid, IGame> gameList) : base(gameList)
+        public OldGameRepository(IDictionary<Guid, IGame> gameList) : base(gameList)
         {
         }
 
@@ -42,7 +42,7 @@ namespace Sheepshead.Model
         }
     }
 
-    public interface IGameRepository : IBaseRepository<IGame>
+    public interface IOldGameRepository : IBaseRepository<IGame>
     {
         IGame Create(int humanCount, int simpleCount, int intermediateCount, int advancedCount, PartnerMethod partnerMethod, bool leastersGame);
         IGame GetGame(Func<IGame, bool> lambda);

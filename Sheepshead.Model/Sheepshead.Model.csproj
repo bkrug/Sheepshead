@@ -54,7 +54,9 @@
     <Compile Include="BaseRepository.cs" />
     <Compile Include="Card.cs" />
     <Compile Include="Game.cs" />
-    <Compile Include="GameRepository.cs" />
+    <Compile Include="DAL\GameContext.cs" />
+    <Compile Include="DAL\GameRepository.cs" />
+    <Compile Include="OldGameRepository.cs" />
     <Compile Include="GameService.cs" />
     <Compile Include="GameStateDescriber.cs" />
     <Compile Include="Hand.cs" />

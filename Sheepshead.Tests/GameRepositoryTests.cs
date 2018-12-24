@@ -15,7 +15,7 @@ namespace Sheepshead.Tests
         public void GameRepository_CreationOfGameRetainsGame()
         {
             var dict = new Dictionary<Guid, IGame>();
-            var repository = new GameRepository(dict);
+            var repository = new OldGameRepository(dict);
             var game = repository.Create(1, 4, 0, 0, PartnerMethod.JackOfDiamonds, true);
             Assert.IsTrue(dict.ContainsKey(game.Id), "Game returned is in the dictionary.");
             Assert.AreSame(dict[game.Id], game, "Game returned is in the dictionary.");
@@ -26,7 +26,7 @@ namespace Sheepshead.Tests
         public void GameRepository_GetGameReturnsCorrectGame()
         {
             var dict = new Dictionary<Guid, IGame>();
-            var repository = new GameRepository(dict);
+            var repository = new OldGameRepository(dict);
             var expected0 = AddGame(dict, new Game(new List<IPlayer>(), PartnerMethod.JackOfDiamonds, new RandomWrapper(), null));
             var expected1 = AddGame(dict, new Game(new List<IPlayer>(), PartnerMethod.JackOfDiamonds, new RandomWrapper(), null));
             var expected2 = AddGame(dict, new Game(new List<IPlayer>(), PartnerMethod.JackOfDiamonds, new RandomWrapper(), null));

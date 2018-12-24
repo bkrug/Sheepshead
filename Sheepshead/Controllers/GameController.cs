@@ -7,16 +7,18 @@ using Sheepshead.Model;
 using Sheepshead.Model.Wrappers;
 using Sheepshead.Model.Players;
 using Sheepshead.Model.Models;
+using Sheepshead.Model.DAL;
 
 namespace Sheepshead.Controllers
 {
     public class GameController : Controller
     {
         private static IRandomWrapper _rnd = new RandomWrapper();
+        private GameRepository _gameRepository = new GameRepository(new GameContext());
 
         public ActionResult Index()
         {
-            var repository = new GameRepository(GameDictionary.Instance.Dictionary);
+            var repository = new OldGameRepository(GameDictionary.Instance.Dictionary);
             return View();
         }
 
@@ -36,7 +38,7 @@ namespace Sheepshead.Controllers
         [HttpPost]
         public ActionResult Create(GameModel model)
         {
-            var repository = new GameRepository(GameDictionary.Instance.Dictionary);
+            var repository = new OldGameRepository(GameDictionary.Instance.Dictionary);
             var newGame = repository.Create(1, model.SimpleCount, model.IntermediateCount, model.AdvancedCount, PartnerMethod.JackOfDiamonds, true);
             return RedirectToAction("Play", new { id = newGame.Id });
         }
@@ -44,7 +46,7 @@ namespace Sheepshead.Controllers
         [HttpGet]
         public ActionResult Play(string id)
         {
-            var repository = new GameRepository(GameDictionary.Instance.Dictionary);
+            var repository = new OldGameRepository(GameDictionary.Instance.Dictionary);
             var game = repository.GetById(Guid.Parse(id));
             var turnState = game.TurnState;
             switch (game.TurnType)
@@ -65,7 +67,7 @@ namespace Sheepshead.Controllers
         [HttpPost]
         public ActionResult Play(string id, int? indexOfCard, bool? willPick, string buriedCardIndicies)
         {
-            var repository = new GameRepository(GameDictionary.Instance.Dictionary);
+            var repository = new OldGameRepository(GameDictionary.Instance.Dictionary);
             var game = repository.GetById(Guid.Parse(id));
             switch (game.TurnType)
             {
