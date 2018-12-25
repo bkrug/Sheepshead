@@ -44,8 +44,6 @@ namespace Sheepshead.Logic.Models
         }
         [NotMapped]
         public IRandomWrapper _random { get; private set; }
-        [NotMapped]
-        public bool PickPhaseComplete { get; private set; }
         public List<IPlayer> PlayersInTurnOrder => PickPlayerOrderer.PlayersInTurnOrder(Players, StartingPlayer);
         public List<IPlayer> PlayersWithoutPickTurn => PickPlayerOrderer.PlayersWithoutTurn(PlayersInTurnOrder, PlayersRefusingPick);
         private IPlayerOrderer _pickPlayerOrderer;

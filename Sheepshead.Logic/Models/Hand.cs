@@ -21,6 +21,7 @@ namespace Sheepshead.Logic.Models
         public int? PartnerParticipantId { get; set; }
         public int? PickerParticipantId { get; set; }
         public int StartingParticipantId { get; set; }
+        public bool PickPhaseComplete { get; private set; }
 
         public Game Game { get; set; }
         public Participant PartnerParticipant { get; set; }

@@ -19,8 +19,13 @@ namespace Sheepshead.Model.DAL
         {
             return context.Game
                 .Include(g => g.Participant)
+                .Include(g => g.Hand).ThenInclude(h => h.StartingParticipant)
+                .Include(g => g.Hand).ThenInclude(h => h.ParticipantRefusingPick)
+                .Include(g => g.Hand).ThenInclude(h => h.PickerParticipant)
+                .Include(g => g.Hand).ThenInclude(h => h.PartnerParticipant)
                 .Include(g => g.Hand)
-                .ThenInclude(h => h.Trick)
+                    .ThenInclude(h => h.Trick)
+                        .ThenInclude(t => t.TrickPlay)
                 .SingleOrDefault(g => g.Id == id);
         }
 
