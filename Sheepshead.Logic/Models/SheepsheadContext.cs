@@ -74,13 +74,13 @@ namespace Sheepshead.Logic.Models
 
                 entity.Property(e => e.BlindCards)
                     .IsRequired()
-                    .HasColumnType("char(6)");
+                    .HasColumnType("nchar(6)");
 
                 entity.Property(e => e.BuriedCards)
                     .IsRequired()
-                    .HasColumnType("char(6)");
+                    .HasColumnType("nchar(6)");
 
-                entity.Property(e => e.PartnerCard).HasColumnType("char(2)");
+                entity.Property(e => e.PartnerCard).HasColumnType("nchar(2)");
 
                 entity.HasOne(d => d.Game)
                     .WithMany(p => p.Hand)
@@ -110,7 +110,7 @@ namespace Sheepshead.Logic.Models
                     .HasName("IX_FK_Player_Game");
 
                 entity.Property(e => e.Cards)
-                    .HasColumnType("char(35)");
+                    .HasColumnType("nchar(35)");
 
                 entity.Property(e => e.Name)
                     .HasColumnType("nvarchar(max)")
@@ -188,7 +188,7 @@ namespace Sheepshead.Logic.Models
 
                 entity.Property(e => e.Card)
                     .IsRequired()
-                    .HasColumnType("char(2)");
+                    .HasColumnType("nchar(2)");
 
                 entity.HasOne(d => d.Participant)
                     .WithMany(p => p.TrickPlay)

@@ -189,10 +189,10 @@ namespace Sheepshead.Model
             { SheepCard.JACK_SPADES, "J♠" },
             { SheepCard.JACK_HEARTS, "J♥" },
             { SheepCard.JACK_DIAMONDS, "J♦" },
-            { SheepCard.N10_CLUBS, "10♣" },
-            { SheepCard.N10_SPADES, "10♠" },
-            { SheepCard.N10_HEARTS, "10♥" },
-            { SheepCard.N10_DIAMONDS, "10♦" },
+            { SheepCard.N10_CLUBS, "T♣" },
+            { SheepCard.N10_SPADES, "T♠" },
+            { SheepCard.N10_HEARTS, "T♥" },
+            { SheepCard.N10_DIAMONDS, "T♦" },
             { SheepCard.N9_CLUBS, "9♣" },
             { SheepCard.N9_SPADES, "9♠" },
             { SheepCard.N9_HEARTS, "9♥" },
@@ -254,7 +254,7 @@ namespace Sheepshead.Model
 
         public static List<SheepCard> StringToCardList(string cards)
         {
-            return (cards ?? string.Empty).Split(';')
+            return (cards?.Trim() ?? string.Empty).Split(';')
                 .Where(c => !string.IsNullOrEmpty(c))
                 .Select(c => GetCardFromAbbreviation(c).Value)
                 .ToList();
