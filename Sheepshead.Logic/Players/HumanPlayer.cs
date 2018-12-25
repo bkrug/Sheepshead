@@ -14,13 +14,13 @@ namespace Sheepshead.Model.Players
         public Guid AssignToClient(string name)
         {
             AssignedToClient = true;
+            Participant.Guid = Guid.NewGuid();
             Name = name;
-            return Id;
+            return Participant.Guid;
         }
 
         public HumanPlayer(Participant participant) : base(participant)
         {
-            Participant.Guid = Guid.NewGuid();
         }
     }
 
