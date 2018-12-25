@@ -7,8 +7,10 @@ namespace Sheepshead.Model.Players
 {
     public class HumanPlayer : Player, IHumanPlayer
     {
-        public bool AssignedToClient { get; private set; } = false;
-        public Guid Id { get; } = Guid.NewGuid();
+        public bool AssignedToClient {
+            get { return Participant.AssignedToClient; }
+            private set { Participant.AssignedToClient = value; } }
+        public Guid Id => Participant.Guid;
         public Guid AssignToClient(string name)
         {
             AssignedToClient = true;
@@ -18,6 +20,7 @@ namespace Sheepshead.Model.Players
 
         public HumanPlayer(Participant participant) : base(participant)
         {
+            Participant.Guid = Guid.NewGuid();
         }
     }
 

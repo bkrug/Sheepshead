@@ -80,7 +80,7 @@ namespace Sheepshead.Logic.Models
                     .IsRequired()
                     .HasColumnType("char(6)");
 
-                entity.Property(e => e.PartnerCardEnum).HasColumnType("char(2)");
+                entity.Property(e => e.PartnerCard).HasColumnType("char(2)");
 
                 entity.HasOne(d => d.Game)
                     .WithMany(p => p.Hand)
@@ -113,9 +113,12 @@ namespace Sheepshead.Logic.Models
                     .HasColumnType("char(35)");
 
                 entity.Property(e => e.Name)
+                    .HasColumnType("nvarchar(max)")
                     .IsUnicode(false);
 
-                entity.Property(e => e.Type).IsRequired();
+                entity.Property(e => e.Type)
+                    .HasColumnType("char(1)")
+                    .IsRequired();
 
                 entity.HasOne(d => d.Game)
                     .WithMany(p => p.Participant)
@@ -160,7 +163,7 @@ namespace Sheepshead.Logic.Models
                 entity.HasIndex(e => e.HandId)
                     .HasName("IX_FK_Trick_Hand");
 
-                entity.HasIndex(e => e.ParticipantId)
+                entity.HasIndex(e => e.StartingParticipantId)
                     .HasName("IX_FK_Trick_Participant");
 
                 entity.HasOne(d => d.Hand)
@@ -171,7 +174,7 @@ namespace Sheepshead.Logic.Models
 
                 entity.HasOne(d => d.Participant)
                     .WithMany(p => p.Trick)
-                    .HasForeignKey(d => d.ParticipantId)
+                    .HasForeignKey(d => d.StartingParticipantId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Trick_Participant");
             });

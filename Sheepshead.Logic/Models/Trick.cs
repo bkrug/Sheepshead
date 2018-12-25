@@ -12,7 +12,7 @@ namespace Sheepshead.Logic.Models
 
         public int Id { get; set; }
         public int HandId { get; set; }
-        public int ParticipantId { get; set; }
+        public int StartingParticipantId { get; set; }
 
         public Hand Hand { get; set; }
         public Participant Participant { get; set; }

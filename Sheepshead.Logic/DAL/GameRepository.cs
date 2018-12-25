@@ -15,14 +15,13 @@ namespace Sheepshead.Model.DAL
             this.context = context;
         }
 
-        public IEnumerable<Game> GetGames()
-        {
-            return context.Game.Include(g => g.Participant);
-        }
-
         public Game GetGameById(Guid id)
         {
-            return context.Game.Include(g => g.Participant).SingleOrDefault(g => g.Id == id);
+            return context.Game
+                .Include(g => g.Participant)
+                .Include(g => g.Hand)
+                .ThenInclude(h => h.Trick)
+                .SingleOrDefault(g => g.Id == id);
         }
 
         public IGame Create(int humanCount, int simpleCount, int intermediateCount, int advancedCount, PartnerMethod partnerMethod, bool leastersGame)
@@ -36,7 +35,6 @@ namespace Sheepshead.Model.DAL
                 participants.Add(new Participant() { Type = "M" });
             for (var i = 0; i < advancedCount; ++i)
                 participants.Add(new Participant() { Type = "I" });
-            //participants.ForEach(p => { p.Name = string.Empty; p.Cards = string.Empty; });
             var newGame = new Game(participants, partnerMethod, leastersGame);
             newGame.RearrangePlayers();
             context.Game.Add(newGame);
