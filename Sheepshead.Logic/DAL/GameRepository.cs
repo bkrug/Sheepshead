@@ -28,13 +28,13 @@ namespace Sheepshead.Model.DAL
         {
             var participants = new List<Participant>();
             for (var i = 0; i < humanCount; ++i)
-                participants.Add(new Participant() { Type = "H" });
+                participants.Add(new Participant() { Type = Participant.TYPE_HUMAN });
             for (var i = 0; i < simpleCount; ++i)
-                participants.Add(new Participant() { Type = "S" });
+                participants.Add(new Participant() { Type = Participant.TYPE_SIMPLE });
             for (var i = 0; i < intermediateCount; ++i)
-                participants.Add(new Participant() { Type = "M" });
+                participants.Add(new Participant() { Type = Participant.TYPE_INTERMEDIATE });
             for (var i = 0; i < advancedCount; ++i)
-                participants.Add(new Participant() { Type = "I" });
+                participants.Add(new Participant() { Type = Participant.TYPE_ADVANCED });
             var newGame = new Game(participants, partnerMethod, leastersGame);
             newGame.RearrangePlayers();
             context.Game.Add(newGame);
