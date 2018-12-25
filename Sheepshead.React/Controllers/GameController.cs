@@ -11,7 +11,12 @@ namespace Sheepshead.React.Controllers
 {
     public class GameController : Controller
     {
-        private GameRepository _gameRepository = new GameRepository(null); // new SheepsheadContext());
+        private readonly GameRepository _gameRepository;
+
+        public GameController(SheepsheadContext context)
+        {
+            _gameRepository = new GameRepository(context);
+        }
 
         [HttpGet]
         public IActionResult GameSummary(string gameId)

@@ -10,8 +10,8 @@ namespace Sheepshead.React.Controllers
 {
     public class SetupController : Controller
     {
-        private GameRepository _gameRepository;
-        private IConfiguration _config;
+        private readonly GameRepository _gameRepository;
+        private readonly IConfiguration _config;
 
         public SetupController(IConfiguration config, SheepsheadContext context)
         {
