@@ -1,7 +1,6 @@
 ﻿import '../../css/setup.css';
 import * as React from 'react';
 import { RouteComponentProps } from 'react-router';
-import ReactDOM from 'react-dom';
 import { IdUtils } from '../IdUtils';
 
 export interface RegistrationWaitState {
