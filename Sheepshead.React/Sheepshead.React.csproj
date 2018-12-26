@@ -27,24 +27,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Remove="ClientApp\components\directions\Directions.tsx" />
-    <None Remove="ClientApp\components\game\ActionPane.tsx" />
-    <None Remove="ClientApp\components\game\BuryPane.tsx" />
-    <None Remove="ClientApp\components\game\Card.tsx" />
-    <None Remove="ClientApp\components\game\CheatSheet.tsx" />
-    <None Remove="ClientApp\components\game\CheatSheetModal.tsx" />
-    <None Remove="ClientApp\components\game\HandSummaryPane.tsx" />
-    <None Remove="ClientApp\components\game\PIckPane.tsx" />
-    <None Remove="ClientApp\components\game\PlayPane.tsx" />
-    <None Remove="ClientApp\components\game\PlayState.tsx" />
-    <None Remove="ClientApp\components\game\RegistrationWait.tsx" />
-    <None Remove="ClientApp\components\game\TrickPane.tsx" />
-    <None Remove="ClientApp\components\IdUtils.tsx" />
-    <None Remove="ClientApp\components\setup\GameFull.tsx" />
-    <None Remove="ClientApp\components\setup\GameSetup.tsx" />
-    <None Remove="ClientApp\components\setup\OnOffRadio.tsx" />
-    <None Remove="ClientApp\components\setup\PlayerCountRadio.tsx" />
-    <None Remove="ClientApp\components\setup\RegisterHuman.tsx" />
     <None Remove="wwwroot\img\1.png" />
     <None Remove="wwwroot\img\10.png" />
     <None Remove="wwwroot\img\11.png" />
@@ -115,27 +97,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Sheepshead.Logic\Sheepshead.Logic.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <TypeScriptCompile Include="ClientApp\components\directions\Directions.tsx" />
-    <TypeScriptCompile Include="ClientApp\components\game\BuryPane.tsx" />
-    <TypeScriptCompile Include="ClientApp\components\game\CheatSheet.tsx" />
-    <TypeScriptCompile Include="ClientApp\components\game\CheatSheetModal.tsx" />
-    <TypeScriptCompile Include="ClientApp\components\game\HandSummaryPane.tsx" />
-    <TypeScriptCompile Include="ClientApp\components\game\TrickPane.tsx" />
-    <TypeScriptCompile Include="ClientApp\components\game\PickPane.tsx" />
-    <TypeScriptCompile Include="ClientApp\components\game\ActionPane.tsx" />
-    <TypeScriptCompile Include="ClientApp\components\game\Card.tsx" />
-    <TypeScriptCompile Include="ClientApp\components\game\PlayPane.tsx" />
-    <TypeScriptCompile Include="ClientApp\components\game\PlayState.tsx" />
-    <TypeScriptCompile Include="ClientApp\components\setup\OnOffRadio.tsx" />
-    <TypeScriptCompile Include="ClientApp\components\setup\RegistrationWait.tsx" />
-    <TypeScriptCompile Include="ClientApp\components\IdUtils.tsx" />
-    <TypeScriptCompile Include="ClientApp\components\setup\GameFull.tsx" />
-    <TypeScriptCompile Include="ClientApp\components\setup\GameSetup.tsx" />
-    <TypeScriptCompile Include="ClientApp\components\setup\PlayerCountRadio.tsx" />
-    <TypeScriptCompile Include="ClientApp\components\setup\RegisterHuman.tsx" />
   </ItemGroup>
 
   <Target Name="DebugRunWebpack" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('wwwroot\dist') ">

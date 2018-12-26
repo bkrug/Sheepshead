@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 
-namespace Sheepshead.Model
+namespace Sheepshead.Logic
 {
     public static class TypeExtenders
     {

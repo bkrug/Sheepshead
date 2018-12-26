@@ -1,10 +1,7 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
-using Microsoft.EntityFrameworkCore;
-using Sheepshead.Logic;
 using Sheepshead.Logic.Players;
 using Sheepshead.Logic.Wrappers;
 

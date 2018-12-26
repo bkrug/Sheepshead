@@ -25,7 +25,7 @@ namespace Sheepshead.Logic.Models
             get { return CardUtil.GetCardFromAbbreviation(PartnerCard); }
             private set { PartnerCard = value.HasValue ? CardUtil.GetAbbreviation(value.Value) : string.Empty; }
         }
-        public List<ITrick> ITricks { get { return Trick == null ? new List<ITrick>() : Trick.OfType<ITrick>().ToList(); } }
+        public List<ITrick> ITricks { get { return Trick == null ? new List<ITrick>() : Trick.OrderBy(t => t.Id).OfType<ITrick>().ToList(); } }
         public event EventHandler<EventArgs> OnHandEnd;
         public int PlayerCount => IGame.PlayerCount;
         public List<IPlayer> Players => IGame.Players;
@@ -36,7 +36,11 @@ namespace Sheepshead.Logic.Models
         }
         public IReadOnlyList<SheepCard> Blinds => CardUtil.StringToCardList(BlindCards);
         public IReadOnlyList<SheepCard> Buried => CardUtil.StringToCardList(BuriedCards);
-        public IReadOnlyList<IPlayer> PlayersRefusingPick => (ParticipantRefusingPick ?? new List<ParticipantRefusingPick>()).Select(p => p.Participant.Player).ToList();
+        public IReadOnlyList<IPlayer> PlayersRefusingPick => 
+            (ParticipantRefusingPick ?? new List<ParticipantRefusingPick>())
+            .OrderBy(p => p.Participant.SortOrder)
+            .Select(p => p.Participant.Player)
+            .ToList();
         [NotMapped]
         public IPlayer StartingPlayer {
             get { return StartingParticipant?.Player; }
@@ -137,7 +141,7 @@ namespace Sheepshead.Logic.Models
 
         private void SetStartingPlayer()
         {
-            var index = IGame.Hand.ToList().IndexOf(this);
+            var index = IGame.Hand.IndexOf(this);
             var indexOfPlayer = (index == 0)
                 ? _random.Next(IGame.PlayerCount)
                 : IGame.Players.IndexOf(IGame.Hand.ElementAt(index - 1).StartingPlayer) + 1;
