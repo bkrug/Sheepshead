@@ -86,15 +86,15 @@ namespace Sheepshead.Logic.Models
             if (player.Cards.Count() == 1)
                 return true;
 
-            var cards = CardsPlayed;
+            var moves = OrderedMoves;
             //There are some rules for the lead card in a trick.
-            if (!cards.Any())
+            if (!moves.Any())
                 return IHand.IGame.PartnerMethodEnum == PartnerMethod.JackOfDiamonds 
                     || IHand.PartnerCardEnum == null
                     || IsLegalStartingCardInCalledAceGame(card, player);
 
             //Other cards must follow suit.
-            var firstCard = cards.First().Value;
+            var firstCard = moves.First().Value;
             return player.Cards.Contains(card) 
                 && (CardUtil.GetSuit(card) == CardUtil.GetSuit(firstCard) || !player.Cards.Any(c => CardUtil.GetSuit(c) == CardUtil.GetSuit(firstCard)));
         }
