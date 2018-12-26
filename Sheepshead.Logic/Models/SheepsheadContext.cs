@@ -172,7 +172,7 @@ namespace Sheepshead.Logic.Models
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Trick_Hand");
 
-                entity.HasOne(d => d.Participant)
+                entity.HasOne(d => d.StartingParticipant)
                     .WithMany(p => p.Trick)
                     .HasForeignKey(d => d.StartingParticipantId)
                     .OnDelete(DeleteBehavior.ClientSetNull)

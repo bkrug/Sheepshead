@@ -20,7 +20,7 @@ namespace Sheepshead.Logic.Models
         }
         public IGame IGame => IHand.IGame;
         [NotMapped]
-        public IPlayer StartingPlayer { get; private set; }
+        public IPlayer StartingPlayer { get { return StartingParticipant.Player; } private set { StartingParticipant = value.Participant; } }
         public virtual Dictionary<IPlayer, SheepCard> CardsPlayed {
             get {
                 if (TrickPlay == null)

@@ -26,6 +26,9 @@ namespace Sheepshead.Model.DAL
                 .Include(g => g.Hand)
                     .ThenInclude(h => h.Trick)
                         .ThenInclude(t => t.TrickPlay)
+                .Include(g => g.Hand)
+                    .ThenInclude(h => h.Trick)
+                        .ThenInclude(t => t.StartingParticipant)
                 .SingleOrDefault(g => g.Id == id);
         }
 
