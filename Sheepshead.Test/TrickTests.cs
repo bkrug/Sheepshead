@@ -37,13 +37,15 @@ namespace Sheepshead.Tests
         {
             var firstPlayerMock = new Mock<IPlayer>();
             var firstPlayer = firstPlayerMock.Object;
+            var startingPlayerCalcMock = new Mock<IStartingPlayerCalculator>();
+            startingPlayerCalcMock.Setup(m => m.GetStartingPlayer(It.IsAny<IHand>(), It.IsAny<ITrick>())).Returns(firstPlayer);
             firstPlayerMock.Setup(m => m.Participant).Returns(new Participant());
             firstPlayerMock.Setup(m => m.Cards).Returns(new List<SheepCard>() { SheepCard.N9_HEARTS });
             var hand = new List<SheepCard>() {
                 SheepCard.KING_HEARTS, SheepCard.N7_HEARTS, SheepCard.QUEEN_DIAMONDS, SheepCard.N8_CLUBS
             };
             var player = GetPlayer(hand);
-            var trick = new Trick(GetHand());
+            var trick = new Trick(GetHand(), startingPlayerCalcMock.Object);
             trick.Add(firstPlayer, SheepCard.N9_HEARTS);
             Assert.IsTrue(trick.IsLegalAddition(SheepCard.N7_HEARTS, player), "A hearts is part of the same suite.");
             Assert.IsFalse(trick.IsLegalAddition(SheepCard.N8_CLUBS, player), "A clubs is not part of the same suite.");
@@ -56,13 +58,15 @@ namespace Sheepshead.Tests
         {
             var firstPlayerMock = new Mock<IPlayer>();
             var firstPlayer = firstPlayerMock.Object;
+            var startingPlayerCalcMock = new Mock<IStartingPlayerCalculator>();
+            startingPlayerCalcMock.Setup(m => m.GetStartingPlayer(It.IsAny<IHand>(), It.IsAny<ITrick>())).Returns(firstPlayer);
             firstPlayerMock.Setup(m => m.Cards).Returns(new List<SheepCard>() { SheepCard.N9_SPADES });
             firstPlayerMock.Setup(m => m.Participant).Returns(new Participant());
             var hand = new List<SheepCard>() {
                 SheepCard.KING_HEARTS, SheepCard.N7_HEARTS, SheepCard.QUEEN_CLUBS, SheepCard.N8_CLUBS
             };
             var player = GetPlayer(hand);
-            var trick = new Trick(GetHand());
+            var trick = new Trick(GetHand(), startingPlayerCalcMock.Object);
             trick.Add(firstPlayer, SheepCard.N9_SPADES);
             Assert.IsTrue(trick.IsLegalAddition(SheepCard.N7_HEARTS, player), "There is no spades in the hand. Hearts is fine.");
             Assert.IsTrue(trick.IsLegalAddition(SheepCard.N8_CLUBS, player), "There is no spades in the hand. Clubs is fine.");
@@ -74,7 +78,9 @@ namespace Sheepshead.Tests
         {
             var firstPlayerMock = new Mock<IPlayer>();
             var firstPlayer = firstPlayerMock.Object;
-            var trick = new Trick(GetHand());
+            var startingPlayerCalcMock = new Mock<IStartingPlayerCalculator>();
+            startingPlayerCalcMock.Setup(m => m.GetStartingPlayer(It.IsAny<IHand>(), It.IsAny<ITrick>())).Returns(firstPlayer);
+            var trick = new Trick(GetHand(), startingPlayerCalcMock.Object);
             var hand = new List<SheepCard>() {
                 SheepCard.KING_HEARTS, SheepCard.N7_HEARTS, SheepCard.QUEEN_CLUBS, SheepCard.N8_CLUBS
             };
@@ -233,8 +239,10 @@ namespace Sheepshead.Tests
             var player3 = new Participant().Player;
             var player4 = new Participant().Player;
             var player5 = new Participant().Player;
+            var startingPlayerCalcMock = new Mock<IStartingPlayerCalculator>();
+            startingPlayerCalcMock.Setup(m => m.GetStartingPlayer(It.IsAny<IHand>(), It.IsAny<ITrick>())).Returns(player1);
             {
-                var trick = new Trick(GetHand());
+                var trick = new Trick(GetHand(), startingPlayerCalcMock.Object);
                 trick.Add(player1, SheepCard.N8_HEARTS);
                 trick.Add(player2, SheepCard.ACE_SPADES);
                 trick.Add(player3, SheepCard.N10_HEARTS);
@@ -245,7 +253,7 @@ namespace Sheepshead.Tests
                 Assert.AreEqual(36, winner.Points, "Expected points for 2 Aces, 1 King, 1 Ten.");
             }
             {
-                var trick = new Trick(GetHand());
+                var trick = new Trick(GetHand(), startingPlayerCalcMock.Object);
                 trick.Add(player1, SheepCard.N8_HEARTS);
                 trick.Add(player2, SheepCard.N8_DIAMONDS);
                 trick.Add(player3, SheepCard.N10_HEARTS);
@@ -256,7 +264,7 @@ namespace Sheepshead.Tests
                 Assert.AreEqual(25, winner.Points, "Expected points for 1 Aces, 1 Ten, 1 King.");
             }
             {
-                var trick = new Trick(GetHand());
+                var trick = new Trick(GetHand(), startingPlayerCalcMock.Object);
                 trick.Add(player1, SheepCard.N8_DIAMONDS);
                 trick.Add(player2, SheepCard.ACE_SPADES);
                 trick.Add(player3, SheepCard.N10_HEARTS);
@@ -272,6 +280,8 @@ namespace Sheepshead.Tests
         public void Trick_SetPartner()
         {
             var firstPlayer = new Mock<IPlayer>().Object;
+            var startingPlayerCalcMock = new Mock<IStartingPlayerCalculator>();
+            startingPlayerCalcMock.Setup(m => m.GetStartingPlayer(It.IsAny<IHand>(), It.IsAny<ITrick>())).Returns(firstPlayer);
             var trickList = new List<ITrick>();
             var mockHand = new Mock<IHand>();
             mockHand.Setup(m => m.PartnerCardEnum).Returns(SheepCard.QUEEN_DIAMONDS);
@@ -280,7 +290,7 @@ namespace Sheepshead.Tests
             mockHand.Setup(m => m.ITricks).Returns(trickList);
             mockHand.Setup(m => m.AddTrick(It.IsAny<ITrick>())).Callback((ITrick newTrick) => { trickList.Add(newTrick); });
             var hand = mockHand.Object;
-            var trick = new Trick(hand);
+            var trick = new Trick(hand, startingPlayerCalcMock.Object);
             var player = new Mock<IPlayer>();
             player.Setup(c => c.Name).Returns("DesiredPlayer");
             player.Setup(c => c.Cards).Returns(new List<SheepCard>() { SheepCard.QUEEN_DIAMONDS});
@@ -300,16 +310,19 @@ namespace Sheepshead.Tests
         public void Trick_AddToHand()
         {
             var firstPlayer = new Mock<IPlayer>().Object;
+            var startingPlayerCalcMock = new Mock<IStartingPlayerCalculator>();
+            startingPlayerCalcMock.Setup(m => m.GetStartingPlayer(It.IsAny<IHand>(), It.IsAny<ITrick>())).Returns(firstPlayer);
             var mockHand = new Mock<IHand>();
             var trickList = new List<ITrick>();
             mockHand.Setup(m => m.ITricks).Returns(trickList);
             ITrick passedTrick = null;
+            var trickMock = new Mock<ITrick>();
             mockHand.Setup(m => m.AddTrick(It.IsAny<ITrick>())).Callback((ITrick givenTrick) =>
             {
                 trickList.Add(givenTrick);
                 passedTrick = givenTrick;
             });
-            var trick = new Trick(mockHand.Object);
+            var trick = new Trick(mockHand.Object, startingPlayerCalcMock.Object);
             Assert.AreSame(trick, passedTrick, "When a trick is instantiated, it should be added to a given hand.");
         }
 
@@ -317,6 +330,8 @@ namespace Sheepshead.Tests
         public void Trick_IsComplete()
         {
             var firstPlayer = new Mock<IPlayer>().Object;
+            var startingPlayerCalcMock = new Mock<IStartingPlayerCalculator>();
+            startingPlayerCalcMock.Setup(m => m.GetStartingPlayer(It.IsAny<IHand>(), It.IsAny<ITrick>())).Returns(firstPlayer);
             var mockHand = new Mock<IHand>();
             mockHand.Setup(m => m.Players).Returns(new List<IPlayer>());
             mockHand.Setup(m => m.PartnerCardEnum).Returns(SheepCard.N10_DIAMONDS);
@@ -326,7 +341,7 @@ namespace Sheepshead.Tests
             foreach (var playerCount in new[] { 3, 5 })
             {
                 mockHand.Setup(m => m.PlayerCount).Returns(playerCount);
-                var trick = new Trick(mockHand.Object);
+                var trick = new Trick(mockHand.Object, startingPlayerCalcMock.Object);
                 for (var cardsInTrick = 0; cardsInTrick < playerCount; ++cardsInTrick)
                 {
                     Assert.IsFalse(trick.IsComplete(), "Trick should not be complete when there are " + cardsInTrick + " cards in the trick and " + playerCount + " players in the game.");
@@ -337,31 +352,33 @@ namespace Sheepshead.Tests
         }
 
         [TestMethod]
-        public void Trick_StartingPlayer()
+        public void Trick_StartingPlayer_FirstTrick()
         {
             var player1 = new Mock<IPlayer>();
-            var player2 = new Mock<IPlayer>();
-            var player3 = new Mock<IPlayer>();
             var player4 = new Mock<IPlayer>();
-            var player5 = new Mock<IPlayer>();
-            var playerMockList = new List<Mock<IPlayer>>() { player1, player2, player3, player4, player5 };
-            playerMockList.ForEach(m => m.Setup(mm => mm.Cards).Returns(new List<SheepCard>()));
-            var playerList = playerMockList.Select(m => m.Object).ToList();
+            var mockNewTrick = new Mock<ITrick>();
+            var trickList = new List<ITrick>() { mockNewTrick.Object };
             var mockHand = new Mock<IHand>();
             mockHand.Setup(m => m.StartingPlayer).Returns(player1.Object);
-            var trickList = new List<ITrick>();
             mockHand.Setup(m => m.ITricks).Returns(trickList);
-            mockHand.Setup(m => m.AddTrick(It.IsAny<ITrick>())).Callback((ITrick newTrick) => { trickList.Add(newTrick); });
+            var startingPlayer = new StartingPlayerCalculator().GetStartingPlayer(mockHand.Object, mockNewTrick.Object);
+            Assert.AreEqual(player1.Object, startingPlayer, "The starting player for first trick should be the same as the starting player for the hand.");
+        }
+
+        [TestMethod]
+        public void Trick_StartingPlayer_SecondTrick()
+        {
+            var player1 = new Mock<IPlayer>();
+            var player4 = new Mock<IPlayer>();
+            var mockNewTrick = new Mock<ITrick>();
             var mockCompleteTrick = new Mock<ITrick>();
             mockCompleteTrick.Setup(m => m.Winner()).Returns(new TrickWinner() { Player = player4.Object, Points = 94 });
-
-            var trick1 = new Trick(mockHand.Object);
-            Assert.AreEqual(player1.Object, trick1.StartingPlayer, "The starting player for first trick should be the same as the starting player for the hand.");
-
-            trickList.Remove(trick1);
-            trickList.Add(mockCompleteTrick.Object);
-            var trick2 = new Trick(mockHand.Object);
-            Assert.AreEqual(player4.Object, trick2.StartingPlayer, "The starting player for the second trick should be the winner of the previous trick.");
+            var trickList = new List<ITrick>() { mockCompleteTrick.Object, mockNewTrick.Object };
+            var mockHand = new Mock<IHand>();
+            mockHand.Setup(m => m.StartingPlayer).Returns(player1.Object);
+            mockHand.Setup(m => m.ITricks).Returns(trickList);
+            var startingPlayer = new StartingPlayerCalculator().GetStartingPlayer(mockHand.Object, mockNewTrick.Object);
+            Assert.AreEqual(player4.Object, startingPlayer, "The starting player for the second trick should be the winner of the previous trick.");
         }
 
         private static List<IPlayer> GetPlayerList()
