@@ -11,7 +11,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sheepshead.Model", "Sheepsh
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sheepshead.React", "Sheepshead.React\Sheepshead.React.csproj", "{6D14F136-E64F-4C57-831B-D9A1F711DB66}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sheepshead.Logic", "Sheepshead.Logic\Sheepshead.Logic.csproj", "{6C9D2DD2-1DE7-4A6F-A8E0-507705DFF661}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sheepshead.Logic", "Sheepshead.Logic\Sheepshead.Logic.csproj", "{6C9D2DD2-1DE7-4A6F-A8E0-507705DFF661}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sheepshead.Test", "Sheepshead.Test\Sheepshead.Test.csproj", "{9DD4BA8E-06CE-4AE1-9C21-93CE729E65B5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,6 +41,10 @@ Global
 		{6C9D2DD2-1DE7-4A6F-A8E0-507705DFF661}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6C9D2DD2-1DE7-4A6F-A8E0-507705DFF661}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6C9D2DD2-1DE7-4A6F-A8E0-507705DFF661}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9DD4BA8E-06CE-4AE1-9C21-93CE729E65B5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9DD4BA8E-06CE-4AE1-9C21-93CE729E65B5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9DD4BA8E-06CE-4AE1-9C21-93CE729E65B5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9DD4BA8E-06CE-4AE1-9C21-93CE729E65B5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
