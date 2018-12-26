@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Sheepshead.Model
+using Sheepshead.Logic; namespace Sheepshead.Logic
 {
     public interface IGameStateDescriber
     {

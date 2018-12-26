@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Sheepshead.Logic.Models;
 
-namespace Sheepshead.Model.Players
+namespace Sheepshead.Logic.Players
 {
     public class SimplePlayer : ComputerPlayer
     {

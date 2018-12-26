@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using Sheepshead.Logic.Models;
-using Sheepshead.Model.Players;
+using Sheepshead.Logic.Players;
 
-namespace Sheepshead.Model
+using Sheepshead.Logic; namespace Sheepshead.Logic
 {
     public interface IPickProcessor
     {

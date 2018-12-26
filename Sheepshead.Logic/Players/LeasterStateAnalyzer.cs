@@ -1,7 +1,7 @@
 ﻿using Sheepshead.Logic.Models;
 using System.Linq;
 
-namespace Sheepshead.Model.Players
+namespace Sheepshead.Logic.Players
 {
     public interface ILeasterStateAnalyzer
     {

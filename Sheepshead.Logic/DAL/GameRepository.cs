@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Sheepshead.Model.DAL
+namespace Sheepshead.Logic.DAL
 {
     public class GameRepository : IDisposable
     {

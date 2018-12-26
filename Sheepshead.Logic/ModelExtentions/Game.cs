@@ -4,9 +4,9 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
-using Sheepshead.Model;
-using Sheepshead.Model.Players;
-using Sheepshead.Model.Wrappers;
+using Sheepshead.Logic;
+using Sheepshead.Logic.Players;
+using Sheepshead.Logic.Wrappers;
 
 namespace Sheepshead.Logic.Models
 {

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Sheepshead.Model.Wrappers
+namespace Sheepshead.Logic.Wrappers
 {
     public interface IRandomWrapper
     {

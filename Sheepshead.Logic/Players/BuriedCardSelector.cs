@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
-namespace Sheepshead.Model.Players
+namespace Sheepshead.Logic.Players
 {
     public class BuriedCardSelector
     {

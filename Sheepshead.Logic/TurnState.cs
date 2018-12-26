@@ -2,7 +2,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Sheepshead.Model
+using Sheepshead.Logic; namespace Sheepshead.Logic
 {
     public class TurnState
     {

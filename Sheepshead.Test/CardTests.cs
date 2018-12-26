@@ -1,6 +1,6 @@
 ﻿using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Sheepshead.Model;
+using Sheepshead.Logic;
 
 namespace Sheepshead.Tests
 {

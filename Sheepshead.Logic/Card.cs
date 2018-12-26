@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Collections.Generic;
 
-namespace Sheepshead.Model
+using Sheepshead.Logic; namespace Sheepshead.Logic
 {
     public enum StandardSuite
     {

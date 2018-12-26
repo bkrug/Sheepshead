@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using Sheepshead.Model;
+using Sheepshead.Logic;
 using Sheepshead.Logic.Models;
-using Sheepshead.Model.Players;
+using Sheepshead.Logic.Players;
 
 namespace Sheepshead.Tests.PlayerMocks
 {

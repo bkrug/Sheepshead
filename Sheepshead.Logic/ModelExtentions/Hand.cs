@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
-using Sheepshead.Model;
-using Sheepshead.Model.Players;
-using Sheepshead.Model.Wrappers;
+using Sheepshead.Logic;
+using Sheepshead.Logic.Players;
+using Sheepshead.Logic.Wrappers;
 
 namespace Sheepshead.Logic.Models
 {
@@ -137,7 +137,7 @@ namespace Sheepshead.Logic.Models
 
         private void SetStartingPlayer()
         {
-            var index = IGame.Hand.IndexOf(this);
+            var index = IGame.Hand.ToList().IndexOf(this);
             var indexOfPlayer = (index == 0)
                 ? _random.Next(IGame.PlayerCount)
                 : IGame.Players.IndexOf(IGame.Hand.ElementAt(index - 1).StartingPlayer) + 1;

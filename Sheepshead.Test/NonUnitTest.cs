@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Sheepshead.Model;
-using Sheepshead.Model.Players;
+using Sheepshead.Logic;
+using Sheepshead.Logic.Players;
 using System.Text;
 using System.IO;
 using Moq;

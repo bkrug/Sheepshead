@@ -1,5 +1,5 @@
 ﻿using System;
-using Sheepshead.Model.Players;
+using Sheepshead.Logic.Players;
 
 namespace Sheepshead.Logic.Models
 {

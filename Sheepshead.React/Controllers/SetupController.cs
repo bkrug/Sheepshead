@@ -3,7 +3,7 @@ using System.Linq;
 using System.Reflection;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
-using Sheepshead.Model.DAL;
+using Sheepshead.Logic.DAL;
 using Sheepshead.Logic.Models;
 
 namespace Sheepshead.React.Controllers

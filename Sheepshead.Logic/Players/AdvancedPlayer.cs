@@ -1,9 +1,10 @@
-﻿using Sheepshead.Logic.Models;
+﻿using Sheepshead.Logic;
+using Sheepshead.Logic.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Sheepshead.Model.Players
+namespace Sheepshead.Logic.Players
 {
     public class AdvancedPlayer : IntermediatePlayer
     {

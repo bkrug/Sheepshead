@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.AspNetCore.Mvc;
 using Sheepshead.Logic.Models;
-using Sheepshead.Model;
-using Sheepshead.Model.DAL;
-using Sheepshead.Model.Players;
+using Sheepshead.Logic;
+using Sheepshead.Logic.DAL;
+using Sheepshead.Logic.Players;
 
 namespace Sheepshead.React.Controllers
 {

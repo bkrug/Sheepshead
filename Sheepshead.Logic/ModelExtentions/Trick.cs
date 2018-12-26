@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
-using Sheepshead.Model;
-using Sheepshead.Model.Players;
+using Sheepshead.Logic;
+using Sheepshead.Logic.Players;
 
 namespace Sheepshead.Logic.Models
 {

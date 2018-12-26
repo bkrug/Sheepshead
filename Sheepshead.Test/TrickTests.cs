@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
-using Sheepshead.Model;
+using Sheepshead.Logic;
 using Sheepshead.Logic.Models;
-using Sheepshead.Model.Players;
+using Sheepshead.Logic.Players;
 
 namespace Sheepshead.Tests
 {
