@@ -176,8 +176,8 @@ namespace Sheepshead.Logic.Models
                 HumanTurn = humanPlayer != null,
                 CurrentTurn = currentPlayer?.Name,
                 RequestingPlayerTurn = humanPlayer?.Id == requestingPlayerId,
-                CardsPlayed = tricks.Select(t => t.CardsPlayed
-                                                  .Select(cp => new Tuple<string, CardSummary>(cp.Key.Name, CardUtil.GetCardSummary(cp.Value)))
+                CardsPlayed = tricks.Select(t => t.OrderedMoves
+                                                  .Select(om => new Tuple<string, CardSummary>(om.Key.Name, CardUtil.GetCardSummary(om.Value)))
                                                   .ToList()
                                            )?.ToList(),
                 PlayerCards = requestingPlayer?.Cards?.Select(c => CardUtil.GetCardSummary(c, currentTrick?.IsLegalAddition(c, requestingPlayer)))?.ToList()
