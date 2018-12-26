@@ -207,7 +207,7 @@ namespace Sheepshead.Model
             { SheepCard.N7_DIAMONDS, "7♥" }
         };
 
-        public static Dictionary<StandardSuite, string> SuiteLetter { get; } = new Dictionary<StandardSuite, string>()
+        public static Dictionary<StandardSuite, string> SuitLetter { get; } = new Dictionary<StandardSuite, string>()
         {
             { StandardSuite.CLUBS, "♣" }, { StandardSuite.DIAMONDS, "♦" }, { StandardSuite.HEARTS, "♥" }, { StandardSuite.SPADES, "♠" }
         };
@@ -244,7 +244,7 @@ namespace Sheepshead.Model
         {
             var cardType = GetFace(card);
             var suit = GetStandardSuit(card);
-            return CardTypeLetter[cardType] + SuiteLetter[suit];
+            return CardTypeLetter[cardType] + SuitLetter[suit];
         }
 
         public static string CardListToString(List<SheepCard> cardList)
