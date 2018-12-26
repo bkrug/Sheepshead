@@ -1,10 +1,8 @@
 {
   "compilerOptions": {
-    //I'm setting this true so React Dnd doesn't create compile errors.
-    "allowSyntheticDefaultImports": true,
+    "allowSyntheticDefaultImports": false,
     "baseUrl": ".",
-    //I'm setting this true so React Dnd doesn't create compile errors.
-    "experimentalDecorators": true,
+    "experimentalDecorators": false,
     "module": "es2015",
     "moduleResolution": "node",
     "target": "es5",
