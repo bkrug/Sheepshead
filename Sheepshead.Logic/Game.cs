@@ -17,7 +17,7 @@ namespace Sheepshead.Logic.Models
         public int TrickCount => (int)Math.Floor(32d / PlayerCount);
         public int HumanPlayerCount => Players.Count(p => p is IHumanPlayer);
         private List<IPlayer> _mockPlayerList = null;
-        public virtual List<IPlayer> Players => _mockPlayerList ?? Participant.Select(p => p.Player).ToList();
+        public virtual List<IPlayer> Players => _mockPlayerList ?? Participant.OrderBy(p => p.SortOrder).Select(p => p.Player).ToList();
         public List<IHumanPlayer> UnassignedPlayers => Players.OfType<IHumanPlayer>().Where(p => !p.AssignedToClient).ToList();
         [NotMapped]
         public IRandomWrapper _random { get; private set; } = new RandomWrapper();
@@ -71,12 +71,18 @@ namespace Sheepshead.Logic.Models
 
         public void RearrangePlayers()
         {
+            var sortOrder = 0;
+            foreach (var player in Players.ToList())
+                player.Participant.SortOrder = ++sortOrder;
+
             for (var i = PlayerCount - 1; i > 0; --i)
             {
                 var j = _random.Next(i);
-                var swap = Players[i];
-                Players[i] = Players[j];
-                Players[j] = swap;
+                var participantI = Players[i].Participant;
+                var particiapntJ = Players[j].Participant;
+                var swap = participantI.SortOrder;
+                participantI.SortOrder = particiapntJ.SortOrder;
+                particiapntJ.SortOrder = swap;
             }
         }
 
