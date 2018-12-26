@@ -204,7 +204,7 @@ namespace Sheepshead.Model
             { SheepCard.N7_CLUBS, "7♣" },
             { SheepCard.N7_SPADES, "7♠" },
             { SheepCard.N7_HEARTS, "7♥" },
-            { SheepCard.N7_DIAMONDS, "7♥" }
+            { SheepCard.N7_DIAMONDS, "7♦" }
         };
 
         public static Dictionary<StandardSuite, string> SuitLetter { get; } = new Dictionary<StandardSuite, string>()
