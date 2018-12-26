@@ -24,6 +24,7 @@ namespace Sheepshead.Logic.Models
         public Guid GameId { get; set; }
         public bool AssignedToClient { get; set; }
         public Guid Guid { get; set; }
+        public int SortOrder { get; set; }
 
         public Game Game { get; set; }
         public ICollection<Coin> Coin { get; set; }

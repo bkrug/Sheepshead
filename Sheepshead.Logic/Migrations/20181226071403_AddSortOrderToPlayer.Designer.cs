@@ -11,9 +11,10 @@ using System;
 namespace Sheepshead.Logic.Migrations
 {
     [DbContext(typeof(SheepsheadContext))]
-    partial class SheepsheadContextModelSnapshot : ModelSnapshot
+    [Migration("20181226071403_AddSortOrderToPlayer")]
+    partial class AddSortOrderToPlayer
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
