@@ -54,7 +54,8 @@ input[value="Play"] {
     bottom: 0;
     height: 6vmin;
     text-align: center;
-    width: 100%;
+    left: 0;
+    right: 0;
 }
 
 textarea {
