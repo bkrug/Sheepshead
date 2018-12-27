@@ -12,17 +12,6 @@ namespace Sheepshead.Tests
     [TestClass]
     public class TrickTests
     {
-        private IHand GetHand()
-        {
-            var handMock = new Mock<IHand>();
-            var trickList = new List<ITrick>();
-            handMock.Setup(m => m.ITricks).Returns(trickList);
-            handMock.Setup(m => m.PartnerCardEnum).Returns(SheepCard.KING_CLUBS);
-            handMock.Setup(m => m.AddTrick(It.IsAny<ITrick>())).Callback((ITrick newTrick) => { trickList.Add(newTrick); });
-            handMock.Setup(m => m.IGame.PartnerMethodEnum).Returns(PartnerMethod.JackOfDiamonds);
-            return handMock.Object;
-        }
-
         private IPlayer GetPlayer(List<SheepCard> hand)
         {
             var participant = new Participant();
@@ -55,17 +44,16 @@ namespace Sheepshead.Tests
         [TestMethod]
         public void Trick_IsLegal_PlayerDoesNotHaveSuit()
         {
-            var firstPlayerMock = new Mock<IPlayer>();
-            var firstPlayer = firstPlayerMock.Object;
+            var firstPlayer = new Participant() { Cards = "9♠" }.Player;
+            var player = new Participant() { Cards = "K♥;7♥;Q♣;8♣" }.Player;
             var startingPlayerCalcMock = new Mock<IStartingPlayerCalculator>();
             startingPlayerCalcMock.Setup(m => m.GetStartingPlayer(It.IsAny<IHand>(), It.IsAny<ITrick>())).Returns(firstPlayer);
-            firstPlayerMock.Setup(m => m.Cards).Returns(new List<SheepCard>() { SheepCard.N9_SPADES });
-            firstPlayerMock.Setup(m => m.Participant).Returns(new Participant());
-            var hand = new List<SheepCard>() {
-                SheepCard.KING_HEARTS, SheepCard.N7_HEARTS, SheepCard.QUEEN_CLUBS, SheepCard.N8_CLUBS
-            };
-            var player = GetPlayer(hand);
-            var trick = new Trick(GetHand(), startingPlayerCalcMock.Object);
+            var handMock = new Mock<IHand>();
+            handMock.Setup(m => m.Players).Returns(new List<IPlayer>());
+            handMock.Setup(m => m.ITricks).Returns(new List<ITrick>());
+            handMock.Setup(m => m.IGame.PartnerMethodEnum).Returns(PartnerMethod.JackOfDiamonds);
+            handMock.Setup(m => m.PartnerCardEnum).Returns(SheepCard.JACK_DIAMONDS);
+            var trick = new Trick(handMock.Object, startingPlayerCalcMock.Object);
             trick.Add(firstPlayer, SheepCard.N9_SPADES);
             Assert.IsTrue(trick.IsLegalAddition(SheepCard.N7_HEARTS, player), "There is no spades in the hand. Hearts is fine.");
             Assert.IsTrue(trick.IsLegalAddition(SheepCard.N8_CLUBS, player), "There is no spades in the hand. Clubs is fine.");
@@ -94,17 +82,18 @@ namespace Sheepshead.Tests
         [TestMethod]
         public void Trick_IsLegal_PickerCannotLeadWithLastCardOfCalledSuit()
         {
-            var picker = new Mock<IPlayer>();
-            picker.Setup(m => m.Cards).Returns(new List<SheepCard>() { SheepCard.N9_HEARTS, SheepCard.N9_DIAMONDS, SheepCard.QUEEN_HEARTS, SheepCard.N9_CLUBS, SheepCard.ACE_CLUBS, SheepCard.KING_CLUBS });
+            var picker = new Participant() { Cards = "9♥;9♦;Q♥;9♣;A♣;K♣" }.Player;
             var hand = new Mock<IHand>();
             hand.Setup(m => m.Buried).Returns(new List<SheepCard>() { SheepCard.N10_CLUBS, SheepCard.N10_SPADES });
             hand.Setup(m => m.IGame.PartnerMethodEnum).Returns(PartnerMethod.CalledAce);
             hand.Setup(m => m.PartnerCardEnum).Returns(SheepCard.ACE_HEARTS);
-            hand.Setup(m => m.Picker).Returns(picker.Object);
+            hand.Setup(m => m.Picker).Returns(picker);
+            hand.Setup(m => m.ITricks).Returns(new List<ITrick>());
+            hand.Setup(m => m.Players).Returns(new List<IPlayer>() { picker });
             var calculator = new Mock<IStartingPlayerCalculator>();
-            calculator.Setup(m => m.GetStartingPlayer(hand.Object, It.IsAny<ITrick>())).Returns(picker.Object);
+            calculator.Setup(m => m.GetStartingPlayer(hand.Object, It.IsAny<ITrick>())).Returns(picker);
             var trick = new Trick(hand.Object, calculator.Object);
-            Assert.IsFalse(trick.IsLegalAddition(SheepCard.N9_HEARTS, picker.Object), "Picker has no other hearts, so this cannot be the lead card.");
+            Assert.IsFalse(trick.IsLegalAddition(SheepCard.N9_HEARTS, picker), "Picker has no other hearts, so this cannot be the lead card.");
         }
 
         [TestMethod]
@@ -157,19 +146,19 @@ namespace Sheepshead.Tests
         [TestMethod]
         public void Trick_IsLegal_PickerLeads_OtherTrickLedWithSameSuit()
         {
-            var picker = new Mock<IPlayer>();
-            picker.Setup(m => m.Cards).Returns(new List<SheepCard>() { SheepCard.N9_HEARTS, SheepCard.N9_DIAMONDS, SheepCard.QUEEN_HEARTS, SheepCard.N9_CLUBS, SheepCard.ACE_CLUBS, SheepCard.KING_CLUBS });
+            var picker = new Participant() { Cards = "9♥;9♦;Q♥;9♣;A♣;K♣" }.Player;
             var previousTrick = new Mock<ITrick>();
             previousTrick.Setup(m => m.CardsPlayed).Returns(new Dictionary<IPlayer, SheepCard>() { { new Mock<IPlayer>().Object, SheepCard.N7_HEARTS } });
             var hand = new Mock<IHand>();
             hand.Setup(m => m.IGame.PartnerMethodEnum).Returns(PartnerMethod.CalledAce);
             hand.Setup(m => m.PartnerCardEnum).Returns(SheepCard.ACE_HEARTS);
-            hand.Setup(m => m.Picker).Returns(picker.Object);
+            hand.Setup(m => m.Picker).Returns(picker);
             hand.Setup(m => m.ITricks).Returns(new List<ITrick>() { previousTrick.Object });
+            hand.Setup(m => m.Players).Returns(new List<IPlayer>());
             var calculator = new Mock<IStartingPlayerCalculator>();
-            calculator.Setup(m => m.GetStartingPlayer(hand.Object, It.IsAny<ITrick>())).Returns(picker.Object);
+            calculator.Setup(m => m.GetStartingPlayer(hand.Object, It.IsAny<ITrick>())).Returns(picker);
             var trick = new Trick(hand.Object, calculator.Object);
-            Assert.IsTrue(trick.IsLegalAddition(SheepCard.N9_HEARTS, picker.Object), "Picker has no other hearts, but hearts were led in a previous trick.");
+            Assert.IsTrue(trick.IsLegalAddition(SheepCard.N9_HEARTS, picker), "Picker has no other hearts, but hearts were led in a previous trick.");
         }
 
         [TestMethod]
@@ -247,10 +236,15 @@ namespace Sheepshead.Tests
             var player3 = new Participant().Player;
             var player4 = new Participant().Player;
             var player5 = new Participant().Player;
+            var hand = new Mock<IHand>();
+            hand.Setup(m => m.ITricks).Returns(new List<ITrick>());
+            hand.Setup(m => m.Players).Returns(new List<IPlayer>() { player1, player2, player3, player4, player5 });
+            hand.Setup(m => m.IGame.PartnerMethodEnum).Returns(PartnerMethod.CalledAce);
+            hand.Setup(m => m.PartnerCardEnum).Returns(SheepCard.ACE_SPADES);
             var startingPlayerCalcMock = new Mock<IStartingPlayerCalculator>();
             startingPlayerCalcMock.Setup(m => m.GetStartingPlayer(It.IsAny<IHand>(), It.IsAny<ITrick>())).Returns(player1);
             {
-                var trick = new Trick(GetHand(), startingPlayerCalcMock.Object);
+                var trick = new Trick(hand.Object, startingPlayerCalcMock.Object);
                 trick.Add(player1, SheepCard.N8_HEARTS);
                 trick.Add(player2, SheepCard.ACE_SPADES);
                 trick.Add(player3, SheepCard.N10_HEARTS);
@@ -261,7 +255,7 @@ namespace Sheepshead.Tests
                 Assert.AreEqual(36, winner.Points, "Expected points for 2 Aces, 1 King, 1 Ten.");
             }
             {
-                var trick = new Trick(GetHand(), startingPlayerCalcMock.Object);
+                var trick = new Trick(hand.Object, startingPlayerCalcMock.Object);
                 trick.Add(player1, SheepCard.N8_HEARTS);
                 trick.Add(player2, SheepCard.N8_DIAMONDS);
                 trick.Add(player3, SheepCard.N10_HEARTS);
@@ -272,7 +266,7 @@ namespace Sheepshead.Tests
                 Assert.AreEqual(25, winner.Points, "Expected points for 1 Aces, 1 Ten, 1 King.");
             }
             {
-                var trick = new Trick(GetHand(), startingPlayerCalcMock.Object);
+                var trick = new Trick(hand.Object, startingPlayerCalcMock.Object);
                 trick.Add(player1, SheepCard.N8_DIAMONDS);
                 trick.Add(player2, SheepCard.ACE_SPADES);
                 trick.Add(player3, SheepCard.N10_HEARTS);
