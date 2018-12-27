@@ -119,12 +119,12 @@ namespace Sheepshead.Logic.Models
 
         public TrickWinner Winner()
         {
-            var cards = CardsPlayed;
-            if (!cards.Any())
+            var moves = OrderedMoves;
+            if (!moves.Any())
                 return null;
-            var firstSuite = CardUtil.GetSuit(cards.First().Value);
+            var firstSuite = CardUtil.GetSuit(moves.First().Value);
             var validCards = new List<KeyValuePair<IPlayer, SheepCard>>();
-            foreach(var keyValuePair in cards) {
+            foreach(var keyValuePair in moves) {
                 var suite = CardUtil.GetSuit(keyValuePair.Value);
                 if (suite == firstSuite || suite == Suit.TRUMP)
                     validCards.Add(keyValuePair);
@@ -132,7 +132,7 @@ namespace Sheepshead.Logic.Models
             return new TrickWinner()
             {
                 Player = validCards.OrderBy(kvp => CardUtil.GetRank(kvp.Value)).First().Key,
-                Points = cards.Sum(c => CardUtil.GetPoints(c.Value))
+                Points = moves.Sum(c => CardUtil.GetPoints(c.Value))
             };
         }
 

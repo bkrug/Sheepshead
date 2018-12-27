@@ -45,7 +45,7 @@ namespace Sheepshead.React.Controllers
                              .Select(trick =>
                                 new KeyValuePair<string, List<CardSummary>> (
                                     trick.Winner().Player.Name,
-                                    trick.CardsPlayed.Select(c => CardUtil.GetCardSummary(c.Value)).ToList()
+                                    trick.OrderedMoves.Select(c => CardUtil.GetCardSummary(c.Value)).ToList()
                                 )
                              ),
                 mustRedeal,
@@ -133,7 +133,7 @@ namespace Sheepshead.React.Controllers
                              ?.Select(trick =>
                                 new KeyValuePair<string, List<CardSummary>>(
                                     trick.Winner()?.Player?.Name ?? "",
-                                    trick.CardsPlayed.Select(c => CardUtil.GetCardSummary(c.Value)).ToList()
+                                    trick.OrderedMoves.Select(c => CardUtil.GetCardSummary(c.Value)).ToList()
                                 )
                              ),
             });
