@@ -174,40 +174,41 @@ namespace Sheepshead.Tests
         [TestMethod]
         public void Trick_IsLegal_PartnerCannotLeadWithPartnerCard()
         {
-            var partner = new Mock<IPlayer>();
-            partner.Setup(m => m.Cards).Returns(new List<SheepCard>() { SheepCard.N10_HEARTS, SheepCard.N7_HEARTS, SheepCard.ACE_HEARTS, SheepCard.JACK_DIAMONDS, SheepCard.N7_SPADES, SheepCard.ACE_SPADES });
+            var partner = new Participant() { Cards = "T♥;7♥;A♥;J♦;7♠;A♠" }.Player;
             var hand = new Mock<IHand>();
+            hand.Setup(m => m.ITricks).Returns(new List<ITrick>());
+            hand.Setup(m => m.Players).Returns(new List<IPlayer>() { partner });
             hand.Setup(m => m.IGame.PartnerMethodEnum).Returns(PartnerMethod.CalledAce);
             hand.Setup(m => m.PartnerCardEnum).Returns(SheepCard.ACE_HEARTS);
             var calculator = new Mock<IStartingPlayerCalculator>();
-            calculator.Setup(m => m.GetStartingPlayer(hand.Object, It.IsAny<ITrick>())).Returns(partner.Object);
+            calculator.Setup(m => m.GetStartingPlayer(hand.Object, It.IsAny<ITrick>())).Returns(partner);
             var trick = new Trick(hand.Object, calculator.Object);
-            Assert.IsFalse(trick.IsLegalAddition(SheepCard.ACE_HEARTS, partner.Object), "Picker has a remaining heart, so this is legal.");
+            Assert.IsFalse(trick.IsLegalAddition(SheepCard.ACE_HEARTS, partner), "Partner cannot lead with called ace.");
         }
 
         [TestMethod]
         public void Trick_IsLegal_PartnerCanLeadWithOtherCards()
         {
-            var partner = new Mock<IPlayer>();
-            partner.Setup(m => m.Cards).Returns(new List<SheepCard>() { SheepCard.N10_HEARTS, SheepCard.N7_HEARTS, SheepCard.ACE_HEARTS, SheepCard.JACK_DIAMONDS, SheepCard.N7_SPADES, SheepCard.ACE_SPADES });
+            var partner = new Participant() { Cards = "T♥;7♥;A♥;J♦;7♠;A♠" }.Player;
             var hand = new Mock<IHand>();
+            hand.Setup(m => m.ITricks).Returns(new List<ITrick>());
+            hand.Setup(m => m.Players).Returns(new List<IPlayer>() { partner });
             hand.Setup(m => m.IGame.PartnerMethodEnum).Returns(PartnerMethod.CalledAce);
             hand.Setup(m => m.PartnerCardEnum).Returns(SheepCard.ACE_HEARTS);
             var calculator = new Mock<IStartingPlayerCalculator>();
-            calculator.Setup(m => m.GetStartingPlayer(hand.Object, It.IsAny<ITrick>())).Returns(partner.Object);
+            calculator.Setup(m => m.GetStartingPlayer(hand.Object, It.IsAny<ITrick>())).Returns(partner);
             var trick = new Trick(hand.Object, calculator.Object);
-            Assert.IsTrue(trick.IsLegalAddition(SheepCard.N10_HEARTS, partner.Object), "Picker has a remaining heart, so this is legal.");
-            Assert.IsTrue(trick.IsLegalAddition(SheepCard.N7_HEARTS, partner.Object), "Picker has a remaining heart, so this is legal.");
-            Assert.IsTrue(trick.IsLegalAddition(SheepCard.JACK_DIAMONDS, partner.Object), "Picker has a remaining heart, so this is legal.");
-            Assert.IsTrue(trick.IsLegalAddition(SheepCard.ACE_SPADES, partner.Object), "Picker has a remaining heart, so this is legal.");
-            Assert.IsTrue(trick.IsLegalAddition(SheepCard.N7_SPADES, partner.Object), "Picker has a remaining heart, so this is legal.");
+            Assert.IsTrue(trick.IsLegalAddition(SheepCard.N10_HEARTS, partner), "Picker has a remaining heart, so this is legal.");
+            Assert.IsTrue(trick.IsLegalAddition(SheepCard.N7_HEARTS, partner), "Picker has a remaining heart, so this is legal.");
+            Assert.IsTrue(trick.IsLegalAddition(SheepCard.JACK_DIAMONDS, partner), "Picker has a remaining heart, so this is legal.");
+            Assert.IsTrue(trick.IsLegalAddition(SheepCard.ACE_SPADES, partner), "Picker has a remaining heart, so this is legal.");
+            Assert.IsTrue(trick.IsLegalAddition(SheepCard.N7_SPADES, partner), "Picker has a remaining heart, so this is legal.");
         }
 
         [TestMethod]
         public void Trick_IsLegal_PartnerLeads_OtherTrickLeadWithSameSuit()
         {
-            var partner = new Mock<IPlayer>();
-            partner.Setup(m => m.Cards).Returns(new List<SheepCard>() { SheepCard.N10_HEARTS, SheepCard.N7_HEARTS, SheepCard.ACE_HEARTS, SheepCard.JACK_DIAMONDS, SheepCard.N7_SPADES, SheepCard.ACE_SPADES });
+            var partner = new Participant() { Cards = "T♥;7♥;A♥;J♦;7♠;A♠" }.Player;
             var previousTrick = new Mock<ITrick>();
             previousTrick.Setup(m => m.CardsPlayed).Returns(new Dictionary<IPlayer, SheepCard>() { { new Mock<IPlayer>().Object, SheepCard.N7_DIAMONDS } });
             previousTrick.Setup(m => m.CardsPlayed).Returns(new Dictionary<IPlayer, SheepCard>() { { new Mock<IPlayer>().Object, SheepCard.N7_HEARTS } });
@@ -215,10 +216,11 @@ namespace Sheepshead.Tests
             hand.Setup(m => m.IGame.PartnerMethodEnum).Returns(PartnerMethod.CalledAce);
             hand.Setup(m => m.PartnerCardEnum).Returns(SheepCard.ACE_HEARTS);
             hand.Setup(m => m.ITricks).Returns(new List<ITrick>() { previousTrick.Object });
+            hand.Setup(m => m.Players).Returns(new List<IPlayer>() { partner });
             var calculator = new Mock<IStartingPlayerCalculator>();
-            calculator.Setup(m => m.GetStartingPlayer(hand.Object, It.IsAny<ITrick>())).Returns(partner.Object);
+            calculator.Setup(m => m.GetStartingPlayer(hand.Object, It.IsAny<ITrick>())).Returns(partner);
             var trick = new Trick(hand.Object, calculator.Object);
-            Assert.IsTrue(trick.IsLegalAddition(SheepCard.ACE_HEARTS, partner.Object), "Previous trick lead with heart, so this is legal.");
+            Assert.IsTrue(trick.IsLegalAddition(SheepCard.ACE_HEARTS, partner), "Previous trick lead with heart, so this is legal.");
         }
 
         [TestMethod]
