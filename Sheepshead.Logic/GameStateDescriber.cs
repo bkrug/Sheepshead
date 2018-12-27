@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-using Sheepshead.Logic; namespace Sheepshead.Logic
+namespace Sheepshead.Logic
 {
     public interface IGameStateDescriber
     {
@@ -23,7 +23,7 @@ using Sheepshead.Logic; namespace Sheepshead.Logic
             _game = game;
         }
 
-        public IEnumerable<IHand> Hands => _game.Hand.OfType<IHand>();
+        public IEnumerable<IHand> Hands => _game.IHands.OfType<IHand>();
 
         public IHand CurrentHand => LastHandIsComplete() ? null : Hands.Last();
 

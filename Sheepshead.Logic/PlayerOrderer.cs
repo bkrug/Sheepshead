@@ -3,8 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-
-using Sheepshead.Logic; namespace Sheepshead.Logic
+namespace Sheepshead.Logic
 {
     public interface IPlayerOrderer
     {

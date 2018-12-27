@@ -17,5 +17,6 @@ namespace Sheepshead.Logic.Models
         public Hand Hand { get; set; }
         public Participant StartingParticipant { get; set; }
         public ICollection<TrickPlay> TrickPlay { get; set; }
+        public int SortOrder { get; set; }
     }
 }

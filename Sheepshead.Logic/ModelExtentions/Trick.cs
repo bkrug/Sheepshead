@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
-using Sheepshead.Logic;
 using Sheepshead.Logic.Players;
 
 namespace Sheepshead.Logic.Models
@@ -54,10 +53,11 @@ namespace Sheepshead.Logic.Models
         {
         }
 
-        public Trick(IHand hand, IStartingPlayerCalculator startingPlayerCalculator)
+        public Trick(IHand hand, IStartingPlayerCalculator startingPlayerCalculator) : this()
         {
             IHand = hand;
             IHand.AddTrick(this);
+            SortOrder = IHand?.ITricks.Count() ?? 0;
             StartingPlayer = startingPlayerCalculator.GetStartingPlayer(hand, this);
             if (TrickPlay == null)
                 TrickPlay = new List<TrickPlay>();

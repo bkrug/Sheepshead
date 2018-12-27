@@ -1,7 +1,7 @@
 ﻿using Sheepshead.Logic.Models;
 using Sheepshead.Logic.Players;
 
-using Sheepshead.Logic; namespace Sheepshead.Logic
+namespace Sheepshead.Logic
 {
     public interface IStartingPlayerCalculator
     {

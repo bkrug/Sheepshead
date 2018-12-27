@@ -12,6 +12,7 @@ namespace Sheepshead.Logic.Models
         public const int CARDS_IN_DECK = 32;
         public virtual int PlayerCount => Players.Count();
         public int TrickCount => (int)Math.Floor(32d / PlayerCount);
+        public IReadOnlyList<IHand> IHands => Hand?.OrderBy(h => h.SortOrder).ToList();
         public int HumanPlayerCount => Players.Count(p => p is IHumanPlayer);
         private List<IPlayer> _mockPlayerList = null;
         public virtual List<IPlayer> Players => _mockPlayerList ?? Participant.OrderBy(p => p.SortOrder).Select(p => p.Player).ToList();
@@ -110,9 +111,9 @@ namespace Sheepshead.Logic.Models
             if (TurnType != TurnType.Bury)
                 throw new WrongGamePhaseExcpetion("Game must be in the Bury phase.");
             if (PartnerMethodEnum == Models.PartnerMethod.JackOfDiamonds || !partnerCard.HasValue)
-                new PickProcessor().BuryCards(Hand.Last(), player, cards, goItAlone);
+                new PickProcessor().BuryCards(IHands.Last(), player, cards, goItAlone);
             else
-                new PickProcessor().BuryCards(Hand.Last(), player, cards, goItAlone, partnerCard.Value);
+                new PickProcessor().BuryCards(IHands.Last(), player, cards, goItAlone, partnerCard.Value);
         }
 
         public void PlayNonHumansInTrick()
@@ -170,7 +171,7 @@ namespace Sheepshead.Logic.Models
                 turnType == TurnType.PlayTrick 
                 ? currentTrick?.PlayersWithoutTurn?.FirstOrDefault()
                 : null;
-            var tricks = Hand.LastOrDefault(d => d.PickPhaseComplete)?.ITricks ?? new List<ITrick>();
+            var tricks = IHands.LastOrDefault(d => d.PickPhaseComplete)?.ITricks ?? new List<ITrick>();
             var humanPlayer = currentPlayer as IHumanPlayer;
             var requestingPlayer = Players.OfType<IHumanPlayer>().SingleOrDefault(p => p.Id == requestingPlayerId);
             return new PlayState
@@ -190,7 +191,7 @@ namespace Sheepshead.Logic.Models
         public PickState PickState(Guid requestingPlayerId)
         {
             var turnType = TurnType;
-            var currentHand = Hand.LastOrDefault();
+            var currentHand = IHands.LastOrDefault();
             var currentPlayer = 
                 turnType == TurnType.Pick 
                 ? currentHand?.PlayersWithoutPickTurn?.FirstOrDefault() 
@@ -238,7 +239,7 @@ namespace Sheepshead.Logic.Models
 
         public TrickResults GetTrickWinners()
         {
-            var currentDeck = Hand.LastOrDefault(d => d.PickPhaseComplete);
+            var currentDeck = IHands.LastOrDefault(d => d.PickPhaseComplete);
             var tricks = currentDeck?.ITricks ?? new List<ITrick>();
             var winners = tricks.Where(t => t.PlayersWithoutTurn.Count == 0).Select(t => t?.Winner()?.Player?.Name).ToList();
             return new TrickResults()
@@ -252,7 +253,7 @@ namespace Sheepshead.Logic.Models
 
         public List<GameCoins> GameCoins()
         {
-            var coins = Hand
+            var coins = IHands
                 .Select(d => d.Scores()?.Coins)
                 .Where(c => c != null)
                 .ToList();
@@ -326,6 +327,7 @@ namespace Sheepshead.Logic.Models
         List<IPlayer> Players { get; }
         List<IHumanPlayer> UnassignedPlayers { get; }
         ICollection<Hand> Hand { get; }
+        IReadOnlyList<IHand> IHands { get; }
         TurnType TurnType { get; }
         TurnState TurnState { get; }
         PartnerMethod PartnerMethodEnum { get; }
