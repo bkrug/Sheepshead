@@ -13,6 +13,7 @@ export interface PlayerCountState {
 export default class PlayerCountRadio extends React.Component<any, any> {
     constructor(props: PlayerCountState) {
         super(props);
+        console.log(props.title);
         this.state = {
             value: props.value || 0,
             title: props.title,
@@ -41,7 +42,7 @@ export default class PlayerCountRadio extends React.Component<any, any> {
                     onClick={() => this.handleClick(i)}
                     onChange={() => function () { return; }}
                     checked={this.props.value === i}
-                    disabled={this.props.remaining + this.props.value < i}
+                    disabled={this.props.remaining + this.props.value < i || this.state.name == 'humanCount' && i == 0}
                 />{i}
             </span>
         );

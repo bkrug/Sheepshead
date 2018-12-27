@@ -5,7 +5,7 @@ import OnOffRadio from './OnOffRadio';
 import { FetchUtils } from '../FetchUtils';
 
 export interface GameSetupState {
-    value: number;
+    playerCount: number;
     partnerCard: boolean;
     remaining: number;
     gameName: string;
@@ -24,9 +24,10 @@ export class GameSetup extends React.Component<RouteComponentProps<{}>, GameSetu
     constructor(props: any) {
         super(props);
         let selections: { [index: string]: number } = {};
-        selections[this.HUMANS] = selections[this.SIMPLE] = selections[this.INTERMEDIATE] = selections[this.ADVANCED] = 0;
+        selections[this.HUMANS] = 1;
+        selections[this.SIMPLE] = selections[this.INTERMEDIATE] = selections[this.ADVANCED] = 0;
         this.state = {
-            value: 0,
+            playerCount: 1,
             partnerCard: true,
             remaining: this.MAX_PLAYERS,
             gameName: '',
@@ -62,7 +63,7 @@ export class GameSetup extends React.Component<RouteComponentProps<{}>, GameSetu
                 + this.state.selections[this.SIMPLE]
                 + this.state.selections[this.INTERMEDIATE]
                 + this.state.selections[this.ADVANCED];
-            this.setState({ value: newTotal, remaining: this.MAX_PLAYERS - newTotal });
+            this.setState({ playerCount: newTotal, remaining: this.MAX_PLAYERS - newTotal });
         }
     }
 
@@ -71,7 +72,7 @@ export class GameSetup extends React.Component<RouteComponentProps<{}>, GameSetu
     }
 
     validPlayerCount() {
-        return (this.state.value === 3 || this.state.value === 5);
+        return (this.state.playerCount === 3 || this.state.playerCount === 5);
     }
 
     public render() {
@@ -86,10 +87,10 @@ export class GameSetup extends React.Component<RouteComponentProps<{}>, GameSetu
                         <PlayerCountRadio name={this.ADVANCED} title="A.I. Advanced" onChange={this.handleChange} value={this.state.selections[this.ADVANCED]} remaining={this.state.remaining} />
                         <div className="total-players">
                             <span>Total Players:</span>
-                            <span className={"totalPlayers " + this.playerCountValidityStyle()}>{this.state.value}</span>
+                            <span className={"totalPlayers " + this.playerCountValidityStyle()}>{this.state.playerCount}</span>
                         </div>
                         <input type="hidden" className="remaining" value={this.state.remaining} />
-                        <OnOffRadio name="partnerCard" title="Partner Card" onText="Jack of Hearts" offText="Called Ace" defaultValue={true} disabled={this.state.value != 5} />
+                        <OnOffRadio name="partnerCard" title="Partner Card" onText="Jack of Hearts" offText="Called Ace" defaultValue={true} disabled={this.state.playerCount != 5} />
                         <OnOffRadio name="leastersGame" title="Leasters On" onText="on" offText="off" defaultValue={this.state.leastersDefault} disabled={false} />
                         <input type="submit" value="Play" disabled={!this.validPlayerCount()} />
                     </form>
