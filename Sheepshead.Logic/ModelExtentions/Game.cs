@@ -245,7 +245,7 @@ namespace Sheepshead.Logic.Models
             {
                 Picker = currentDeck?.Picker?.Name,
                 Partner = currentDeck?.Partner?.Name,
-                PartnerCard = currentDeck?.PartnerCardEnum == null ? null : CardUtil.ToAbbr(currentDeck.PartnerCardEnum.Value),
+                PartnerCard = currentDeck?.PartnerCardEnum == null ? null : CardUtil.GetAbbreviation(currentDeck.PartnerCardEnum.Value),
                 TrickWinners = winners
             };
         }

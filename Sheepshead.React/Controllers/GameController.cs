@@ -61,7 +61,7 @@ namespace Sheepshead.React.Controllers
             return Json(player.Cards.Select(c => new
             {
                 filename = CardUtil.GetPictureFilename(c),
-                cardAbbr = CardUtil.ToAbbr(c)
+                cardAbbr = CardUtil.GetAbbreviation(c)
             }));
         }
 

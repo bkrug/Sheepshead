@@ -207,28 +207,12 @@ namespace Sheepshead.Logic
             { SheepCard.N7_DIAMONDS, "7♦" }
         };
 
-        public static Dictionary<StandardSuite, string> SuitLetter { get; } = new Dictionary<StandardSuite, string>()
-        {
-            { StandardSuite.CLUBS, "♣" }, { StandardSuite.DIAMONDS, "♦" }, { StandardSuite.HEARTS, "♥" }, { StandardSuite.SPADES, "♠" }
-        };
-
-        public static Dictionary<CardType, string> CardTypeLetter { get; } = new Dictionary<CardType, string>()
-        {
-            { CardType.ACE, "A" }, { CardType.JACK, "J" }, { CardType.KING, "K" }, { CardType.QUEEN, "Q" },
-            { CardType.N10, "T" }, { CardType.N9, "9" }, { CardType.N8, "8" }, { CardType.N7, "7" }
-        };
-
         public static string GetPictureFilename(SheepCard card)
         {
             return _filenamesByCard[card];
         }
 
-        public static string GetAbbreviation(SheepCard card)
-        {
-            return _abbreviationsByCard[card];
-        }
-
-        public static SheepCard GetCardFromFilename(string filename)
+         public static SheepCard GetCardFromFilename(string filename)
         {
             return _filenamesByCard.First(l => l.Value == filename).Key;
         }
@@ -240,11 +224,14 @@ namespace Sheepshead.Logic
             return null;
         }
 
+        public static string GetAbbreviation(SheepCard card)
+        {
+            return _abbreviationsByCard[card];
+        }
+
         public static string ToAbbr(SheepCard card)
         {
-            var cardType = GetFace(card);
-            var suit = GetStandardSuit(card);
-            return CardTypeLetter[cardType] + SuitLetter[suit];
+            return GetAbbreviation(card);
         }
 
         public static string CardListToString(List<SheepCard> cardList)

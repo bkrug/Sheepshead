@@ -90,7 +90,7 @@ namespace Sheepshead.Logic
             if (!picker.Cards.Any(c => CardUtil.GetSuit(c) == CardUtil.GetSuit(partnerCard)))
                 throw new ArgumentException($"Picker does not have a card in the {CardUtil.GetSuit(partnerCard).ToString()} suit");
             if (!_validCalledAceCards.Contains(partnerCard))
-                throw new ArgumentException($"{CardUtil.ToAbbr(partnerCard)} is not a valid partner card.");
+                throw new ArgumentException($"{CardUtil.GetAbbreviation(partnerCard)} is not a valid partner card.");
             hand.SetPartnerCard(partnerCard);
             BuryCards(hand, picker, cardsToBury, goItAlone);
         }

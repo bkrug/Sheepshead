@@ -10,8 +10,8 @@ namespace Sheepshead.Tests
         [TestMethod]
         public void Card_ToAbbr()
         {
-            Assert.AreEqual("J♦", CardUtil.ToAbbr(SheepCard.JACK_DIAMONDS));
-            Assert.AreEqual("7♥", CardUtil.ToAbbr(SheepCard.N7_HEARTS));
+            Assert.AreEqual("J♦", CardUtil.GetAbbreviation(SheepCard.JACK_DIAMONDS));
+            Assert.AreEqual("7♥", CardUtil.GetAbbreviation(SheepCard.N7_HEARTS));
         }
 
         [TestMethod]
