@@ -212,7 +212,7 @@ namespace Sheepshead.Logic
             return _filenamesByCard[card];
         }
 
-         public static SheepCard GetCardFromFilename(string filename)
+        public static SheepCard GetCardFromFilename(string filename)
         {
             return _filenamesByCard.First(l => l.Value == filename).Key;
         }
