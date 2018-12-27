@@ -110,47 +110,48 @@ namespace Sheepshead.Tests
         [TestMethod]
         public void Trick_IsLegal_PickerCanLeadWithCardOfCalledSuit()
         {
+            var picker = new Participant() { Cards = "9♦;Q♥;9♥;9♣;A♣;K♣" }.Player;
             var hand = new Mock<IHand>();
             hand.Setup(m => m.IGame.PartnerMethodEnum).Returns(PartnerMethod.CalledAce);
             hand.Setup(m => m.PartnerCardEnum).Returns(SheepCard.ACE_HEARTS);
-            var picker = new Mock<IPlayer>();
-            picker.Setup(m => m.Cards).Returns(new List<SheepCard>() { SheepCard.N9_DIAMONDS, SheepCard.QUEEN_HEARTS, SheepCard.N9_HEARTS, SheepCard.N9_CLUBS, SheepCard.ACE_CLUBS, SheepCard.KING_CLUBS });
+            hand.Setup(m => m.ITricks).Returns(new List<ITrick>());
+            hand.Setup(m => m.Players).Returns(new List<IPlayer>() { picker });
             var calculator = new Mock<IStartingPlayerCalculator>();
-            calculator.Setup(m => m.GetStartingPlayer(hand.Object, It.IsAny<ITrick>())).Returns(picker.Object);
+            calculator.Setup(m => m.GetStartingPlayer(hand.Object, It.IsAny<ITrick>())).Returns(picker);
             var trick = new Trick(hand.Object, calculator.Object);
-            Assert.IsTrue(trick.IsLegalAddition(SheepCard.N9_HEARTS, picker.Object), "Picker has a remaining heart, so this is legal.");
+            Assert.IsTrue(trick.IsLegalAddition(SheepCard.N9_HEARTS, picker));
         }
 
         [TestMethod]
         public void Trick_IsLegal_PickerCanLeadWithCardOfCalledSuit1()
         {
+            var picker = new Participant() { Cards = "9♦;Q♥;8♥;A♣;K♣;9♥" }.Player;
             var hand = new Mock<IHand>();
             hand.Setup(m => m.IGame.PartnerMethodEnum).Returns(PartnerMethod.CalledAce);
             hand.Setup(m => m.PartnerCardEnum).Returns(SheepCard.ACE_HEARTS);
-            var picker = new Mock<IPlayer>();
-            picker.Setup(m => m.Participant).Returns(new Participant());
-            picker.Setup(m => m.Cards).Returns(new List<SheepCard>() { SheepCard.N9_DIAMONDS, SheepCard.QUEEN_HEARTS, SheepCard.N8_HEARTS, SheepCard.ACE_CLUBS, SheepCard.KING_CLUBS, SheepCard.N9_HEARTS, });
+            hand.Setup(m => m.ITricks).Returns(new List<ITrick>());
+            hand.Setup(m => m.Players).Returns(new List<IPlayer>() { picker });
             var calculator = new Mock<IStartingPlayerCalculator>();
-            calculator.Setup(m => m.GetStartingPlayer(hand.Object, It.IsAny<ITrick>())).Returns(picker.Object);
+            calculator.Setup(m => m.GetStartingPlayer(hand.Object, It.IsAny<ITrick>())).Returns(picker);
             var trick = new Trick(hand.Object, calculator.Object);
-            Assert.IsTrue(trick.IsLegalAddition(SheepCard.N9_HEARTS, picker.Object), "Picker has a remaining heart, so this is legal.");
+            Assert.IsTrue(trick.IsLegalAddition(SheepCard.N9_HEARTS, picker));
         }
 
         [TestMethod]
         public void Trick_IsLegal_PickerCanFollowWithLastCardOfCalledSuit()
         {
-            var startingPlayer = new Mock<IPlayer>();
-            startingPlayer.Setup(m => m.Cards).Returns(new List<SheepCard>());
-            startingPlayer.Setup(m => m.Participant).Returns(new Participant());
+            var startingPlayer = new Participant().Player;
+            var picker = new Participant() { Cards = "9♦;Q♥;9♥;A♣;K♣;7♠" }.Player;
             var hand = new Mock<IHand>();
+            hand.Setup(m => m.Players).Returns(new List<IPlayer>() { startingPlayer, picker });
+            hand.Setup(m => m.ITricks).Returns(new List<ITrick>());
+            hand.Setup(m => m.IGame.PartnerMethodEnum).Returns(PartnerMethod.CalledAce);
             hand.Setup(m => m.PartnerCardEnum).Returns(SheepCard.ACE_HEARTS);
-            var picker = new Mock<IPlayer>();
-            picker.Setup(m => m.Cards).Returns(new List<SheepCard>() { SheepCard.N9_DIAMONDS, SheepCard.QUEEN_HEARTS, SheepCard.N9_HEARTS, SheepCard.ACE_CLUBS, SheepCard.KING_CLUBS, SheepCard.N7_SPADES });
             var calculator = new Mock<IStartingPlayerCalculator>();
-            calculator.Setup(m => m.GetStartingPlayer(hand.Object, It.IsAny<ITrick>())).Returns(startingPlayer.Object);
+            calculator.Setup(m => m.GetStartingPlayer(hand.Object, It.IsAny<ITrick>())).Returns(startingPlayer);
             var trick = new Trick(hand.Object, calculator.Object);
-            trick.Add(startingPlayer.Object, SheepCard.N10_HEARTS);
-            Assert.IsTrue(trick.IsLegalAddition(SheepCard.N9_HEARTS, picker.Object), "Picker has a remaining heart, so this is legal.");
+            trick.Add(startingPlayer, SheepCard.N10_HEARTS);
+            Assert.IsTrue(trick.IsLegalAddition(SheepCard.N9_HEARTS, picker));
         }
 
         [TestMethod]
@@ -198,11 +199,11 @@ namespace Sheepshead.Tests
             var calculator = new Mock<IStartingPlayerCalculator>();
             calculator.Setup(m => m.GetStartingPlayer(hand.Object, It.IsAny<ITrick>())).Returns(partner);
             var trick = new Trick(hand.Object, calculator.Object);
-            Assert.IsTrue(trick.IsLegalAddition(SheepCard.N10_HEARTS, partner), "Picker has a remaining heart, so this is legal.");
-            Assert.IsTrue(trick.IsLegalAddition(SheepCard.N7_HEARTS, partner), "Picker has a remaining heart, so this is legal.");
-            Assert.IsTrue(trick.IsLegalAddition(SheepCard.JACK_DIAMONDS, partner), "Picker has a remaining heart, so this is legal.");
-            Assert.IsTrue(trick.IsLegalAddition(SheepCard.ACE_SPADES, partner), "Picker has a remaining heart, so this is legal.");
-            Assert.IsTrue(trick.IsLegalAddition(SheepCard.N7_SPADES, partner), "Picker has a remaining heart, so this is legal.");
+            Assert.IsTrue(trick.IsLegalAddition(SheepCard.N10_HEARTS, partner));
+            Assert.IsTrue(trick.IsLegalAddition(SheepCard.N7_HEARTS, partner));
+            Assert.IsTrue(trick.IsLegalAddition(SheepCard.JACK_DIAMONDS, partner));
+            Assert.IsTrue(trick.IsLegalAddition(SheepCard.ACE_SPADES, partner));
+            Assert.IsTrue(trick.IsLegalAddition(SheepCard.N7_SPADES, partner));
         }
 
         [TestMethod]
