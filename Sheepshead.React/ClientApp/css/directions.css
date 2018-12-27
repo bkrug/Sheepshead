@@ -7,9 +7,6 @@
     margin: 0;
     height: 100vh;
     width: 100vw;
-    color: white;
-    background-color: forestgreen;
-    background-image: url(../../wwwroot/img/table-tile.jpg);
 }
 
 .directions-film .slide .content {
