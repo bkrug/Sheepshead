@@ -33,8 +33,14 @@ namespace Sheepshead.Tests
             handMock.Setup(m => m.Players).Returns(new List<IPlayer>() { firstPlayer, player });
             handMock.Setup(m => m.IGame.PartnerMethodEnum).Returns(PartnerMethod.JackOfDiamonds);
             handMock.Setup(m => m.PartnerCardEnum).Returns(SheepCard.JACK_DIAMONDS);
-            var trick = new Trick(handMock.Object, startingPlayerCalcMock.Object);
-            trick.Add(firstPlayer, SheepCard.N9_HEARTS);
+            var trick = new Trick(handMock.Object, startingPlayerCalcMock.Object)
+            {
+                TrickPlay = new List<TrickPlay>()
+                {
+                    new TrickPlay() { Participant = new Participant(), Card = CardUtil.GetAbbreviation(SheepCard.N9_CLUBS), SortOrder = 2 },
+                    new TrickPlay() { Participant = firstPlayer.Participant, Card = CardUtil.GetAbbreviation(SheepCard.N9_HEARTS), SortOrder = 1 }
+                }
+            };
             Assert.IsTrue(trick.IsLegalAddition(SheepCard.N7_HEARTS, player), "A hearts is part of the same suite.");
             Assert.IsFalse(trick.IsLegalAddition(SheepCard.N8_CLUBS, player), "A clubs is not part of the same suite.");
             Assert.IsFalse(trick.IsLegalAddition(SheepCard.QUEEN_DIAMONDS, player), "A trump is not part of the same suite.");
@@ -250,6 +256,17 @@ namespace Sheepshead.Tests
                 trick.Add(player3, SheepCard.N10_HEARTS);
                 trick.Add(player4, SheepCard.KING_HEARTS);
                 trick.Add(player5, SheepCard.ACE_CLUBS);
+
+                //The order of the plays should be based on SortOrder, not on the database.
+                trick.TrickPlay = new List<TrickPlay>()
+                {
+                    trick.TrickPlay.ElementAt(4),
+                    trick.TrickPlay.ElementAt(2),
+                    trick.TrickPlay.ElementAt(1),
+                    trick.TrickPlay.ElementAt(3),
+                    trick.TrickPlay.ElementAt(0),
+                };
+
                 var winner = trick.Winner();
                 Assert.AreEqual(player3, winner.Player, "Ten of hearts has the hightest rank of the correct suite.");
                 Assert.AreEqual(36, winner.Points, "Expected points for 2 Aces, 1 King, 1 Ten.");
