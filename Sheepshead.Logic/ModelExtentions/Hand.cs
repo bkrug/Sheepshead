@@ -2,9 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
-using Sheepshead.Logic;
 using Sheepshead.Logic.Players;
-using Sheepshead.Logic.Wrappers;
 
 namespace Sheepshead.Logic.Models
 {

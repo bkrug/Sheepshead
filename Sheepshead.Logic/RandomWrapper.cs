@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 
-namespace Sheepshead.Logic.Wrappers
+namespace Sheepshead.Logic
 {
     public interface IRandomWrapper
     {
