@@ -10,7 +10,7 @@ using Sheepshead.Logic.Players;
 namespace Sheepshead.Tests
 {
     [TestClass]
-    public class HandTest
+    public class HandTests
     {
         private List<IPlayer> GetPlayers()
         {
