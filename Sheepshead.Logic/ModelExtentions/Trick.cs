@@ -59,8 +59,6 @@ namespace Sheepshead.Logic.Models
             IHand.AddTrick(this);
             SortOrder = IHand?.ITricks.Count() ?? 0;
             StartingPlayer = startingPlayerCalculator.GetStartingPlayer(hand, this);
-            if (TrickPlay == null)
-                TrickPlay = new List<TrickPlay>();
         }
 
         public void Add(IPlayer player, SheepCard card)
