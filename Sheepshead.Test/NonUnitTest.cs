@@ -16,34 +16,34 @@ namespace Sheepshead.Tests
     {
         private Dictionary<string, int> _playerTypeCoins;
 
-        //[TestMethod]
+        [TestMethod]
         public void TestAllPlayers()
         {
             _playerTypeCoins = new Dictionary<string, int>();
             var stringBuilder = new StringBuilder();
             var gameNo = 0;
-            var handCount = 500 * 1000;
+            var handCount = 1000;
             PartnerMethod partnerMethod;
 
             partnerMethod = PartnerMethod.JackOfDiamonds;
-            PlayTwoFivePlayer(typeof(IntermediatePlayer), typeof(SimplePlayer), stringBuilder, partnerMethod, ref gameNo, handCount);
-            PlayTwoFivePlayer(typeof(SimplePlayer), typeof(IntermediatePlayer), stringBuilder, partnerMethod, ref gameNo, handCount);
-            PlayTwoFivePlayer(typeof(AdvancedPlayer), typeof(IntermediatePlayer), stringBuilder, partnerMethod, ref gameNo, handCount);
-            PlayTwoFivePlayer(typeof(IntermediatePlayer), typeof(AdvancedPlayer), stringBuilder, partnerMethod, ref gameNo, handCount);
-            PlayTwoFivePlayer(typeof(AdvancedPlayer), typeof(SimplePlayer), stringBuilder, partnerMethod, ref gameNo, handCount);
-            PlayTwoFivePlayer(typeof(SimplePlayer), typeof(AdvancedPlayer), stringBuilder, partnerMethod, ref gameNo, handCount);
+            PlayTwoFivePlayer(Participant.TYPE_INTERMEDIATE, Participant.TYPE_SIMPLE, stringBuilder, partnerMethod, ref gameNo, handCount);
+            PlayTwoFivePlayer(Participant.TYPE_SIMPLE, Participant.TYPE_INTERMEDIATE, stringBuilder, partnerMethod, ref gameNo, handCount);
+            PlayTwoFivePlayer(Participant.TYPE_ADVANCED, Participant.TYPE_INTERMEDIATE, stringBuilder, partnerMethod, ref gameNo, handCount);
+            PlayTwoFivePlayer(Participant.TYPE_INTERMEDIATE, Participant.TYPE_ADVANCED, stringBuilder, partnerMethod, ref gameNo, handCount);
+            PlayTwoFivePlayer(Participant.TYPE_ADVANCED, Participant.TYPE_SIMPLE, stringBuilder, partnerMethod, ref gameNo, handCount);
+            PlayTwoFivePlayer(Participant.TYPE_SIMPLE, Participant.TYPE_ADVANCED, stringBuilder, partnerMethod, ref gameNo, handCount);
 
             partnerMethod = PartnerMethod.CalledAce;
-            PlayTwoFivePlayer(typeof(IntermediatePlayer), typeof(SimplePlayer), stringBuilder, partnerMethod, ref gameNo, handCount);
-            PlayTwoFivePlayer(typeof(SimplePlayer), typeof(IntermediatePlayer), stringBuilder, partnerMethod, ref gameNo, handCount);
-            PlayTwoFivePlayer(typeof(AdvancedPlayer), typeof(IntermediatePlayer), stringBuilder, partnerMethod, ref gameNo, handCount);
-            PlayTwoFivePlayer(typeof(IntermediatePlayer), typeof(AdvancedPlayer), stringBuilder, partnerMethod, ref gameNo, handCount);
-            PlayTwoFivePlayer(typeof(AdvancedPlayer), typeof(SimplePlayer), stringBuilder, partnerMethod, ref gameNo, handCount);
-            PlayTwoFivePlayer(typeof(SimplePlayer), typeof(AdvancedPlayer), stringBuilder, partnerMethod, ref gameNo, handCount);
+            PlayTwoFivePlayer(Participant.TYPE_INTERMEDIATE, Participant.TYPE_SIMPLE, stringBuilder, partnerMethod, ref gameNo, handCount);
+            PlayTwoFivePlayer(Participant.TYPE_SIMPLE, Participant.TYPE_INTERMEDIATE, stringBuilder, partnerMethod, ref gameNo, handCount);
+            PlayTwoFivePlayer(Participant.TYPE_ADVANCED, Participant.TYPE_INTERMEDIATE, stringBuilder, partnerMethod, ref gameNo, handCount);
+            PlayTwoFivePlayer(Participant.TYPE_INTERMEDIATE, Participant.TYPE_ADVANCED, stringBuilder, partnerMethod, ref gameNo, handCount);
+            PlayTwoFivePlayer(Participant.TYPE_ADVANCED, Participant.TYPE_SIMPLE, stringBuilder, partnerMethod, ref gameNo, handCount);
+            PlayTwoFivePlayer(Participant.TYPE_SIMPLE, Participant.TYPE_ADVANCED, stringBuilder, partnerMethod, ref gameNo, handCount);
 
-            PlayTwoThreePlayer(typeof(IntermediatePlayer), typeof(SimplePlayer), stringBuilder, ref gameNo, handCount);
-            PlayTwoThreePlayer(typeof(AdvancedPlayer), typeof(IntermediatePlayer), stringBuilder, ref gameNo, handCount);
-            PlayTwoThreePlayer(typeof(AdvancedPlayer), typeof(SimplePlayer), stringBuilder, ref gameNo, handCount);
+            PlayTwoThreePlayer(Participant.TYPE_INTERMEDIATE, Participant.TYPE_SIMPLE, stringBuilder, ref gameNo, handCount);
+            PlayTwoThreePlayer(Participant.TYPE_ADVANCED, Participant.TYPE_INTERMEDIATE, stringBuilder, ref gameNo, handCount);
+            PlayTwoThreePlayer(Participant.TYPE_ADVANCED, Participant.TYPE_SIMPLE, stringBuilder, ref gameNo, handCount);
 
             foreach (var kvp in _playerTypeCoins)
                 stringBuilder.AppendLine(StringSegment(kvp.Key) + kvp.Value);
@@ -51,61 +51,61 @@ namespace Sheepshead.Tests
             File.WriteAllText(@"F:\Users\bjkrug\Documents\scores.txt", stringBuilder.ToString());
         }
 
-        private void PlayTwoFivePlayer(Type player1, Type player2, StringBuilder stringBuilder, PartnerMethod partnerMethod, ref int gameNo, int handCount)
+        private void PlayTwoFivePlayer(string participantType1, string participantType2, StringBuilder stringBuilder, PartnerMethod partnerMethod, ref int gameNo, int handCount)
         {
             List<IPlayer> players = new List<IPlayer>()
             {
-                (IPlayer)Activator.CreateInstance(player1),
-                (IPlayer)Activator.CreateInstance(player1),
-                (IPlayer)Activator.CreateInstance(player2),
-                (IPlayer)Activator.CreateInstance(player2),
-                (IPlayer)Activator.CreateInstance(player2),
+                new Participant() { Type = participantType1 }.Player,
+                new Participant() { Type = participantType1 }.Player,
+                new Participant() { Type = participantType2 }.Player,
+                new Participant() { Type = participantType2 }.Player,
+                new Participant() { Type = participantType2 }.Player,
             };
-            players[0].Name = player1.Name;
-            players[1].Name = player1.Name;
-            players[2].Name = player2.Name;
-            players[3].Name = player2.Name;
-            players[4].Name = player2.Name;
+            players[0].Name = participantType1;
+            players[1].Name = participantType1;
+            players[2].Name = participantType2;
+            players[3].Name = participantType2;
+            players[4].Name = participantType2;
             stringBuilder.Append(RunGame(++gameNo, players, partnerMethod, handCount));
 
             players = new List<IPlayer>()
             {
-                (IPlayer)Activator.CreateInstance(player1),
-                (IPlayer)Activator.CreateInstance(player2),
-                (IPlayer)Activator.CreateInstance(player1),
-                (IPlayer)Activator.CreateInstance(player2),
-                (IPlayer)Activator.CreateInstance(player2),
+                new Participant() { Type = participantType1 }.Player,
+                new Participant() { Type = participantType2 }.Player,
+                new Participant() { Type = participantType1 }.Player,
+                new Participant() { Type = participantType2 }.Player,
+                new Participant() { Type = participantType2 }.Player,
             };
-            players[0].Name = player1.Name;
-            players[1].Name = player2.Name;
-            players[2].Name = player1.Name;
-            players[3].Name = player2.Name;
-            players[4].Name = player2.Name;
+            players[0].Name = participantType1;
+            players[1].Name = participantType2;
+            players[2].Name = participantType1;
+            players[3].Name = participantType2;
+            players[4].Name = participantType2;
             stringBuilder.Append(RunGame(++gameNo, players, partnerMethod, handCount));
         }
 
-        private void PlayTwoThreePlayer(Type player1, Type player2, StringBuilder stringBuilder, ref int gameNo, int handCount)
+        private void PlayTwoThreePlayer(string participantType1, string participantType2, StringBuilder stringBuilder, ref int gameNo, int handCount)
         {
             List<IPlayer> players = new List<IPlayer>()
             {
-                (IPlayer)Activator.CreateInstance(player1),
-                (IPlayer)Activator.CreateInstance(player2),
-                (IPlayer)Activator.CreateInstance(player2),
+                new Participant() { Type = participantType1 }.Player,
+                new Participant() { Type = participantType2 }.Player,
+                new Participant() { Type = participantType2 }.Player,
             };
-            players[0].Name = player1.Name;
-            players[1].Name = player2.Name;
-            players[2].Name = player2.Name;
+            players[0].Name = participantType1;
+            players[1].Name = participantType2;
+            players[2].Name = participantType2;
             stringBuilder.Append(RunGame(++gameNo, players, PartnerMethod.JackOfDiamonds, handCount));
 
             players = new List<IPlayer>()
             {
-                (IPlayer)Activator.CreateInstance(player1),
-                (IPlayer)Activator.CreateInstance(player1),
-                (IPlayer)Activator.CreateInstance(player2),
+                new Participant() { Type = participantType1 }.Player,
+                new Participant() { Type = participantType1 }.Player,
+                new Participant() { Type = participantType2 }.Player,
             };
-            players[0].Name = player1.Name;
-            players[1].Name = player1.Name;
-            players[2].Name = player2.Name;
+            players[0].Name = participantType1;
+            players[1].Name = participantType1;
+            players[2].Name = participantType2;
             stringBuilder.Append(RunGame(++gameNo, players, PartnerMethod.JackOfDiamonds, handCount));
         }
 
