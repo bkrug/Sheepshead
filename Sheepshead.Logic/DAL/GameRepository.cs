@@ -57,6 +57,7 @@ namespace Sheepshead.Logic.DAL
 
         public void UpdateGame(Game game)
         {
+            game.LastModifiedTime = DateTime.Now;
             context.Entry(game).State = EntityState.Modified;
         }
 

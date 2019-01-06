@@ -11,9 +11,10 @@ using System;
 namespace Sheepshead.Logic.Migrations
 {
     [DbContext(typeof(SheepsheadContext))]
-    partial class SheepsheadContextModelSnapshot : ModelSnapshot
+    [Migration("20190106024649_MonitorGameModificationTime")]
+    partial class MonitorGameModificationTime
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

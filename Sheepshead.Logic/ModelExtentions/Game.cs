@@ -32,7 +32,7 @@ namespace Sheepshead.Logic.Models
             TurnType = TurnType
         };
 
-        public Game(List<Participant> participants, PartnerMethod partnerMethod, bool enableLeasters)
+        public Game(List<Participant> participants, PartnerMethod partnerMethod, bool enableLeasters) : this()
         {
             Hand = Hand ?? new List<Hand>();
             LeastersEnabled = enableLeasters;
@@ -56,7 +56,7 @@ namespace Sheepshead.Logic.Models
         /// <summary>
         /// This constructor is for passing in Mocks in unit tests.
         /// </summary>
-        public Game(List<IPlayer> mockPlayers, PartnerMethod partnerMethod, IRandomWrapper random, IGameStateDescriber gameStateDescriber)
+        public Game(List<IPlayer> mockPlayers, PartnerMethod partnerMethod, IRandomWrapper random, IGameStateDescriber gameStateDescriber) : this()
         {
             Hand = Hand ?? new List<Hand>();
             _mockPlayerList = mockPlayers;
