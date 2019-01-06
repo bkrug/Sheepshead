@@ -14,7 +14,7 @@ export interface PlayPaneState {
     trickWinners: string[];
     coins: GameScore[];
     leastersHand: boolean;
-    tricks: { key: string, value: CardSummary[] }[];
+    tricks: { key: string, value: CardSummary }[][];
     showGroupedTricks: boolean;
 }
 
@@ -72,7 +72,7 @@ export class PlayPane extends React.Component<RouteComponentProps<{}>, PlayPaneS
     }
 
     private showGroupedTricks(): void {
-        if (this.state.tricks.length > 0 && this.state.tricks[0].value.length > 0)
+        if (this.state.tricks.length > 0 && this.state.tricks[0].length > 0)
             this.setState({
                 showGroupedTricks: true
             });
@@ -86,11 +86,14 @@ export class PlayPane extends React.Component<RouteComponentProps<{}>, PlayPaneS
 
     private renderModal() {
         var self = this;
-        var playerList = this.state.tricks.map((trick: { key: string, value: CardSummary[] }, i: number) =>
+        var playerList = this.state.tricks.map((trick: { key: string, value: CardSummary }[], i: number) =>
             <div key={i} className='trick-summary'>
-                <p>{trick.key}</p>
-                {trick.value.map((cardSummary: CardSummary, j: number) =>
-                    <p key={j} className={this.getCssClass(cardSummary)}>{cardSummary.abbreviation}</p>
+                <div className='trick-number'><div className='trick-number'>{i+1})</div></div>
+                {trick.map((moveSummary: { key: string, value: CardSummary }, j: number) =>
+                    <div key={j} className={this.getCssClass(moveSummary.value) + ' move'}>
+                        <div className='move-player'>{moveSummary.key}</div>
+                        <div className='move-card'>{moveSummary.value.abbreviation}</div>
+                    </div>
                 )}
             </div>
         );

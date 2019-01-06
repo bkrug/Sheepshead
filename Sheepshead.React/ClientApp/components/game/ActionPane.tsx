@@ -108,6 +108,7 @@ export default class ActionPane extends React.Component<ActionPaneProps, ActionP
                     trickCount={this.state.trickCount}
                     playerCount={this.state.playerCount} />);
             case 'ReportHand':
+            case 'BeginHand':
                 return (<HandSummaryPane
                     gameId={this.state.gameId}
                     onSummaryPhaseComplete={this.onSummaryPhaseComplete} />);

@@ -62,7 +62,7 @@ button {
 
 .modal-dialog.trick-cards {
     top: 32vmin;
-    width: 37vmin;
+    width: 49vmin;
 }
 
 .modal-dialog.trick-summary {
@@ -176,22 +176,62 @@ button {
     height: 3vmin;
 }
 
+.trick-summary {
+    width: 44vmin;
+}
+
 .trick-summary img {
     width: 6vmin;
     height: 8vmin;
 }
 
-.trick-summary {
-    width: 29vmin;
+.trick-summary p:first-child {
+    width: 6vmin;
+    text-align: left;
 }
 
-.trick-summary p {
+.trick-summary .trick-number,
+.trick-summary .move,
+.trick-summary .move-player,
+.trick-summary .move-card {
+    display: inline-block;
+    overflow-x: hidden;
+}
+
+.trick-summary .trick-number {
+    width: 3vmin;
+    margin-right: .6vmin;
+    text-align: left;
+}
+
+.trick-summary .move-player {
+    width: 4vmin;
+    margin-right: .3vmin;
+    text-align: right;
+}
+
+.trick-summary .move-card {
+    width: 3vmin;
+    margin-right: .6vmin;
+    text-align: left;
+}
+
+.hand-summary {
+    width: 33vmin;
+}
+
+.hand-summary img {
+    width: 6vmin;
+    height: 8vmin;
+}
+
+.hand-summary p {
     width: 4vmin;
     display: inline-block;
     text-align: right;
 }
 
-.trick-summary p:first-child {
+.hand-summary p:first-child {
     width: 6vmin;
     text-align: left;
 }

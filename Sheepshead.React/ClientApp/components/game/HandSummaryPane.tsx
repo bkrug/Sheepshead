@@ -82,17 +82,21 @@ export default class HandSummaryPane extends React.Component<HandSummaryPaneProp
             <div key={i}>
                 <p>{trick.key}</p>
                 {trick.value.map((cardSummary: CardSummary, j: number) =>
-                    <p key={j} className={cardSummary.abbreviation.indexOf('♥') >= 0 || cardSummary.abbreviation.indexOf('♦') >= 0 ? 'redCard' : 'blkCard'}>{cardSummary.abbreviation}</p>
+                    <p key={j} className={this.getCssClass(cardSummary)}>{cardSummary.abbreviation}</p>
                 )}
             </div>
         );
         return (
-            <div className="modal-dialog trick-summary">
+            <div className="modal-dialog hand-summary">
                 <div>
                     {playerList}
                 </div>
             </div>
         );
+    }
+
+    private getCssClass(cardSummary: CardSummary): string {
+        return cardSummary.abbreviation.indexOf('♥') >= 0 || cardSummary.abbreviation.indexOf('♦') >= 0 ? 'redCard' : 'blkCard';
     }
 
     public render() {
@@ -118,9 +122,9 @@ export default class HandSummaryPane extends React.Component<HandSummaryPaneProp
                 { this.state.mustRedeal
                     ? <h3>Must re-deal. There was no picker. </h3>
                     : <div>
-                        <div onMouseOver={this.showGroupedTricks} onMouseOut={this.hideGroupedTricks}>
-                            <div>
-                                <h4>Points from this Hand</h4>
+                        <div>
+                            <h4>Points from this Hand</h4>
+                            <div onMouseOver={this.showGroupedTricks} onMouseOut={this.hideGroupedTricks}>
                                 {pointList}
                             </div>
                         </div>

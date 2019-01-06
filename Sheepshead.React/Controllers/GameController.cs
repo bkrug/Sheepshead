@@ -130,12 +130,13 @@ namespace Sheepshead.React.Controllers
                 trickWinner.TrickWinners,
                 leastersHand = game.IHands.LastOrDefault(d => d.PickPhaseComplete)?.Leasters ?? false,
                 tricks = hand?.ITricks
+                             ?.Where(t => t.IsComplete())
                              ?.Select(trick =>
-                                new KeyValuePair<string, List<CardSummary>>(
-                                    trick.Winner()?.Player?.Name ?? "",
-                                    trick.OrderedMoves.Select(c => CardUtil.GetCardSummary(c.Value)).ToList()
-                                )
-                             ),
+                               trick.OrderedMoves.Select(
+                                   move =>
+                                    new KeyValuePair<string, CardSummary>(move.Key.Name, CardUtil.GetCardSummary(move.Value))
+                                   )
+                                ),
             });
         }
 
