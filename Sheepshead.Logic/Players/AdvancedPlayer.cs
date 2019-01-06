@@ -103,7 +103,7 @@ namespace Sheepshead.Logic.Players
             {
                 if (_gameStateAnalyzer.MySideWinning(this, trick))
                 {
-                    return _playCreator.GiveAwayPoints(this, trick);
+                    return _playCreator.GiveAwayLeastPower(this, trick);
                 }
                 else
                 {
@@ -117,7 +117,7 @@ namespace Sheepshead.Logic.Players
             {
                 if (_gameStateAnalyzer.MySideWinning(this, trick))
                 {
-                    return _playCreator.GiveAwayPoints(this, trick);
+                    return _playCreator.GiveAwayLeastPower(this, trick);
                 }
                 else
                 {

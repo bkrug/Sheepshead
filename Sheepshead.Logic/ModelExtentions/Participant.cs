@@ -9,6 +9,7 @@ namespace Sheepshead.Logic.Models
         public const string TYPE_SIMPLE = "S";
         public const string TYPE_INTERMEDIATE = "I";
         public const string TYPE_ADVANCED = "A";
+        public const string TYPE_EXPERIMENTAL = "X";
 
         private IPlayer _player;
         public IPlayer Player => _player ?? (_player = InitPlayer());
@@ -22,6 +23,8 @@ namespace Sheepshead.Logic.Models
                     return new IntermediatePlayer(this);
                 case TYPE_ADVANCED:
                     return new AdvancedPlayer(this);
+                case TYPE_EXPERIMENTAL:
+                    throw new Exception("No experimental player is currently known to exist.");
                 default:
                     return new HumanPlayer(this);
             }

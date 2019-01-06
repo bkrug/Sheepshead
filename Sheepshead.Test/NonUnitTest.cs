@@ -16,7 +16,32 @@ namespace Sheepshead.Tests
     {
         private Dictionary<string, int> _playerTypeCoins;
 
-        [TestMethod]
+        //[TestMethod]
+        public void TestTwoPlayers()
+        {
+            _playerTypeCoins = new Dictionary<string, int>();
+            var stringBuilder = new StringBuilder();
+            var gameNo = 0;
+            var handCount = 1000;
+            PartnerMethod partnerMethod;
+
+            partnerMethod = PartnerMethod.JackOfDiamonds;
+            PlayTwoFivePlayer(Participant.TYPE_ADVANCED, Participant.TYPE_EXPERIMENTAL, stringBuilder, partnerMethod, ref gameNo, handCount);
+            PlayTwoFivePlayer(Participant.TYPE_EXPERIMENTAL, Participant.TYPE_ADVANCED, stringBuilder, partnerMethod, ref gameNo, handCount);
+
+            partnerMethod = PartnerMethod.CalledAce;
+            PlayTwoFivePlayer(Participant.TYPE_ADVANCED, Participant.TYPE_EXPERIMENTAL, stringBuilder, partnerMethod, ref gameNo, handCount);
+            PlayTwoFivePlayer(Participant.TYPE_EXPERIMENTAL, Participant.TYPE_ADVANCED, stringBuilder, partnerMethod, ref gameNo, handCount);
+
+            PlayTwoThreePlayer(Participant.TYPE_ADVANCED, Participant.TYPE_EXPERIMENTAL, stringBuilder, ref gameNo, handCount);
+
+            foreach (var kvp in _playerTypeCoins)
+                stringBuilder.AppendLine(StringSegment(kvp.Key) + kvp.Value);
+
+            File.WriteAllText(@"F:\Users\bjkrug\Documents\scores.txt", stringBuilder.ToString());
+        }
+
+        //[TestMethod]
         public void TestAllPlayers()
         {
             _playerTypeCoins = new Dictionary<string, int>();
