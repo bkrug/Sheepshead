@@ -8,10 +8,10 @@ export class IdUtils {
     }
 
     public static setPlayerId(gameId: string, playerId: string) {
-        window.sessionStorage.setItem('game' + gameId + 'player', playerId);
+        window.localStorage.setItem('game' + gameId + 'player', playerId);
     }
 
     public static getPlayerId(gameId: string): string | null {
-        return window.sessionStorage.getItem('game' + gameId + 'player');
+        return window.localStorage.getItem('game' + gameId + 'player');
     }
 }
