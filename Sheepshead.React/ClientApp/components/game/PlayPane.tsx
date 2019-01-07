@@ -110,6 +110,20 @@ export class PlayPane extends React.Component<RouteComponentProps<{}>, PlayPaneS
         return cardSummary.abbreviation.indexOf('♥') >= 0 || cardSummary.abbreviation.indexOf('♦') >= 0 ? 'redCard' : 'blkCard';
     }
 
+    private renderPickerPartnerData() {
+        if (this.state.leastersHand)
+            return (<div className={'hand-data'}><b>Leasters Hand</b></div>);
+        if (this.state.partnerCard)
+            return (<div className={'hand-data'}>
+                <div>Picker: {this.state.picker}</div>
+                <div>Partner: {this.state.partner}</div>
+                <div>Partner Card: {this.state.partnerCard}</div>
+            </div>);
+        return (<div className={'hand-data'}>
+            <div>Picker: {this.state.picker}</div>
+        </div>);
+    }
+
     public render() {
         return (
             <div className="play-pane page-contents">
@@ -127,15 +141,10 @@ export class PlayPane extends React.Component<RouteComponentProps<{}>, PlayPaneS
                             )
                         }
                     </div>
-                    {this.state.showGroupedTricks ? this.renderModal() : <div></div> }
+                    { this.state.showGroupedTricks ? this.renderModal() : <div></div> }
                     <div>
                         <h4>Hand Details</h4>
-                        <div className={'hand-data'}>
-                            <div>Picker: {this.state.picker}</div>
-                            <div>Partner: {this.state.partner}</div>
-                            <div>Partner Card: {this.state.partnerCard}</div>
-                            {this.state.leastersHand ? <b>Leasters Hand</b> : ''}
-                        </div>
+                        { this.renderPickerPartnerData() }
                         <div className={'trick-winners'} onMouseOver={this.showGroupedTricks} onMouseOut={this.hideGroupedTricks}>
                             {
                                 this.state.trickWinners.map((playerName: string, i: number) =>
