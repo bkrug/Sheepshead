@@ -14,7 +14,6 @@
 
 .button-container input[disabled] {
     opacity: .50;
-    border-color: black;
 }
 
 label {
@@ -56,10 +55,11 @@ input[value="Play"] {
 
 .source-code {
     position: absolute;
+    left: 0;
+    right: 0;
     bottom: 0;
     height: 6vmin;
     text-align: center;
-    width: 100%;
 }
 
 textarea {
