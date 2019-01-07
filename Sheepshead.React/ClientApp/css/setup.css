@@ -12,6 +12,11 @@
     margin-right: .2vmin;
 }
 
+.button-container input[disabled] {
+    opacity: .50;
+    border-color: black;
+}
+
 label {
     margin-right: 0.5vmin;
 }
