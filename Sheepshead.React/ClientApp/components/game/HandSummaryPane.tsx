@@ -82,7 +82,7 @@ export default class HandSummaryPane extends React.Component<HandSummaryPaneProp
             <div key={i}>
                 <p>{trick.key}</p>
                 {trick.value.map((cardSummary: CardSummary, j: number) =>
-                    <p key={j} className={this.getCssClass(cardSummary)}>{cardSummary.abbreviation}</p>
+                    <p key={j} className={this.getCssClass(cardSummary)}>{cardSummary.abbreviation.replace('T', '10')}</p>
                 )}
             </div>
         );

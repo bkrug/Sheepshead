@@ -92,7 +92,7 @@ export class PlayPane extends React.Component<RouteComponentProps<{}>, PlayPaneS
                 {trick.map((moveSummary: { key: string, value: CardSummary }, j: number) =>
                     <div key={j} className={this.getCssClass(moveSummary.value) + ' move'}>
                         <div className='move-player'>{moveSummary.key}</div>
-                        <div className='move-card'>{moveSummary.value.abbreviation}</div>
+                        <div className='move-card'>{moveSummary.value.abbreviation.replace('T', '10')}</div>
                     </div>
                 )}
             </div>
