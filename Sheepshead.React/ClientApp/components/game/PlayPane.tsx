@@ -145,12 +145,14 @@ export class PlayPane extends React.Component<RouteComponentProps<{}>, PlayPaneS
                     <div>
                         <h4>Hand Details</h4>
                         { this.renderPickerPartnerData() }
-                        <div className={'trick-winners'} onMouseOver={this.showGroupedTricks} onMouseOut={this.hideGroupedTricks}>
+                        <div className={'trick-winners'}>
+                            <div onMouseOver={this.showGroupedTricks} onMouseOut={this.hideGroupedTricks}>
                             {
                                 this.state.trickWinners.map((playerName: string, i: number) =>
-                                    <div key={i}><b>Trick {i+1}</b> {playerName}</div>
+                                    <div key={i}><a>Trick {i+1}</a> {playerName}</div>
                                 )
                             }
+                            </div>
                         </div>
                     </div>
                     <ActionPane gameId={this.state.gameId}

@@ -127,6 +127,11 @@ button {
     vertical-align: top;
 }
 
+.play-pane .trick-winners .view-button {
+    float: right;
+    border-radius: .5vmin;
+}
+
 .card {
     width: 9vmin;
     height: 12vmin;

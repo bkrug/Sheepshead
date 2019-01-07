@@ -102,7 +102,7 @@ export default class HandSummaryPane extends React.Component<HandSummaryPaneProp
     public render() {
         var pointList = this.state.points.map((score: GameScore, i: number) =>
             <div key={i}>
-                {score.name}: {score.score || '-'}
+                {score.name}: <a>{score.score || '-'}</a>
             </div>);
 
         var coinList = this.state.coins.map((score: GameScore, i: number) =>

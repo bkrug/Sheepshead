@@ -52,7 +52,7 @@ export class CheatSheetModal extends React.Component<CheatProps, CheatState> {
     public render() {
         return (
             <div>
-                <a style={{ cursor: 'pointer' }} onMouseOver={this.showModal} onMouseOut={this.hideModal}>Show Cheat Sheet</a>
+                <a onMouseOver={this.showModal} onMouseOut={this.hideModal}>Show Cheat Sheet</a>
                 { this.state.display ? this.renderModal() : <div></div> }
             </div>
         );
