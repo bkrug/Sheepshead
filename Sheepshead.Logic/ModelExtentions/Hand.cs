@@ -9,6 +9,12 @@ namespace Sheepshead.Logic.Models
     public partial class Hand : IHand
     {
         [NotMapped]
+        public IPlayer StartingPlayer
+        {
+            get { return StartingParticipant?.Player; }
+            protected set { StartingParticipant = value?.Participant; }
+        }
+        [NotMapped]
         public IPlayer Picker {
             get { return PickerParticipant?.Player; }
             protected set { PickerParticipant = value?.Participant; }
@@ -23,31 +29,29 @@ namespace Sheepshead.Logic.Models
             get { return CardUtil.GetCardFromAbbreviation(PartnerCard); }
             private set { PartnerCard = value.HasValue ? CardUtil.GetAbbreviation(value.Value) : string.Empty; }
         }
-        public List<ITrick> ITricks { get { return Tricks == null ? new List<ITrick>() : Tricks.OrderBy(t => t.SortOrder).OfType<ITrick>().ToList(); } }
-        public int PlayerCount => IGame.PlayerCount;
-        public List<IPlayer> Players => IGame.Players;
         [NotMapped]
-        public IGame IGame {
+        public IGame IGame
+        {
             get { return Game; }
             protected set { Game = (Game)value; }
         }
         public IReadOnlyList<SheepCard> Blinds => CardUtil.StringToCardList(BlindCards);
         public IReadOnlyList<SheepCard> Buried => CardUtil.StringToCardList(BuriedCards);
+        public List<ITrick> ITricks { get { return Tricks == null ? new List<ITrick>() : Tricks.OrderBy(t => t.SortOrder).OfType<ITrick>().ToList(); } }
+
+        public int PlayerCount => IGame.PlayerCount;
+        public List<IPlayer> Players => IGame.Players;
+        public List<IPlayer> PlayersWithoutPickTurn => PlayerOrderer.PlayersWithoutTurn(Players, StartingPlayer, PlayersRefusingPick);
         public IReadOnlyList<IPlayer> PlayersRefusingPick => 
             PlayerOrderer.PlayersInTurnOrder(Players, StartingPlayer)
             .Where(p => ParticipantsRefusingPick.Any(prp => prp.Participant.Player == p))
             .ToList();
         [NotMapped]
-        public IPlayer StartingPlayer {
-            get { return StartingParticipant?.Player; }
-            protected set { StartingParticipant = value?.Participant; }
-        }
-        [NotMapped]
         public IRandomWrapper _random { get; private set; }
-        public List<IPlayer> PlayersWithoutPickTurn => PlayerOrderer.PlayersWithoutTurn(Players, StartingPlayer, PlayersRefusingPick);
         /// <summary>
         /// Returns true when there is no picker and Leasters is off.
         /// </summary>
+        // TODO: And Picker must be null, right?
         public bool MustRedeal => !IGame.LeastersEnabled && !PlayersWithoutPickTurn.Any();
         public bool Leasters { get { return Picker == null; } }
 
@@ -226,6 +230,7 @@ namespace Sheepshead.Logic.Models
         {
             if (MustRedeal)
                 return true;
+            //TODO: Why not just use IGame.TrickCount?
             const int CARDS_IN_PLAY = 30;
             var trickCount = CARDS_IN_PLAY / IGame.PlayerCount;
             return Tricks.Count() == trickCount && Tricks.Last().IsComplete();
