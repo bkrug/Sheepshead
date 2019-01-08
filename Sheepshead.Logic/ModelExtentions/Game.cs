@@ -10,7 +10,7 @@ namespace Sheepshead.Logic.Models
     {
         public const int CARDS_IN_DECK = 32;
         public virtual int PlayerCount => Players.Count();
-        public int TrickCount => (int)Math.Floor(32d / PlayerCount);
+        public int TrickCount => PlayerCount == 5 ? 6 : 10;
         public IReadOnlyList<IHand> IHands => Hands?.OrderBy(h => h.SortOrder).ToList();
         public int HumanPlayerCount => Players.Count(p => p is IHumanPlayer);
         private List<IPlayer> _mockPlayerList = null;
