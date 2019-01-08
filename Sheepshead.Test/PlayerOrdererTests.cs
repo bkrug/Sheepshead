@@ -17,8 +17,7 @@ namespace Sheepshead.Tests
             var playerMocks = new List<Mock<IPlayer>>() { new Mock<IPlayer>(), new Mock<IPlayer>(), new Mock<IPlayer>(), new Mock<IPlayer>(), new Mock<IPlayer>() };
             var players = playerMocks.Select(m => m.Object).ToList();
 
-            var orderer = new PlayerOrderer();
-            var actualList = orderer.PlayersInTurnOrder(players, players[3]);
+            var actualList = PlayerOrderer.PlayersInTurnOrder(players, players[3]);
 
             Assert.AreSame(players[3], actualList[0]);
             Assert.AreSame(players[4], actualList[1]);
@@ -33,8 +32,7 @@ namespace Sheepshead.Tests
             var playerMocks = new List<Mock<IPlayer>>() { new Mock<IPlayer>(), new Mock<IPlayer>(), new Mock<IPlayer>(), new Mock<IPlayer>(), new Mock<IPlayer>() };
             var players = playerMocks.Select(m => m.Object).ToList();
 
-            var orderer = new PlayerOrderer();
-            var actualList = orderer.PlayersInTurnOrder(players, players[0]);
+            var actualList = PlayerOrderer.PlayersInTurnOrder(players, players[0]);
 
             Assert.AreSame(players[0], actualList[0]);
             Assert.AreSame(players[1], actualList[1]);
@@ -49,8 +47,7 @@ namespace Sheepshead.Tests
             var playerMocks = new List<Mock<IPlayer>>() { new Mock<IPlayer>(), new Mock<IPlayer>(), new Mock<IPlayer>(), new Mock<IPlayer>(), new Mock<IPlayer>() };
             var players = playerMocks.Select(m => m.Object).ToList();
 
-            var orderer = new PlayerOrderer();
-            var actualList = orderer.PlayersInTurnOrder(players, players[4]);
+            var actualList = PlayerOrderer.PlayersInTurnOrder(players, players[4]);
 
             Assert.AreSame(players[4], actualList[0]);
             Assert.AreSame(players[0], actualList[1]);
@@ -65,8 +62,7 @@ namespace Sheepshead.Tests
             var playerMocks = new List<Mock<IPlayer>>() { new Mock<IPlayer>(), new Mock<IPlayer>(), new Mock<IPlayer>(), new Mock<IPlayer>(), new Mock<IPlayer>() };
             var players = playerMocks.Select(m => m.Object).ToList();
 
-            var orderer = new PlayerOrderer();
-            var actualList = orderer.PlayersWithoutTurn(players, players.Skip(5).ToList());
+            var actualList = PlayerOrderer.PlayersWithoutTurn(players, players.Skip(5).ToList());
 
             Assert.AreSame(players[0], actualList[0]);
             Assert.AreSame(players[1], actualList[1]);
@@ -81,8 +77,7 @@ namespace Sheepshead.Tests
             var playerMocks = new List<Mock<IPlayer>>() { new Mock<IPlayer>(), new Mock<IPlayer>(), new Mock<IPlayer>(), new Mock<IPlayer>(), new Mock<IPlayer>() };
             var players = playerMocks.Select(m => m.Object).ToList();
 
-            var orderer = new PlayerOrderer();
-            var actualList = orderer.PlayersWithoutTurn(players, players.Take(2).ToList());
+            var actualList = PlayerOrderer.PlayersWithoutTurn(players, players.Take(2).ToList());
 
             Assert.AreSame(players[2], actualList[0]);
             Assert.AreSame(players[3], actualList[1]);

@@ -34,7 +34,7 @@ namespace Sheepshead.Logic.Models
         public IReadOnlyList<SheepCard> Blinds => CardUtil.StringToCardList(BlindCards);
         public IReadOnlyList<SheepCard> Buried => CardUtil.StringToCardList(BuriedCards);
         public IReadOnlyList<IPlayer> PlayersRefusingPick => 
-            new PlayerOrderer().PlayersInTurnOrder(Players, StartingPlayer)
+            PlayerOrderer.PlayersInTurnOrder(Players, StartingPlayer)
             .Where(p => ParticipantsRefusingPick.Any(prp => prp.Participant.Player == p))
             .ToList();
         [NotMapped]
@@ -44,13 +44,8 @@ namespace Sheepshead.Logic.Models
         }
         [NotMapped]
         public IRandomWrapper _random { get; private set; }
-        public List<IPlayer> PlayersInTurnOrder => PickPlayerOrderer.PlayersInTurnOrder(Players, StartingPlayer);
-        public List<IPlayer> PlayersWithoutPickTurn => PickPlayerOrderer.PlayersWithoutTurn(PlayersInTurnOrder, PlayersRefusingPick);
-        private IPlayerOrderer _pickPlayerOrderer;
-        public IPlayerOrderer PickPlayerOrderer
-        {
-            get { return _pickPlayerOrderer ?? (_pickPlayerOrderer = new PlayerOrderer()); }
-        }
+        public List<IPlayer> PlayersInTurnOrder => PlayerOrderer.PlayersInTurnOrder(Players, StartingPlayer);
+        public List<IPlayer> PlayersWithoutPickTurn => PlayerOrderer.PlayersWithoutTurn(PlayersInTurnOrder, PlayersRefusingPick);
         /// <summary>
         /// Returns true when there is no picker and Leasters is off.
         /// </summary>
@@ -254,7 +249,6 @@ namespace Sheepshead.Logic.Models
 
         int PlayerCount { get; }
         List<IPlayer> PlayersWithoutPickTurn { get; }
-        IPlayerOrderer PickPlayerOrderer { get; }
         IPlayer PresumedParnter { get; }
         bool MustRedeal { get; }
 

@@ -5,21 +5,15 @@ using System.Linq;
 
 namespace Sheepshead.Logic
 {
-    public interface IPlayerOrderer
+    public class PlayerOrderer
     {
-        List<IPlayer> PlayersInTurnOrder(List<IPlayer> players, IPlayer startingPlayer);
-        List<IPlayer> PlayersWithoutTurn(List<IPlayer> playersInPickOrder, IReadOnlyList<IPlayer> playersRefusingPick);
-    }
-
-    public class PlayerOrderer : IPlayerOrderer
-    {
-        public List<IPlayer> PlayersInTurnOrder(List<IPlayer> players, IPlayer startingPlayer)
+        public static List<IPlayer> PlayersInTurnOrder(List<IPlayer> players, IPlayer startingPlayer)
         {
             var startIndex = players.IndexOf(startingPlayer);
             return players.Skip(startIndex).Union(players.Take(startIndex)).ToList();
         }
 
-        public List<IPlayer> PlayersWithoutTurn(List<IPlayer> playersInPickOrder, IReadOnlyList<IPlayer> playersRefusingPick)
+        public static List<IPlayer> PlayersWithoutTurn(List<IPlayer> playersInPickOrder, IReadOnlyList<IPlayer> playersRefusingPick)
         {
             var finishedCount = playersRefusingPick.Count();
             return playersInPickOrder.Skip(finishedCount).ToList();

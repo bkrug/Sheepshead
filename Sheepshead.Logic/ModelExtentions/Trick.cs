@@ -149,14 +149,8 @@ namespace Sheepshead.Logic.Models
             get { return IHand.Partner == null ? (int?)null : IHand.Partner.QueueRankInTrick(this); } 
         }
 
-        public List<IPlayer> PlayersInTurnOrder => PickPlayerOrderer.PlayersInTurnOrder(Players, StartingPlayer);
-        public List<IPlayer> PlayersWithoutTurn => PickPlayerOrderer.PlayersWithoutTurn(PlayersInTurnOrder, CardsByPlayer.Keys.ToList());
-
-        private IPlayerOrderer _pickPlayerOrderer;
-        public IPlayerOrderer PickPlayerOrderer
-        {
-            get { return _pickPlayerOrderer ?? (_pickPlayerOrderer = new PlayerOrderer()); }
-        }
+        public List<IPlayer> PlayersInTurnOrder => PlayerOrderer.PlayersInTurnOrder(Players, StartingPlayer);
+        public List<IPlayer> PlayersWithoutTurn => PlayerOrderer.PlayersWithoutTurn(PlayersInTurnOrder, CardsByPlayer.Keys.ToList());
     }
 
     public class TrickWinner {
@@ -176,7 +170,6 @@ namespace Sheepshead.Logic.Models
         int QueueRankOfPicker { get; }
         int? QueueRankOfPartner { get; }
         List<IPlayer> PlayersWithoutTurn { get; }
-        IPlayerOrderer PickPlayerOrderer { get; }
 
         void Add(IPlayer player, SheepCard card);
         bool IsLegalAddition(SheepCard card, IPlayer player);
