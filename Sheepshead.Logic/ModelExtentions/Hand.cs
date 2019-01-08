@@ -241,31 +241,33 @@ namespace Sheepshead.Logic.Models
     public interface IHand
     {
         IGame IGame { get; }
+        List<IPlayer> Players { get; }
+        IPlayer StartingPlayer { get; }
         IPlayer Picker { get; }
         IPlayer Partner { get; }
         SheepCard? PartnerCardEnum { get; }
-        int PlayerCount { get; }
-        List<IPlayer> Players { get; }
-        IPlayer StartingPlayer { get; }
         bool Leasters { get; }
         IReadOnlyList<SheepCard> Blinds { get; }
         IReadOnlyList<SheepCard> Buried { get; }
-        void AddBuried(SheepCard card);
         IReadOnlyList<IPlayer> PlayersRefusingPick { get; }
+        List<ITrick> ITricks { get; }
+
+        int PlayerCount { get; }
         List<IPlayer> PlayersWithoutPickTurn { get; }
         IPlayerOrderer PickPlayerOrderer { get; }
-        List<ITrick> ITricks { get; }
         IPlayer PresumedParnter { get; }
         bool MustRedeal { get; }
-        bool PickPhaseComplete { get; }
-        void GoItAlone();
-        void SetPartnerCard(SheepCard? sheepCard);
-        void SetPartner(IPlayer partner, ITrick trick);
-        void AddTrick(ITrick trick);
-        HandScores Scores();
-        bool IsComplete();
+
         void PlayerWontPick(IPlayer player);
         void SetPicker(IPlayer picker, List<SheepCard> burried);
+        bool PickPhaseComplete { get; }
+        void AddBuried(SheepCard card);
+        void SetPartner(IPlayer partner, ITrick trick);
+        void GoItAlone();
+        void SetPartnerCard(SheepCard? sheepCard);
+        void AddTrick(ITrick trick);
+        bool IsComplete();
+        HandScores Scores();
     }
 
     public class HandScores
