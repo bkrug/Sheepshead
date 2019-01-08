@@ -31,9 +31,8 @@ namespace Sheepshead.Logic.Models
                     : new Dictionary<IPlayer, SheepCard>();
             }
         }
-        public event EventHandler<EventArgs> OnTrickEnd;
-        public event EventHandler<MoveEventArgs> OnMove;
 
+        //TODO: Use the TrickPlay.SortOrder property instead of trying to figure out the order of the players.
         public List<KeyValuePair<IPlayer, SheepCard>> OrderedMoves 
         { 
             get 
@@ -73,9 +72,6 @@ namespace Sheepshead.Logic.Models
             player.RemoveCard(card);
             if (IHand.PartnerCardEnum == card)
                 IHand.SetPartner(player, this);
-            OnMoveHandler(player, card);
-            if (IsComplete())
-                OnTrickEndHandler();
         }
 
         public bool IsLegalAddition(SheepCard card, IPlayer player)
@@ -132,28 +128,6 @@ namespace Sheepshead.Logic.Models
                 Player = validCards.OrderBy(kvp => CardUtil.GetRank(kvp.Value)).First().Key,
                 Points = moves.Sum(c => CardUtil.GetPoints(c.Value))
             };
-        }
-
-        public class MoveEventArgs : EventArgs
-        {
-            public IPlayer Player;
-            public SheepCard Card;
-        }
-
-        protected virtual void OnMoveHandler(IPlayer player, SheepCard card)
-        {
-            var e = new MoveEventArgs()
-            {
-                Player = player,
-                Card = card
-            };
-            OnMove?.Invoke(this, e);
-        }
-
-        protected virtual void OnTrickEndHandler()
-        {
-            var e = new EventArgs();
-            OnTrickEnd?.Invoke(this, e);
         }
 
         public virtual bool IsComplete()
@@ -214,7 +188,6 @@ namespace Sheepshead.Logic.Models
 
         void Add(IPlayer player, SheepCard card);
         bool IsLegalAddition(SheepCard card, IPlayer player);
-        event EventHandler<EventArgs> OnTrickEnd;
         bool IsComplete();
         TrickWinner Winner();
     }

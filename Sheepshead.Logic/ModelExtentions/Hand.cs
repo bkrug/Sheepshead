@@ -24,7 +24,6 @@ namespace Sheepshead.Logic.Models
             private set { PartnerCard = value.HasValue ? CardUtil.GetAbbreviation(value.Value) : string.Empty; }
         }
         public List<ITrick> ITricks { get { return Tricks == null ? new List<ITrick>() : Tricks.OrderBy(t => t.SortOrder).OfType<ITrick>().ToList(); } }
-        public event EventHandler<EventArgs> OnHandEnd;
         public int PlayerCount => IGame.PlayerCount;
         public List<IPlayer> Players => IGame.Players;
         [NotMapped]
@@ -219,8 +218,6 @@ namespace Sheepshead.Logic.Models
         {
             if (trick is Trick)
                 Tricks.Add((Trick)trick);
-            if (Tricks.Count == (Game.CARDS_IN_DECK / IGame.PlayerCount))
-                trick.OnTrickEnd += (Object sender, EventArgs e) => { OnHandEndHandler(); };
         }
 
         private HandScores _scores = null;
@@ -238,12 +235,6 @@ namespace Sheepshead.Logic.Models
             const int CARDS_IN_PLAY = 30;
             var trickCount = CARDS_IN_PLAY / IGame.PlayerCount;
             return Tricks.Count() == trickCount && Tricks.Last().IsComplete();
-        }
-
-        protected virtual void OnHandEndHandler()
-        {
-            var e = new EventArgs();
-            OnHandEnd?.Invoke(this, e);
         }
     }
 
@@ -273,7 +264,6 @@ namespace Sheepshead.Logic.Models
         void AddTrick(ITrick trick);
         HandScores Scores();
         bool IsComplete();
-        event EventHandler<EventArgs> OnHandEnd;
         void PlayerWontPick(IPlayer player);
         void SetPicker(IPlayer picker, List<SheepCard> burried);
     }
