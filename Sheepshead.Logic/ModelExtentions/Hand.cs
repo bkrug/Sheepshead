@@ -224,7 +224,7 @@ namespace Sheepshead.Logic.Models
         public HandScores Scores()
         {
             if (ITricks.Count == IGame.TrickCount && ITricks.Last().IsComplete())
-                return _scores = (_scores ?? new ScoreCalculator(this).InternalScores());
+                return _scores = (_scores ?? ScoreCalculator.GetScores(this));
             return null;
         }
 

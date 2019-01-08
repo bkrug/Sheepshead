@@ -6,49 +6,40 @@ using Sheepshead.Logic.Players;
 
 namespace Sheepshead.Logic
 {
-    //TODO: Consider making this static.
-    public class ScoreCalculator
+    public static class ScoreCalculator
     {
-        IHand _hand;
-
-        public ScoreCalculator(IHand hand)
+        public static HandScores GetScores(IHand hand)
         {
-            _hand = hand;
-        }
-
-        //Only public for unit testing.
-        public HandScores InternalScores()
-        {
-            if (!_hand.Leasters)
-                return GetNonLeasterScores();
+            if (!hand.Leasters)
+                return GetNonLeasterScores(hand);
             else
-                return GetLeasterScores();
+                return GetLeasterScores(hand);
         }
 
-        private HandScores GetNonLeasterScores()
+        private static HandScores GetNonLeasterScores(IHand hand)
         {
             var handScores = new HandScores
             {
-                Points = AssignNonLeasterPoints(out int defensePoints, out bool challengersWonOneTrick, out bool defenseWonOneTrick)
+                Points = AssignNonLeasterPoints(hand, out int defensePoints, out bool challengersWonOneTrick, out bool defenseWonOneTrick)
             };
             int defensiveCoins = CalculateDefensiveCoins(defensePoints, challengersWonOneTrick, defenseWonOneTrick);
-            handScores.Coins = AssignNonLeasterCoins(challengersWonOneTrick, defensiveCoins);
+            handScores.Coins = AssignNonLeasterCoins(hand, challengersWonOneTrick, defensiveCoins);
             return handScores;
         }
 
-        private Dictionary<IPlayer, int> AssignNonLeasterPoints(out int defensePoints, out bool challengersWonOneTrick, out bool defenseWonOneTrick)
+        private static Dictionary<IPlayer, int> AssignNonLeasterPoints(IHand hand, out int defensePoints, out bool challengersWonOneTrick, out bool defenseWonOneTrick)
         {
             var handPoints = new Dictionary<IPlayer, int>
             {
-                { _hand.Picker, _hand.Buried.Sum(c => CardUtil.GetPoints(c)) }
+                { hand.Picker, hand.Buried.Sum(c => CardUtil.GetPoints(c)) }
             };
             defensePoints = 0;
             challengersWonOneTrick = false;
             defenseWonOneTrick = false;
-            foreach (var trick in _hand.ITricks)
+            foreach (var trick in hand.ITricks)
             {
                 var winnerData = trick.Winner();
-                if (winnerData?.Player == _hand.Picker || winnerData?.Player == _hand.Partner)
+                if (winnerData?.Player == hand.Picker || winnerData?.Player == hand.Partner)
                     challengersWonOneTrick = true;
                 else
                 {
@@ -84,42 +75,42 @@ namespace Sheepshead.Logic
             return defensiveCoins;
         }
 
-        private Dictionary<IPlayer, int> AssignNonLeasterCoins(bool challengersWonOneTrick, int defensiveCoins)
+        private static Dictionary<IPlayer, int> AssignNonLeasterCoins(IHand hand, bool challengersWonOneTrick, int defensiveCoins)
         {
             var handCoins = new Dictionary<IPlayer, int>();
-            if (_hand.Partner == _hand.Picker)
+            if (hand.Partner == hand.Picker)
             {
-                var partnerCard = _hand.PartnerCardEnum.HasValue ? Enum.GetName(typeof(SheepCard), _hand.PartnerCardEnum.Value) : "no parter card.";
+                var partnerCard = hand.PartnerCardEnum.HasValue ? Enum.GetName(typeof(SheepCard), hand.PartnerCardEnum.Value) : "no parter card.";
                 throw new Exception("Picker and Partner are the same person! " + partnerCard);
             }
-            _hand.Players
-                .Except(new List<IPlayer>() { _hand.Partner, _hand.Picker })
+            hand.Players
+                .Except(new List<IPlayer>() { hand.Partner, hand.Picker })
                 .ToList()
                 .ForEach(p => handCoins.Add(p, defensiveCoins));
             var totalDefensiveCoins = handCoins.Sum(c => c.Value);
-            if (_hand.Partner == null)
-                handCoins.Add(_hand.Picker, -totalDefensiveCoins);
+            if (hand.Partner == null)
+                handCoins.Add(hand.Picker, -totalDefensiveCoins);
             else if (!challengersWonOneTrick)
             {
-                handCoins.Add(_hand.Picker, -totalDefensiveCoins);
-                handCoins.Add(_hand.Partner, 0);
+                handCoins.Add(hand.Picker, -totalDefensiveCoins);
+                handCoins.Add(hand.Partner, 0);
             }
             else
             {
-                handCoins.Add(_hand.Picker, -totalDefensiveCoins * 2 / 3);
-                handCoins.Add(_hand.Partner, -totalDefensiveCoins / 3);
+                handCoins.Add(hand.Picker, -totalDefensiveCoins * 2 / 3);
+                handCoins.Add(hand.Partner, -totalDefensiveCoins / 3);
             }
             return handCoins;
         }
 
-        private HandScores GetLeasterScores()
+        private static HandScores GetLeasterScores(IHand hand)
         {
-            var trickPoints = _hand.ITricks.Select(t => t.Winner())
+            var trickPoints = hand.ITricks.Select(t => t.Winner())
                                     .GroupBy(t => t.Player)
                                     .ToDictionary(g => g.Key, g => g.Sum(wd => wd.Points));
 
             var leasterWinner = trickPoints.OrderBy(c => c.Value).First().Key;
-            var trickCoins = _hand.Players.ToDictionary(p => p, p => p == leasterWinner ? _hand.PlayerCount - 1 : -1);
+            var trickCoins = hand.Players.ToDictionary(p => p, p => p == leasterWinner ? hand.PlayerCount - 1 : -1);
 
             return new HandScores()
             {
