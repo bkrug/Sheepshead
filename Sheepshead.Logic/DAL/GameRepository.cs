@@ -18,16 +18,16 @@ namespace Sheepshead.Logic.DAL
         public Game GetGameById(Guid id)
         {
             return context.Game
-                .Include(g => g.Participant)
-                .Include(g => g.Hand).ThenInclude(h => h.StartingParticipant)
-                .Include(g => g.Hand).ThenInclude(h => h.ParticipantRefusingPick)
-                .Include(g => g.Hand).ThenInclude(h => h.PickerParticipant)
-                .Include(g => g.Hand).ThenInclude(h => h.PartnerParticipant)
-                .Include(g => g.Hand)
-                    .ThenInclude(h => h.Trick)
-                        .ThenInclude(t => t.TrickPlay)
-                .Include(g => g.Hand)
-                    .ThenInclude(h => h.Trick)
+                .Include(g => g.Participants)
+                .Include(g => g.Hands).ThenInclude(h => h.StartingParticipant)
+                .Include(g => g.Hands).ThenInclude(h => h.ParticipantsRefusingPick)
+                .Include(g => g.Hands).ThenInclude(h => h.PickerParticipant)
+                .Include(g => g.Hands).ThenInclude(h => h.PartnerParticipant)
+                .Include(g => g.Hands)
+                    .ThenInclude(h => h.Tricks)
+                        .ThenInclude(t => t.TrickPlays)
+                .Include(g => g.Hands)
+                    .ThenInclude(h => h.Tricks)
                         .ThenInclude(t => t.StartingParticipant)
                 .SingleOrDefault(g => g.Id == id);
         }

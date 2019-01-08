@@ -35,7 +35,7 @@ namespace Sheepshead.Tests
             handMock.Setup(m => m.PartnerCardEnum).Returns(SheepCard.JACK_DIAMONDS);
             var trick = new Trick(handMock.Object, startingPlayerCalcMock.Object)
             {
-                TrickPlay = new List<TrickPlay>()
+                TrickPlays = new List<TrickPlay>()
                 {
                     new TrickPlay() { Participant = new Participant(), Card = CardUtil.GetAbbreviation(SheepCard.N9_CLUBS), SortOrder = 2 },
                     new TrickPlay() { Participant = firstPlayer.Participant, Card = CardUtil.GetAbbreviation(SheepCard.N9_HEARTS), SortOrder = 1 }
@@ -258,13 +258,13 @@ namespace Sheepshead.Tests
                 trick.Add(player5, SheepCard.ACE_CLUBS);
 
                 //The order of the plays should be based on SortOrder, not on the database.
-                trick.TrickPlay = new List<TrickPlay>()
+                trick.TrickPlays = new List<TrickPlay>()
                 {
-                    trick.TrickPlay.ElementAt(4),
-                    trick.TrickPlay.ElementAt(2),
-                    trick.TrickPlay.ElementAt(1),
-                    trick.TrickPlay.ElementAt(3),
-                    trick.TrickPlay.ElementAt(0),
+                    trick.TrickPlays.ElementAt(4),
+                    trick.TrickPlays.ElementAt(2),
+                    trick.TrickPlays.ElementAt(1),
+                    trick.TrickPlays.ElementAt(3),
+                    trick.TrickPlays.ElementAt(0),
                 };
 
                 var winner = trick.Winner();

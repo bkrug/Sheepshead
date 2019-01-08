@@ -22,12 +22,12 @@ namespace Sheepshead.Logic.Models
         public IPlayer StartingPlayer { get { return StartingParticipant.Player; } private set { StartingParticipant = value.Participant; } }
         public virtual Dictionary<IPlayer, SheepCard> CardsPlayed {
             get {
-                if (TrickPlay == null)
+                if (TrickPlays == null)
                     throw new NullReferenceException("TrickPlays is null");
-                if (TrickPlay.Any(tp => tp.Participant == null))
+                if (TrickPlays.Any(tp => tp.Participant == null))
                     throw new NullReferenceException("Participant is null");
-                return TrickPlay.Any() 
-                    ? TrickPlay.ToDictionary(tp => tp.Participant.Player, tp => CardUtil.GetCardFromAbbreviation(tp.Card).Value) 
+                return TrickPlays.Any() 
+                    ? TrickPlays.ToDictionary(tp => tp.Participant.Player, tp => CardUtil.GetCardFromAbbreviation(tp.Card).Value) 
                     : new Dictionary<IPlayer, SheepCard>();
             }
         }
@@ -63,12 +63,12 @@ namespace Sheepshead.Logic.Models
 
         public void Add(IPlayer player, SheepCard card)
         {
-            TrickPlay.Add(new TrickPlay()
+            TrickPlays.Add(new TrickPlay()
             {
                 Trick = this,
                 Participant = player.Participant,
                 Card = CardUtil.GetAbbreviation(card),
-                SortOrder = TrickPlay.Count() + 1
+                SortOrder = TrickPlays.Count() + 1
             });
             player.RemoveCard(card);
             if (IHand.PartnerCardEnum == card)

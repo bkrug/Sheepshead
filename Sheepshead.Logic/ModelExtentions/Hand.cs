@@ -23,7 +23,7 @@ namespace Sheepshead.Logic.Models
             get { return CardUtil.GetCardFromAbbreviation(PartnerCard); }
             private set { PartnerCard = value.HasValue ? CardUtil.GetAbbreviation(value.Value) : string.Empty; }
         }
-        public List<ITrick> ITricks { get { return Trick == null ? new List<ITrick>() : Trick.OrderBy(t => t.SortOrder).OfType<ITrick>().ToList(); } }
+        public List<ITrick> ITricks { get { return Tricks == null ? new List<ITrick>() : Tricks.OrderBy(t => t.SortOrder).OfType<ITrick>().ToList(); } }
         public event EventHandler<EventArgs> OnHandEnd;
         public int PlayerCount => IGame.PlayerCount;
         public List<IPlayer> Players => IGame.Players;
@@ -36,7 +36,7 @@ namespace Sheepshead.Logic.Models
         public IReadOnlyList<SheepCard> Buried => CardUtil.StringToCardList(BuriedCards);
         public IReadOnlyList<IPlayer> PlayersRefusingPick => 
             new PlayerOrderer().PlayersInTurnOrder(Players, StartingPlayer)
-            .Where(p => ParticipantRefusingPick.Any(prp => prp.Participant.Player == p))
+            .Where(p => ParticipantsRefusingPick.Any(prp => prp.Participant.Player == p))
             .ToList();
         [NotMapped]
         public IPlayer StartingPlayer {
@@ -67,9 +67,9 @@ namespace Sheepshead.Logic.Models
             if (!game.LastHandIsComplete())
                 throw new PreviousHandIncompleteException("Cannot add a hand until the prvious one is complete.");
             IGame = game;
-            IGame.Hand.Add(this);
-            SortOrder = IGame?.Hand.Count() ?? 0;
-            Trick = new List<Trick>();
+            IGame.Hands.Add(this);
+            SortOrder = IGame?.Hands.Count() ?? 0;
+            Tricks = new List<Trick>();
             _random = random;
             if (_random != null)
             {
@@ -155,8 +155,8 @@ namespace Sheepshead.Logic.Models
 
         public void PlayerWontPick(IPlayer player)
         {
-            ParticipantRefusingPick = ParticipantRefusingPick ?? new List<ParticipantRefusingPick>();
-            ParticipantRefusingPick.Add(new ParticipantRefusingPick() {
+            ParticipantsRefusingPick = ParticipantsRefusingPick ?? new List<ParticipantRefusingPick>();
+            ParticipantsRefusingPick.Add(new ParticipantRefusingPick() {
                 Participant = player.Participant,
                 Hand = this
             });
@@ -218,8 +218,8 @@ namespace Sheepshead.Logic.Models
         public void AddTrick(ITrick trick)
         {
             if (trick is Trick)
-                Trick.Add((Trick)trick);
-            if (Trick.Count == (Game.CARDS_IN_DECK / IGame.PlayerCount))
+                Tricks.Add((Trick)trick);
+            if (Tricks.Count == (Game.CARDS_IN_DECK / IGame.PlayerCount))
                 trick.OnTrickEnd += (Object sender, EventArgs e) => { OnHandEndHandler(); };
         }
 
@@ -237,7 +237,7 @@ namespace Sheepshead.Logic.Models
                 return true;
             const int CARDS_IN_PLAY = 30;
             var trickCount = CARDS_IN_PLAY / IGame.PlayerCount;
-            return Trick.Count() == trickCount && Trick.Last().IsComplete();
+            return Tricks.Count() == trickCount && Tricks.Last().IsComplete();
         }
 
         protected virtual void OnHandEndHandler()

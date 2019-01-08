@@ -7,8 +7,8 @@ namespace Sheepshead.Logic.Models
     {
         public Game()
         {
-            Hand = new HashSet<Hand>();
-            Participant = new HashSet<Participant>();
+            Hands = new HashSet<Hand>();
+            Participants = new HashSet<Participant>();
             CreationTime = CreationTime ?? DateTime.Now;
         }
 
@@ -18,7 +18,7 @@ namespace Sheepshead.Logic.Models
         public DateTime? CreationTime { get; set; }
         public DateTime? LastModifiedTime { get; set; }
 
-        public ICollection<Hand> Hand { get; set; }
-        public ICollection<Participant> Participant { get; set; }
+        public ICollection<Hand> Hands { get; set; }
+        public ICollection<Participant> Participants { get; set; }
     }
 }

@@ -7,7 +7,7 @@ namespace Sheepshead.Logic.Models
     {
         public Trick()
         {
-            TrickPlay = new HashSet<TrickPlay>();
+            TrickPlays = new HashSet<TrickPlay>();
         }
 
         public int Id { get; set; }
@@ -16,7 +16,7 @@ namespace Sheepshead.Logic.Models
 
         public Hand Hand { get; set; }
         public Participant StartingParticipant { get; set; }
-        public ICollection<TrickPlay> TrickPlay { get; set; }
+        public ICollection<TrickPlay> TrickPlays { get; set; }
         public int SortOrder { get; set; }
     }
 }

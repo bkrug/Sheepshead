@@ -7,14 +7,14 @@ namespace Sheepshead.Logic.Models
     {
         public Participant()
         {
-            Coin = new HashSet<Coin>();
-            HandPartnerParticipant = new HashSet<Hand>();
-            HandPickerParticipant = new HashSet<Hand>();
-            HandStartingParticipant = new HashSet<Hand>();
-            ParticipantRefusingPick = new HashSet<ParticipantRefusingPick>();
-            Point = new HashSet<Point>();
-            Trick = new HashSet<Trick>();
-            TrickPlay = new HashSet<TrickPlay>();
+            Coins = new HashSet<Coin>();
+            HandsAsPartner = new HashSet<Hand>();
+            HandsAsPicker = new HashSet<Hand>();
+            HandsStarted = new HashSet<Hand>();
+            PicksRefused = new HashSet<ParticipantRefusingPick>();
+            Points = new HashSet<Point>();
+            Tricks = new HashSet<Trick>();
+            TrickPlays = new HashSet<TrickPlay>();
         }
 
         public int Id { get; set; }
@@ -27,13 +27,13 @@ namespace Sheepshead.Logic.Models
         public int SortOrder { get; set; }
 
         public Game Game { get; set; }
-        public ICollection<Coin> Coin { get; set; }
-        public ICollection<Hand> HandPartnerParticipant { get; set; }
-        public ICollection<Hand> HandPickerParticipant { get; set; }
-        public ICollection<Hand> HandStartingParticipant { get; set; }
-        public ICollection<ParticipantRefusingPick> ParticipantRefusingPick { get; set; }
-        public ICollection<Point> Point { get; set; }
-        public ICollection<Trick> Trick { get; set; }
-        public ICollection<TrickPlay> TrickPlay { get; set; }
+        public ICollection<Coin> Coins { get; set; }
+        public ICollection<Hand> HandsAsPartner { get; set; }
+        public ICollection<Hand> HandsAsPicker { get; set; }
+        public ICollection<Hand> HandsStarted { get; set; }
+        public ICollection<ParticipantRefusingPick> PicksRefused { get; set; }
+        public ICollection<Point> Points { get; set; }
+        public ICollection<Trick> Tricks { get; set; }
+        public ICollection<TrickPlay> TrickPlays { get; set; }
     }
 }

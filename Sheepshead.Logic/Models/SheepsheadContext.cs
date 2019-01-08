@@ -37,13 +37,13 @@ namespace Sheepshead.Logic.Models
                     .HasName("IX_FK_Coin_Participant");
 
                 entity.HasOne(d => d.Hand)
-                    .WithMany(p => p.Coin)
+                    .WithMany(p => p.Coins)
                     .HasForeignKey(d => d.HandId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Hand_Coin");
 
                 entity.HasOne(d => d.Participant)
-                    .WithMany(p => p.Coin)
+                    .WithMany(p => p.Coins)
                     .HasForeignKey(d => d.ParticipantId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Coin_Participant");
@@ -83,22 +83,22 @@ namespace Sheepshead.Logic.Models
                 entity.Property(e => e.PartnerCard).HasColumnType("nchar(2)");
 
                 entity.HasOne(d => d.Game)
-                    .WithMany(p => p.Hand)
+                    .WithMany(p => p.Hands)
                     .HasForeignKey(d => d.GameId)
                     .HasConstraintName("FK_Hand_Game");
 
                 entity.HasOne(d => d.PartnerParticipant)
-                    .WithMany(p => p.HandPartnerParticipant)
+                    .WithMany(p => p.HandsAsPartner)
                     .HasForeignKey(d => d.PartnerParticipantId)
                     .HasConstraintName("FK_Hand_Partner");
 
                 entity.HasOne(d => d.PickerParticipant)
-                    .WithMany(p => p.HandPickerParticipant)
+                    .WithMany(p => p.HandsAsPicker)
                     .HasForeignKey(d => d.PickerParticipantId)
                     .HasConstraintName("FK_Hand_Picker");
 
                 entity.HasOne(d => d.StartingParticipant)
-                    .WithMany(p => p.HandStartingParticipant)
+                    .WithMany(p => p.HandsStarted)
                     .HasForeignKey(d => d.StartingParticipantId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Hand_StartingParticipant");
@@ -121,7 +121,7 @@ namespace Sheepshead.Logic.Models
                     .IsRequired();
 
                 entity.HasOne(d => d.Game)
-                    .WithMany(p => p.Participant)
+                    .WithMany(p => p.Participants)
                     .HasForeignKey(d => d.GameId)
                     .HasConstraintName("FK_Player_Game");
             });
@@ -131,13 +131,13 @@ namespace Sheepshead.Logic.Models
                 entity.HasKey(e => new { e.HandId, e.ParticipantId });
 
                 entity.HasOne(d => d.Hand)
-                    .WithMany(p => p.ParticipantRefusingPick)
+                    .WithMany(p => p.ParticipantsRefusingPick)
                     .HasForeignKey(d => d.HandId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_ParticipantRefusingPick_Hand");
 
                 entity.HasOne(d => d.Participant)
-                    .WithMany(p => p.ParticipantRefusingPick)
+                    .WithMany(p => p.PicksRefused)
                     .HasForeignKey(d => d.ParticipantId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_ParticipantRefusingPick_Participant");
@@ -146,13 +146,13 @@ namespace Sheepshead.Logic.Models
             modelBuilder.Entity<Point>(entity =>
             {
                 entity.HasOne(d => d.Hand)
-                    .WithMany(p => p.Point)
+                    .WithMany(p => p.Points)
                     .HasForeignKey(d => d.HandId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_PointHand");
 
                 entity.HasOne(d => d.Participant)
-                    .WithMany(p => p.Point)
+                    .WithMany(p => p.Points)
                     .HasForeignKey(d => d.ParticipantId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Point_Participant");
@@ -167,13 +167,13 @@ namespace Sheepshead.Logic.Models
                     .HasName("IX_FK_Trick_Participant");
 
                 entity.HasOne(d => d.Hand)
-                    .WithMany(p => p.Trick)
+                    .WithMany(p => p.Tricks)
                     .HasForeignKey(d => d.HandId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Trick_Hand");
 
                 entity.HasOne(d => d.StartingParticipant)
-                    .WithMany(p => p.Trick)
+                    .WithMany(p => p.Tricks)
                     .HasForeignKey(d => d.StartingParticipantId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Trick_Participant");
@@ -191,13 +191,13 @@ namespace Sheepshead.Logic.Models
                     .HasColumnType("nchar(2)");
 
                 entity.HasOne(d => d.Participant)
-                    .WithMany(p => p.TrickPlay)
+                    .WithMany(p => p.TrickPlays)
                     .HasForeignKey(d => d.ParticipantId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_TrickPlay_Participant");
 
                 entity.HasOne(d => d.Trick)
-                    .WithMany(p => p.TrickPlay)
+                    .WithMany(p => p.TrickPlays)
                     .HasForeignKey(d => d.TrickId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_TrickPlay_Trick");

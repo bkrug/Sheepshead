@@ -11,10 +11,10 @@ namespace Sheepshead.Logic.Models
         public const int CARDS_IN_DECK = 32;
         public virtual int PlayerCount => Players.Count();
         public int TrickCount => (int)Math.Floor(32d / PlayerCount);
-        public IReadOnlyList<IHand> IHands => Hand?.OrderBy(h => h.SortOrder).ToList();
+        public IReadOnlyList<IHand> IHands => Hands?.OrderBy(h => h.SortOrder).ToList();
         public int HumanPlayerCount => Players.Count(p => p is IHumanPlayer);
         private List<IPlayer> _mockPlayerList = null;
-        public virtual List<IPlayer> Players => _mockPlayerList ?? Participant.OrderBy(p => p.SortOrder).Select(p => p.Player).ToList();
+        public virtual List<IPlayer> Players => _mockPlayerList ?? Participants.OrderBy(p => p.SortOrder).Select(p => p.Player).ToList();
         public List<IHumanPlayer> UnassignedPlayers => Players.OfType<IHumanPlayer>().Where(p => !p.AssignedToClient).ToList();
         [NotMapped]
         public IRandomWrapper _random { get; private set; } = new RandomWrapper();
@@ -34,10 +34,10 @@ namespace Sheepshead.Logic.Models
 
         public Game(List<Participant> participants, PartnerMethod partnerMethod, bool enableLeasters) : this()
         {
-            Hand = Hand ?? new List<Hand>();
+            Hands = Hands ?? new List<Hand>();
             LeastersEnabled = enableLeasters;
             Id = Guid.NewGuid();
-            Participant = participants;
+            Participants = participants;
             PartnerMethodEnum = partnerMethod;
         }
 
@@ -47,7 +47,7 @@ namespace Sheepshead.Logic.Models
         /// </summary>
         public Game(List<IPlayer> mockPlayers, PartnerMethod partnerMethod, bool enableLeasters) : this(mockPlayers, partnerMethod, null, null)
         {
-            Hand = Hand ?? new List<Hand>();
+            Hands = Hands ?? new List<Hand>();
             LeastersEnabled = enableLeasters;
             Id = Guid.NewGuid();
         }
@@ -58,7 +58,7 @@ namespace Sheepshead.Logic.Models
         /// </summary>
         public Game(List<IPlayer> mockPlayers, PartnerMethod partnerMethod, IRandomWrapper random, IGameStateDescriber gameStateDescriber) : this()
         {
-            Hand = Hand ?? new List<Hand>();
+            Hands = Hands ?? new List<Hand>();
             _mockPlayerList = mockPlayers;
             PartnerMethodEnum = partnerMethod;
             _random = random ?? _random;
@@ -328,7 +328,7 @@ namespace Sheepshead.Logic.Models
         bool LeastersEnabled { get; }
         List<IPlayer> Players { get; }
         List<IHumanPlayer> UnassignedPlayers { get; }
-        ICollection<Hand> Hand { get; }
+        ICollection<Hand> Hands { get; }
         IReadOnlyList<IHand> IHands { get; }
         TurnType TurnType { get; }
         TurnState TurnState { get; }

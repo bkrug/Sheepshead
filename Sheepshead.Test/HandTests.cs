@@ -669,7 +669,7 @@ namespace Sheepshead.Tests
             var gameMock = new MockGame();
             gameMock.PartnerMethod = "J";
             gameMock.LeastersEnabled = true;
-            gameMock.Hand = new List<Hand>();
+            gameMock.Hands = new List<Hand>();
             gameMock.SetPlayerCount(5);
             gameMock.SetLastHandIsComplete(true);
             var hand = new Hand(gameMock, null);
@@ -779,7 +779,7 @@ namespace Sheepshead.Tests
         public void Hand_Leasters()
         {
             var gameMock = new MockGame();
-            gameMock.Hand = new List<Hand>();
+            gameMock.Hands = new List<Hand>();
             gameMock.SetLastHandIsComplete(true);
             var hand = new Hand(gameMock, null);
             hand.SetPicker(null, new List<SheepCard>());
@@ -824,7 +824,7 @@ namespace Sheepshead.Tests
             gameMock.PartnerMethod = "J";
             gameMock.SetPlayerCount(5);
             gameMock.SetLastHandIsComplete(true);
-            gameMock.Hand = new List<Hand>();
+            gameMock.Hands = new List<Hand>();
             var player1 = new Mock<IPlayer>();
             var player2 = new Mock<IPlayer>();
             var pickerMock = new Mock<IPlayer>();
@@ -869,7 +869,7 @@ namespace Sheepshead.Tests
         {
             var gameMock = new MockGame();
             gameMock.PartnerMethod = "J";
-            gameMock.Hand = new List<Hand>();
+            gameMock.Hands = new List<Hand>();
             gameMock.SetPlayerCount(5);
             gameMock.SetLastHandIsComplete(true);
             var player1 = new Mock<IPlayer>();
@@ -919,7 +919,7 @@ namespace Sheepshead.Tests
                 participantList.Add(new Participant());
             var game = new Game(participantList, PartnerMethod.JackOfDiamonds, true)
             {
-                Hand = new List<Hand>()
+                Hands = new List<Hand>()
             };
             var hand = new Hand(game);
             Assert.AreEqual(2, hand.Blinds.Count(), "There should be two blinds after dealing");
@@ -943,7 +943,7 @@ namespace Sheepshead.Tests
             var mockHand = new MockHand();
             mockHand.SetIGame(mockGame);
             var handList = new List<Hand>() { mockHand };
-            mockGame.Hand = handList;
+            mockGame.Hands = handList;
             mockGame.SetLastHandIsComplete(true);
 
             mockHand.SetStartingPlayer(player1);
@@ -952,7 +952,7 @@ namespace Sheepshead.Tests
             //We won't test the Starting Player for the first hand in the game.  It should be random.
             Assert.AreEqual(player2, hand.StartingPlayer, "The starting player for one hand should be the player to the left of the previous starting player.");
 
-            mockGame.Hand.Remove(mockGame.Hand.ElementAt(1));
+            mockGame.Hands.Remove(mockGame.Hands.ElementAt(1));
             mockHand.SetStartingPlayer(player2);
             hand = new Hand(mockGame, new RandomWrapper());
             //We won't test the Starting Player for the first hand in the game.  It should be random.

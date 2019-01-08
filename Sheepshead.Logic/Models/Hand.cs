@@ -7,10 +7,10 @@ namespace Sheepshead.Logic.Models
     {
         public Hand()
         {
-            Coin = new HashSet<Coin>();
-            ParticipantRefusingPick = new HashSet<ParticipantRefusingPick>();
-            Point = new HashSet<Point>();
-            Trick = new HashSet<Trick>();
+            Coins = new HashSet<Coin>();
+            ParticipantsRefusingPick = new HashSet<ParticipantRefusingPick>();
+            Points = new HashSet<Point>();
+            Tricks = new HashSet<Trick>();
         }
 
         public int Id { get; set; }
@@ -28,9 +28,9 @@ namespace Sheepshead.Logic.Models
         public Participant PartnerParticipant { get; set; }
         public Participant PickerParticipant { get; set; }
         public Participant StartingParticipant { get; set; }
-        public ICollection<Coin> Coin { get; set; }
-        public ICollection<ParticipantRefusingPick> ParticipantRefusingPick { get; set; }
-        public ICollection<Point> Point { get; set; }
-        public ICollection<Trick> Trick { get; set; }
+        public ICollection<Coin> Coins { get; set; }
+        public ICollection<ParticipantRefusingPick> ParticipantsRefusingPick { get; set; }
+        public ICollection<Point> Points { get; set; }
+        public ICollection<Trick> Tricks { get; set; }
     }
 }
