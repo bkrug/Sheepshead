@@ -240,6 +240,7 @@ namespace Sheepshead.Logic.Models
             };
         }
 
+        //TODO: Move this to the Hand class?
         public TrickResults GetTrickWinners()
         {
             var currentDeck = IHands.LastOrDefault(d => d.PickPhaseComplete);
@@ -326,6 +327,7 @@ namespace Sheepshead.Logic.Models
         void PlayNonHumansInTrick();
         void RecordTurn(IHumanPlayer player, SheepCard card);
 
+        //TODO: Move these to some static utility class
         PlayState PlayState(Guid requestingPlayerId);
         PickState PickState(Guid requestingPlayerId);
         BuryState BuryState(Guid requestingPlayerId);

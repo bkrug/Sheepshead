@@ -39,7 +39,7 @@ namespace Sheepshead.Tests
         private Mock<ITrick> GenerateTrickMock(List<IPlayer> playerList)
         {
             var trickMock = new Mock<ITrick>();
-            trickMock.Setup(m => m.PlayerCount).Returns(5);
+            trickMock.Setup(m => m.IHand.IGame.PlayerCount).Returns(5);
             trickMock.Setup(m => m.Players).Returns(playerList);
             return trickMock;
         }
@@ -224,7 +224,7 @@ namespace Sheepshead.Tests
         }
 
         [TestMethod]
-        public void Player_QueueRankInTrick()
+        public void Player_QueueRankInTrick_StartingPlayerIsFirstInList()
         {
             var players = new List<IPlayer>() {
                 new AdvancedPlayer(new Participant()),
@@ -235,13 +235,34 @@ namespace Sheepshead.Tests
             };
             var trickMock = new Mock<ITrick>();
             trickMock.Setup(m => m.Players).Returns(players);
-            trickMock.Setup(m => m.PlayerCount).Returns(players.Count);
+            trickMock.Setup(m => m.IHand.IGame.PlayerCount).Returns(players.Count);
             trickMock.Setup(m => m.StartingPlayer).Returns(players[0]);
             Assert.AreEqual(1, players[0].QueueRankInTrick(trickMock.Object));
             Assert.AreEqual(2, players[1].QueueRankInTrick(trickMock.Object));
             Assert.AreEqual(3, players[2].QueueRankInTrick(trickMock.Object));
             Assert.AreEqual(4, players[3].QueueRankInTrick(trickMock.Object));
             Assert.AreEqual(5, players[4].QueueRankInTrick(trickMock.Object));
+        }
+
+        [TestMethod]
+        public void Player_QueueRankInTrick_StartingPlayerIsInMiddle()
+        {
+            var players = new List<IPlayer>() {
+                new AdvancedPlayer(new Participant()),
+                new AdvancedPlayer(new Participant()),
+                new AdvancedPlayer(new Participant()),
+                new AdvancedPlayer(new Participant()),
+                new AdvancedPlayer(new Participant())
+            };
+            var trickMock = new Mock<ITrick>();
+            trickMock.Setup(m => m.Players).Returns(players);
+            trickMock.Setup(m => m.IHand.IGame.PlayerCount).Returns(players.Count);
+            trickMock.Setup(m => m.StartingPlayer).Returns(players[2]);
+            Assert.AreEqual(1, players[2].QueueRankInTrick(trickMock.Object));
+            Assert.AreEqual(2, players[3].QueueRankInTrick(trickMock.Object));
+            Assert.AreEqual(3, players[4].QueueRankInTrick(trickMock.Object));
+            Assert.AreEqual(4, players[0].QueueRankInTrick(trickMock.Object));
+            Assert.AreEqual(5, players[1].QueueRankInTrick(trickMock.Object));
         }
     }
 }

@@ -135,11 +135,6 @@ namespace Sheepshead.Logic.Models
             return CardsByPlayer.Count() == IHand.PlayerCount;
         }
 
-        public int PlayerCount
-        {
-            get { return IHand.IGame.PlayerCount; }
-        }
-
         public List<IPlayer> Players
         {
             get { return IHand.Players; }
@@ -180,7 +175,6 @@ namespace Sheepshead.Logic.Models
         Dictionary<IPlayer, SheepCard> CardsByPlayer { get; }
         List<KeyValuePair<IPlayer, SheepCard>> OrderedMoves { get; }
 
-        int PlayerCount { get; }
         int QueueRankOfPicker { get; }
         int? QueueRankOfPartner { get; }
         List<IPlayer> PlayersWithoutTurn { get; }
