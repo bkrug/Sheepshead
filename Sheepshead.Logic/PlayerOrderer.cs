@@ -13,10 +13,10 @@ namespace Sheepshead.Logic
             return players.Skip(startIndex).Union(players.Take(startIndex)).ToList();
         }
 
-        public static List<IPlayer> PlayersWithoutTurn(List<IPlayer> playersInPickOrder, IReadOnlyList<IPlayer> playersRefusingPick)
+        public static List<IPlayer> PlayersWithoutTurn(List<IPlayer> players, IPlayer startingPlayer, IReadOnlyList<IPlayer> playersWhoTookTurn)
         {
-            var finishedCount = playersRefusingPick.Count();
-            return playersInPickOrder.Skip(finishedCount).ToList();
+            var playersInTurnOrder = PlayersInTurnOrder(players, startingPlayer);
+            return playersInTurnOrder.Except(playersWhoTookTurn).ToList();
         }
     }
 }

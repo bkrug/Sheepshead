@@ -149,8 +149,7 @@ namespace Sheepshead.Logic.Models
             get { return IHand.Partner == null ? (int?)null : IHand.Partner.QueueRankInTrick(this); } 
         }
 
-        public List<IPlayer> PlayersInTurnOrder => PlayerOrderer.PlayersInTurnOrder(Players, StartingPlayer);
-        public List<IPlayer> PlayersWithoutTurn => PlayerOrderer.PlayersWithoutTurn(PlayersInTurnOrder, CardsByPlayer.Keys.ToList());
+        public List<IPlayer> PlayersWithoutTurn => PlayerOrderer.PlayersWithoutTurn(Players, StartingPlayer, CardsByPlayer.Keys.ToList());
     }
 
     public class TrickWinner {

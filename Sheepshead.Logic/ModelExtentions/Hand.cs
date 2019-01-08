@@ -44,8 +44,7 @@ namespace Sheepshead.Logic.Models
         }
         [NotMapped]
         public IRandomWrapper _random { get; private set; }
-        public List<IPlayer> PlayersInTurnOrder => PlayerOrderer.PlayersInTurnOrder(Players, StartingPlayer);
-        public List<IPlayer> PlayersWithoutPickTurn => PlayerOrderer.PlayersWithoutTurn(PlayersInTurnOrder, PlayersRefusingPick);
+        public List<IPlayer> PlayersWithoutPickTurn => PlayerOrderer.PlayersWithoutTurn(Players, StartingPlayer, PlayersRefusingPick);
         /// <summary>
         /// Returns true when there is no picker and Leasters is off.
         /// </summary>
