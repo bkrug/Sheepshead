@@ -200,10 +200,10 @@ namespace Sheepshead.Logic.Models
                     return Partner;
                 var potentialPartnerGroups = ITricks
                     .Where(t =>
-                        t.CardsPlayed.First().Key != Picker
-                        && CardUtil.GetSuit(t.CardsPlayed.First().Value) == Suit.TRUMP
+                        t.CardsByPlayer.First().Key != Picker
+                        && CardUtil.GetSuit(t.CardsByPlayer.First().Value) == Suit.TRUMP
                     )
-                    .Select(t => t.CardsPlayed.First().Key)
+                    .Select(t => t.CardsByPlayer.First().Key)
                     .GroupBy(p => p)
                     .OrderByDescending(g => g.Count())
                     .ToList();

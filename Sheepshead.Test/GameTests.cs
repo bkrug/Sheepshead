@@ -280,7 +280,7 @@ namespace Sheepshead.Tests
             };
             var trickMock = new Mock<ITrick>();
             trickMock.Setup(m => m.PlayersWithoutTurn).Returns(players.Skip(2).ToList());
-            trickMock.Setup(m => m.CardsPlayed).Returns(new Dictionary<IPlayer, SheepCard>()
+            trickMock.Setup(m => m.CardsByPlayer).Returns(new Dictionary<IPlayer, SheepCard>()
             {
                 { players[0], SheepCard.ACE_HEARTS },
                 { players[1], SheepCard.N7_SPADES }
@@ -318,7 +318,7 @@ namespace Sheepshead.Tests
             };
             var trickMock = new Mock<ITrick>();
             trickMock.Setup(m => m.PlayersWithoutTurn).Returns(players.Skip(1).ToList());
-            trickMock.Setup(m => m.CardsPlayed).Returns(new Dictionary<IPlayer, SheepCard>()
+            trickMock.Setup(m => m.CardsByPlayer).Returns(new Dictionary<IPlayer, SheepCard>()
             {
                 { players[0], SheepCard.ACE_HEARTS }
             });

@@ -32,7 +32,7 @@ namespace Sheepshead.Tests
                 { new Mock<IPlayer>().Object, SheepCard.ACE_DIAMONDS }
             };
             var trickMock = new Mock<ITrick>();
-            trickMock.Setup(m => m.CardsPlayed).Returns(cardsPlayed);
+            trickMock.Setup(m => m.CardsByPlayer).Returns(cardsPlayed);
             trickMock.Setup(m => m.IsLegalAddition(SheepCard.JACK_DIAMONDS, playerMock.Object)).Returns(true);
             trickMock.Setup(m => m.IsLegalAddition(SheepCard.QUEEN_CLUBS, playerMock.Object)).Returns(true);
             var playCreator = new PlayCreator();
@@ -60,7 +60,7 @@ namespace Sheepshead.Tests
                 { new Mock<IPlayer>().Object, SheepCard.ACE_DIAMONDS }
             };
             var trickMock = new Mock<ITrick>();
-            trickMock.Setup(m => m.CardsPlayed).Returns(cardsPlayed);
+            trickMock.Setup(m => m.CardsByPlayer).Returns(cardsPlayed);
             trickMock.Setup(m => m.IsLegalAddition(SheepCard.JACK_DIAMONDS, playerMock.Object)).Returns(true);
             trickMock.Setup(m => m.IsLegalAddition(SheepCard.QUEEN_CLUBS, playerMock.Object)).Returns(true);
             var playCreator = new PlayCreator();

@@ -33,15 +33,15 @@ namespace Sheepshead.Logic.Players
         public bool EarlyInTrick(ITrick trick)
         {
             if (trick.IHand.IGame.PlayerCount == 3)
-                return trick.CardsPlayed.Count < 2;
+                return trick.CardsByPlayer.Count < 2;
             else
-                return trick.CardsPlayed.Count < 3;
+                return trick.CardsByPlayer.Count < 3;
         }
 
         public bool HaveIAlreadyWon(IPlayer thisPlayer, ITrick trick)
         {
             return trick.IHand.ITricks
-                .Where(t => t.CardsPlayed.Count == trick.IHand.IGame.PlayerCount)
+                .Where(t => t.CardsByPlayer.Count == trick.IHand.IGame.PlayerCount)
                 .Any(t => t.Winner().Player == thisPlayer);
         }
 
@@ -62,7 +62,7 @@ namespace Sheepshead.Logic.Players
 
         public bool HaveHighPointsBeenPlayed(ITrick trick)
         {
-            var totalPoints = trick.CardsPlayed.Sum(cp => CardUtil.GetPoints(cp.Value));
+            var totalPoints = trick.CardsByPlayer.Sum(cp => CardUtil.GetPoints(cp.Value));
             return trick.IHand.IGame.PlayerCount == 3
                 ? totalPoints >= 10
                 : totalPoints >= 12;

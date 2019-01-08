@@ -20,7 +20,7 @@ namespace Sheepshead.Logic.Models
         public IGame IGame => IHand.IGame;
         [NotMapped]
         public IPlayer StartingPlayer { get { return StartingParticipant.Player; } private set { StartingParticipant = value.Participant; } }
-        public virtual Dictionary<IPlayer, SheepCard> CardsPlayed {
+        public virtual Dictionary<IPlayer, SheepCard> CardsByPlayer {
             get {
                 if (TrickPlays == null)
                     throw new NullReferenceException("TrickPlays is null");
@@ -41,7 +41,7 @@ namespace Sheepshead.Logic.Models
                 var indexOfStartingPlayer = Players.IndexOf(StartingPlayer);
                 var playerList = Players.Skip(indexOfStartingPlayer).Union(Players.Take(indexOfStartingPlayer)).ToList();
                 var orderedMoves = new List<KeyValuePair<IPlayer, SheepCard>>();
-                var cards = CardsPlayed;
+                var cards = CardsByPlayer;
                 foreach (var player in playerList)
                     if (cards.ContainsKey(player))
                         orderedMoves.Add(new KeyValuePair<IPlayer, SheepCard>( player, cards[player] ));
@@ -102,7 +102,7 @@ namespace Sheepshead.Logic.Models
             var suitOfPartnerCard = CardUtil.GetSuit(IHand.PartnerCardEnum.Value);
             //Once suit of partner card is lead, picker and partner may lead with that suit.
             if (IHand.ITricks != null
-                && IHand.ITricks.Any(t => t != this && t.CardsPlayed.Any() && CardUtil.GetSuit(t.CardsPlayed.First().Value) == suitOfPartnerCard))
+                && IHand.ITricks.Any(t => t != this && t.CardsByPlayer.Any() && CardUtil.GetSuit(t.CardsByPlayer.First().Value) == suitOfPartnerCard))
                 return true;
             //Picker cannot lead with last card of Called Ace's suit.
             if (player == IHand.Picker
@@ -158,7 +158,7 @@ namespace Sheepshead.Logic.Models
 
         public virtual bool IsComplete()
         {
-            return CardsPlayed.Count() == IHand.PlayerCount;
+            return CardsByPlayer.Count() == IHand.PlayerCount;
         }
 
         public int PlayerCount
@@ -182,7 +182,7 @@ namespace Sheepshead.Logic.Models
         }
 
         public List<IPlayer> PlayersInTurnOrder => PickPlayerOrderer.PlayersInTurnOrder(Players, StartingPlayer);
-        public List<IPlayer> PlayersWithoutTurn => PickPlayerOrderer.PlayersWithoutTurn(PlayersInTurnOrder, CardsPlayed.Keys.ToList());
+        public List<IPlayer> PlayersWithoutTurn => PickPlayerOrderer.PlayersWithoutTurn(PlayersInTurnOrder, CardsByPlayer.Keys.ToList());
 
         private IPlayerOrderer _pickPlayerOrderer;
         public IPlayerOrderer PickPlayerOrderer
@@ -203,7 +203,7 @@ namespace Sheepshead.Logic.Models
         List<IPlayer> Players { get; }
         IPlayer StartingPlayer { get; }
 
-        Dictionary<IPlayer, SheepCard> CardsPlayed { get; }
+        Dictionary<IPlayer, SheepCard> CardsByPlayer { get; }
         List<KeyValuePair<IPlayer, SheepCard>> OrderedMoves { get; }
 
         int PlayerCount { get; }

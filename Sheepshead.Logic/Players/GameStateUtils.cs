@@ -8,9 +8,9 @@ namespace Sheepshead.Logic.Players
     {
         public static IEnumerable<SheepCard> GetCardsThatCouldWin(ITrick trick, IEnumerable<SheepCard> comparisonCards)
         {
-            if (!trick.CardsPlayed.Any())
+            if (!trick.CardsByPlayer.Any())
                 return comparisonCards;
-            var startSuit = CardUtil.GetSuit(trick.CardsPlayed.First().Value);
+            var startSuit = CardUtil.GetSuit(trick.CardsByPlayer.First().Value);
             var winningCard = GameStateUtils.GetWinningPlay(trick).Value;
             var winningCardRank = CardUtil.GetRank(winningCard);
             if (CardUtil.GetSuit(winningCard) == Suit.TRUMP)
@@ -24,8 +24,8 @@ namespace Sheepshead.Logic.Players
 
         public static KeyValuePair<IPlayer, SheepCard> GetWinningPlay(ITrick trick)
         {
-            var startSuit = CardUtil.GetSuit(trick.CardsPlayed.First().Value);
-            var winningPlay = trick.CardsPlayed
+            var startSuit = CardUtil.GetSuit(trick.CardsByPlayer.First().Value);
+            var winningPlay = trick.CardsByPlayer
                 .OrderBy(cp => CardUtil.GetSuit(cp.Value) == Suit.TRUMP ? 1 : 2)
                 .ThenBy(cp => CardUtil.GetSuit(cp.Value) == startSuit ? 1 : 2)
                 .ThenBy(cp => CardUtil.GetRank(cp.Value))

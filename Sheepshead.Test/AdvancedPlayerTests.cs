@@ -259,7 +259,7 @@ namespace Sheepshead.Tests
             advancedPlayer.AddCard(SheepCard.ACE_SPADES);
             advancedPlayer.AddCard(SheepCard.QUEEN_SPADES);
             var trickMock = new Mock<ITrick>();
-            trickMock.Setup(t => t.CardsPlayed).Returns(new Dictionary<IPlayer, SheepCard>());
+            trickMock.Setup(t => t.CardsByPlayer).Returns(new Dictionary<IPlayer, SheepCard>());
             trickMock.Setup(t => t.StartingPlayer).Returns(advancedPlayer);
             trickMock.Setup(t => t.IHand.Leasters).Returns(false);
             trickMock.Setup(t => t.IHand.Picker).Returns(advancedPlayer);
@@ -285,7 +285,7 @@ namespace Sheepshead.Tests
             advancedPlayer.AddCard(SheepCard.KING_HEARTS);
             advancedPlayer.AddCard(SheepCard.JACK_HEARTS);
             var trickMock = new Mock<ITrick>();
-            trickMock.Setup(t => t.CardsPlayed).Returns(new Dictionary<IPlayer, SheepCard>());
+            trickMock.Setup(t => t.CardsByPlayer).Returns(new Dictionary<IPlayer, SheepCard>());
             trickMock.Setup(t => t.StartingPlayer).Returns(advancedPlayer);
             trickMock.Setup(t => t.IHand.Leasters).Returns(false);
             trickMock.Setup(t => t.IHand.IGame.PartnerMethodEnum).Returns(PartnerMethod.CalledAce);
@@ -312,7 +312,7 @@ namespace Sheepshead.Tests
             advancedPlayer.AddCard(SheepCard.KING_HEARTS);
             advancedPlayer.AddCard(SheepCard.JACK_HEARTS);
             var trickMock = new Mock<ITrick>();
-            trickMock.Setup(t => t.CardsPlayed).Returns(new Dictionary<IPlayer, SheepCard>());
+            trickMock.Setup(t => t.CardsByPlayer).Returns(new Dictionary<IPlayer, SheepCard>());
             trickMock.Setup(t => t.StartingPlayer).Returns(advancedPlayer);
             trickMock.Setup(t => t.IHand.Leasters).Returns(false);
             trickMock.Setup(t => t.IHand.IGame.PartnerMethodEnum).Returns(PartnerMethod.JackOfDiamonds);

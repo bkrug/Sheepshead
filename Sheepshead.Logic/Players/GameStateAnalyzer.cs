@@ -18,7 +18,7 @@ namespace Sheepshead.Logic.Players
     {
         public bool? AllOpponentsHavePlayed(IPlayer thisPlayer, ITrick trick)
         {
-            if (trick.CardsPlayed.Count == trick.IHand.IGame.PlayerCount - 1)
+            if (trick.CardsByPlayer.Count == trick.IHand.IGame.PlayerCount - 1)
                 return true;
             var playerIsPartner = PlayerKnowsSelfToBePartner(thisPlayer, trick);
             var playerIsOffense = trick.IHand.Picker == thisPlayer || playerIsPartner;
@@ -28,8 +28,8 @@ namespace Sheepshead.Logic.Players
                     ? trick.IHand.IGame.PlayerCount - 2
                     : trick.IHand.IGame.PlayerCount - 1;
                 var opponentsWithTurns = playerIsPartner
-                    ? trick.CardsPlayed.Keys.Count(p => trick.IHand.Picker != p && thisPlayer != p)
-                    : trick.CardsPlayed.Keys.Count(p => trick.IHand.Picker != p && trick.IHand.PresumedParnter != p);
+                    ? trick.CardsByPlayer.Keys.Count(p => trick.IHand.Picker != p && thisPlayer != p)
+                    : trick.CardsByPlayer.Keys.Count(p => trick.IHand.Picker != p && trick.IHand.PresumedParnter != p);
                 if (opponentsWithTurns < opponentCount)
                     return false;
                 if (!playerIsPartner && trick.IHand.PartnerCardEnum.HasValue && trick.IHand.PresumedParnter == null)
@@ -38,9 +38,9 @@ namespace Sheepshead.Logic.Players
             }
             else
             {
-                if (!trick.CardsPlayed.ContainsKey(trick.IHand.Picker))
+                if (!trick.CardsByPlayer.ContainsKey(trick.IHand.Picker))
                     return false;
-                if (trick.IHand.PresumedParnter != null && !trick.CardsPlayed.ContainsKey(trick.IHand.PresumedParnter))
+                if (trick.IHand.PresumedParnter != null && !trick.CardsByPlayer.ContainsKey(trick.IHand.PresumedParnter))
                     return false;
                 if (trick.IHand.PartnerCardEnum.HasValue && trick.IHand.PresumedParnter == null)
                     return null;
@@ -80,7 +80,7 @@ namespace Sheepshead.Logic.Players
 
         private static IEnumerable<SheepCard> GetUnrevealedCards(IPlayer thisPlayer, ITrick trick)
         {
-            var revealedAndPlayersOwnCards = trick.IHand.ITricks.SelectMany(t => t.CardsPlayed.Values).Union(thisPlayer.Cards);
+            var revealedAndPlayersOwnCards = trick.IHand.ITricks.SelectMany(t => t.CardsByPlayer.Values).Union(thisPlayer.Cards);
             var allCards = Enum.GetValues(typeof(SheepCard)).OfType<SheepCard>();
             var unrevealedCards = allCards.Except(revealedAndPlayersOwnCards);
             return unrevealedCards;
@@ -90,7 +90,7 @@ namespace Sheepshead.Logic.Players
         {
             var playableCards = thisPlayer.Cards.Where(c => trick.IsLegalAddition(c, thisPlayer));
             var unrevealedCards = GetUnrevealedCards(thisPlayer, trick);
-            var startSuit = CardUtil.GetSuit(trick.CardsPlayed.First().Value);
+            var startSuit = CardUtil.GetSuit(trick.CardsByPlayer.First().Value);
             var strongestUnrevealedCard = GetStrongestCard(unrevealedCards, startSuit);
             var strongestOfMyCards = GetStrongestCard(playableCards, startSuit);
             var strongestCard = GetStrongestCard(new List<SheepCard>() { strongestUnrevealedCard, strongestOfMyCards }, startSuit);

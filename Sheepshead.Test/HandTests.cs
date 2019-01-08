@@ -900,10 +900,10 @@ namespace Sheepshead.Tests
             var trick2Mock = new Mock<ITrick>();
             var trick3Mock = new Mock<ITrick>();
             var trick4Mock = new Mock<ITrick>();
-            trick1Mock.Setup(m => m.CardsPlayed).Returns(cardsPlayed1);
-            trick2Mock.Setup(m => m.CardsPlayed).Returns(cardsPlayed2);
-            trick3Mock.Setup(m => m.CardsPlayed).Returns(cardsPlayed3);
-            trick4Mock.Setup(m => m.CardsPlayed).Returns(cardsPlayed4);
+            trick1Mock.Setup(m => m.CardsByPlayer).Returns(cardsPlayed1);
+            trick2Mock.Setup(m => m.CardsByPlayer).Returns(cardsPlayed2);
+            trick3Mock.Setup(m => m.CardsByPlayer).Returns(cardsPlayed3);
+            trick4Mock.Setup(m => m.CardsByPlayer).Returns(cardsPlayed4);
             hand.AddTrick(trick1Mock.Object);
             hand.AddTrick(trick2Mock.Object);
             hand.AddTrick(trick3Mock.Object);
@@ -993,7 +993,7 @@ namespace Sheepshead.Tests
             _cardsPlayed = cardsPlayed;
         }
 
-        public override Dictionary<IPlayer, SheepCard> CardsPlayed => _cardsPlayed;
+        public override Dictionary<IPlayer, SheepCard> CardsByPlayer => _cardsPlayed;
     }
 
     internal class MockGame : Game

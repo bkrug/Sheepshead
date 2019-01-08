@@ -154,7 +154,7 @@ namespace Sheepshead.Tests
         {
             var picker = new Participant() { Cards = "9♥;9♦;Q♥;9♣;A♣;K♣" }.Player;
             var previousTrick = new Mock<ITrick>();
-            previousTrick.Setup(m => m.CardsPlayed).Returns(new Dictionary<IPlayer, SheepCard>() { { new Mock<IPlayer>().Object, SheepCard.N7_HEARTS } });
+            previousTrick.Setup(m => m.CardsByPlayer).Returns(new Dictionary<IPlayer, SheepCard>() { { new Mock<IPlayer>().Object, SheepCard.N7_HEARTS } });
             var hand = new Mock<IHand>();
             hand.Setup(m => m.IGame.PartnerMethodEnum).Returns(PartnerMethod.CalledAce);
             hand.Setup(m => m.PartnerCardEnum).Returns(SheepCard.ACE_HEARTS);
@@ -206,8 +206,8 @@ namespace Sheepshead.Tests
         {
             var partner = new Participant() { Cards = "T♥;7♥;A♥;J♦;7♠;A♠" }.Player;
             var previousTrick = new Mock<ITrick>();
-            previousTrick.Setup(m => m.CardsPlayed).Returns(new Dictionary<IPlayer, SheepCard>() { { new Mock<IPlayer>().Object, SheepCard.N7_DIAMONDS } });
-            previousTrick.Setup(m => m.CardsPlayed).Returns(new Dictionary<IPlayer, SheepCard>() { { new Mock<IPlayer>().Object, SheepCard.N7_HEARTS } });
+            previousTrick.Setup(m => m.CardsByPlayer).Returns(new Dictionary<IPlayer, SheepCard>() { { new Mock<IPlayer>().Object, SheepCard.N7_DIAMONDS } });
+            previousTrick.Setup(m => m.CardsByPlayer).Returns(new Dictionary<IPlayer, SheepCard>() { { new Mock<IPlayer>().Object, SheepCard.N7_HEARTS } });
             var hand = new Mock<IHand>();
             hand.Setup(m => m.IGame.PartnerMethodEnum).Returns(PartnerMethod.CalledAce);
             hand.Setup(m => m.PartnerCardEnum).Returns(SheepCard.ACE_HEARTS);
