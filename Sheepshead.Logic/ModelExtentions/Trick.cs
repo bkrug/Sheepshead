@@ -181,13 +181,6 @@ namespace Sheepshead.Logic.Models
             get { return IHand.Partner == null ? (int?)null : IHand.Partner.QueueRankInTrick(this); } 
         }
 
-        public int IndexInHand
-        {
-            get { return IHand.ITricks.IndexOf(this); }
-        }
-
-        public SheepCard? PartnerCard { get { return IHand.PartnerCardEnum; } }
-
         public List<IPlayer> PlayersInTurnOrder => PickPlayerOrderer.PlayersInTurnOrder(Players, StartingPlayer);
         public List<IPlayer> PlayersWithoutTurn => PickPlayerOrderer.PlayersWithoutTurn(PlayersInTurnOrder, CardsPlayed.Keys.ToList());
 
@@ -207,21 +200,22 @@ namespace Sheepshead.Logic.Models
     {
         IHand IHand { get; }
         IGame IGame { get; }
-        TrickWinner Winner();
-        void Add(IPlayer player, SheepCard card);
-        bool IsLegalAddition(SheepCard card, IPlayer player);
-        IPlayer StartingPlayer { get; }
-        Dictionary<IPlayer, SheepCard> CardsPlayed { get; }
-        bool IsComplete();
-        int PlayerCount { get; }
         List<IPlayer> Players { get; }
+        IPlayer StartingPlayer { get; }
+
+        Dictionary<IPlayer, SheepCard> CardsPlayed { get; }
+        List<KeyValuePair<IPlayer, SheepCard>> OrderedMoves { get; }
+
+        int PlayerCount { get; }
         int QueueRankOfPicker { get; }
         int? QueueRankOfPartner { get; }
-        int IndexInHand { get; }
-        SheepCard? PartnerCard { get; }
-        List<KeyValuePair<IPlayer, SheepCard>> OrderedMoves { get; }
-        event EventHandler<EventArgs> OnTrickEnd;
         List<IPlayer> PlayersWithoutTurn { get; }
         IPlayerOrderer PickPlayerOrderer { get; }
+
+        void Add(IPlayer player, SheepCard card);
+        bool IsLegalAddition(SheepCard card, IPlayer player);
+        event EventHandler<EventArgs> OnTrickEnd;
+        bool IsComplete();
+        TrickWinner Winner();
     }
 }

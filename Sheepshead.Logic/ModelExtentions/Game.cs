@@ -24,7 +24,8 @@ namespace Sheepshead.Logic.Models
         [NotMapped]
         public PartnerMethod PartnerMethodEnum {
             get { return PartnerMethod == "A" ? Models.PartnerMethod.CalledAce : Models.PartnerMethod.JackOfDiamonds; }
-            private set { PartnerMethod = value == Models.PartnerMethod.CalledAce ? "A" : "J"; } }
+            private set { PartnerMethod = value == Models.PartnerMethod.CalledAce ? "A" : "J"; }
+        }
         public TurnState TurnState => new TurnState
         {
             GameId = Id,
