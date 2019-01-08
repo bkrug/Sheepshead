@@ -10,12 +10,6 @@ namespace Sheepshead.Logic
     public class ScoreCalculator
     {
         IHand _hand;
-        bool Leasters => _hand.Leasters;
-        IPlayer Picker => _hand.Picker;
-        IPlayer Partner => _hand.Partner;
-        List<ITrick> _tricks => _hand.ITricks;
-        List<ITrick> Tricks => _hand.ITricks;
-        SheepCard? PartnerCard => _hand.PartnerCardEnum;
 
         public ScoreCalculator(IHand hand)
         {
@@ -25,7 +19,7 @@ namespace Sheepshead.Logic
         //Only public for unit testing.
         public HandScores InternalScores()
         {
-            if (!Leasters)
+            if (!_hand.Leasters)
                 return GetNonLeasterScores();
             else
                 return GetLeasterScores();
@@ -46,15 +40,15 @@ namespace Sheepshead.Logic
         {
             var handPoints = new Dictionary<IPlayer, int>
             {
-                { Picker, _hand.Buried.Sum(c => CardUtil.GetPoints(c)) }
+                { _hand.Picker, _hand.Buried.Sum(c => CardUtil.GetPoints(c)) }
             };
             defensePoints = 0;
             challengersWonOneTrick = false;
             defenseWonOneTrick = false;
-            foreach (var trick in _tricks)
+            foreach (var trick in _hand.ITricks)
             {
                 var winnerData = trick.Winner();
-                if (winnerData?.Player == Picker || winnerData?.Player == Partner)
+                if (winnerData?.Player == _hand.Picker || winnerData?.Player == _hand.Partner)
                     challengersWonOneTrick = true;
                 else
                 {
@@ -93,34 +87,34 @@ namespace Sheepshead.Logic
         private Dictionary<IPlayer, int> AssignNonLeasterCoins(bool challengersWonOneTrick, int defensiveCoins)
         {
             var handCoins = new Dictionary<IPlayer, int>();
-            if (Partner == Picker)
+            if (_hand.Partner == _hand.Picker)
             {
-                var partnerCard = PartnerCard.HasValue ? Enum.GetName(typeof(SheepCard), PartnerCard.Value) : "no parter card.";
+                var partnerCard = _hand.PartnerCardEnum.HasValue ? Enum.GetName(typeof(SheepCard), _hand.PartnerCardEnum.Value) : "no parter card.";
                 throw new Exception("Picker and Partner are the same person! " + partnerCard);
             }
             _hand.Players
-                .Except(new List<IPlayer>() { Partner, Picker })
+                .Except(new List<IPlayer>() { _hand.Partner, _hand.Picker })
                 .ToList()
                 .ForEach(p => handCoins.Add(p, defensiveCoins));
             var totalDefensiveCoins = handCoins.Sum(c => c.Value);
-            if (Partner == null)
-                handCoins.Add(Picker, -totalDefensiveCoins);
+            if (_hand.Partner == null)
+                handCoins.Add(_hand.Picker, -totalDefensiveCoins);
             else if (!challengersWonOneTrick)
             {
-                handCoins.Add(Picker, -totalDefensiveCoins);
-                handCoins.Add(Partner, 0);
+                handCoins.Add(_hand.Picker, -totalDefensiveCoins);
+                handCoins.Add(_hand.Partner, 0);
             }
             else
             {
-                handCoins.Add(Picker, -totalDefensiveCoins * 2 / 3);
-                handCoins.Add(Partner, -totalDefensiveCoins / 3);
+                handCoins.Add(_hand.Picker, -totalDefensiveCoins * 2 / 3);
+                handCoins.Add(_hand.Partner, -totalDefensiveCoins / 3);
             }
             return handCoins;
         }
 
         private HandScores GetLeasterScores()
         {
-            var trickPoints = Tricks.Select(t => t.Winner())
+            var trickPoints = _hand.ITricks.Select(t => t.Winner())
                                     .GroupBy(t => t.Player)
                                     .ToDictionary(g => g.Key, g => g.Sum(wd => wd.Points));
 
