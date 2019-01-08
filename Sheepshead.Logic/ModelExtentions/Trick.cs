@@ -17,7 +17,6 @@ namespace Sheepshead.Logic.Models
                 if (value is Hand) Hand = (Hand)value; else _mockHand = value;
             }
         }
-        public IGame IGame => IHand.IGame;
         [NotMapped]
         public IPlayer StartingPlayer { get { return StartingParticipant.Player; } private set { StartingParticipant = value.Participant; } }
         public virtual Dictionary<IPlayer, SheepCard> CardsByPlayer {
@@ -168,7 +167,6 @@ namespace Sheepshead.Logic.Models
     public interface ITrick
     {
         IHand IHand { get; }
-        IGame IGame { get; }
         List<IPlayer> Players { get; }
         IPlayer StartingPlayer { get; }
 
