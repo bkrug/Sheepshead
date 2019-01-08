@@ -6,6 +6,12 @@ using Sheepshead.Logic.Players;
 
 namespace Sheepshead.Logic
 {
+    public class HandScores
+    {
+        public Dictionary<IPlayer, int> Coins { get; set; }
+        public Dictionary<IPlayer, int> Points { get; set; }
+    }
+
     public static class ScoreCalculator
     {
         public static HandScores GetScores(IHand hand)

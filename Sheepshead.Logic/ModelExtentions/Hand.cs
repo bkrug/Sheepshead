@@ -270,12 +270,6 @@ namespace Sheepshead.Logic.Models
         HandScores Scores();
     }
 
-    public class HandScores
-    {
-        public Dictionary<IPlayer, int> Coins { get; set; }
-        public Dictionary<IPlayer, int> Points { get; set; }
-    }
-
     public static class HandUtils
     {
         public static void BuryCards(IHand hand, IPlayer picker, List<SheepCard> burried)
