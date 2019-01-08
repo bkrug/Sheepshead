@@ -268,13 +268,6 @@ namespace Sheepshead.Logic.Models
         }
     }
 
-    public class HumanMove
-    {
-        public SheepCard? TrickCard { get; set; }
-        public bool? WillPick { get; set; }
-        public SheepCard[] BuryCards { get; set; }
-    }
-
     public class TrickResults
     {
         public string Picker { get; set; }
@@ -292,21 +285,6 @@ namespace Sheepshead.Logic.Models
     public enum PartnerMethod
     {
         JackOfDiamonds, CalledAce
-    }
-
-    public class TooManyPlayersException : ApplicationException
-    {
-        public TooManyPlayersException(string message) : base(message) { }
-    }
-
-    public class TooManyHumanPlayersException : TooManyPlayersException
-    {
-        public TooManyHumanPlayersException(string message) : base(message) { }
-    }
-
-    public class ObjectInListException : ApplicationException
-    {
-        public ObjectInListException(string message) : base(message) { }
     }
 
     public class WrongGamePhaseExcpetion : ApplicationException
