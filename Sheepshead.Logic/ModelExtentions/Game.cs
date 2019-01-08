@@ -301,29 +301,33 @@ namespace Sheepshead.Logic.Models
     public interface IGame
     {
         Guid Id { get; }
-        int HumanPlayerCount { get; }
-        int PlayerCount { get; }
-        int TrickCount { get; }
         bool LeastersEnabled { get; }
         List<IPlayer> Players { get; }
         List<IHumanPlayer> UnassignedPlayers { get; }
         ICollection<Hand> Hands { get; }
         IReadOnlyList<IHand> IHands { get; }
+        PartnerMethod PartnerMethodEnum { get; }
+
+        int HumanPlayerCount { get; }
+        int PlayerCount { get; }
+        int TrickCount { get; }
         TurnType TurnType { get; }
         TurnState TurnState { get; }
-        PartnerMethod PartnerMethodEnum { get; }
         void RearrangePlayers();
+
         bool LastHandIsComplete();
+        TrickResults GetTrickWinners();
+        List<GameCoins> GameCoins();
+
+        void MaybeGiveComputerPlayersNames();
         IHand ContinueFromHumanPickTurn(IHumanPlayer human, bool willPick);
         IComputerPlayer PlayNonHumanPickTurns(bool returnNullIfHumanNext = false);
         void BuryCards(IHumanPlayer player, List<SheepCard> cards, bool goItAlone, SheepCard? parnterCard);
         void PlayNonHumansInTrick();
         void RecordTurn(IHumanPlayer player, SheepCard card);
-        void MaybeGiveComputerPlayersNames();
-        List<GameCoins> GameCoins();
+
         PlayState PlayState(Guid requestingPlayerId);
         PickState PickState(Guid requestingPlayerId);
         BuryState BuryState(Guid requestingPlayerId);
-        TrickResults GetTrickWinners();
     }
 }
