@@ -47,19 +47,6 @@ namespace Sheepshead.Logic.Models
             _gameStateDesciber1 = gameStateDescriber ?? _gameStateDesciber1;
         }
 
-        //TODO: Make this internal except to test project
-        /// <summary>
-        /// This constructor is for passing in Mocks in unit tests.
-        /// </summary>
-        public Game(List<IPlayer> mockPlayers, PartnerMethod partnerMethod, bool enableLeasters) : this()
-        {
-            Hands = Hands ?? new List<Hand>();
-            LeastersEnabled = enableLeasters;
-            Id = Guid.NewGuid();
-            _mockPlayerList = mockPlayers;
-            PartnerMethodEnum = partnerMethod;
-        }
-
         public void RearrangePlayers()
         {
             var sortOrder = 0;

@@ -16,10 +16,8 @@ namespace Sheepshead.Tests
         [TestMethod]
         public void Game_CanCountAllPlayersInGame()
         {
-            var mockPlayer1 = new Mock<IPlayer>();
-            var mockPlayer2 = new Mock<IPlayer>();
-            var mockPlayer3 = new Mock<IPlayer>();
-            var game = new Game(new List<IPlayer>() { mockPlayer1.Object, mockPlayer2.Object, mockPlayer3.Object }, PartnerMethod.JackOfDiamonds, true);
+            var participants = new List<Participant>() { new Participant(), new Participant(), new Participant() };
+            var game = new Game(participants, PartnerMethod.JackOfDiamonds, true);
             Assert.AreEqual(3, game.PlayerCount, "Returned correct number of players");
             Assert.AreEqual(3, game.Players.Count, "Returned correct number of players");
         }
@@ -199,37 +197,42 @@ namespace Sheepshead.Tests
         [TestMethod]
         public void Game_UnassignedPlayers_ReturnsOnlyHumans()
         {
-            var human1 = new Mock<IHumanPlayer>();
-            var human2 = new Mock<IHumanPlayer>();
-            var game = new Game(new List<IPlayer>()
+            var human1 = new Participant() { Type = Participant.TYPE_HUMAN };
+            var human2 = new Participant() { Type = Participant.TYPE_HUMAN };
+            var participants = new List<Participant>()
             {
-                new Mock<IPlayer>().Object,
-                new Mock<IPlayer>().Object,
-                human1.Object,
-                new Mock<IPlayer>().Object,
-                human2.Object
-            }, PartnerMethod.JackOfDiamonds, true);
-            Assert.AreEqual(2, game.UnassignedPlayers.Count);
-            Assert.IsTrue(game.UnassignedPlayers.Contains(human1.Object));
-            Assert.IsTrue(game.UnassignedPlayers.Contains(human2.Object));
+                new Participant() { Type = Participant.TYPE_ADVANCED },
+                new Participant() { Type = Participant.TYPE_ADVANCED },
+                human1,
+                new Participant() { Type = Participant.TYPE_ADVANCED },
+                human2
+            };
+
+            var game = new Game(participants, PartnerMethod.JackOfDiamonds, true);
+
+            var expected = new List<IPlayer>() { human1.Player, human2.Player };
+            CollectionAssert.AreEquivalent(expected, game.UnassignedPlayers);
         }
 
         [TestMethod]
         public void Game_UnassignedPlayers_ReturnsOnlyUnassignedHumans()
         {
-            var human1 = new Mock<IHumanPlayer>();
-            var human2 = new Mock<IHumanPlayer>();
-            human2.Setup(m => m.AssignedToClient).Returns(true);
-            var game = new Game(new List<IPlayer>()
+            var human1 = new Participant() { Type = Participant.TYPE_HUMAN };
+            var human2 = new Participant() { Type = Participant.TYPE_HUMAN };
+            ((IHumanPlayer)human2.Player).AssignToClient("a");
+            var participants = new List<Participant>()
             {
-                new Mock<IPlayer>().Object,
-                new Mock<IPlayer>().Object,
-                human1.Object,
-                new Mock<IPlayer>().Object,
-                human2.Object
-            }, PartnerMethod.JackOfDiamonds, true);
-            Assert.AreEqual(1, game.UnassignedPlayers.Count);
-            Assert.IsTrue(game.UnassignedPlayers.Contains(human1.Object));
+                new Participant() { Type = Participant.TYPE_ADVANCED },
+                new Participant() { Type = Participant.TYPE_ADVANCED },
+                human1,
+                new Participant() { Type = Participant.TYPE_ADVANCED },
+                human2
+            };
+
+            var game = new Game(participants, PartnerMethod.JackOfDiamonds, true);
+
+            var expected = new List<IPlayer>() { human1.Player };
+            CollectionAssert.AreEqual(expected, game.UnassignedPlayers);
         }
 
         [TestMethod]

@@ -8,6 +8,7 @@ using System.IO;
 using Moq;
 using System.Threading;
 using Sheepshead.Logic.Models;
+using System.Linq;
 
 namespace Sheepshead.Tests
 {
@@ -136,7 +137,8 @@ namespace Sheepshead.Tests
 
         private string RunGame(int gameNo, List<IPlayer> players, PartnerMethod partnerMethod, int handsToPlay)
         {
-            var game = new Game(players, partnerMethod, enableLeasters: true);
+            var participants = players.Select(p => p.Participant).ToList();
+            var game = new Game(participants, partnerMethod, enableLeasters: true);
             for (var g = 0; g < handsToPlay; ++g)
             {
                 var hand = new Hand(game);
