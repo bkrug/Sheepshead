@@ -103,15 +103,14 @@ namespace Sheepshead.Tests
         public void Game_PlayNonHumanPickTurns_StopAtHuman()
         {
             var players = new List<IPlayer>() {
-                new Mock<IHumanPlayer>().Object,
+                new Participant() { Type = Participant.TYPE_HUMAN }.Player,
                 new ComputerPlayerPickingMock(false),
                 new ComputerPlayerPickingMock(false),
-                new Mock<IHumanPlayer>().Object,
+                new Participant() { Type = Participant.TYPE_HUMAN }.Player,
                 new ComputerPlayerPickingMock(true)
             };
             var refusingPick = players.Take(1).ToList();
             var unplayedPlayers = players.Skip(1).ToList();
-            var participants = players.Select(p => p.Participant).ToList();
             var handMock = new Mock<IHand>();
             handMock.Setup(m => m.PlayersRefusingPick).Returns(refusingPick);
             handMock.Setup(m => m.PlayersWithoutPickTurn).Returns(unplayedPlayers);
@@ -119,7 +118,7 @@ namespace Sheepshead.Tests
             gameStateDescriberMock.Setup(m => m.CurrentHand).Returns(handMock.Object);
             gameStateDescriberMock.Setup(m => m.GetTurnType()).Returns(TurnType.Pick);
             
-            var game = new Game(participants, PartnerMethod.JackOfDiamonds, true, null, gameStateDescriberMock.Object);
+            var game = new Game(new List<Participant>(), PartnerMethod.JackOfDiamonds, true, null, gameStateDescriberMock.Object);
             var picker = game.PlayNonHumanPickTurns();
 
             Assert.IsNull(picker, "Picker should be null because the computer players didn't pick and we didn't ask the second human yet.");
@@ -129,16 +128,15 @@ namespace Sheepshead.Tests
         public void Game_PlayNonHumanPickTurns_FindAPicker()
         {
             var playerList = new List<IPlayer>() {
-                new Mock<IHumanPlayer>().Object,
+                new Participant() { Type = Participant.TYPE_HUMAN }.Player,
                 new ComputerPlayerPickingMock(false),
                 new ComputerPlayerPickingMock(true),
-                new Mock<IHumanPlayer>().Object,
+                new Participant() { Type = Participant.TYPE_HUMAN }.Player,
                 new ComputerPlayerPickingMock(false)
             };
             var unplayedPlayers = playerList.Skip(1).ToList();
             var expectedPicker = playerList[2] as IComputerPlayer;
             var refusingPick = playerList.Take(1).ToList();
-            var participants = playerList.Select(p => p.Participant).ToList();
             var handMock = new Mock<IHand>();
             handMock.Setup(m => m.PlayersWithoutPickTurn).Returns(unplayedPlayers);
             handMock.Setup(m => m.PlayersRefusingPick).Returns(refusingPick);
@@ -147,7 +145,7 @@ namespace Sheepshead.Tests
             gameStateDescriberMock.Setup(m => m.CurrentHand).Returns(handMock.Object);
             gameStateDescriberMock.Setup(m => m.GetTurnType()).Returns(TurnType.Pick);
 
-            var game = new Game(participants, PartnerMethod.JackOfDiamonds, true, null, gameStateDescriberMock.Object);
+            var game = new Game(new List<Participant>(), PartnerMethod.JackOfDiamonds, true, null, gameStateDescriberMock.Object);
             var picker = game.PlayNonHumanPickTurns();
 
             Assert.AreEqual(expectedPicker, picker);
@@ -157,7 +155,7 @@ namespace Sheepshead.Tests
         public void Game_PlayNonHumanPickTurns_LeastersGame()
         {
             var playerList = new List<IPlayer>() {
-                new Mock<IHumanPlayer>().Object,
+                new Participant() { Type = Participant.TYPE_HUMAN }.Player,
                 new ComputerPlayerPickingMock(false),
                 new ComputerPlayerPickingMock(false),
                 new ComputerPlayerPickingMock(false),
@@ -165,7 +163,6 @@ namespace Sheepshead.Tests
             };
             var unplayedPlayers = playerList.Skip(1).ToList();
             var refusingPick = playerList.Take(1).ToList();
-            var participants = playerList.Select(p => p.Participant).ToList();
             var handMock = new Mock<IHand>();
             handMock.SetupGet(m => m.PlayersWithoutPickTurn).Returns(unplayedPlayers);
             handMock.SetupGet(m => m.PlayersRefusingPick).Returns(refusingPick);
@@ -174,7 +171,7 @@ namespace Sheepshead.Tests
             gameStateDescriberMock.Setup(m => m.CurrentHand).Returns(handMock.Object);
             gameStateDescriberMock.Setup(m => m.GetTurnType()).Returns(TurnType.Pick);
 
-            var game = new Game(participants, PartnerMethod.JackOfDiamonds, true, null, gameStateDescriberMock.Object);
+            var game = new Game(new List<Participant>(), PartnerMethod.JackOfDiamonds, true, null, gameStateDescriberMock.Object);
             var picker = game.PlayNonHumanPickTurns();
 
             Assert.IsNull(picker);
@@ -284,7 +281,6 @@ namespace Sheepshead.Tests
                 new Mock<IPlayer>().Object,
                 new Mock<IPlayer>().Object
             };
-            var participants = players.Select(p => p.Participant).ToList();
             var trickMock = new Mock<ITrick>();
             trickMock.Setup(m => m.PlayersWithoutTurn).Returns(players.Skip(2).ToList());
             trickMock.Setup(m => m.CardsByPlayer).Returns(new Dictionary<IPlayer, SheepCard>()
@@ -295,7 +291,7 @@ namespace Sheepshead.Tests
             var gamestateDescriberMock = new Mock<IGameStateDescriber>();
             gamestateDescriberMock.Setup(m => m.CurrentTrick).Returns(trickMock.Object);
 
-            var game = new Game(participants, PartnerMethod.JackOfDiamonds, true, null, gamestateDescriberMock.Object);
+            var game = new Game(new List<Participant>(), PartnerMethod.JackOfDiamonds, true, null, gamestateDescriberMock.Object);
             try
             {
                 game.RecordTurn((IHumanPlayer)players[2], SheepCard.N8_HEARTS);
