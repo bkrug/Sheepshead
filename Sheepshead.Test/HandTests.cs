@@ -12,36 +12,6 @@ namespace Sheepshead.Tests
     [TestClass]
     public class HandTests
     {
-        private List<IPlayer> GetPlayers()
-        {
-            var list = new List<IPlayer>();
-            for (var a = 0; a < 5; ++a)
-            {
-                var mockPlayer = new Mock<IPlayer>();
-                list.Add(mockPlayer.Object);
-                mockPlayer.Setup(m => m.Cards).Returns(new List<SheepCard>() { SheepCard.N7_SPADES });
-            }
-            return list;
-        }
-
-        private List<Mock<ITrick>> GetTrickMocks()
-        {
-            var list = new List<Mock<ITrick>>();
-            for (var a = 0; a < 5; ++a)
-                list.Add(new Mock<ITrick>());
-            return list;
-        }
-
-        private void PopulateTricks(ref List<Mock<ITrick>> trickMocks, List<IPlayer> players, int[,] scores)
-        {
-            for (var a = 0; a < 5; ++a)
-                trickMocks[a].Setup(m => m.Winner()).Returns(new TrickWinner()
-                {
-                    Player = players[scores[a, 0] - 1],
-                    Points = scores[a, 1]
-                });
-        }
-
         private ITrick MockTrickWinners(Mock<IPlayer> player, int points)
         {
             var trickMock = new Mock<ITrick>();
@@ -777,30 +747,6 @@ namespace Sheepshead.Tests
             hand2.SetPicker(picker, new List<SheepCard>());
             Assert.IsFalse(hand2.Leasters, "When there is a picker, don't play leasters.");
         }
-
-        //[TestMethod]
-        //public void Hand_OnEndHand()
-        //{
-        //    var gameMock = new Mock<IGame>();
-        //    gameMock.Setup(m => m.PlayerCount).Returns(5);
-        //    gameMock.Setup(m => m.Hands).Returns(new List<Hand>());
-        //    gameMock.Setup(m => m.LastHandIsComplete()).Returns(true);
-        //    var hand = new Hand(gameMock.Object, null);
-        //    var endEventCalled = false;
-        //    hand.OnHandEnd += (Object sender, EventArgs e) => {
-        //        endEventCalled = true;
-        //    };
-        //    for (var i = 0; i < 6; ++i)
-        //    {
-        //        var trickMock = new Mock<ITrick>();
-        //        hand.AddTrick(trickMock.Object);
-        //        trickMock.Raise(x => x.OnTrickEnd += null, new EventArgs());
-        //        if (i + 1 == 6)
-        //            Assert.IsTrue(endEventCalled, "When the last trick ended, so did the hand.");
-        //        else
-        //            Assert.IsFalse(endEventCalled, "Hand End event should only be called when the last trick ended.");
-        //    }
-        //}
 
         [TestMethod]
         public void Hand_PresumedPartner_BasedOnLead()
