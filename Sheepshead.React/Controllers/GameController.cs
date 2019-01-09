@@ -82,11 +82,11 @@ namespace Sheepshead.React.Controllers
         public IActionResult GetPickState(string gameId, string playerId)
         {
             var game = GetGame(gameId);
-            var playState = game.PickState(Guid.Parse(playerId));
+            var playState = GameState.PickState(game, Guid.Parse(playerId));
             if (game.TurnType == TurnType.Pick && !playState.HumanTurn)
             {
                 game.PlayNonHumanPickTurns();
-                playState = game.PickState(Guid.Parse(playerId));
+                playState = GameState.PickState(game, Guid.Parse(playerId));
                 _gameRepository.UpdateGame(game);
                 _gameRepository.Save();
             }
@@ -97,7 +97,7 @@ namespace Sheepshead.React.Controllers
         public IActionResult GetBuryState(string gameId, string playerId)
         {
             IGame game = GetGame(gameId);
-            var playState = game.BuryState(Guid.Parse(playerId));
+            var playState = GameState.BuryState(game, Guid.Parse(playerId));
             return Json(playState);
         }
 
@@ -105,11 +105,11 @@ namespace Sheepshead.React.Controllers
         public IActionResult GetPlayState(string gameId, string playerId)
         {
             var game = GetGame(gameId);
-            var playState = game.PlayState(Guid.Parse(playerId));
+            var playState = GameState.PlayState(game, Guid.Parse(playerId));
             if (game.TurnType == TurnType.PlayTrick && !playState.HumanTurn)
             {
                 game.PlayNonHumansInTrick();
-                playState = game.PlayState(Guid.Parse(playerId));
+                playState = GameState.PlayState(game, Guid.Parse(playerId));
                 _gameRepository.UpdateGame(game);
                 _gameRepository.Save();
             }
@@ -147,7 +147,7 @@ namespace Sheepshead.React.Controllers
             var mustRedeal = game.IHands.LastOrDefault()?.MustRedeal ?? false;
             if (game.TurnState.TurnType == TurnType.BeginHand || mustRedeal)
                 new Hand(game);
-            var playState = game.PlayState(Guid.Parse(playerId));
+            var playState = GameState.PlayState(game, Guid.Parse(playerId));
             _gameRepository.UpdateGame(game);
             _gameRepository.Save();
             return Json(playState);
@@ -161,7 +161,7 @@ namespace Sheepshead.React.Controllers
             _gameRepository.UpdateGame(game);
             _gameRepository.Save();
             if (willPick)
-                return Json(game.PlayState(Guid.Parse(playerId)).Blinds);
+                return Json(GameState.PlayState(game, Guid.Parse(playerId)).Blinds);
             return Json(new List<int>());
         }
 
