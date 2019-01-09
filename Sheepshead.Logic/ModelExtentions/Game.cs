@@ -9,8 +9,7 @@ namespace Sheepshead.Logic.Models
     public partial class Game : IGame
     {
         public IReadOnlyList<IHand> IHands => Hands?.OrderBy(h => h.SortOrder).ToList();
-        private List<IPlayer> _mockPlayerList = null;
-        public virtual List<IPlayer> Players => _mockPlayerList ?? Participants.OrderBy(p => p.SortOrder).Select(p => p.Player).ToList();
+        public virtual List<IPlayer> Players => Participants.OrderBy(p => p.SortOrder).Select(p => p.Player).ToList();
         [NotMapped]
         public PartnerMethod PartnerMethodEnum
         {
