@@ -17,8 +17,13 @@ namespace Sheepshead.Logic.Models
                 if (value is Hand) Hand = (Hand)value; else _mockHand = value;
             }
         }
+        public List<IPlayer> Players => IHand.Players;
         [NotMapped]
-        public IPlayer StartingPlayer { get { return StartingParticipant.Player; } private set { StartingParticipant = value.Participant; } }
+        public IPlayer StartingPlayer {
+            get { return StartingParticipant.Player; }
+            private set { StartingParticipant = value.Participant; }
+        }
+
         public virtual Dictionary<IPlayer, SheepCard> CardsByPlayer {
             get {
                 if (TrickPlays == null)
@@ -30,6 +35,9 @@ namespace Sheepshead.Logic.Models
                     : new Dictionary<IPlayer, SheepCard>();
             }
         }
+        public int QueueRankOfPicker => IHand.Picker.QueueRankInTrick(this);
+        public int? QueueRankOfPartner => IHand.Partner == null ? (int?)null : IHand.Partner.QueueRankInTrick(this);
+        public List<IPlayer> PlayersWithoutTurn => PlayerOrderer.PlayersWithoutTurn(Players, StartingPlayer, CardsByPlayer.Keys.ToList());
 
         //TODO: Use the TrickPlay.SortOrder property instead of trying to figure out the order of the players.
         public List<KeyValuePair<IPlayer, SheepCard>> OrderedMoves 
@@ -133,23 +141,6 @@ namespace Sheepshead.Logic.Models
         {
             return CardsByPlayer.Count() == IHand.PlayerCount;
         }
-
-        public List<IPlayer> Players
-        {
-            get { return IHand.Players; }
-        }
-
-        public int QueueRankOfPicker
-        {
-            get { return IHand.Picker.QueueRankInTrick(this); }
-        }
-
-        public int? QueueRankOfPartner
-        {
-            get { return IHand.Partner == null ? (int?)null : IHand.Partner.QueueRankInTrick(this); } 
-        }
-
-        public List<IPlayer> PlayersWithoutTurn => PlayerOrderer.PlayersWithoutTurn(Players, StartingPlayer, CardsByPlayer.Keys.ToList());
     }
 
     public class TrickWinner {
