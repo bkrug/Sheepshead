@@ -36,38 +36,28 @@ namespace Sheepshead.Logic.Models
             TurnType = TurnType
         };
 
-        public Game(List<Participant> participants, PartnerMethod partnerMethod, bool enableLeasters) : this()
+        public Game(List<Participant> participants, PartnerMethod partnerMethod, bool enableLeasters, IRandomWrapper random = null, IGameStateDescriber gameStateDescriber = null) : this()
         {
             Hands = Hands ?? new List<Hand>();
             LeastersEnabled = enableLeasters;
             Id = Guid.NewGuid();
             Participants = participants;
             PartnerMethodEnum = partnerMethod;
+            _random = random ?? _random;
+            _gameStateDesciber1 = gameStateDescriber ?? _gameStateDesciber1;
         }
 
         //TODO: Make this internal except to test project
         /// <summary>
         /// This constructor is for passing in Mocks in unit tests.
         /// </summary>
-        public Game(List<IPlayer> mockPlayers, PartnerMethod partnerMethod, bool enableLeasters) : this(mockPlayers, partnerMethod, null, null)
+        public Game(List<IPlayer> mockPlayers, PartnerMethod partnerMethod, bool enableLeasters) : this()
         {
             Hands = Hands ?? new List<Hand>();
             LeastersEnabled = enableLeasters;
             Id = Guid.NewGuid();
-        }
-
-        //TODO: Make this internal except to test project
-        /// <summary>
-        /// This constructor is for passing in Mocks in unit tests.
-        /// </summary>
-        public Game(List<IPlayer> mockPlayers, PartnerMethod partnerMethod, IRandomWrapper random, IGameStateDescriber gameStateDescriber) : this()
-        {
-            Hands = Hands ?? new List<Hand>();
             _mockPlayerList = mockPlayers;
             PartnerMethodEnum = partnerMethod;
-            _random = random ?? _random;
-            _gameStateDesciber1 = gameStateDescriber ?? _gameStateDesciber1;
-            Id = Guid.NewGuid();
         }
 
         public void RearrangePlayers()

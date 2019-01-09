@@ -29,5 +29,10 @@ namespace Sheepshead.Logic.Models
                     return new HumanPlayer(this);
             }
         }
+
+        public void SetPlayer(IPlayer player)
+        {
+            _player = player;
+        }
     }
 }

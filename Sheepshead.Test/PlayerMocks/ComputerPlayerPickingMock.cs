@@ -12,10 +12,12 @@ namespace Sheepshead.Tests.PlayerMocks
         private SheepCard? _calledAceCard;
         string IPlayer.Name { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
         IReadOnlyList<SheepCard> IPlayer.Cards => throw new NotImplementedException();
-        public Participant Participant => throw new NotImplementedException();
+        public Participant Participant { get; }
 
         public ComputerPlayerPickingMock(bool doesPick, SheepCard? calledAceCard = null)
         {
+            Participant = new Participant();
+            Participant.SetPlayer(this);
             _doesPick = doesPick;
             _calledAceCard = calledAceCard;
         }

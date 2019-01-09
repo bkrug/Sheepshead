@@ -12,10 +12,12 @@ namespace Sheepshead.Tests.PlayerMocks
         private SheepCard _moveToMake;
         string IPlayer.Name { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
         IReadOnlyList<SheepCard> IPlayer.Cards => throw new NotImplementedException();
-        public Participant Participant => throw new NotImplementedException();
+        public Participant Participant { get; }
 
         public ComputerPlayerReportingPlays(SheepCard moveToMake)
         {
+            Participant = new Participant();
+            Participant.SetPlayer(this);
             _moveToMake = moveToMake;
         }
 
