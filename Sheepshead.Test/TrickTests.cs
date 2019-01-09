@@ -1,11 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using Sheepshead.Logic;
 using Sheepshead.Logic.Models;
 using Sheepshead.Logic.Players;
+using Sheepshead.Tests.PlayerMocks;
 
 namespace Sheepshead.Tests
 {
@@ -448,54 +448,6 @@ namespace Sheepshead.Tests
                 Assert.AreSame(playerList[index], trick.OrderedMoves[i].Key, "Expected players to match at move " + i);
                 Assert.AreEqual(cardList[index], trick.OrderedMoves[i].Value, "Expected cards to match at move " + i);
             }
-        }
-    }
-
-    public class MockPlayer : IPlayer
-    {
-        public string Name { get; set; }
-
-        private List<SheepCard> _cards = new List<SheepCard>();
-        IReadOnlyList<SheepCard> IPlayer.Cards => _cards;
-        public Participant Participant { get; } = new Participant();
-
-        public MockPlayer()
-        {
-        }
-
-        public int QueueRankInTrick(ITrick trick)
-        {
-            throw new NotImplementedException();
-        }
-
-        public int QueueRankInHand(IHand hand)
-        {
-            throw new NotImplementedException();
-        }
-
-        public List<SheepCard> LegalCalledAces(IHand hand)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void AddCard(SheepCard card)
-        {
-            _cards.Add(card);
-        }
-
-        public void RemoveCard(SheepCard card)
-        {
-            _cards.Remove(card);
-        }
-
-        public void RemoveAllCards()
-        {
-            _cards.Clear();
-        }
-
-        public void AddCardRange(List<SheepCard> cards)
-        {
-            _cards.AddRange(cards);
         }
     }
 }

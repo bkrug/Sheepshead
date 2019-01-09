@@ -6,6 +6,7 @@ using Moq;
 using Sheepshead.Logic;
 using Sheepshead.Logic.Players;
 using Sheepshead.Logic.Models;
+using Sheepshead.Tests.PlayerMocks;
 
 namespace Sheepshead.Tests
 {
