@@ -39,21 +39,14 @@ namespace Sheepshead.Logic.Models
         public int? QueueRankOfPartner => IHand.Partner == null ? (int?)null : IHand.Partner.QueueRankInTrick(this);
         public List<IPlayer> PlayersWithoutTurn => PlayerOrderer.PlayersWithoutTurn(Players, StartingPlayer, CardsByPlayer.Keys.ToList());
 
-        //TODO: Use the TrickPlay.SortOrder property instead of trying to figure out the order of the players.
-        public List<KeyValuePair<IPlayer, SheepCard>> OrderedMoves 
-        { 
-            get 
-            {
-                var indexOfStartingPlayer = Players.IndexOf(StartingPlayer);
-                var playerList = Players.Skip(indexOfStartingPlayer).Union(Players.Take(indexOfStartingPlayer)).ToList();
-                var orderedMoves = new List<KeyValuePair<IPlayer, SheepCard>>();
-                var cards = CardsByPlayer;
-                foreach (var player in playerList)
-                    if (cards.ContainsKey(player))
-                        orderedMoves.Add(new KeyValuePair<IPlayer, SheepCard>( player, cards[player] ));
-                return orderedMoves;
-            } 
-        }
+        public List<KeyValuePair<IPlayer, SheepCard>> OrderedMoves =>
+            TrickPlays
+                .OrderBy(tp => tp.SortOrder)
+                .Select(trickPlay => new KeyValuePair<IPlayer, SheepCard>( 
+                    trickPlay.Participant.Player, 
+                    CardUtil.GetCardFromAbbreviation(trickPlay.Card).Value 
+                 ))
+                .ToList();
 
         public Trick(IHand hand) : this (hand, new StartingPlayerCalculator())
         {
