@@ -230,10 +230,7 @@ namespace Sheepshead.Logic.Models
         {
             if (MustRedeal)
                 return true;
-            //TODO: Why not just use IGame.TrickCount?
-            const int CARDS_IN_PLAY = 30;
-            var trickCount = CARDS_IN_PLAY / IGame.PlayerCount;
-            return Tricks.Count() == trickCount && Tricks.Last().IsComplete();
+            return Tricks.Count() == IGame.TrickCount && Tricks.Last().IsComplete();
         }
     }
 
