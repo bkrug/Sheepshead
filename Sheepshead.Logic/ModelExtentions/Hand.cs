@@ -183,7 +183,7 @@ namespace Sheepshead.Logic.Models
         public void SetPartnerCard(SheepCard? sheepCard)
         {
             if (IGame.PartnerMethodEnum != PartnerMethod.CalledAce)
-                throw new InvalidOperationException("The method SetPartnerCard() is only for 'called ace' games. The picker card is assigned automatically for 'jack of diamonds' games.");
+                throw new InvalidOperationException("The method SetPartnerCard() is only for 'called ace' games. The partner card is assigned automatically for 'jack of diamonds' games.");
             PartnerCardEnum = sheepCard;
         }
 
