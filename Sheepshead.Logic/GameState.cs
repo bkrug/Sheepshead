@@ -85,5 +85,28 @@ namespace Sheepshead.Logic
                 LegalCalledAces = humanPlayer?.LegalCalledAces(currentDeck).Select(c => CardUtil.GetCardSummary(c)).ToList()
             };
         }
+
+        public static TrickResults GetTrickWinners(IHand hand)
+        {
+            var tricks = hand.ITricks ?? new List<ITrick>();
+            var winners = tricks.Where(t => t.PlayersWithoutTurn.Count == 0).Select(t => t?.Winner()?.Player?.Name).ToList();
+            return new TrickResults()
+            {
+                Picker = hand.Picker?.Name,
+                Partner = hand.Partner?.Name,
+                PartnerCard = hand.PartnerCardEnum == null ? null : CardUtil.GetAbbreviation(hand.PartnerCardEnum.Value),
+                TrickWinners = winners,
+                LeastersHand = hand?.Leasters ?? false,
+                Tricks = hand
+                             ?.ITricks
+                             ?.Where(t => t.IsComplete())
+                             ?.Select(trick =>
+                               trick.OrderedMoves
+                                   .Select(move => new KeyValuePair<string, CardSummary>(move.Key.Name, CardUtil.GetCardSummary(move.Value)))
+                                   .ToList()
+                               )
+                             ?.ToList()
+            };
+        }
     }
 }

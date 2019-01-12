@@ -58,4 +58,14 @@ namespace Sheepshead.Logic
         public List<CardSummary> LegalCalledAces { get; set; }
         public string PartnerMethod { get; set; }
     }
+
+    public class TrickResults
+    {
+        public string Picker { get; set; }
+        public string Partner { get; set; }
+        public string PartnerCard { get; set; }
+        public List<string> TrickWinners { get; set; }
+        public bool LeastersHand { get; set; }
+        public List<List<KeyValuePair<string, CardSummary>>> Tricks { get; set; }
+    }
 }

@@ -121,23 +121,8 @@ namespace Sheepshead.React.Controllers
         {
             var game = GetGame(gameId);
             var hand = game.IHands.LastOrDefault(d => d.PickPhaseComplete);
-            var trickWinner = hand.GetTrickWinners();
-            return Json(new
-            {
-                trickWinner.Picker,
-                trickWinner.Partner,
-                trickWinner.PartnerCard,
-                trickWinner.TrickWinners,
-                leastersHand = hand?.Leasters ?? false,
-                tricks = hand?.ITricks
-                             ?.Where(t => t.IsComplete())
-                             ?.Select(trick =>
-                               trick.OrderedMoves.Select(
-                                   move =>
-                                    new KeyValuePair<string, CardSummary>(move.Key.Name, CardUtil.GetCardSummary(move.Value))
-                                   )
-                                ),
-            });
+            var trickWinner = GameState.GetTrickWinners(hand ?? new Hand());
+            return Json(trickWinner);
         }
 
         [HttpPost]
