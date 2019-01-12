@@ -120,15 +120,15 @@ namespace Sheepshead.React.Controllers
         public IActionResult GetTrickResults(string gameId)
         {
             var game = GetGame(gameId);
-            var trickWinner = game.GetTrickWinners();
-            var hand = game.IHands.LastOrDefault();
+            var hand = game.IHands.LastOrDefault(d => d.PickPhaseComplete);
+            var trickWinner = hand.GetTrickWinners();
             return Json(new
             {
                 trickWinner.Picker,
                 trickWinner.Partner,
                 trickWinner.PartnerCard,
                 trickWinner.TrickWinners,
-                leastersHand = game.IHands.LastOrDefault(d => d.PickPhaseComplete)?.Leasters ?? false,
+                leastersHand = hand?.Leasters ?? false,
                 tricks = hand?.ITricks
                              ?.Where(t => t.IsComplete())
                              ?.Select(trick =>

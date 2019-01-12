@@ -235,6 +235,19 @@ namespace Sheepshead.Logic.Models
             var trickCount = CARDS_IN_PLAY / IGame.PlayerCount;
             return Tricks.Count() == trickCount && Tricks.Last().IsComplete();
         }
+
+        public TrickResults GetTrickWinners()
+        {
+            var tricks = ITricks ?? new List<ITrick>();
+            var winners = tricks.Where(t => t.PlayersWithoutTurn.Count == 0).Select(t => t?.Winner()?.Player?.Name).ToList();
+            return new TrickResults()
+            {
+                Picker = Picker?.Name,
+                Partner = Partner?.Name,
+                PartnerCard = PartnerCardEnum == null ? null : CardUtil.GetAbbreviation(PartnerCardEnum.Value),
+                TrickWinners = winners
+            };
+        }
     }
 
     public interface IHand
@@ -266,6 +279,7 @@ namespace Sheepshead.Logic.Models
         void AddTrick(ITrick trick);
         bool IsComplete();
         HandScores Scores();
+        TrickResults GetTrickWinners();
     }
 
     public static class HandUtils
@@ -304,5 +318,13 @@ namespace Sheepshead.Logic.Models
     public class PreviousHandIncompleteException : Exception
     {
         public PreviousHandIncompleteException(string message) : base(message) { }
+    }
+
+    public class TrickResults
+    {
+        public string Picker { get; set; }
+        public string Partner { get; set; }
+        public string PartnerCard { get; set; }
+        public List<string> TrickWinners { get; set; }
     }
 }

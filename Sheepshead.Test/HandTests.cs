@@ -653,16 +653,15 @@ namespace Sheepshead.Tests
             Assert.IsTrue(hand.IsComplete(), "Hand is complete if there are enough tricks and the last is complete.");
         }
 
-        //TODO: Split into two tests
         [TestMethod]
         public void Hand_SetPicker_PartnerCard_PickerWithoutJackDiamonds()
         {
             {
                 var blinds = new List<SheepCard>() { SheepCard.KING_DIAMONDS, SheepCard.ACE_CLUBS };
-                var droppedCards = new List<SheepCard>() { SheepCard.N7_SPADES, SheepCard.N8_SPADES };
+                var cardsToBury = new List<SheepCard>() { SheepCard.N7_SPADES, SheepCard.N8_SPADES };
                 var mockHand = new Mock<IHand>();
                 mockHand.Setup(m => m.Blinds).Returns(blinds);
-                mockHand.Setup(m => m.Buried).Returns(droppedCards);
+                mockHand.Setup(m => m.Buried).Returns(cardsToBury);
                 mockHand.Setup(m => m.IGame.PartnerMethodEnum).Returns(PartnerMethod.JackOfDiamonds);
                 mockHand.Setup(m => m.IGame.PlayerCount).Returns(5);
                 var mockPicker = new Mock<IPlayer>();
@@ -671,7 +670,7 @@ namespace Sheepshead.Tests
                 mockPicker.Setup(f => f.AddCard(It.IsAny<SheepCard>())).Callback((SheepCard c) => originalPickerCards.Add(c));
                 mockPicker.Setup(f => f.RemoveCard(It.IsAny<SheepCard>())).Callback((SheepCard c) => originalPickerCards.Remove(c));
                 var partnerCard = HandUtils.ChoosePartnerCard(mockHand.Object, mockPicker.Object);
-                HandUtils.BuryCards(mockHand.Object, mockPicker.Object, droppedCards);
+                HandUtils.BuryCards(mockHand.Object, mockPicker.Object, cardsToBury);
                 Assert.AreEqual(SheepCard.JACK_DIAMONDS, partnerCard, "Jack of diamonds should be partner card right now");
                 var expectedPickerCards = new List<SheepCard>() { SheepCard.KING_DIAMONDS, SheepCard.ACE_CLUBS, SheepCard.N9_SPADES, SheepCard.N10_SPADES };
                 CollectionAssert.AreEquivalent(expectedPickerCards, mockPicker.Object.Cards.ToList(), "Picker dropped some cards to pick the blinds.");

@@ -141,21 +141,6 @@ namespace Sheepshead.Logic.Models
             "Ben", "Sam", "Johann", "Fritz", "Sarah", "Rachel", "Liz", "Vivek", "Jing", "Junior", "Fido", "Peter", "Katrina", "Akinpelu"
         };
 
-        //TODO: Move this to the Hand class?
-        public TrickResults GetTrickWinners()
-        {
-            var currentDeck = IHands.LastOrDefault(d => d.PickPhaseComplete);
-            var tricks = currentDeck?.ITricks ?? new List<ITrick>();
-            var winners = tricks.Where(t => t.PlayersWithoutTurn.Count == 0).Select(t => t?.Winner()?.Player?.Name).ToList();
-            return new TrickResults()
-            {
-                Picker = currentDeck?.Picker?.Name,
-                Partner = currentDeck?.Partner?.Name,
-                PartnerCard = currentDeck?.PartnerCardEnum == null ? null : CardUtil.GetAbbreviation(currentDeck.PartnerCardEnum.Value),
-                TrickWinners = winners
-            };
-        }
-
         public List<GameCoins> GameCoins()
         {
             var coins = IHands
@@ -169,14 +154,6 @@ namespace Sheepshead.Logic.Models
                 })
                 .ToList();
         }
-    }
-
-    public class TrickResults
-    {
-        public string Picker { get; set; }
-        public string Partner { get; set; }
-        public string PartnerCard { get; set; }
-        public List<string> TrickWinners { get; set; }
     }
 
     public class GameCoins
@@ -218,7 +195,6 @@ namespace Sheepshead.Logic.Models
         void RearrangePlayers();
 
         bool LastHandIsComplete();
-        TrickResults GetTrickWinners();
         List<GameCoins> GameCoins();
 
         void MaybeGiveComputerPlayersNames();
