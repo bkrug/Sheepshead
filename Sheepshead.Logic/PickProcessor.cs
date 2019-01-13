@@ -48,9 +48,6 @@ namespace Sheepshead.Logic
         private void AcceptComputerPicker(IHand hand, IComputerPlayer picker)
         {
             var buriedCards = picker.DropCardsForPick(hand);
-            //TODO: set the buried property from within SetPicker
-            hand.AddBuried(buriedCards[0]);
-            hand.AddBuried(buriedCards[1]);
             hand.SetPicker(picker, buriedCards);
             if (hand.IGame.PlayerCount == 3 || picker.GoItAlone(hand))
                 return;
