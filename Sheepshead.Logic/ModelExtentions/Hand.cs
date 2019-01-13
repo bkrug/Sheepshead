@@ -273,8 +273,15 @@ namespace Sheepshead.Logic.Models
         {
             if (picker != null)
             {
-                hand.Blinds.Where(c => !picker.Cards.Contains(c)).ToList().ForEach(c => picker.AddCard(c));
-                picker.Cards.Where(c => burried.Contains(c)).ToList().ForEach(c => picker.RemoveCard(c));
+                hand.Blinds.ToList().ForEach(c => {
+                    if (!picker.Cards.Contains(c))
+                        picker.AddCard(c);
+                });
+                burried.ForEach(c => {
+                    if (picker.Cards.Contains(c))
+                        picker.RemoveCard(c);
+                });
+                burried.ForEach(c => hand.AddBuried(c));
             }
         }
 

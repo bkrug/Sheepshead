@@ -684,6 +684,26 @@ namespace Sheepshead.Tests
         }
 
         [TestMethod]
+        public void Hand_SetPicker()
+        {
+            var players = new List<IPlayer>() { new Participant().Player, new Participant().Player, new Participant().Player, new Participant().Player, new Participant().Player };
+            var gameMock = new MockGame();
+            gameMock.PartnerMethod = "J";
+            gameMock.LeastersEnabled = true;
+            gameMock.SetLastHandIsComplete(true);
+            gameMock.SetPlayers(players);
+            var hand = new Hand(gameMock, null);
+            var expectedBuried = new List<SheepCard>() { SheepCard.N10_HEARTS, SheepCard.ACE_SPADES };
+            Assert.IsNull(hand.PartnerCardEnum, "Testing the text, this should not have been set until after the picker is declared.");
+
+            hand.SetPicker(players[3], expectedBuried);
+
+            Assert.AreEqual(players[3], hand.Picker);
+            CollectionAssert.AreEquivalent(expectedBuried, hand.Buried.ToList());
+            Assert.IsNotNull(hand.PartnerCardEnum, "This should now have ben set. Whether or not it is set correctly is up to tests of HandUtils.ChoosePartnerCard");
+        }
+
+        [TestMethod]
         public void Hand_IsComplete()
         {
             var blinds = new List<SheepCard>() { SheepCard.KING_DIAMONDS, SheepCard.ACE_CLUBS };
@@ -720,7 +740,7 @@ namespace Sheepshead.Tests
         }
 
         [TestMethod]
-        public void Hand_SetPicker_PartnerCard_PickerWithoutJackDiamonds()
+        public void HandUtils_ChoosePartnerCard_PartnerCard_PickerWithoutJackDiamonds()
         {
             {
                 var blinds = new List<SheepCard>() { SheepCard.KING_DIAMONDS, SheepCard.ACE_CLUBS };
@@ -735,8 +755,10 @@ namespace Sheepshead.Tests
                 mockPicker.Setup(f => f.Cards).Returns(originalPickerCards);
                 mockPicker.Setup(f => f.AddCard(It.IsAny<SheepCard>())).Callback((SheepCard c) => originalPickerCards.Add(c));
                 mockPicker.Setup(f => f.RemoveCard(It.IsAny<SheepCard>())).Callback((SheepCard c) => originalPickerCards.Remove(c));
+
                 var partnerCard = HandUtils.ChoosePartnerCard(mockHand.Object, mockPicker.Object);
                 HandUtils.BuryCards(mockHand.Object, mockPicker.Object, cardsToBury);
+
                 Assert.AreEqual(SheepCard.JACK_DIAMONDS, partnerCard, "Jack of diamonds should be partner card right now");
                 var expectedPickerCards = new List<SheepCard>() { SheepCard.KING_DIAMONDS, SheepCard.ACE_CLUBS, SheepCard.N9_SPADES, SheepCard.N10_SPADES };
                 CollectionAssert.AreEquivalent(expectedPickerCards, mockPicker.Object.Cards.ToList(), "Picker dropped some cards to pick the blinds.");
@@ -744,7 +766,7 @@ namespace Sheepshead.Tests
         }
 
         [TestMethod]
-        public void Hand_SetPicker_PartnerCard_PickerHasJackDiamonds()
+        public void HandUtils_ChoosePartnerCard_PartnerCard_PickerHasJackDiamonds()
         {
             var blinds = new List<SheepCard>() { SheepCard.JACK_DIAMONDS, SheepCard.JACK_HEARTS };
             var droppedCards = new List<SheepCard>() { SheepCard.JACK_CLUBS, SheepCard.JACK_HEARTS };
@@ -763,7 +785,7 @@ namespace Sheepshead.Tests
         }
 
         [TestMethod]
-        public void Hand_SetPicker_PartnerCard_PickerHasAllQueensJacks()
+        public void HandUtils_ChoosePartnerCard_PartnerCard_PickerHasAllQueensJacks()
         {
             var blinds = new List<SheepCard>() { SheepCard.JACK_DIAMONDS, SheepCard.JACK_HEARTS };
             var buriedCards = new List<SheepCard>() { SheepCard.JACK_HEARTS, SheepCard.JACK_DIAMONDS };
@@ -782,7 +804,7 @@ namespace Sheepshead.Tests
         }
 
         [TestMethod]
-        public void Hand_SetPicker_NoPartner_3Player()
+        public void HandUtils_ChoosePartnerCard_NoPartner_3Player()
         {
             var blinds = new List<SheepCard>() { SheepCard.KING_DIAMONDS, SheepCard.ACE_CLUBS };
             var mockHand = new Mock<IHand>();
