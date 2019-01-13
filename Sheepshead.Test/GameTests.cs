@@ -305,6 +305,41 @@ namespace Sheepshead.Tests
         }
 
         [TestMethod]
+        public void Game_RecordTurn_TurnRecorded()
+        {
+            var humanPlayerMock = new Mock<IHumanPlayer>();
+            humanPlayerMock.Setup(m => m.Cards).Returns(new List<SheepCard>()
+            {
+                SheepCard.N7_CLUBS, SheepCard.N7_HEARTS, SheepCard.KING_HEARTS
+            });
+            var players = new List<IPlayer> {
+                new Mock<IPlayer>().Object,
+                new Mock<IPlayer>().Object,
+                humanPlayerMock.Object,
+                new Mock<IPlayer>().Object,
+                new Mock<IPlayer>().Object
+            };
+            SheepCard expectedCard = SheepCard.N7_HEARTS;
+            SheepCard? actualCard = null;
+            var trickMock = new Mock<ITrick>();
+            trickMock.Setup(m => m.PlayersWithoutTurn).Returns(players.Skip(2).ToList());
+            trickMock.Setup(m => m.CardsByPlayer).Returns(new Dictionary<IPlayer, SheepCard>()
+            {
+                { players[0], SheepCard.ACE_HEARTS },
+                { players[1], SheepCard.N7_SPADES }
+            });
+            trickMock.Setup(m => m.IsLegalAddition(It.IsAny<SheepCard>(), It.IsAny<IPlayer>())).Returns(true);
+            trickMock.Setup(m => m.Add(It.IsAny<IPlayer>(), It.IsAny<SheepCard>())).Callback((IPlayer p, SheepCard c) => actualCard = c);
+            var gamestateDescriberMock = new Mock<IGameStateDescriber>();
+            gamestateDescriberMock.Setup(m => m.CurrentTrick).Returns(trickMock.Object);
+
+            var game = new Game(new List<Participant>(), PartnerMethod.JackOfDiamonds, true, null, gamestateDescriberMock.Object);
+            game.RecordTurn((IHumanPlayer)players[2], expectedCard);
+
+            Assert.AreEqual(expectedCard, actualCard);
+        }
+
+        [TestMethod]
         public void Game_RecordTurn_NotPlayersTurn()
         {
             var humanPlayerMock = new Mock<IHumanPlayer>();

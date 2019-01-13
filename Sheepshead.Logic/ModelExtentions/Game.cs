@@ -108,7 +108,6 @@ namespace Sheepshead.Logic.Models
             }
         }
 
-        //TEST: That the move is recorded.
         public void RecordTurn(IHumanPlayer player, SheepCard card)
         {
             var trick = _gameStateDesciber.CurrentTrick;
