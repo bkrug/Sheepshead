@@ -618,6 +618,72 @@ namespace Sheepshead.Tests
         }
 
         [TestMethod]
+        public void Hand_MustRedeal_False_PickerFound1()
+        {
+            var players = new List<IPlayer>() { new Participant().Player, new Participant().Player, new Participant().Player, new Participant().Player, new Participant().Player };
+            var gameMock = new MockGame();
+            gameMock.LeastersEnabled = false;
+            gameMock.SetLastHandIsComplete(true);
+            gameMock.SetPlayers(players);
+            var hand = new Hand(gameMock, null);
+            hand.SetPicker(players[0], new List<SheepCard>() { 0, (SheepCard)1 });
+            Assert.IsFalse(hand.MustRedeal);
+        }
+
+        [TestMethod]
+        public void Hand_MustRedeal_False_PickerFound2()
+        {
+            var players = new List<IPlayer>() { new Participant().Player, new Participant().Player, new Participant().Player, new Participant().Player, new Participant().Player };
+            var gameMock = new MockGame();
+            gameMock.LeastersEnabled = false;
+            gameMock.SetLastHandIsComplete(true);
+            gameMock.SetPlayers(players);
+            var hand = new Hand(gameMock, null);
+            players.ToList().ForEach(p => gameMock.ContinueFromHumanPickTurn((IHumanPlayer)p, p == players[4]));
+            Assert.IsFalse(hand.MustRedeal);
+        }
+
+        [TestMethod]
+        public void Hand_MustRedeal_False_Leasters()
+        {
+            var players = new List<IPlayer>() { new Participant().Player, new Participant().Player, new Participant().Player, new Participant().Player, new Participant().Player };
+            var gameMock = new MockGame();
+            gameMock.LeastersEnabled = true;
+            gameMock.SetLastHandIsComplete(true);
+            gameMock.SetPlayers(players);
+            var hand = new Hand(gameMock, null);
+            players.ForEach(p => gameMock.ContinueFromHumanPickTurn((IHumanPlayer)p, false));
+            Assert.IsFalse(hand.MustRedeal);
+        }
+
+        [TestMethod]
+        public void Hand_MustRedeal_False_MoreTurns()
+        {
+            var players = new List<IPlayer>() { new Participant().Player, new Participant().Player, new Participant().Player, new Participant().Player, new Participant().Player };
+            var gameMock = new MockGame();
+            gameMock.LeastersEnabled = false;
+            gameMock.SetLastHandIsComplete(true);
+            gameMock.SetPlayers(players);
+            var hand = new Hand(gameMock, null);
+            gameMock.ContinueFromHumanPickTurn((IHumanPlayer)players[0], false);
+            gameMock.ContinueFromHumanPickTurn((IHumanPlayer)players[1], false);
+            Assert.IsFalse(hand.MustRedeal);
+        }
+
+        [TestMethod]
+        public void Hand_MustRedeal_True()
+        {
+            var players = new List<IPlayer>() { new Participant().Player, new Participant().Player, new Participant().Player, new Participant().Player, new Participant().Player };
+            var gameMock = new MockGame();
+            gameMock.SetLastHandIsComplete(true);
+            gameMock.LeastersEnabled = false;
+            gameMock.SetPlayers(players);
+            var hand = new Hand(gameMock, null);
+            players.ForEach(p => gameMock.ContinueFromHumanPickTurn((IHumanPlayer)p, false));
+            Assert.IsTrue(hand.MustRedeal);
+        }
+
+        [TestMethod]
         public void Hand_IsComplete()
         {
             var blinds = new List<SheepCard>() { SheepCard.KING_DIAMONDS, SheepCard.ACE_CLUBS };

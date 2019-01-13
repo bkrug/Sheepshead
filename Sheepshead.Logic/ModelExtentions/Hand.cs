@@ -41,6 +41,9 @@ namespace Sheepshead.Logic.Models
 
         public int PlayerCount => IGame.PlayerCount;
         public List<IPlayer> Players => IGame.Players;
+        /// <summary>
+        /// Returns a list of players that haven't yet refused to pick (so the list may include the picker and the name is misleading). 
+        /// </summary>
         public List<IPlayer> PlayersWithoutPickTurn => PlayerOrderer.PlayersWithoutTurn(Players, StartingPlayer, PlayersRefusingPick);
         public IReadOnlyList<IPlayer> PlayersRefusingPick => 
             PlayerOrderer.PlayersInTurnOrder(Players, StartingPlayer)
@@ -51,7 +54,6 @@ namespace Sheepshead.Logic.Models
         /// <summary>
         /// Returns true when there is no picker and Leasters is off.
         /// </summary>
-        // TODO: And Picker must be null, right?
         public bool MustRedeal => !IGame.LeastersEnabled && !PlayersWithoutPickTurn.Any();
         public bool Leasters { get { return Picker == null; } }
 
