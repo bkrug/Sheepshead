@@ -745,9 +745,23 @@ export class Directions extends React.Component<RouteComponentProps<{}>, Directi
         var windowOffset = (window.pageYOffset || doc.scrollTop) - (doc.clientTop || 0);
         this.setState({ filmOffset: windowOffset + 'px' });
 
-        var slideNo = windowOffset / window.innerHeight + .4;
+        var slideNo = windowOffset / this.getSlideHeight() + .4;
         slideNo = slideNo - slideNo % 1;
         this.setState({ currentSlide: slideNo });
+    }
+
+    //Slide Height is determined based on the media type.
+    //See directions.css to confirm that the numbers used here match the media breakpoints there.
+    private getSlideHeight() : number {
+        var isPortrait = window.innerHeight > window.innerWidth;
+        var isPortraitPhone = window.innerWidth < 414.1 && isPortrait;
+        var isLandscapePhone = window.innerWidth < 736.1 && !isPortrait;
+        if (isPortraitPhone)
+            return 1.8 * window.innerWidth;
+        else if (isLandscapePhone)
+            return .45 * window.innerWidth;
+        else
+            return window.innerHeight;
     }
 
     private onLinkClick(e: any) {

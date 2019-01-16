@@ -17,19 +17,31 @@
     padding-right: 16vmin; /*Let the right margin be larger because we expect a scroll bar*/
 }
 
+/* 
+    On a phone, the view window's height can change slightly as a result of scrolling up or down. 
+    Scrolling down and then up, would result in the slides changing size and moving in unexpected ways.
+    So let's scale the slide height according to the width.
+        
+    See also Directions.tsx getSlideHeight().
+    The breakpoints ought to match.
+*/
 @media only screen and (max-width: 414px) and (orientation: portrait) {
-    /* 
-        On a phone, the view window's height can change slightly as a result of scrolling up or down. 
-        Scrolling down and then up, would result in the slides changing size and moving in unexpected ways.
-        So let's scale the slide height according to the width.
-    */
-
     .directions-film .slide {
         height: 180vw; 
     }
     
     .directions-film .slide .content {
         height: 180vw;
+    }
+}
+
+@media only screen and (max-width: 736px) and (orientation: landscape) {
+    .directions-film .slide {
+        height: 45vw;
+    }
+    
+    .directions-film .slide .content {
+        height: 45vw;
     }
 }
 
