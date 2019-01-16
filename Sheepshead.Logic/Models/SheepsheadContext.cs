@@ -6,14 +6,13 @@ namespace Sheepshead.Logic.Models
 {
     public partial class SheepsheadContext : DbContext
     {
-        public virtual DbSet<Coin> Coin { get; set; }
         public virtual DbSet<Game> Game { get; set; }
         public virtual DbSet<Hand> Hand { get; set; }
         public virtual DbSet<Participant> Participant { get; set; }
         public virtual DbSet<ParticipantRefusingPick> ParticipantRefusingPick { get; set; }
-        public virtual DbSet<Point> Point { get; set; }
         public virtual DbSet<Trick> Trick { get; set; }
         public virtual DbSet<TrickPlay> TrickPlay { get; set; }
+        public virtual DbSet<Score> Score { get; set; }
 
         public SheepsheadContext(DbContextOptions<SheepsheadContext> dbContextOptions) : base(dbContextOptions)
         {
@@ -28,25 +27,27 @@ namespace Sheepshead.Logic.Models
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Coin>(entity =>
+            modelBuilder.Entity<Score>(entity =>
             {
+                entity.HasKey(e => new { e.HandId, e.ParticipantId });
+
                 entity.HasIndex(e => e.HandId)
-                    .HasName("IX_FK_Hand_Coin");
+                    .HasName("IX_FK_Score_Hand");
 
                 entity.HasIndex(e => e.ParticipantId)
-                    .HasName("IX_FK_Coin_Participant");
+                    .HasName("IX_FK_Score_Participant");
 
                 entity.HasOne(d => d.Hand)
-                    .WithMany(p => p.Coins)
+                    .WithMany(p => p.ScoreList)
                     .HasForeignKey(d => d.HandId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_Hand_Coin");
+                    .HasConstraintName("FK_Score_Hand");
 
                 entity.HasOne(d => d.Participant)
-                    .WithMany(p => p.Coins)
+                    .WithMany(p => p.Scores)
                     .HasForeignKey(d => d.ParticipantId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_Coin_Participant");
+                    .HasConstraintName("FK_Score_Participant");
             });
 
             modelBuilder.Entity<Game>(entity =>
@@ -141,21 +142,6 @@ namespace Sheepshead.Logic.Models
                     .HasForeignKey(d => d.ParticipantId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_ParticipantRefusingPick_Participant");
-            });
-
-            modelBuilder.Entity<Point>(entity =>
-            {
-                entity.HasOne(d => d.Hand)
-                    .WithMany(p => p.Points)
-                    .HasForeignKey(d => d.HandId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_PointHand");
-
-                entity.HasOne(d => d.Participant)
-                    .WithMany(p => p.Points)
-                    .HasForeignKey(d => d.ParticipantId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_Point_Participant");
             });
 
             modelBuilder.Entity<Trick>(entity =>
