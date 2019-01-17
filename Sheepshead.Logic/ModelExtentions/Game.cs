@@ -143,7 +143,7 @@ namespace Sheepshead.Logic.Models
         public List<GameCoins> GameCoins()
         {
             var coins = IHands
-                .Select(d => d.Scores()?.Coins)
+                .Select(d => d.CalculateScores()?.Coins)
                 .Where(c => c != null)
                 .ToList();
             return Players

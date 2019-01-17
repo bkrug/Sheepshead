@@ -12,18 +12,20 @@ namespace Sheepshead.React.Controllers
     public class GameController : Controller
     {
         private readonly GameRepository _gameRepository;
+        private readonly ScoreRepository _scoreRepository;
 
         public GameController(SheepsheadContext context)
         {
             _gameRepository = new GameRepository(context);
+            _scoreRepository = new ScoreRepository(context);
         }
 
         [HttpGet]
         public IActionResult GameSummary(string gameId)
         {
-            var gameCoins = GetGame(gameId)?.GameCoins();
-            if (gameCoins == null)
-                return Json(new object[] { });
+            var game = GetGame(gameId);
+            game.Hands.ToList().ForEach(hand => _scoreRepository.RecordScores(hand));
+            var gameCoins = _scoreRepository.GameCoins(game.Id);
             return Json(gameCoins.Select(p => new {
                 name = p.Name,
                 score = p.Coins
@@ -36,7 +38,7 @@ namespace Sheepshead.React.Controllers
             IGame game = GetGame(gameId);
             var mustRedeal = game.IHands.LastOrDefault(d => d.IsComplete())?.MustRedeal;
             var hand = game.IHands.LastOrDefault(d => d.PickPhaseComplete);
-            var scores = hand?.Scores();
+            var scores = hand?.CalculateScores();
             return Json(new
             {
                 points = scores?.Points?.ToDictionary(k => k.Key.Name, k => k.Value),

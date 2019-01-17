@@ -15,21 +15,35 @@ namespace Sheepshead.Logic.DAL
             this.context = context;
         }
 
+        /// <summary>
+        /// Get game instance including the most recent two hands.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public Game GetGameById(Guid id)
         {
-            return context.Game
+            var game = context.Game
                 .Include(g => g.Participants)
-                .Include(g => g.Hands).ThenInclude(h => h.StartingParticipant)
-                .Include(g => g.Hands).ThenInclude(h => h.ParticipantsRefusingPick)
-                .Include(g => g.Hands).ThenInclude(h => h.PickerParticipant)
-                .Include(g => g.Hands).ThenInclude(h => h.PartnerParticipant)
-                .Include(g => g.Hands)
-                    .ThenInclude(h => h.Tricks)
-                        .ThenInclude(t => t.TrickPlays)
-                .Include(g => g.Hands)
-                    .ThenInclude(h => h.Tricks)
-                        .ThenInclude(t => t.StartingParticipant)
                 .SingleOrDefault(g => g.Id == id);
+
+            var hands = context.Hand
+                .Include(h => h.StartingParticipant)
+                .Include(h => h.ParticipantsRefusingPick)
+                .Include(h => h.PickerParticipant)
+                .Include(h => h.PartnerParticipant)
+                .Include(h => h.Tricks)
+                    .ThenInclude(t => t.TrickPlays)
+                .Include(h => h.Tricks)
+                    .ThenInclude(t => t.StartingParticipant)
+                .Where(h => h.GameId == id)
+                .OrderByDescending(h => h.Id)
+                .Take(2)
+                .OrderBy(h => h.Id)
+                .ToList();
+
+            hands.ForEach(h => h.Game = game);
+            game.Hands = hands;
+            return game;
         }
 
         public IGame Create(int humanCount, int simpleCount, int intermediateCount, int advancedCount, PartnerMethod partnerMethod, bool leastersGame)

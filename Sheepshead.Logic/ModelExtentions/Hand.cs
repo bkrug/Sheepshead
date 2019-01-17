@@ -221,7 +221,7 @@ namespace Sheepshead.Logic.Models
         }
 
         private HandScores _scores = null;
-        public HandScores Scores()
+        public HandScores CalculateScores()
         {
             if (ITricks.Count == IGame.TrickCount && ITricks.Last().IsComplete())
                 return _scores = (_scores ?? ScoreCalculator.GetScores(this));
@@ -249,6 +249,7 @@ namespace Sheepshead.Logic.Models
         IReadOnlyList<SheepCard> Buried { get; }
         IReadOnlyList<IPlayer> PlayersRefusingPick { get; }
         List<ITrick> ITricks { get; }
+        ICollection<Score> ScoreList { get; set; }
 
         int PlayerCount { get; }
         List<IPlayer> PlayersWithoutPickTurn { get; }
@@ -264,7 +265,7 @@ namespace Sheepshead.Logic.Models
         void SetPartnerCard(SheepCard? sheepCard);
         void AddTrick(ITrick trick);
         bool IsComplete();
-        HandScores Scores();
+        HandScores CalculateScores();
     }
 
     public static class HandUtils
