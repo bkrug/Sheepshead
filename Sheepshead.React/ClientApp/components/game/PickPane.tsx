@@ -7,7 +7,6 @@ import Card from './Card';
 import { PickState, PickChoice, CardSummary } from './PlayState';
 
 export interface PickPaneState {
-    pickPhaseHasStarted: boolean;
     gameId: string;
     playerId: string;
     pickChoices: PickChoice[];
@@ -30,7 +29,6 @@ export default class PickPane extends React.Component<PickPaneProps, PickPaneSta
     constructor(props: PickPaneProps) {
         super(props);
         this.state = {
-            pickPhaseHasStarted: false,
             gameId: props.gameId,
             playerId: IdUtils.getPlayerId(props.gameId) || '',
             pickChoices: [],
@@ -54,7 +52,6 @@ export default class PickPane extends React.Component<PickPaneProps, PickPaneSta
             'Game/GetPickState?gameId=' + this.state.gameId + '&playerId=' + this.state.playerId,
             function (json: PickState): void {
                 self.setState({
-                    pickPhaseHasStarted: json.pickPhaseHasStarted,
                     pickChoices: json.pickChoices,
                     requestingPlayerTurn: json.requestingPlayerTurn,
                     playerCards: json.playerCards,
@@ -64,7 +61,8 @@ export default class PickPane extends React.Component<PickPaneProps, PickPaneSta
                 });
             },
             function (json: PickState): boolean {
-                return !json.pickPhaseHasStarted || json.requestingPlayerTurn == false && (json.turnType == "Pick" || json.turnType == "BeginDeck") && !json.mustRedeal;
+                var validTurnTypes = ["Pick", "BeginHand"];
+                return json.requestingPlayerTurn == false && validTurnTypes.indexOf(json.turnType) > -1 && !json.mustRedeal;
             },
             1000);
     }

@@ -238,6 +238,7 @@ namespace Sheepshead.Logic.Models
 
     public interface IHand
     {
+        int Id { get; }
         IGame IGame { get; }
         int SortOrder { get; set; }
         List<IPlayer> Players { get; }

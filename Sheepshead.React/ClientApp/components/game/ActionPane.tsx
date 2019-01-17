@@ -56,7 +56,7 @@ export default class ActionPane extends React.Component<ActionPaneProps, ActionP
             'Game/GetTurnType?gameId=' + this.state.gameId + '&playerId=' + this.state.playerId,
             function (json: GameType): void {
                 self.setState({
-                    turnType: json.turnType == 'BeginDeck' ? 'ReportHand' : json.turnType,
+                    turnType: json.turnType == 'BeginHand' ? 'ReportHand' : json.turnType,
                     playerCount: json.playerCount,
                     trickCount: json.trickCount,
                     gameExists: json.gameExists
@@ -83,11 +83,11 @@ export default class ActionPane extends React.Component<ActionPaneProps, ActionP
     }
 
     private onSummaryPhaseComplete(): void {
+        var self = this;
         this.props.onHandEnd();
         FetchUtils.post(
             'Game/StartDeck?gameId=' + this.state.gameId + '&playerId=' + this.state.playerId,
-            function (json: PlayState): void { });
-        this.setState({ turnType: 'Pick' });
+            function (json: PlayState): void { self.setState({ turnType: json.turnType }); });
     }
 
     public selectRenderPhase() {

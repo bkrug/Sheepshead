@@ -36,7 +36,6 @@ namespace Sheepshead.Logic
 
     public class PickState
     {
-        public bool PickPhaseHasStarted { get; set; }
         public string TurnType { get; set; }
         public bool HumanTurn { get; set; }
         public string CurrentTurn { get; set; }

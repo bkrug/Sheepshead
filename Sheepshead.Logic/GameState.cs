@@ -45,24 +45,33 @@ namespace Sheepshead.Logic
             var humanPlayer = currentPlayer as IHumanPlayer;
             var requestingPlayer = game.Players.OfType<IHumanPlayer>().SingleOrDefault(p => p.Id == requestingPlayerId);
             var pickChoices =
-                currentHand.IsComplete()
-                ? new List<Tuple<string, bool>>()
-                : currentHand?.PlayersRefusingPick.Select(p => new Tuple<string, bool>(p.Name, false))
+                currentHand?.PlayersRefusingPick.Select(p => new Tuple<string, bool>(p.Name, false))
                     .Union(new List<Tuple<string, bool>> { new Tuple<string, bool>(currentHand?.Picker?.Name, true) })
                     .Where(p => p.Item1 != null)
                     .ToList()
                     ?? new List<Tuple<string, bool>>();
-            return new PickState
-            {
-                PickPhaseHasStarted = !currentHand.IsComplete(),
-                TurnType = turnType.ToString(),
-                RequestingPlayerTurn = humanPlayer?.Id == requestingPlayerId,
-                PickChoices = pickChoices,
-                PlayerCards = requestingPlayer?.Cards?.Select(c => CardUtil.GetCardSummary(c))?.ToList(),
-                HumanTurn = humanPlayer != null,
-                CurrentTurn = currentPlayer?.Name,
-                MustRedeal = currentHand?.MustRedeal ?? false
-            };
+            if (currentHand == null)
+                return new PickState
+                {
+                    TurnType = turnType.ToString(),
+                    RequestingPlayerTurn = false,
+                    PickChoices = new List<Tuple<string, bool>>(),
+                    PlayerCards = new List<CardSummary>(),
+                    HumanTurn = false,
+                    CurrentTurn = string.Empty,
+                    MustRedeal = false
+                };
+            else
+                return new PickState
+                {
+                    TurnType = turnType.ToString(),
+                    RequestingPlayerTurn = humanPlayer?.Id == requestingPlayerId,
+                    PickChoices = pickChoices,
+                    PlayerCards = requestingPlayer?.Cards?.Select(c => CardUtil.GetCardSummary(c))?.ToList(),
+                    HumanTurn = humanPlayer != null,
+                    CurrentTurn = currentPlayer?.Name,
+                    MustRedeal = currentHand.MustRedeal
+                };
         }
 
         public static BuryState BuryState(IGame game, Guid requestingPlayerId)
