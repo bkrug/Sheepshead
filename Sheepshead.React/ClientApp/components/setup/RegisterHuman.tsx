@@ -27,10 +27,11 @@ export class RegisterHuman extends React.Component<RouteComponentProps<{}>, Regi
 
     private handleSubmit(e: React.FormEvent<HTMLInputElement>) {
         var gameId = this.state.gameId;
-        var self = this;
+        var playerName = this.state.playerName;
         FetchUtils.post('Setup/RegisterHuman?gameId=' + this.state.gameId + '&playerName=' + this.state.playerName,
             function (json: any) {
                 IdUtils.setPlayerId(gameId, json.playerId);
+                IdUtils.setPlayerName(gameId, playerName);
                 window.location.href = (json.full)
                     ? '/setup/gamefull/' + gameId
                     : '/setup/registrationwait/' + gameId;

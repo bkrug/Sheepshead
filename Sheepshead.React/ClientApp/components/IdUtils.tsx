@@ -14,4 +14,12 @@ export class IdUtils {
     public static getPlayerId(gameId: string): string | null {
         return window.localStorage.getItem('game' + gameId + 'player');
     }
+
+    public static setPlayerName(gameId: string, name: string) {
+        window.localStorage.setItem('game' + gameId + 'name', name);
+    }
+
+    public static getPlayerName(gameId: string): string | null {
+        return window.localStorage.getItem('game' + gameId + 'name');
+    }
 }

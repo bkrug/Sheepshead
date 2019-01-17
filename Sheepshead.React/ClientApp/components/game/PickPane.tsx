@@ -92,6 +92,14 @@ export default class PickPane extends React.Component<PickPaneProps, PickPaneSta
                     self.initializePlayStatePinging();
             }
         );
+
+        this.state.displayedPickChoices.push({
+            item1: IdUtils.getPlayerName(this.state.gameId) + '',
+            item2: willPick
+        });
+        this.setState({
+            displayedPickChoices: this.state.displayedPickChoices
+        });
     }
 
     private finishPickPhase(timeout: number, mustRedeal: boolean): void {
