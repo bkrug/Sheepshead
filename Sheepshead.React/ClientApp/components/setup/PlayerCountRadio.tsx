@@ -13,7 +13,6 @@ export interface PlayerCountState {
 export default class PlayerCountRadio extends React.Component<any, any> {
     constructor(props: PlayerCountState) {
         super(props);
-        console.log(props.title);
         this.state = {
             value: props.value || 0,
             title: props.title,

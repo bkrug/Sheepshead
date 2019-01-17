@@ -64,8 +64,6 @@ export default class PickPane extends React.Component<PickPaneProps, PickPaneSta
                 });
             },
             function (json: PickState): boolean {
-                console.log(json.pickPhaseHasStarted);
-                console.log(json.turnType);
                 return !json.pickPhaseHasStarted || json.requestingPlayerTurn == false && (json.turnType == "Pick" || json.turnType == "BeginDeck") && !json.mustRedeal;
             },
             1000);
