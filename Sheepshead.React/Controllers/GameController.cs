@@ -36,8 +36,8 @@ namespace Sheepshead.React.Controllers
         public IActionResult HandSummary(string gameId)
         {
             IGame game = GetGame(gameId);
-            var mustRedeal = game.IHands.LastOrDefault(d => d.IsComplete())?.MustRedeal;
-            var hand = game.IHands.LastOrDefault(d => d.PickPhaseComplete);
+            var hand = game.IHands.LastOrDefault(d => d.IsComplete());
+            var mustRedeal = hand?.MustRedeal;
             var scores = hand?.CalculateScores();
             return Json(new
             {

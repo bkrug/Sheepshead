@@ -19,8 +19,10 @@ namespace Sheepshead.Logic
         {
             if (!hand.Leasters)
                 return GetNonLeasterScores(hand);
-            else
+            else if (!hand.MustRedeal)
                 return GetLeasterScores(hand);
+            else
+                return GetEmptyScores(hand);
         }
 
         private static HandScores GetNonLeasterScores(IHand hand)
@@ -118,6 +120,18 @@ namespace Sheepshead.Logic
 
             var leasterWinner = trickPoints.OrderBy(c => c.Value).First().Key;
             var trickCoins = hand.Players.ToDictionary(p => p, p => p == leasterWinner ? hand.PlayerCount - 1 : -1);
+
+            return new HandScores()
+            {
+                Coins = trickCoins,
+                Points = trickPoints
+            };
+        }
+
+        private static HandScores GetEmptyScores(IHand hand)
+        {
+            var trickPoints = hand.IGame.Players.ToDictionary(p => p, p => 0);
+            var trickCoins = hand.IGame.Players.ToDictionary(p => p, p => 0);
 
             return new HandScores()
             {
