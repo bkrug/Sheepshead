@@ -67,7 +67,7 @@ namespace Sheepshead.Logic.Models
                 throw new PreviousHandIncompleteException("Cannot add a hand until the prvious one is complete.");
             IGame = game;
             IGame.Hands.Add(this);
-            SortOrder = IGame?.Hands.Count() ?? 0;
+            SortOrder = IGame?.IHands.Any() == true ? IGame.IHands.Last().SortOrder + 1 : 0;
             Tricks = new List<Trick>();
             _random = random;
             if (_random != null)
@@ -239,6 +239,7 @@ namespace Sheepshead.Logic.Models
     public interface IHand
     {
         IGame IGame { get; }
+        int SortOrder { get; set; }
         List<IPlayer> Players { get; }
         IPlayer StartingPlayer { get; }
         IPlayer Picker { get; }

@@ -947,6 +947,51 @@ namespace Sheepshead.Tests
         }
 
         [TestMethod]
+        public void Hand_SortOrder_1()
+        {
+            var participantList = new List<Participant>();
+            for (var i = 0; i < 5; ++i)
+                participantList.Add(new Participant());
+            var game = new MockGame();
+            game.Hands = new List<Hand>();
+            game.SetPlayers(participantList.Select(p => p.Player).ToList());
+            game.SetLastHandIsComplete(true);
+            var hand = new Hand(game);
+            Assert.AreEqual(1, hand.SortOrder);
+        }
+
+        [TestMethod]
+        public void Hand_SortOrder_2()
+        {
+            var participantList = new List<Participant>();
+            for (var i = 0; i < 5; ++i)
+                participantList.Add(new Participant());
+            var game = new MockGame();
+            game.Hands = new List<Hand>();
+            game.SetPlayers(participantList.Select(p => p.Player).ToList());
+            game.SetLastHandIsComplete(true);
+            var earlierHand = new Hand(game);
+            var hand = new Hand(game);
+            Assert.AreEqual(2, hand.SortOrder);
+        }
+
+        [TestMethod]
+        public void Hand_SortOrder_53()
+        {
+            var participantList = new List<Participant>();
+            for (var i = 0; i < 5; ++i)
+                participantList.Add(new Participant());
+            var game = new MockGame();
+            game.Hands = new List<Hand>();
+            game.SetPlayers(participantList.Select(p => p.Player).ToList());
+            game.SetLastHandIsComplete(true);
+            var earlierHand = new Hand(game);
+            earlierHand.SortOrder = 52;
+            var hand = new Hand(game);
+            Assert.AreEqual(earlierHand.SortOrder + 1, hand.SortOrder, "Even if not all hands are loaded, we should still be able to calculate the sort order.");
+        }
+
+        [TestMethod]
         public void Hand_StartingPlayer()
         {
             var player1 = new Participant().Player;
