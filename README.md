@@ -11,5 +11,7 @@ The startup project within the solution is "Sheepshead.React"
 * Sheepshead - this project is meant to be a javascript-light MVC version of the application. For the moment it is not included in the main solution file. I wrote this version before the Sheepshead.Logic project was moved to .NET Core, and I haven't yet decided if I will convert the javascript-light version of the appliation.
 
 Work to do:
+* When a user buries cards, the front-end thinks that they can bury a thrid card. Fix this.
+* Give users a way to change their mind after selecting a card to bury. Right now the user would have to refresh the page.
 * Handle Leasters games that tie.
 * Get more feedback from non-programers who now Sheepshead well.
