@@ -32,6 +32,7 @@
     "webpack-hot-middleware": "2.18.2"
   },
   "dependencies": {
+    "gulp": "^4.0.2",
     "react": "https://registry.npmjs.org/react/-/react-15.6.1.tgz"
   }
 }

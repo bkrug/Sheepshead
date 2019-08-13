@@ -86,7 +86,7 @@ namespace Sheepshead.Tests
         }
 
         [TestMethod]
-        public void Trick_IsLegal_PickerCannotLeadWithLastCardOfCalledSuit()
+        public void Trick_IsLegal_PickerBeAllowedToLeadWithLastCardOfCalledSuit()
         {
             var picker = new Participant() { Cards = "9♥;9♦;Q♥;9♣;A♣;K♣" }.Player;
             var hand = new Mock<IHand>();
@@ -99,7 +99,7 @@ namespace Sheepshead.Tests
             var calculator = new Mock<IStartingPlayerCalculator>();
             calculator.Setup(m => m.GetStartingPlayer(hand.Object, It.IsAny<ITrick>())).Returns(picker);
             var trick = new Trick(hand.Object, calculator.Object);
-            Assert.IsFalse(trick.IsLegalAddition(SheepCard.N9_HEARTS, picker), "Picker has no other hearts, so this cannot be the lead card.");
+            Assert.IsTrue(trick.IsLegalAddition(SheepCard.N9_HEARTS, picker), "Picker has no other hearts, so this cannot be the lead card.");
         }
 
         [TestMethod]

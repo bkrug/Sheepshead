@@ -101,10 +101,8 @@ namespace Sheepshead.Logic.Models
                 && IHand.ITricks.Any(t => t != this && t.CardsByPlayer.Any() && CardUtil.GetSuit(t.CardsByPlayer.First().Value) == suitOfPartnerCard))
                 return true;
             //Picker cannot lead with last card of Called Ace's suit.
-            if (player == IHand.Picker
-                && CardUtil.GetSuit(card) == suitOfPartnerCard
-                && player.Cards.Union(IHand.Buried).ToList().Count(c => CardUtil.GetSuit(c) == suitOfPartnerCard) == 1)
-                return false;
+            if (player == IHand.Picker)
+                return true;
             //Partner cannot lead with partner card.
             if (IHand.PartnerCardEnum == card)
                 return false;
