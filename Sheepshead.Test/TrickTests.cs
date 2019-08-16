@@ -168,10 +168,19 @@ namespace Sheepshead.Tests
         }
 
         [TestMethod]
-        public void Trick_IsLegal_PartnerCannotLeadWithPartnerCard()
+        public void Trick_IsLegal_PartnerCannotLeadWithFailCardExceptAceAtFirst()
         {
             var partner = new Participant() { Cards = "T♥;7♥;A♥;J♦;7♠;A♠" }.Player;
+            var previousTrick = new Mock<ITrick>();
+            previousTrick.Setup(m => m.CardsByPlayer).Returns(new Dictionary<IPlayer, SheepCard>() {
+                { new Mock<IPlayer>().Object, SheepCard.N9_CLUBS },
+                { new Mock<IPlayer>().Object, SheepCard.KING_HEARTS },
+                { new Mock<IPlayer>().Object, SheepCard.N8_SPADES },
+                { new Mock<IPlayer>().Object, SheepCard.N9_HEARTS },
+                { new Mock<IPlayer>().Object, SheepCard.N10_DIAMONDS },
+            });
             var hand = new Mock<IHand>();
+            hand.Setup(m => m.ITricks).Returns(new List<ITrick>() { previousTrick.Object });
             hand.Setup(m => m.ITricks).Returns(new List<ITrick>());
             hand.Setup(m => m.Players).Returns(new List<IPlayer>() { partner });
             hand.Setup(m => m.IGame.PartnerMethodEnum).Returns(PartnerMethod.CalledAce);
@@ -179,26 +188,32 @@ namespace Sheepshead.Tests
             var calculator = new Mock<IStartingPlayerCalculator>();
             calculator.Setup(m => m.GetStartingPlayer(hand.Object, It.IsAny<ITrick>())).Returns(partner);
             var trick = new Trick(hand.Object, calculator.Object);
-            Assert.IsFalse(trick.IsLegalAddition(SheepCard.ACE_HEARTS, partner), "Partner cannot lead with called ace.");
+            Assert.IsTrue(trick.IsLegalAddition(SheepCard.ACE_HEARTS, partner), "Partner can only lead with called ace or a different fail suit.");
+            Assert.IsTrue(trick.IsLegalAddition(SheepCard.N7_SPADES, partner), "Partner can only lead with called ace or a different fail suit.");
+            Assert.IsFalse(trick.IsLegalAddition(SheepCard.N7_HEARTS, partner), "Partner cannot lead with 7 of hearts.");
         }
 
         [TestMethod]
-        public void Trick_IsLegal_PartnerCanLeadWithOtherCards()
+        public void Trick_IsLegal_False_PartnerCanNowLeadWithAceOfPartnerFailSuit()
         {
-            var partner = new Participant() { Cards = "T♥;7♥;A♥;J♦;7♠;A♠" }.Player;
+            var partner = new Participant() { Cards = "T♥;7♥;K♦;J♦;A♠" }.Player;
             var hand = new Mock<IHand>();
-            hand.Setup(m => m.ITricks).Returns(new List<ITrick>());
+            var previousTrick = new Mock<ITrick>();
+            previousTrick.Setup(m => m.CardsByPlayer).Returns(new Dictionary<IPlayer, SheepCard>() {
+                { new Mock<IPlayer>().Object, SheepCard.N9_CLUBS },
+                { new Mock<IPlayer>().Object, SheepCard.ACE_HEARTS },
+                { new Mock<IPlayer>().Object, SheepCard.N8_SPADES },
+                { new Mock<IPlayer>().Object, SheepCard.N9_HEARTS },
+                { new Mock<IPlayer>().Object, SheepCard.N10_DIAMONDS },
+            });
+            hand.Setup(m => m.ITricks).Returns(new List<ITrick>() { previousTrick.Object });
             hand.Setup(m => m.Players).Returns(new List<IPlayer>() { partner });
             hand.Setup(m => m.IGame.PartnerMethodEnum).Returns(PartnerMethod.CalledAce);
             hand.Setup(m => m.PartnerCardEnum).Returns(SheepCard.ACE_HEARTS);
             var calculator = new Mock<IStartingPlayerCalculator>();
             calculator.Setup(m => m.GetStartingPlayer(hand.Object, It.IsAny<ITrick>())).Returns(partner);
             var trick = new Trick(hand.Object, calculator.Object);
-            Assert.IsTrue(trick.IsLegalAddition(SheepCard.N10_HEARTS, partner));
-            Assert.IsTrue(trick.IsLegalAddition(SheepCard.N7_HEARTS, partner));
-            Assert.IsTrue(trick.IsLegalAddition(SheepCard.JACK_DIAMONDS, partner));
-            Assert.IsTrue(trick.IsLegalAddition(SheepCard.ACE_SPADES, partner));
-            Assert.IsTrue(trick.IsLegalAddition(SheepCard.N7_SPADES, partner));
+            Assert.IsTrue(partner.Cards.All(c => trick.IsLegalAddition(c, partner)), "Ace of Hearts has been played; partner can lead with anything.");
         }
 
         [TestMethod]

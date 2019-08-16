@@ -96,17 +96,13 @@ namespace Sheepshead.Logic.Models
         private bool IsLegalStartingCardInCalledAceGame(SheepCard card, IPlayer player)
         {
             var suitOfPartnerCard = CardUtil.GetSuit(IHand.PartnerCardEnum.Value);
-            //Once suit of partner card is lead, picker and partner may lead with that suit.
-            if (IHand.ITricks != null
-                && IHand.ITricks.Any(t => t != this && t.CardsByPlayer.Any() && CardUtil.GetSuit(t.CardsByPlayer.First().Value) == suitOfPartnerCard))
-                return true;
-            //Picker cannot lead with last card of Called Ace's suit.
             if (player == IHand.Picker)
                 return true;
-            //Partner cannot lead with partner card.
-            if (IHand.PartnerCardEnum == card)
-                return false;
-            return true;
+            //Partner cannot lead with card in partner suit unless partner card has already been played or card is the partner card.
+            return !IHand.PartnerCardEnum.HasValue
+                || !player.Cards.Contains(IHand.PartnerCardEnum.Value)
+                || card == IHand.PartnerCardEnum
+                || CardUtil.GetSuit(card) != CardUtil.GetSuit(IHand.PartnerCardEnum.Value);
         }
 
         public TrickWinner Winner()
