@@ -90,9 +90,9 @@ namespace Sheepshead.Logic.Models
             var firstCard = moves.First().Value;
             //Only applys to called ace games
             if (IHand.IGame.PartnerMethodEnum == PartnerMethod.CalledAce && IHand.PartnerCardEnum.HasValue)
-                return player.Cards.Contains(card) && !player.Cards.Contains(IHand.PartnerCardEnum.Value) && CardFollowsSuit(card, player, firstCard)
-                    || player.Cards.Contains(card) && card == IHand.PartnerCardEnum.Value && CardFollowsSuit(card, player, firstCard)
-                    || player.Cards.Contains(card) && CardUtil.GetSuit(IHand.PartnerCardEnum.Value) != CardUtil.GetSuit(firstCard);
+                return player.Cards.Contains(IHand.PartnerCardEnum.Value)
+                        ? card == IHand.PartnerCardEnum.Value && CardFollowsSuit(card, player, firstCard)
+                        : CardFollowsSuit(card, player, firstCard);
 
             //Other cards must follow suit.
             return player.Cards.Contains(card) && CardFollowsSuit(card, player, firstCard);
