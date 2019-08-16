@@ -235,6 +235,28 @@ namespace Sheepshead.Tests
         }
 
         [TestMethod]
+        public void Trick_IsLegal_PartnerMustFollowWithPartnerCard()
+        {
+            var partner = new Participant() { Cards = "T♥;T♠;A♥;J♦;7♠;A♠" }.Player;
+            var curTrick = new Mock<ITrick>();
+            var hand = new Mock<IHand>();
+            hand.Setup(m => m.IGame.PartnerMethodEnum).Returns(PartnerMethod.CalledAce);
+            hand.Setup(m => m.PartnerCardEnum).Returns(SheepCard.ACE_SPADES);
+            hand.Setup(m => m.ITricks).Returns(new List<ITrick>());
+            hand.Setup(m => m.Players).Returns(new List<IPlayer>() { partner });
+            var calculator = new Mock<IStartingPlayerCalculator>();
+            calculator.Setup(m => m.GetStartingPlayer(hand.Object, It.IsAny<ITrick>())).Returns(partner);
+            var trick = new Trick(hand.Object, calculator.Object);
+            trick.Add(new Participant().Player, SheepCard.N8_SPADES);
+            Assert.IsTrue(trick.IsLegalAddition(SheepCard.ACE_SPADES, partner), "Partner must follow suit and must place partner card before anything else in this suit.");
+            Assert.IsFalse(trick.IsLegalAddition(SheepCard.N10_HEARTS, partner), "No other cards can be played.");
+            Assert.IsFalse(trick.IsLegalAddition(SheepCard.N10_SPADES, partner), "No other cards can be played.");
+            Assert.IsFalse(trick.IsLegalAddition(SheepCard.ACE_HEARTS, partner), "No other cards can be played.");
+            Assert.IsFalse(trick.IsLegalAddition(SheepCard.JACK_SPADES, partner), "No other cards can be played.");
+            Assert.IsFalse(trick.IsLegalAddition(SheepCard.N7_SPADES, partner), "No other cards can be played.");
+        }
+
+        [TestMethod]
         public void Trick_IsLegal_LastCardLeft()
         {
             var partner = new Participant() { Cards = CardUtil.GetAbbreviation(SheepCard.ACE_SPADES) }.Player;

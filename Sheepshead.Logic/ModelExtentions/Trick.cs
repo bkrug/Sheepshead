@@ -83,14 +83,24 @@ namespace Sheepshead.Logic.Models
             var moves = OrderedMoves;
             //There are some rules for the lead card in a trick.
             if (!moves.Any())
-                return IHand.IGame.PartnerMethodEnum == PartnerMethod.JackOfDiamonds 
+                return IHand.IGame.PartnerMethodEnum == PartnerMethod.JackOfDiamonds
                     || IHand.PartnerCardEnum == null
                     || IsLegalStartingCardInCalledAceGame(card, player);
 
-            //Other cards must follow suit.
             var firstCard = moves.First().Value;
-            return player.Cards.Contains(card) 
-                && (CardUtil.GetSuit(card) == CardUtil.GetSuit(firstCard) || !player.Cards.Any(c => CardUtil.GetSuit(c) == CardUtil.GetSuit(firstCard)));
+            //Only applys to called ace games
+            if (IHand.IGame.PartnerMethodEnum == PartnerMethod.CalledAce && IHand.PartnerCardEnum.HasValue)
+                return player.Cards.Contains(card) && !player.Cards.Contains(IHand.PartnerCardEnum.Value) && CardFollowsSuit(card, player, firstCard)
+                    || player.Cards.Contains(card) && card == IHand.PartnerCardEnum.Value && CardFollowsSuit(card, player, firstCard)
+                    || player.Cards.Contains(card) && CardUtil.GetSuit(IHand.PartnerCardEnum.Value) != CardUtil.GetSuit(firstCard);
+
+            //Other cards must follow suit.
+            return player.Cards.Contains(card) && CardFollowsSuit(card, player, firstCard);
+        }
+
+        private static bool CardFollowsSuit(SheepCard card, IPlayer player, SheepCard firstCard)
+        {
+            return (CardUtil.GetSuit(card) == CardUtil.GetSuit(firstCard) || !player.Cards.Any(c => CardUtil.GetSuit(c) == CardUtil.GetSuit(firstCard)));
         }
 
         private bool IsLegalStartingCardInCalledAceGame(SheepCard card, IPlayer player)
